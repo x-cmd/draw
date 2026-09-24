@@ -1,0 +1,172 @@
+id: x-ratelimit-0-draw-overview
+
+data:
+  - name:
+      en: overview
+      cn: 总览
+    qa:
+      - id: draw-endpoint-what
+        question:
+          cn: "x-cmd/draw 是什么？怎么用？"
+          en: "What is x-cmd/draw and how to use it?"
+        answer:
+          cn: |
+            `x-cmd/draw` 是单端点 SVG 图表服务。`GET /draw?type=<chart>&...` 直接返 SVG（纯文本，可 grep / diff）。
+
+            ```sh
+            curl "https://x-cmd.com/draw?type=pie&labels=A,B,C&values=10,20,30"
+            ```
+
+            详细：[0-draw-overview](0-draw-overview) §六。
+          en: |
+            `x-cmd/draw` is a single-endpoint SVG chart service. `GET /draw?type=<chart>&...` returns SVG (pure text, grep/diff-friendly).
+
+            ```sh
+            curl "https://x-cmd.com/draw?type=pie&labels=A,B,C&values=10,20,30"
+            ```
+
+            Detail: [0-draw-overview](0-draw-overview) §6.
+        confidence: 10
+        reference:
+          - docs/0-draw-overview.cn.md
+          - docs/0-draw-overview.en.md
+
+      - id: draw-supported-chart-types
+        question:
+          cn: "x-cmd/draw 支持哪些图表？"
+          en: "What chart types does x-cmd/draw support?"
+        answer:
+          cn: |
+            11 种：`pie` / `bar` / `hbar` / `line` / `area` / `radar` / `gauge` / `scatter` / `combo` / `sankey` / `qr`（二维码）。
+
+            每种图表的具体用法见各自专门文章：
+            [1-pie](1-pie) / [2-bar](2-bar) / [3-hbar](3-hbar) / [4-line](4-line) / [5-area](5-area) / [6-radar](6-radar) / [7-gauge](7-gauge) / [8-scatter](8-scatter) / [9-combo](9-combo) / [10-sankey](10-sankey) / [11-qr](11-qr)。
+          en: |
+            11 types: `pie` / `bar` / `hbar` / `line` / `area` / `radar` / `gauge` / `scatter` / `combo` / `sankey` / `qr` (QR code).
+
+            Each chart's specifics in its dedicated article:
+            [1-pie](1-pie) / [2-bar](2-bar) / [3-hbar](3-hbar) / [4-line](4-line) / [5-area](5-area) / [6-radar](6-radar) / [7-gauge](7-gauge) / [8-scatter](8-scatter) / [9-combo](9-combo) / [10-sankey](10-sankey) / [11-qr](11-qr).
+        confidence: 10
+        reference:
+          - docs/0-draw-overview.cn.md
+
+      - id: draw-common-params
+        question:
+          cn: "x-cmd/draw 通用参数有哪些？"
+          en: "What are x-cmd/draw's common parameters?"
+        answer:
+          cn: |
+            所有图表共享的参数：
+
+            - `t=` 风格 / 主题（如 `evil`、`market-mono`、`progress`、`revenue`）
+            - `scheme=dark\|light` 配色方案，默认跟随系统
+            - `num=all\|peak\|none` 数值标签密度
+            - `v=1` 冻结响应（缓存 / 调试用）
+            - `w=` / `h=` SVG 宽高
+            - `title=` 标题
+            - `unit=` 数值单位（如 `B`、`responses`、`%`）
+
+            每个图表自己的参数见各自专门文章。完整风格清单见 [12-styles-themes](12-styles-themes)。
+          en: |
+            Params shared by all charts:
+
+            - `t=` style / theme (e.g., `evil`, `market-mono`, `progress`, `revenue`)
+            - `scheme=dark\|light` color scheme, default follows system
+            - `num=all\|peak\|none` numeric label density
+            - `v=1` freeze response (for cache / debug)
+            - `w=` / `h=` SVG width / height
+            - `title=` chart title
+            - `unit=` numeric unit (e.g., `B`, `responses`, `%`)
+
+            Each chart's own params in its dedicated article. Full style catalog in [12-styles-themes](12-styles-themes).
+        confidence: 10
+        reference:
+          - docs/0-draw-overview.cn.md
+
+      - id: draw-data-format-choice
+        question:
+          cn: "扁平参数 vs JSON（?d=）—— 选哪种？"
+          en: "Flat params vs JSON (?d=) — which to use?"
+        answer:
+          cn: |
+            两种写法**结果完全一样**，按场景选：
+
+            - **数据少（≤ 5 项）→ 扁平参数**。URL 短、可分享、便于 `git diff`
+            - **数据多 / 有结构 → `?d=` JSON**。URL 仍可读，但避免参数爆炸
+
+            详细对比、边界情况见 [13-data-formats](13-data-formats)。
+          en: |
+            Both formats produce **identical output** — pick by situation:
+
+            - **Small data (≤ 5 items) → flat params**. URL short, shareable, `git diff`-friendly
+            - **Big data / structured → `?d=` JSON**. URL still readable, avoids parameter explosion
+
+            Full comparison, edge cases in [13-data-formats](13-data-formats).
+        confidence: 9
+        reference:
+          - docs/0-draw-overview.cn.md
+          - docs/13-data-formats.cn.md
+
+      - id: draw-get-vs-post
+        question:
+          cn: "GET /draw 和 POST /draw 区别？"
+          en: "GET /draw vs POST /draw — what's the difference?"
+        answer:
+          cn: |
+            - `GET /draw?...` —— 一次性 SVG，返回 `image/svg+xml`
+            - `POST /draw?...` —— 创建**永久短链**，返回 `{ "id": "...", "url": "/d/abc123" }`
+
+            POST 适合：
+            - 文档嵌入的稳定图表（URL 不变）
+            - README badge / issue comment
+            - 长期分享（短链不跟 query 参数走）
+          en: |
+            - `GET /draw?...` — one-shot SVG, returns `image/svg+xml`
+            - `POST /draw?...` — creates a **permanent short URL**, returns `{ "id": "...", "url": "/d/abc123" }`
+
+            POST use cases:
+            - Charts embedded in docs (stable URL)
+            - README badges / issue comments
+            - Long-term sharing (short URL doesn't carry query params)
+        confidence: 9
+        reference:
+          - docs/0-draw-overview.cn.md
+
+      - id: draw-svg-text-format
+        question:
+          cn: "x-cmd/draw 返回的 SVG 是图片还是文本？"
+          en: "Is the SVG returned by x-cmd/draw an image or text?"
+        answer:
+          cn: |
+            **纯文本**。每个 SVG 内嵌 `<metadata>` 节点（title / desc / source URL）：
+
+            ```xml
+            <svg viewBox="0 0 600 400" xmlns="...">
+              <metadata>
+                <title>Chrome holds the browser market</title>
+                <desc>Generated by x-cmd/draw</desc>
+                <source>/draw?type=pie&amp;labels=Chrome,Safari,Firefox</source>
+              </metadata>
+              <!-- 实际图形 -->
+            </svg>
+            ```
+
+            好处：`grep "<text>"` 找所有标签，`git diff` 看图表变化，直接 paste 到 issue / Slack。
+          en: |
+            **Pure text**. Every SVG embeds a `<metadata>` node (title / desc / source URL):
+
+            ```xml
+            <svg viewBox="0 0 600 400" xmlns="...">
+              <metadata>
+                <title>Chrome holds the browser market</title>
+                <desc>Generated by x-cmd/draw</desc>
+                <source>/draw?type=pie&amp;labels=Chrome,Safari,Firefox</source>
+              </metadata>
+              <!-- actual graphic -->
+            </svg>
+            ```
+
+            Benefit: `grep "<text>"` finds all labels, `git diff` shows chart changes, paste directly into issues / Slack.
+        confidence: 10
+        reference:
+          - docs/0-draw-overview.cn.md
