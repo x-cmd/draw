@@ -32,7 +32,7 @@ jobs:
           persist-credentials: false
 
       - name: 'Run analysis'
-        uses: ossf/scorecard-action@v2
+        uses: ossf/scorecard-action@v2.5.0 # 官方仓库无 v2 移动 tag,需钉精确版本
         with:
           results_file: results.sarif
           results_format: sarif
