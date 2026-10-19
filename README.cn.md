@@ -11,7 +11,7 @@ AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,�
 
 数据全在 URL 里 — 浏览器打开、`<img>` 嵌入、贴进仓库 README,SVG 直接渲染:
 
-**桑基图 — PR 生命周期:类型 → 结果 → 时段**(`type=sankey&t=pipeline`)
+### 桑基图 — PR 生命周期:类型 → 结果 → 时段 (`type=sankey&t=pipeline`)
 
 ```text
 https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs
@@ -19,7 +19,7 @@ https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,
 
 ![桑基图:PR 生命周期](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs)
 
-**水平柱 — 运行时吞吐,真实实测**(`type=hbar`;`draw()` 渲染上面桑基图的 ops/sec,Apple Silicon 实测:deno 7238 · node 6553 · bun 4972)
+### 水平柱 — 运行时吞吐,真实实测 (`type=hbar`; deno 7238 · node 6553 · bun 4972 ops/s, Apple Silicon)
 
 ```text
 https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
@@ -27,7 +27,7 @@ https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&titl
 
 ![水平柱:运行时吞吐](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
 
-**雷达图 — 三软件对比**(`type=radar&t=evil`,多系列)
+### 雷达图 — 三软件对比 (`type=radar&t=evil`, 多系列)
 
 ```text
 https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison
@@ -35,7 +35,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,
 
 ![雷达图:编辑器对比](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison)
 
-**混合图 — 周下载 vs 星标增速,量级差自动双 y 轴**(`type=combo`)
+### 混合图 — 周下载 vs 星标增速 (`type=combo`, 量级差自动双 y 轴)
 
 ```text
 https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl
@@ -43,7 +43,7 @@ https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Down
 
 ![混合图:周下载与星标增速](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl)
 
-**水平柱 — 分区 issue 开/闭蝴蝶图**(`type=hbar&t=xcmd-issue`)
+### 水平柱 — 分区 issue 开/闭蝴蝶图 (`type=hbar&t=xcmd-issue`)
 
 ```text
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
@@ -51,7 +51,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=
 
 ![水平柱:分区 issue 开闭](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
 
-**环形图 — 语言构成**(`type=pie&t=market-mono`)
+### 环形图 — 语言构成 (`type=pie&t=market-mono`)
 
 ```text
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3

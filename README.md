@@ -11,7 +11,7 @@ SVG chart generation for the AI era. One endpoint — `/draw?type=...` — with 
 
 All the data lives in the URL — open it in a browser, drop it into an `<img>`, paste it into your repo README: the SVG renders right away.
 
-**Sankey — pull-request lifecycle: type → outcome → age** (`type=sankey&t=pipeline`)
+### Sankey — pull-request lifecycle: type → outcome → age (`type=sankey&t=pipeline`)
 
 ```text
 https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs
@@ -19,7 +19,7 @@ https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,
 
 ![Sankey: PR lifecycle](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs)
 
-**Hbar — runtime throughput, real measurement** (`type=hbar`; `draw()` ops/sec rendering the sankey above, measured on Apple Silicon: deno 7238 · node 6553 · bun 4972)
+### Hbar — runtime throughput, measured (`type=hbar`; deno 7238 · node 6553 · bun 4972 ops/s, Apple Silicon)
 
 ```text
 https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
@@ -27,7 +27,7 @@ https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&titl
 
 ![Hbar: runtime throughput](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
 
-**Radar — three-way software comparison** (`type=radar&t=evil`, multi-series)
+### Radar — three-way software comparison (`type=radar&t=evil`, multi-series)
 
 ```text
 https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison
@@ -35,7 +35,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,
 
 ![Radar: editor comparison](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison)
 
-**Combo — weekly downloads vs star-growth rate** (`type=combo`, dual y-axis on magnitude spread)
+### Combo — weekly downloads vs star-growth rate (`type=combo`, dual y-axis)
 
 ```text
 https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl
@@ -43,7 +43,7 @@ https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Down
 
 ![Combo: downloads + star growth](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl)
 
-**Hbar — open/closed issues by area, butterfly** (`type=hbar&t=xcmd-issue`)
+### Hbar — open/closed issues by area, butterfly (`type=hbar&t=xcmd-issue`)
 
 ```text
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
@@ -51,7 +51,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=
 
 ![Hbar: issues by area](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
 
-**Pie — language composition** (`type=pie&t=market-mono`)
+### Pie — language composition (`type=pie&t=market-mono`)
 
 ```text
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3
