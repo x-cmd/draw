@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+# 内部汇报材料,不入库
+REPORT-*.md
+
+# 本地待办/遗留记录,不入库
+BACKLOG.md

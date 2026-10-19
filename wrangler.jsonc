@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "draw",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "DATA_REPO": "x-cmd-hub/draw-charts",
+    "DATA_BRANCH": "charts"
+  },
+  // POST /draw 全局限流(每 CF 数据中心独立计数,binding 原生支持,替代内存 Map)
+  "ratelimits": [
+    { "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 30, "period": 60 } }
+  ],
+  "routes": [
+    { "pattern": "x-cmd.com/draw*", "zone_name": "x-cmd.com" }
+  ]
+}

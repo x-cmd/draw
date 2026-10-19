@@ -1,0 +1,171 @@
+// 公共解析基础:ApiError、LIMITS、单系列 ChartSpec(扁平参数/JSON)、统一入口 parseInput。
+// 各图表专属解析器在本目录独立文件;新增图表 = 新增 specs/xxx.ts + render/xxx.ts。
+
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
+
+export interface Datum {
+  label: string;
+  value: number;
+}
+
+export interface ChartSpec {
+  title?: string;
+  subtitle?: string; // 编辑式副标题(规范 area-3:16px 灰,随大标题)
+  source?: string;   // 数据来源脚注(规范 area-3:13px,左下)
+  unit?: string;
+  data: Datum[];
+}
+
+export const LIMITS = {
+  title: 80,
+  subtitle: 96,
+  source: 96,
+  unit: 16,
+  label: 64,
+  maxPie: 100,
+  maxBar: 30,
+  maxLine: 60,
+  maxRadar: 12,
+  maxSeries: 6,
+  seriesName: 24,
+  maxScatter: 200,
+} as const;
+
+export const MAX_BY_KIND: Record<string, number> = {
+  pie: LIMITS.maxPie,
+  bar: LIMITS.maxBar,
+  hbar: LIMITS.maxBar,
+  line: LIMITS.maxLine,
+  area: LIMITS.maxLine,
+  radar: LIMITS.maxRadar,
+};
+
+const EXAMPLE = encodeURIComponent(
+  JSON.stringify({ title: 'Demo', data: [{ label: 'A', value: 1 }, { label: 'B', value: 2 }] }),
+);
+const EXAMPLE_FLAT = 'title=Demo&labels=A,B&values=1,2';
+
+export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' | 'line' | 'area' | 'radar'): ChartSpec {
+  if (raw === null || raw === '') {
+    throw new ApiError(400, `Missing data. Use flat params: ?${EXAMPLE_FLAT} — or JSON: ?d=${EXAMPLE}`);
+  }
+  let obj: unknown;
+  try {
+    obj = JSON.parse(raw);
+  } catch {
+    throw new ApiError(400, `"d" is not valid JSON (remember to URL-encode it). Example: ?d=${EXAMPLE}`);
+  }
+  if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
+    throw new ApiError(400, `"d" must be a JSON object like {"title":"...","data":[{"label":"A","value":1}]}`);
+  }
+  const o = obj as Record<string, unknown>;
+
+  let title: string | undefined;
+  if (o.title !== undefined) {
+    if (typeof o.title !== 'string') throw new ApiError(400, `"title" must be a string, got ${jsonType(o.title)}`);
+    title = clip(o.title, LIMITS.title);
+  }
+
+  let unit: string | undefined;
+  if (o.unit !== undefined) {
+    if (typeof o.unit !== 'string') throw new ApiError(400, `"unit" must be a string, got ${jsonType(o.unit)}`);
+    unit = clip(o.unit, LIMITS.unit);
+  }
+
+  let subtitle: string | undefined;
+  if (o.subtitle !== undefined) {
+    if (typeof o.subtitle !== 'string') throw new ApiError(400, `"subtitle" must be a string, got ${jsonType(o.subtitle)}`);
+    subtitle = clip(o.subtitle, LIMITS.subtitle);
+  }
+
+  let source: string | undefined;
+  if (o.source !== undefined) {
+    if (typeof o.source !== 'string') throw new ApiError(400, `"source" must be a string, got ${jsonType(o.source)}`);
+    source = clip(o.source, LIMITS.source);
+  }
+
+  if (!Array.isArray(o.data) || o.data.length === 0) {
+    throw new ApiError(400, `"data" must be a non-empty array of {"label":string,"value":number}`);
+  }
+  const max = MAX_BY_KIND[kind];
+  if (o.data.length > max) {
+    throw new ApiError(400, `"data" has ${o.data.length} points; ${kind} chart supports at most ${max}. Aggregate the rest into fewer points.`);
+  }
+
+  const data: Datum[] = o.data.map((it, i) => {
+    if (typeof it !== 'object' || it === null || Array.isArray(it)) {
+      throw new ApiError(400, `data[${i}] must be an object with "label" and "value"`);
+    }
+    const d = it as Record<string, unknown>;
+    let label: string;
+    if (typeof d.label === 'string') label = clip(d.label, LIMITS.label);
+    else if (typeof d.label === 'number' && Number.isFinite(d.label)) label = String(d.label);
+    else throw new ApiError(400, `data[${i}].label must be a string, got ${jsonType(d.label)}`);
+    if (typeof d.value !== 'number' || !Number.isFinite(d.value)) {
+      throw new ApiError(400, `data[${i}].value must be a number, got ${jsonType(d.value)}`);
+    }
+    if (d.value < 0) {
+      throw new ApiError(400, `data[${i}].value must be >= 0, got ${d.value}`);
+    }
+    return { label, value: d.value };
+  });
+
+  const total = data.reduce((s, d) => s + d.value, 0);
+  if (!(total > 0)) {
+    throw new ApiError(400, `"data" values must sum to more than 0, got ${total}`);
+  }
+
+  return { title, subtitle, source, unit, data };
+}
+
+// 扁平参数 → JSON 字符串:让 URL 永远可读,无需百分号编码。
+// 支持两种形态:?labels=A,B&values=1,2(逗号)或 ?labels=A&labels=B&values=1&values=2(重复参数,标签含逗号时用)
+export function specFromParams(params: URLSearchParams, kind: 'pie' | 'bar' | 'hbar' | 'line' | 'area' | 'radar'): string | null {
+  const d = params.get('d');
+  if (d !== null && d !== '') return d;
+  if (!params.has('labels') && !params.has('values')) return null;
+
+  const labels = flatList(params, 'labels');
+  const values = flatList(params, 'values');
+  if (labels.length === 0) throw new ApiError(400, `"labels" is empty. Example: ?${EXAMPLE_FLAT}`);
+  if (values.length !== labels.length) {
+    throw new ApiError(400, `got ${labels.length} labels but ${values.length} values — they must match`);
+  }
+  const nums = values.map((v, i) => {
+    const n = Number(v);
+    if (!Number.isFinite(n)) throw new ApiError(400, `values[${i}] is not a number: ${JSON.stringify(v)}`);
+    return n;
+  });
+  const obj: Record<string, unknown> = {
+    data: labels.map((label, i) => ({ label, value: nums[i] })),
+  };
+  const title = params.get('title');
+  if (title) obj.title = title;
+  const subtitle = params.get('subtitle');
+  if (subtitle) obj.subtitle = subtitle;
+  const source = params.get('source');
+  if (source) obj.source = source;
+  const unit = params.get('unit');
+  if (unit) obj.unit = unit;
+  return JSON.stringify(obj);
+}
+
+export function flatList(params: URLSearchParams, key: string): string[] {
+  const all = params.getAll(key);
+  if (all.length > 1) return all; // 重复参数形态
+  return all[0] !== undefined && all[0] !== '' ? all[0].split(',') : [];
+}
+
+function jsonType(v: unknown): string {
+  if (v === null) return 'null';
+  if (Array.isArray(v)) return 'an array';
+  return typeof v;
+}
+
+export function clip(s: string, n: number): string {
+  return s.length > n ? s.slice(0, n - 1) + '…' : s;
+}
