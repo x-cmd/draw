@@ -1,4 +1,4 @@
-id: x-ratelimit-0-draw-overview
+id: x-ratelimit-2-overview
 
 data:
   - name:
@@ -17,7 +17,7 @@ data:
             curl "https://x-cmd.com/draw?type=pie&labels=A,B,C&values=10,20,30"
             ```
 
-            详细：[0-draw-overview](0-draw-overview) §六。
+            详细：[2-overview](2-overview) §六。
           en: |
             `x-cmd/draw` is a single-endpoint SVG chart service. `GET /draw?type=<chart>&...` returns SVG (pure text, grep/diff-friendly).
 
@@ -25,11 +25,11 @@ data:
             curl "https://x-cmd.com/draw?type=pie&labels=A,B,C&values=10,20,30"
             ```
 
-            Detail: [0-draw-overview](0-draw-overview) §6.
+            Detail: [2-overview](2-overview) §6.
         confidence: 10
         reference:
-          - docs/1-overview/cn.md
-          - docs/1-overview/en.md
+          - docs/2-overview/cn.md
+          - docs/2-overview/en.md
 
       - id: draw-supported-chart-types
         question:
@@ -40,15 +40,15 @@ data:
             11 种：`pie` / `bar` / `hbar` / `line` / `area` / `radar` / `gauge` / `scatter` / `combo` / `sankey` / `qr`（二维码）。
 
             每种图表的具体用法见各自专门文章：
-            [1-pie](1-pie) / [2-bar](2-bar) / [3-hbar](3-hbar) / [4-line](4-line) / [5-area](5-area) / [6-radar](6-radar) / [7-gauge](7-gauge) / [8-scatter](8-scatter) / [9-combo](9-combo) / [10-sankey](10-sankey) / [11-qr](11-qr)。
+            [10-pie](10-pie) / [11-bar](11-bar) / [12-hbar](12-hbar) / [13-line](13-line) / [14-area](14-area) / [15-radar](15-radar) / [16-gauge](16-gauge) / [17-scatter](17-scatter) / [18-combo](18-combo) / [19-sankey](19-sankey) / [20-qr](20-qr)。
           en: |
             11 types: `pie` / `bar` / `hbar` / `line` / `area` / `radar` / `gauge` / `scatter` / `combo` / `sankey` / `qr` (QR code).
 
             Each chart's specifics in its dedicated article:
-            [1-pie](1-pie) / [2-bar](2-bar) / [3-hbar](3-hbar) / [4-line](4-line) / [5-area](5-area) / [6-radar](6-radar) / [7-gauge](7-gauge) / [8-scatter](8-scatter) / [9-combo](9-combo) / [10-sankey](10-sankey) / [11-qr](11-qr).
+            [10-pie](10-pie) / [11-bar](11-bar) / [12-hbar](12-hbar) / [13-line](13-line) / [14-area](14-area) / [15-radar](15-radar) / [16-gauge](16-gauge) / [17-scatter](17-scatter) / [18-combo](18-combo) / [19-sankey](19-sankey) / [20-qr](20-qr).
         confidence: 10
         reference:
-          - docs/1-overview/cn.md
+          - docs/2-overview/cn.md
 
       - id: draw-common-params
         question:
@@ -66,7 +66,7 @@ data:
             - `title=` 标题
             - `unit=` 数值单位（如 `B`、`responses`、`%`）
 
-            每个图表自己的参数见各自专门文章。完整风格清单见 [12-styles-themes](12-styles-themes)。
+            每个图表自己的参数见各自专门文章。完整风格清单见 [3-styles-themes](3-styles-themes)。
           en: |
             Params shared by all charts:
 
@@ -78,10 +78,10 @@ data:
             - `title=` chart title
             - `unit=` numeric unit (e.g., `B`, `responses`, `%`)
 
-            Each chart's own params in its dedicated article. Full style catalog in [12-styles-themes](12-styles-themes).
+            Each chart's own params in its dedicated article. Full style catalog in [3-styles-themes](3-styles-themes).
         confidence: 10
         reference:
-          - docs/1-overview/cn.md
+          - docs/2-overview/cn.md
 
       - id: draw-data-format-choice
         question:
@@ -94,18 +94,18 @@ data:
             - **数据少（≤ 5 项）→ 扁平参数**。URL 短、可分享、便于 `git diff`
             - **数据多 / 有结构 → `?d=` JSON**。URL 仍可读，但避免参数爆炸
 
-            详细对比、边界情况见 [13-data-formats](13-data-formats)。
+            详细对比、边界情况见 [5-data-formats](5-data-formats)。
           en: |
             Both formats produce **identical output** — pick by situation:
 
             - **Small data (≤ 5 items) → flat params**. URL short, shareable, `git diff`-friendly
             - **Big data / structured → `?d=` JSON**. URL still readable, avoids parameter explosion
 
-            Full comparison, edge cases in [13-data-formats](13-data-formats).
+            Full comparison, edge cases in [5-data-formats](5-data-formats).
         confidence: 9
         reference:
-          - docs/1-overview/cn.md
-          - docs/4-data-formats/cn.md
+          - docs/2-overview/cn.md
+          - docs/5-data-formats/cn.md
 
       - id: draw-get-vs-post
         question:
@@ -130,7 +130,7 @@ data:
             - Long-term sharing (short URL doesn't carry query params)
         confidence: 9
         reference:
-          - docs/1-overview/cn.md
+          - docs/2-overview/cn.md
 
       - id: draw-svg-text-format
         question:
@@ -169,4 +169,4 @@ data:
             Benefit: `grep "<text>"` finds all labels, `git diff` shows chart changes, paste directly into issues / Slack.
         confidence: 10
         reference:
-          - docs/1-overview/cn.md
+          - docs/2-overview/cn.md

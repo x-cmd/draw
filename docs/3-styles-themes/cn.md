@@ -26,17 +26,17 @@ x-json-ld:
 
 | 图表 | 默认 `t=` | 其他可选 | 专门文章 |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [1-pie](../2-chart-types/cn.md#pie) |
-| `bar` | `evil` | — | [2-bar](../2-chart-types/cn.md#bar) |
-| `hbar` | `evil` | — | [3-hbar](../2-chart-types/cn.md#hbar) |
-| `line` | `evil` | — | [4-line](../2-chart-types/cn.md#line) |
-| `area` | `evil` | — | [5-area](../2-chart-types/cn.md#area) |
-| `radar` | `evil` | — | [6-radar](../2-chart-types/cn.md#radar) |
-| `gauge` | 默认带颜色变化 | — | [7-gauge](../2-chart-types/cn.md#gauge) |
-| `scatter` | `evil` | — | [8-scatter](../2-chart-types/cn.md#scatter) |
-| `combo` | `evil` | — | [9-combo](../2-chart-types/cn.md#combo) |
-| `sankey` | `evil` | — | [10-sankey](../2-chart-types/cn.md#sankey) |
-| `qr` | 默认黑底白图案 | `invert=1` 反色 | [11-qr](../2-chart-types/cn.md#qr) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [10-pie](10-pie) |
+| `bar` | `evil` | — | [11-bar](11-bar) |
+| `hbar` | `evil` | — | [12-hbar](12-hbar) |
+| `line` | `evil` | — | [13-line](13-line) |
+| `area` | `evil` | — | [14-area](14-area) |
+| `radar` | `evil` | — | [15-radar](15-radar) |
+| `gauge` | 默认带颜色变化 | — | [16-gauge](16-gauge) |
+| `scatter` | `evil` | — | [17-scatter](17-scatter) |
+| `combo` | `evil` | — | [18-combo](18-combo) |
+| `sankey` | `evil` | — | [19-sankey](19-sankey) |
+| `qr` | 默认黑底白图案 | `invert=1` 反色 | [20-qr](20-qr) |
 
 ---
 

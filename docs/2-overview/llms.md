@@ -1,5 +1,5 @@
 ---
-name: 0-draw-overview
+name: 2-overview
 description: x-cmd/draw SVG chart endpoint — single GET / POST endpoint supporting 11 chart types (pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr). Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON. Returned SVG embeds <metadata> and is pure text (not binary).
 type: reference
 ---
@@ -43,8 +43,8 @@ official:
   endpoint: https://x-cmd.com/draw
   repo: https://github.com/x-cmd/draw
 related:
-  pie: docs/2-chart-types/cn.md#pie
-  bar: docs/2-chart-types/cn.md#bar
-  line: docs/2-chart-types/cn.md#line
+  pie: docs/10-pie/cn.md
+  bar: docs/11-bar/cn.md
+  line: docs/13-line/cn.md
   styles: docs/3-styles-themes/cn.md
-  formats: docs/4-data-formats/cn.md
+  formats: docs/5-data-formats/cn.md

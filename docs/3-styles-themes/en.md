@@ -26,17 +26,17 @@ Each chart has its own default style and available `t=` list. See dedicated arti
 
 | chart | default `t=` | other available | dedicated article |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [1-pie](../2-chart-types/en.md#pie) |
-| `bar` | `evil` | — | [2-bar](../2-chart-types/en.md#bar) |
-| `hbar` | `evil` | — | [3-hbar](../2-chart-types/en.md#hbar) |
-| `line` | `evil` | — | [4-line](../2-chart-types/en.md#line) |
-| `area` | `evil` | — | [5-area](../2-chart-types/en.md#area) |
-| `radar` | `evil` | — | [6-radar](../2-chart-types/en.md#radar) |
-| `gauge` | default has color change | — | [7-gauge](../2-chart-types/en.md#gauge) |
-| `scatter` | `evil` | — | [8-scatter](../2-chart-types/en.md#scatter) |
-| `combo` | `evil` | — | [9-combo](../2-chart-types/en.md#combo) |
-| `sankey` | `evil` | — | [10-sankey](../2-chart-types/en.md#sankey) |
-| `qr` | default black-on-white | `invert=1` flips | [11-qr](../2-chart-types/en.md#qr) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [10-pie](10-pie) |
+| `bar` | `evil` | — | [11-bar](11-bar) |
+| `hbar` | `evil` | — | [12-hbar](12-hbar) |
+| `line` | `evil` | — | [13-line](13-line) |
+| `area` | `evil` | — | [14-area](14-area) |
+| `radar` | `evil` | — | [15-radar](15-radar) |
+| `gauge` | default has color change | — | [16-gauge](16-gauge) |
+| `scatter` | `evil` | — | [17-scatter](17-scatter) |
+| `combo` | `evil` | — | [18-combo](18-combo) |
+| `sankey` | `evil` | — | [19-sankey](19-sankey) |
+| `qr` | default black-on-white | `invert=1` flips | [20-qr](20-qr) |
 
 ---
 

@@ -1,4 +1,4 @@
-id: x-ratelimit-12-styles-themes
+id: x-ratelimit-3-styles-themes
 
 data:
   - name:
@@ -11,7 +11,7 @@ data:
           en: "What styles (t=) does each x-cmd/draw chart support?"
         answer:
           cn: |
-            完整跨图表索引见 [12-styles-themes](12-styles-themes) §一。每种图表有自己的默认风格和支持的 `t=`：
+            完整跨图表索引见 [3-styles-themes](3-styles-themes) §一。每种图表有自己的默认风格和支持的 `t=`：
 
             - **pie**：默认 `opendata`，另有 `evil` / `evil-mono` / `market-mono` / `progress` / `revenue`
             - **bar / hbar / line / area / radar / scatter / combo / sankey**：默认 `evil`
@@ -20,7 +20,7 @@ data:
 
             同一 `t=` 在不同图表上视觉不同（如 `evil` 在 pie 是圆角扇区，在 line 是粗黑线）。
           en: |
-            Full cross-chart index in [12-styles-themes](12-styles-themes) §1. Each chart has its default style and supported `t=`:
+            Full cross-chart index in [3-styles-themes](3-styles-themes) §1. Each chart has its default style and supported `t=`:
 
             - **pie**: default `opendata`, also `evil` / `evil-mono` / `market-mono` / `progress` / `revenue`
             - **bar / hbar / line / area / radar / scatter / combo / sankey**: default `evil`
@@ -90,4 +90,4 @@ data:
         confidence: 10
         reference:
           - docs/3-styles-themes/cn.md
-          - docs/1-overview/cn.md
+          - docs/2-overview/cn.md

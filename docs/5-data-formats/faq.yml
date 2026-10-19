@@ -1,4 +1,4 @@
-id: x-ratelimit-13-data-formats
+id: x-ratelimit-5-data-formats
 
 data:
   - name:
@@ -16,18 +16,18 @@ data:
             - **≤ 5 项、无嵌套** → 扁平参数。URL 短、可分享
             - **> 5 项或嵌套** → `?d=` JSON。整洁
 
-            详细对比见 [13-data-formats](13-data-formats) §四。
+            详细对比见 [5-data-formats](5-data-formats) §四。
           en: |
             Both formats produce identical output — pick by situation:
 
             - **≤ 5 items, no nesting** → flat params. URL short, shareable
             - **> 5 items or nested** → `?d=` JSON. Cleaner
 
-            Full comparison in [13-data-formats](13-data-formats) §4.
+            Full comparison in [5-data-formats](5-data-formats) §4.
         confidence: 10
         reference:
-          - docs/4-data-formats/cn.md
-          - docs/4-data-formats/en.md
+          - docs/5-data-formats/cn.md
+          - docs/5-data-formats/en.md
 
       - id: json-url-encode
         question:
@@ -66,7 +66,7 @@ data:
             Programmatic generation: use `encodeURIComponent()` or a URL library.
         confidence: 10
         reference:
-          - docs/4-data-formats/cn.md
+          - docs/5-data-formats/cn.md
 
       - id: json-schema-per-chart
         question:
@@ -91,7 +91,7 @@ data:
             {"title": "...", "xlabel": "...", "ylabel": "...", "data": [{"x": ..., "y": ...}]}
             ```
 
-            完整 schema 见 [13-data-formats](13-data-formats) §三。
+            完整 schema 见 [5-data-formats](5-data-formats) §三。
           en: |
             Each chart has its own JSON schema. Common ones:
 
@@ -110,10 +110,10 @@ data:
             {"title": "...", "xlabel": "...", "ylabel": "...", "data": [{"x": ..., "y": ...}]}
             ```
 
-            Full schema in [13-data-formats](13-data-formats) §3.
+            Full schema in [5-data-formats](5-data-formats) §3.
         confidence: 9
         reference:
-          - docs/4-data-formats/cn.md
+          - docs/5-data-formats/cn.md
 
       - id: mix-formats-warning
         question:
@@ -138,4 +138,4 @@ data:
             Pick one and stick with it.
         confidence: 9
         reference:
-          - docs/4-data-formats/cn.md
+          - docs/5-data-formats/cn.md

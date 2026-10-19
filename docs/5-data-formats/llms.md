@@ -1,5 +1,5 @@
 ---
-name: 13-data-formats
+name: 5-data-formats
 description: x-cmd/draw data formats comparison. Flat params (URL always readable, simple) vs `?d=` JSON (cleaner for big/nested data). Both formats produce identical SVG output. JSON schema varies per chart type. Pick by situation: ≤ 5 items → flat; > 5 or nested → JSON.
 type: reference
 ---
@@ -40,6 +40,6 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw
 related:
-  overview: docs/1-overview/cn.md
-  pie: docs/2-chart-types/cn.md#pie
+  overview: docs/2-overview/cn.md
+  pie: docs/10-pie/cn.md
   styles: docs/3-styles-themes/cn.md
