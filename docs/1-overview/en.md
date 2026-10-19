@@ -31,17 +31,17 @@ Supports 11 chart types:
 
 | type | chart | detail |
 | --- | --- | --- |
-| `pie` | pie chart | see [1-pie](1-pie) |
-| `bar` | bar chart | see [2-bar](2-bar) |
-| `hbar` | horizontal bar | see [3-hbar](3-hbar) |
-| `line` | line chart | see [4-line](4-line) |
-| `area` | area chart | see [5-area](5-area) |
-| `radar` | radar chart | see [6-radar](6-radar) |
-| `gauge` | gauge dial | see [7-gauge](7-gauge) |
-| `scatter` | scatter plot | see [8-scatter](8-scatter) |
-| `combo` | combo (bar + line) | see [9-combo](9-combo) |
-| `sankey` | sankey diagram | see [10-sankey](10-sankey) |
-| `qr` | QR code | see [11-qr](11-qr) |
+| `pie` | pie chart | see [1-pie](../2-chart-types/en.md#pie) |
+| `bar` | bar chart | see [2-bar](../2-chart-types/en.md#bar) |
+| `hbar` | horizontal bar | see [3-hbar](../2-chart-types/en.md#hbar) |
+| `line` | line chart | see [4-line](../2-chart-types/en.md#line) |
+| `area` | area chart | see [5-area](../2-chart-types/en.md#area) |
+| `radar` | radar chart | see [6-radar](../2-chart-types/en.md#radar) |
+| `gauge` | gauge dial | see [7-gauge](../2-chart-types/en.md#gauge) |
+| `scatter` | scatter plot | see [8-scatter](../2-chart-types/en.md#scatter) |
+| `combo` | combo (bar + line) | see [9-combo](../2-chart-types/en.md#combo) |
+| `sankey` | sankey diagram | see [10-sankey](../2-chart-types/en.md#sankey) |
+| `qr` | QR code | see [11-qr](../2-chart-types/en.md#qr) |
 
 ---
 
@@ -58,7 +58,7 @@ Supports 11 chart types:
 | `unit=` | numeric unit (e.g., `B`, `responses`, `%`) | — |
 | `labels=` / `values=` / `series=` | data (varies by chart) | — |
 
-Full style / theme catalog in [12-styles-themes](12-styles-themes); flat-vs-JSON data format comparison in [13-data-formats](13-data-formats).
+Full style / theme catalog in [12-styles-themes](../3-styles-themes/en.md); flat-vs-JSON data format comparison in [13-data-formats](../4-data-formats/en.md).
 
 ---
 
@@ -82,7 +82,7 @@ Every chart supports both formats — output is identical:
 - Small data (≤ 5 items) → **A**, URL short, shareable
 - Big data / structured → **B**, URL still readable
 
-Full comparison, JSON schema, edge cases in [13-data-formats](13-data-formats).
+Full comparison, JSON schema, edge cases in [13-data-formats](../4-data-formats/en.md).
 
 ---
 

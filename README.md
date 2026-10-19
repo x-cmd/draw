@@ -216,49 +216,6 @@ GET /draw/c/<hash>                 → SVG, cached immutable forever
 
 Every SVG embeds `<metadata>` (escaped JSON): `{generator, template, version, spec}` — data and params round-trip directly. All text is real `<text>` elements.
 
-## Project structure
-
-A request flows **handler.ts (HTTP routing) → render/query.ts (params → render core) → specs/ (parse) → styles/ (pick skin) → render/ (geometry → SVG)**. The render core is pure functions shared by three runtimes: the Cloudflare Worker (index.ts thin shell), the Node server (node/server.ts), and the npm/JSR library + CLI (lib.ts + node/cli.ts).
-
-```
-src/
-├── index.ts        Cloudflare Workers entry (thin shell: edge cache, rate-limit binding, waitUntil)
-├── handler.ts      shared HTTP layer: routing, POST short-link creation, short-link render, demo page, error wrapper
-├── lib.ts          npm/JSR library entry (barrel + high-level synchronous draw())
-├── demo.ts         demo page (type tabs, style variants, dual URL forms)
-├── theme.ts        skin → CSS variables (:root + dark media query)
-├── store.ts        short-link storage (GitHub repo read/write, fingerprint, idempotency)
-├── version.ts      version numbers and cache semantics
-├── types.ts        cross-runtime structural types (DrawEnv/Platform)
-│
-├── specs/          [parse]     URL params → strongly-typed spec (validation, clipping, limits)
-│   ├── base.ts       ChartSpec + both flat-params and JSON forms
-│   ├── multi.ts      multi-series (series=) parsing
-│   └── gauge/scatter/combo/csv.ts  per-type parsers
-│
-├── render/         [render]    spec + skin → SVG string (pure computation, no layout engine)
-│   ├── svg.ts        shared helpers: layout geometry, scales, grid, legend, label collision, text measurement
-│   ├── query.ts      params→SVG synchronous core (GET dispatch + short-link segment; shared by lib and HTTP)
-│   ├── dispatch.ts   stored chart → renderer template dispatch
-│   ├── pie/line/line-multi/area/…  one file per chart type (bar ×3, line ×2)
-│   └── qr.ts         QR codes
-│
-├── styles/         [style]     designer-spec SVGs turned into rules
-│   ├── types.ts      Rules vocabulary + defaults (orientation/radius/legend/dash/labels…)
-│   ├── pie/line/area/…  per-type variants (light+dark palettes + rule deltas + spec canvas size)
-│   ├── common.ts     spec palette constants
-│   ├── handlee.ts    hand-drawn font, base64 (star style)
-│   └── index.ts      resolveSkin: type + ?t= + scheme → skin
-│
-└── node/           [Node]      server.ts local server · cli.ts draw CLI
-
-test/               vitest (parsing + renderers + shared HTTP layer + library API)
-wrangler.jsonc      deploy config (route x-cmd.com/draw*)
-deno.json           JSR publishing + Deno tasks
-```
-
-Adding a chart type = one file each in `specs/xxx.ts` + `render/xxx.ts` + `styles/xxx.ts`, plus one registration line each in `render/dispatch.ts` and `render/query.ts`.
-
 ## One-shot self-deploy
 
 Deploy your own draw to your Cloudflare account (free tier works; you just need a CF account):

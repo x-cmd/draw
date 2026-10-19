@@ -39,6 +39,6 @@ official:
   endpoint: https://x-cmd.com/draw
 related:
   overview: docs/1-overview/cn.md
-  pie: docs/2-pie/cn.md
-  bar: docs/3-bar/cn.md
-  formats: docs/14-data-formats/cn.md
+  pie: docs/2-chart-types/cn.md#pie
+  bar: docs/2-chart-types/cn.md#bar
+  formats: docs/4-data-formats/cn.md

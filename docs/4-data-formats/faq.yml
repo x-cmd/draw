@@ -26,8 +26,8 @@ data:
             Full comparison in [13-data-formats](13-data-formats) §4.
         confidence: 10
         reference:
-          - docs/14-data-formats/cn.md
-          - docs/14-data-formats/en.md
+          - docs/4-data-formats/cn.md
+          - docs/4-data-formats/en.md
 
       - id: json-url-encode
         question:
@@ -66,7 +66,7 @@ data:
             Programmatic generation: use `encodeURIComponent()` or a URL library.
         confidence: 10
         reference:
-          - docs/14-data-formats/cn.md
+          - docs/4-data-formats/cn.md
 
       - id: json-schema-per-chart
         question:
@@ -113,7 +113,7 @@ data:
             Full schema in [13-data-formats](13-data-formats) §3.
         confidence: 9
         reference:
-          - docs/14-data-formats/cn.md
+          - docs/4-data-formats/cn.md
 
       - id: mix-formats-warning
         question:
@@ -138,4 +138,4 @@ data:
             Pick one and stick with it.
         confidence: 9
         reference:
-          - docs/14-data-formats/cn.md
+          - docs/4-data-formats/cn.md

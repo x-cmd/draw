@@ -41,5 +41,5 @@ official:
   endpoint: https://x-cmd.com/draw
 related:
   overview: docs/1-overview/cn.md
-  pie: docs/2-pie/cn.md
-  styles: docs/13-styles-themes/cn.md
+  pie: docs/2-chart-types/cn.md#pie
+  styles: docs/3-styles-themes/cn.md

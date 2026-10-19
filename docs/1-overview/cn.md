@@ -31,17 +31,17 @@ POST /draw?type=<chart-type>&...     # 创永久短链
 
 | type | 图表 | 详细 |
 | --- | --- | --- |
-| `pie` | 饼图 | 见 [1-pie](1-pie) |
-| `bar` | 柱状图 | 见 [2-bar](2-bar) |
-| `hbar` | 水平柱状图 | 见 [3-hbar](3-hbar) |
-| `line` | 折线图 | 见 [4-line](4-line) |
-| `area` | 面积图 | 见 [5-area](5-area) |
-| `radar` | 雷达图 | 见 [6-radar](6-radar) |
-| `gauge` | 仪表盘 | 见 [7-gauge](7-gauge) |
-| `scatter` | 散点图 | 见 [8-scatter](8-scatter) |
-| `combo` | 混合图 | 见 [9-combo](9-combo) |
-| `sankey` | 桑基图 | 见 [10-sankey](10-sankey) |
-| `qr` | 二维码 | 见 [11-qr](11-qr) |
+| `pie` | 饼图 | 见 [1-pie](../2-chart-types/cn.md#pie) |
+| `bar` | 柱状图 | 见 [2-bar](../2-chart-types/cn.md#bar) |
+| `hbar` | 水平柱状图 | 见 [3-hbar](../2-chart-types/cn.md#hbar) |
+| `line` | 折线图 | 见 [4-line](../2-chart-types/cn.md#line) |
+| `area` | 面积图 | 见 [5-area](../2-chart-types/cn.md#area) |
+| `radar` | 雷达图 | 见 [6-radar](../2-chart-types/cn.md#radar) |
+| `gauge` | 仪表盘 | 见 [7-gauge](../2-chart-types/cn.md#gauge) |
+| `scatter` | 散点图 | 见 [8-scatter](../2-chart-types/cn.md#scatter) |
+| `combo` | 混合图 | 见 [9-combo](../2-chart-types/cn.md#combo) |
+| `sankey` | 桑基图 | 见 [10-sankey](../2-chart-types/cn.md#sankey) |
+| `qr` | 二维码 | 见 [11-qr](../2-chart-types/cn.md#qr) |
 
 ---
 
@@ -58,7 +58,7 @@ POST /draw?type=<chart-type>&...     # 创永久短链
 | `unit=` | 数值单位（如 `B`、`responses`、`%`） | — |
 | `labels=` / `values=` / `series=` | 数据（依图表类型而定） | — |
 
-完整风格 / 主题清单见 [12-styles-themes](12-styles-themes)；两种数据写法对比见 [13-data-formats](13-data-formats)。
+完整风格 / 主题清单见 [12-styles-themes](../3-styles-themes/cn.md)；两种数据写法对比见 [13-data-formats](../4-data-formats/cn.md)。
 
 ---
 
@@ -82,7 +82,7 @@ POST /draw?type=<chart-type>&...     # 创永久短链
 - 数据少（≤ 5 项）→ 用 **A**，URL 短、可分享
 - 数据多 / 有结构 → 用 **B**，URL 仍可读
 
-详细对比、JSON schema、边界情况见 [13-data-formats](13-data-formats)。
+详细对比、JSON schema、边界情况见 [13-data-formats](../4-data-formats/cn.md)。
 
 ---
 

@@ -26,17 +26,17 @@ x-json-ld:
 
 | 图表 | 默认 `t=` | 其他可选 | 专门文章 |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [1-pie](1-pie) |
-| `bar` | `evil` | — | [2-bar](2-bar) |
-| `hbar` | `evil` | — | [3-hbar](3-hbar) |
-| `line` | `evil` | — | [4-line](4-line) |
-| `area` | `evil` | — | [5-area](5-area) |
-| `radar` | `evil` | — | [6-radar](6-radar) |
-| `gauge` | 默认带颜色变化 | — | [7-gauge](7-gauge) |
-| `scatter` | `evil` | — | [8-scatter](8-scatter) |
-| `combo` | `evil` | — | [9-combo](9-combo) |
-| `sankey` | `evil` | — | [10-sankey](10-sankey) |
-| `qr` | 默认黑底白图案 | `invert=1` 反色 | [11-qr](11-qr) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [1-pie](../2-chart-types/cn.md#pie) |
+| `bar` | `evil` | — | [2-bar](../2-chart-types/cn.md#bar) |
+| `hbar` | `evil` | — | [3-hbar](../2-chart-types/cn.md#hbar) |
+| `line` | `evil` | — | [4-line](../2-chart-types/cn.md#line) |
+| `area` | `evil` | — | [5-area](../2-chart-types/cn.md#area) |
+| `radar` | `evil` | — | [6-radar](../2-chart-types/cn.md#radar) |
+| `gauge` | 默认带颜色变化 | — | [7-gauge](../2-chart-types/cn.md#gauge) |
+| `scatter` | `evil` | — | [8-scatter](../2-chart-types/cn.md#scatter) |
+| `combo` | `evil` | — | [9-combo](../2-chart-types/cn.md#combo) |
+| `sankey` | `evil` | — | [10-sankey](../2-chart-types/cn.md#sankey) |
+| `qr` | 默认黑底白图案 | `invert=1` 反色 | [11-qr](../2-chart-types/cn.md#qr) |
 
 ---
 

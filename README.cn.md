@@ -215,49 +215,6 @@ GET /draw/c/<hash>                 → SVG,永久 immutable 缓存
 
 每个 SVG 内嵌 `<metadata>`(转义 JSON):`{generator, template, version, spec}`,数据与参数可直接 round-trip。文字全部用 `<text>`(真文本)。
 
-## 项目结构
-
-一次请求的路径:**handler.ts(HTTP 路由)→ render/query.ts(参数→渲染核心)→ specs/(解析)→ styles/(选皮肤)→ render/(算几何出 SVG)**。渲染核心是纯函数,三个运行时共享:Cloudflare Worker(index.ts 薄壳)、Node 服务(node/server.ts)、npm/JSR 库与 CLI(lib.ts + node/cli.ts)。
-
-```
-src/
-├── index.ts        Cloudflare Workers 入口(薄壳:边缘缓存、限流 binding、waitUntil)
-├── handler.ts      共享 HTTP 层:路由、POST 短链创建、短链渲染、演示页、错误包装
-├── lib.ts          npm/JSR 库入口(barrel + 高层 draw() 同步 API)
-├── demo.ts         演示页(图种 tab、风格变体、URL 双形态面板)
-├── theme.ts        皮肤 → CSS 变量(:root + 暗色媒体查询)
-├── store.ts        短链存储(GitHub repo 读写、指纹、幂等)
-├── version.ts      版本号与缓存语义
-├── types.ts        跨运行时结构类型(DrawEnv/Platform)
-│
-├── specs/          【解析层】URL 参数 → 强类型 spec(校验、截断、上限)
-│   ├── base.ts       ChartSpec + 扁平参数/JSON 双形态解析
-│   ├── multi.ts      多系列(series=)解析
-│   └── gauge/scatter/combo/csv.ts  图种专属解析
-│
-├── render/         【渲染层】spec + 皮肤 → SVG 字符串(纯计算,无布局引擎)
-│   ├── svg.ts        公共构造:布局几何、刻度、网格、图例、标签防碰撞、文字测量
-│   ├── query.ts      参数→SVG 同步核心(drawHandler/短链渲染段,库与 HTTP 共用)
-│   ├── dispatch.ts   短链存档 → 渲染器的模板分发
-│   ├── pie/line/line-multi/area/…  每图种一个渲染文件(bar 拆 3、line 拆 2)
-│   └── qr.ts         二维码
-│
-├── styles/         【风格层】设计师规范 SVG 的规则化
-│   ├── types.ts      Rules 词汇表 + 默认值(方向/圆角/图例/虚线/标注…)
-│   ├── pie/line/area/…  每图种变体定义(色板明暗双值 + 规则差异 + 规范画布尺寸)
-│   ├── common.ts     规范色板常量
-│   ├── handlee.ts    手绘字体 base64(star 风格)
-│   └── index.ts      resolveSkin:图种 + ?t= + 明暗 → 皮肤
-│
-└── node/           【Node 入口】server.ts 本地服务 · cli.ts draw CLI
-
-test/               vitest(解析 + 渲染 + 共享 HTTP 层 + 库 API)
-wrangler.jsonc      部署配置(路由 x-cmd.com/draw*)
-deno.json           JSR 发布 + Deno 任务
-```
-
-加新图种 = `specs/xxx.ts` + `render/xxx.ts` + `styles/xxx.ts` 各一个文件,再在 `render/dispatch.ts` 与 `render/query.ts` 各注册一行。
-
 ## 自部署(一键)
 
 部署一套自己的 draw 到你的 Cloudflare 账号(免费计划即可,只需 CF 账号):

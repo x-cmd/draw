@@ -1,4 +1,4 @@
-id: x-ratelimit-1-pie
+id: x-ratelimit-chart-types
 
 data:
   - name:
@@ -26,8 +26,8 @@ data:
             Label count ≤ 100; > 9 auto-collapsed into "Other".
         confidence: 10
         reference:
-          - docs/2-pie/cn.md
-          - docs/2-pie/en.md
+          - docs/2-chart-types/cn.md#pie
+          - docs/2-chart-types/en.md#pie
 
       - id: pie-style-choose
         question:
@@ -58,7 +58,7 @@ data:
             Full comparison in [12-styles-themes](12-styles-themes).
         confidence: 9
         reference:
-          - docs/2-pie/cn.md
+          - docs/2-chart-types/cn.md#pie
 
       - id: pie-solid-vs-donut
         question:
@@ -83,7 +83,7 @@ data:
             Other params and style unchanged.
         confidence: 10
         reference:
-          - docs/2-pie/cn.md
+          - docs/2-chart-types/cn.md#pie
 
       - id: pie-many-categories
         question:
@@ -100,4 +100,4 @@ data:
             If you really have many categories, switch to [2-bar](2-bar) / [3-hbar](3-hbar) — pie with > 7 categories gets hard to read.
         confidence: 9
         reference:
-          - docs/2-pie/cn.md
+          - docs/2-chart-types/cn.md#pie
