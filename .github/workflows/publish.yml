@@ -15,6 +15,9 @@ jobs:
       id-token: write # The OIDC ID token is used for authentication with JSR.
     steps:
       - uses: actions/checkout@v6
-      # jsr CLI 以 BYONM 模式跑 deno publish,模块图里的 d3/uqr 需先装进 node_modules
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      # deno publish 解析 package.json 裸依赖(d3/uqr)需要 node_modules
       - run: npm ci --omit=dev
-      - run: npx jsr publish
+      - run: deno publish --unstable-sloppy-imports
