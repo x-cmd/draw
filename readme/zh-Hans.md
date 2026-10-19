@@ -1,6 +1,6 @@
 # draw
 
-> [English](README.md) | 中文
+> [English](../README.md) | 中文
 
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
@@ -244,4 +244,4 @@ npm run deploy   # wrangler deploy
 
 ## 许可
 
-代码 [Apache-2.0](LICENSE)。内嵌字体遵循各自许可:Inter(OFL,全文见 `src/styles/inter-OFL.txt`)、Handlee(OFL)。
+代码 [Apache-2.0](../LICENSE)。内嵌字体遵循各自许可:Inter(OFL,全文见 `src/styles/inter-OFL.txt`)、Handlee(OFL)。
