@@ -1,4 +1,6 @@
-# .github/workflows/publish.yml — 推 main 即发布:npm + JSR(版本已存在则各自跳过)
+# .github/workflows/publish.yml — 推 main 即发布:npm(OIDC trusted publishing,无 token)+ JSR
+# npm 侧需在 npmjs.com 包 Settings → Trusted Publisher 登记:
+#   repository=x-cmd/draw · workflow=publish.yml · environment 留空
 
 name: Publish
 
@@ -12,23 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # npm provenance
+      id-token: write # OIDC:trusted publishing 与 provenance
     steps:
       - uses: actions/checkout@v6
+      # node 24 自带 npm ≥ 11.5(trusted publishing 最低版本)
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - name: Publish to npm (skip if version already there)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           V=$(node -p "require('./package.json').version")
           if npm view "@x-cmd/draw@$V" version >/dev/null 2>&1; then
             echo "@x-cmd/draw@$V already on npm, skipping"
           else
-            npm publish --access public
+            npm publish --access public --provenance
           fi
 
   jsr:
@@ -44,6 +45,9 @@ jobs:
       # deno publish 解析 package.json 裸依赖(d3/uqr)需要 node_modules
       - run: npm ci --omit=dev
       - name: Publish to JSR (skip if version already there)
+        # JSR 服务端发布队列偶发卡住(too many requests),限时+容错,下推自动重试
+        timeout-minutes: 5
+        continue-on-error: true
         run: |
           V=$(node -p "require('./package.json').version")
           if curl -fsS "https://api.jsr.io/@x-cmd/draw/$V/meta" >/dev/null 2>&1; then
