@@ -11,13 +11,29 @@ SVG chart generation for the AI era. One endpoint — `/draw?type=...` — with 
 
 All the data lives in the URL — open it in a browser, drop it into an `<img>`, paste it into your repo README: the SVG renders right away.
 
-**Sankey — contributor funnel** (`type=sankey&t=pipeline`)
+**Sankey — pull-request lifecycle: type → outcome → age** (`type=sankey&t=pipeline`)
 
 ```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users
+https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs
 ```
 
-![Sankey: contributor funnel](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users)
+![Sankey: PR lifecycle](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs)
+
+**Hbar — runtime throughput, real measurement** (`type=hbar`; `draw()` ops/sec rendering the sankey above, measured on Apple Silicon: deno 7238 · node 6553 · bun 4972)
+
+```text
+https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
+```
+
+![Hbar: runtime throughput](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
+
+**Radar — three-way software comparison** (`type=radar&t=evil`, multi-series)
+
+```text
+https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison
+```
+
+![Radar: editor comparison](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison)
 
 **Combo — weekly downloads vs star-growth rate** (`type=combo`, dual y-axis on magnitude spread)
 

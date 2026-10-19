@@ -11,13 +11,29 @@ AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,�
 
 数据全在 URL 里 — 浏览器打开、`<img>` 嵌入、贴进仓库 README,SVG 直接渲染:
 
-**桑基图 — 贡献者漏斗**(`type=sankey&t=pipeline`)
+**桑基图 — PR 生命周期:类型 → 结果 → 时段**(`type=sankey&t=pipeline`)
 
 ```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users
+https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs
 ```
 
-![桑基图:贡献者漏斗](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users)
+![桑基图:PR 生命周期](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=feat,fix,docs,chore,merged,closed,rejected,0-1y,1-2y,2y+&links=feat>merged:38;feat>closed:12;feat>rejected:8;fix>merged:33;fix>closed:6;fix>rejected:2;docs>merged:16;docs>closed:4;chore>merged:5;chore>closed:6;chore>rejected:6;merged>0-1y:52;merged>1-2y:28;merged>2y+:12;closed>0-1y:14;closed>1-2y:9;closed>2y+:5;rejected>0-1y:9;rejected>1-2y:5;rejected>2y+:2&title=Pull%20requests%20lifecycle&unit=prs)
+
+**水平柱 — 运行时吞吐,真实实测**(`type=hbar`;`draw()` 渲染上面桑基图的 ops/sec,Apple Silicon 实测:deno 7238 · node 6553 · bun 4972)
+
+```text
+https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
+```
+
+![水平柱:运行时吞吐](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
+
+**雷达图 — 三软件对比**(`type=radar&t=evil`,多系列)
+
+```text
+https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison
+```
+
+![雷达图:编辑器对比](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison)
 
 **混合图 — 周下载 vs 星标增速,量级差自动双 y 轴**(`type=combo`)
 
