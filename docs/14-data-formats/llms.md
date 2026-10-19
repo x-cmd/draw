@@ -40,6 +40,6 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw
 related:
-  overview: docs/0-draw-overview.cn.md
-  pie: docs/1-pie.cn.md
-  styles: docs/12-styles-themes.cn.md
+  overview: docs/1-overview/cn.md
+  pie: docs/2-pie/cn.md
+  styles: docs/13-styles-themes/cn.md

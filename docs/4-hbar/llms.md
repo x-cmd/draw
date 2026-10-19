@@ -35,5 +35,5 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw?type=hbar
 related:
-  overview: docs/0-draw-overview.cn.md
-  bar: docs/2-bar.cn.md
+  overview: docs/1-overview/cn.md
+  bar: docs/3-bar/cn.md

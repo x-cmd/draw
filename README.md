@@ -1,12 +1,14 @@
 # draw
 
-AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,数据在 URL 里、输出带机器可读 `<metadata>`、Cloudflare Workers + TypeScript 直生成 SVG。风格体系对齐设计师规范(13 张 SVG),每图种多风格变体。
+> English | [中文](README.cn.md)
 
-## 三种使用方式(同一份渲染核心)
+SVG chart generation for the AI era. One endpoint — `/draw?type=...` — with the data in the URL, machine-readable `<metadata>` embedded in every output, and SVG rendered directly by TypeScript. The style system mirrors a designer spec (13 SVGs), with multiple style variants per chart type.
 
-**托管服务**(零安装):直接拼 URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
+## Three ways to use it (one render core)
 
-**npm 库**(离线/嵌入,同步无网络,参数与 URL 完全一致):
+**Hosted service** (zero install): just build a URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
+
+**npm library** (offline/embedded, synchronous, no network; params identical to the URL):
 
 ```sh
 npm install @x-cmd/draw
@@ -14,212 +16,220 @@ npm install @x-cmd/draw
 ```ts
 import { draw } from '@x-cmd/draw';
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// 也接受查询串: draw('?type=bar&labels=Mon,Tue&values=3,5')
-// 数组值 = 重复参数(labels 含逗号时): draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
+// also accepts a query string: draw('?type=bar&labels=Mon,Tue&values=3,5')
+// array values = repeated params (when labels contain commas):
+draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
 ```
 
-**CLI**(`npm i -g @x-cmd/draw` 后可用,或 `npx`):
+**CLI** (after `npm i -g @x-cmd/draw`, or via `npx`):
 
 ```sh
 x-draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
-x-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # 裸查询串,与 URL 同参
+x-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # bare query string, same params as the URL
 ```
 
-**自托管**:三种入口任选 —
+**Self-host** — pick any entry point:
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve                    # Node 本地服务(默认 http://localhost:8787/draw,含演示页)
-npm run dev                      # Cloudflare wrangler 本地开发
-bash scripts/setup.sh            # 一键部署到你自己的 Cloudflare 账号
+npm run serve                    # local Node server (http://localhost:8787/draw, demo page included)
+npm run dev                      # Cloudflare wrangler local dev
+bash scripts/setup.sh            # one-shot deploy to your own Cloudflare account
 ```
 
-环境变量(Node 服务):`PORT`(默认 8787)· `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN`(配置后 POST 短链同样可用,未配置时与线上自部署一样优雅降级)。
+Environment variables (Node server): `PORT` (default 8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (set these to enable POST short links; unset degrades gracefully, exactly like self-deployed workers).
 
-**Deno**(原生 TS;渲染核心是纯函数 — 不碰网络/文件,零权限沙盒即安全边界):
+**Deno** (native TS; the render core is pure — no network, no files — so the zero-permission sandbox is the security boundary):
 
 ```ts
-import { draw } from "jsr:@x-cmd/draw";   // JSR(Deno 原生注册表)
-// 或 npm:import { draw } from "npm:@x-cmd/draw";
+import { draw } from "jsr:@x-cmd/draw";   // JSR (Deno's native registry)
+// or npm: import { draw } from "npm:@x-cmd/draw";
 const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
 ```
 
 ```sh
 deno add jsr:@x-cmd/draw
-# 仓库内直跑源码(免构建):
-deno task cli --type pie --labels A,B --values 3,2 --out pie.svg   # 仅需 --allow-write
-deno task serve                                                    # 本地服务(同 npm run serve)
-# 渲染零权限可证:deno eval 默认无任何授权,直接 import 即渲染成功
+# run straight from source inside the repo (no build):
+deno task cli --type pie --labels A,B --values 3,2 --out pie.svg   # only needs --allow-write
+deno task serve                                                    # local server (same as npm run serve)
+# proof of zero permissions: deno eval defaults to no grants — importing and rendering just works
 ```
 
-## 端点
+## Endpoints
 
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — 渲染图表
+**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — render a chart
 
-| type | 图表 | 限制 |
+| type | chart | limits |
 |---|---|---|
-| `pie` | 环形图;`donut=0` 变实心饼 | ≤100 类(>9 自动合并 Other) |
-| `bar` | 柱状图/分组并排;多系列加 `stack=1` 变堆叠柱 | ≤30 组 |
-| `hbar` | 水平柱状图(排行场景,标签左值右) | ≤30 条,单系列(部分风格双系列) |
-| `line` | 折线图(平滑+渐变面积)/多折线 | ≤60 点 |
-| `area` | 面积图/多系列面积(渐变填充) | ≤60 点 |
-| `radar` | 雷达图 | 3-12 维 |
-| `gauge` | 仪表盘(240° 弧+中心数值) | `value`+`max`(默认100),value≤max;多环 ≤8 |
-| `scatter` | 散点图(双数值轴,支持负值;默认不标数值) | `x=&y=`,≤200 点 |
-| `combo` | 混合图:柱(`series=`)+线(`line=`)同图,`stack=1` 变堆叠柱 | ≤30 组,共 ≤6 系列 |
-| `sankey` | 桑基图(流向带宽) | `labels=`+`links=A>B:30`,≤24 节点/60 链接 |
-| `qr` | 二维码 | `d`=文本(≤1000 字符),`fg`/`bg` 配色,`title`/`unit` 标注 |
+| `pie` | donut; `donut=0` for a solid pie | ≤100 categories (>9 auto-merge into Other) |
+| `bar` | grouped columns; multi-series with `stack=1` for stacked | ≤30 groups |
+| `hbar` | horizontal bars (rankings; labels left, values right) | ≤30 bars, single series (some styles take two) |
+| `line` | smooth line + gradient area / multi-line | ≤60 points |
+| `area` | area / multi-series area (gradient fill) | ≤60 points |
+| `radar` | radar chart | 3–12 axes |
+| `gauge` | gauge (240° arc + center value) | `value`+`max` (default 100), value ≤ max; multi-ring ≤8 |
+| `scatter` | scatter (two numeric axes, negatives supported; no value labels by default) | `x=&y=`, ≤200 points |
+| `combo` | bars (`series=`) + line (`line=`) in one chart; `stack=1` to stack the bars | ≤30 groups, ≤6 series total |
+| `sankey` | flow diagram with weighted bands | `labels=`+`links=A>B:30`, ≤24 nodes/60 links |
+| `qr` | QR code | `d`=text (≤1000 chars), `fg`/`bg` colors, `title`/`unit` captions |
 
-**`GET /draw`**(无参数)或 `?tab=pie` — 演示页(11 图种分类、全部风格变体、URL 双形态面板)
-**`POST /draw?type=...`** — 提交 JSON/CSV body 创建永久短链
-**`GET /draw/c/<hash>`** — 短链渲染(immutable)
+**`GET /draw`** (no params) or `?tab=pie` — the demo page (11 chart types, all style variants, dual URL forms)
+**`POST /draw?type=...`** — submit a JSON/CSV body to create a permanent short link
+**`GET /draw/c/<hash>`** — short-link render (immutable)
 
-通用参数:
+Common parameters:
 
-- `t` 风格家族(见下节,按图种取用;该图种未做时回退默认)
-- `scheme` 明暗:`auto`(默认,跟随系统)/ `dark` / `light`
-- `v` 钉住版本;`w`/`h` 尺寸(200–1600 / 140–1200,qr 为 120–1000 / 140–1000)
-- `num` 数值标注:`all` / `peak`(仅最高)/ `none`。默认跟随风格(设计规范变体多为 `none`,`?num=all` 显式全标)。适用于 pie/bar/hbar/line/area/scatter/combo;radar/gauge/sankey/qr 忽略
-- `subtitle` 编辑式副标题(仅 area 的编辑式标题风格 `t=opendata` 渲染)、`source` 数据来源脚注(仅 area 渲染,任意 `t`);其余图种解析但忽略
+- `t` style family (per chart type, see below; falls back to default when not built for that type)
+- `scheme` `auto` (default, follows system) / `dark` / `light`
+- `v` pin a version; `w`/`h` size (200–1600 / 140–1200; qr is 120–1000 / 140–1000)
+- `num` value labels: `all` / `peak` (highest only) / `none`. Defaults follow the style; applies to pie/bar/hbar/line/area/scatter/combo (radar/gauge/sankey/qr ignore it)
+- `subtitle` editorial subtitle (only rendered by area's editorial style `t=opendata`), `source` data-source footnote (area only, any `t`); other types parse but ignore these
 
-## 风格(`?t=`)
+## Styles (`?t=`)
 
-按图种提供变体,明暗双配色自动切换:
+Per chart type, with automatic light/dark palettes:
 
-| type | 可用家族 |
+| type | available families |
 |---|---|
-| `pie` | `opendata`(默认,标签全外)、`evil`(圆角环+内标值)、`evil-mono`(实心饼+引线外标)、`market-mono`(灰阶+环心总计)、`progress`(点状进度环)、`revenue`(渐变扇区+虚线内圈) |
-| `bar` | `evil`(默认,分组柱)、`base`(卡片柱)、`grid`(表格柱) |
-| `hbar` | `base`(默认)、`opendata`(支持 `ref=`/`reflabel=` 参考线)、`xcmd`(像素条,值为 %)、`xcmd-issue`(双系列蝴蝶)、`rank`(双系列实底+斜纹) |
-| `line` | `shadcn`(默认)、`evil`、`evil-glow`(发光)、`evil-mono`、`opendata`(线端标签) |
-| `area` | `evil`(默认,双系列虚线面积)、`star`(手绘风)、`opendata`(浓渐变+编辑标题)、`pixel`、`polka` |
-| `radar` | `base`(默认)、`evil`(多系列)、`xcmd` |
-| `sankey` | `base`(默认)、`fund`、`pipeline` |
-| `gauge` | `base`(默认)、`gradient`、`reliability`(分区环仪表) |
-| `scatter` / `combo` / `qr` | `base`(combo 另有 `evil`) |
+| `pie` | `opendata` (default, all labels outside), `evil` (rounded ring + inner values), `evil-mono` (solid pie + leader lines), `market-mono` (grayscale + ring total), `progress` (dotted progress ring), `revenue` (gradient wedges + dashed inner ring) |
+| `bar` | `evil` (default, grouped), `base` (card), `grid` (table bars) |
+| `hbar` | `base` (default), `opendata` (supports `ref=`/`reflabel=` reference line), `xcmd` (pixel bars, %), `xcmd-issue` (two-series butterfly), `rank` (two-series solid + hatching) |
+| `line` | `shadcn` (default), `evil`, `evil-glow` (glow), `evil-mono`, `opendata` (line-end labels) |
+| `area` | `evil` (default, two-series dashed areas), `star` (hand-drawn), `opendata` (dense gradient + editorial title), `pixel`, `polka` |
+| `radar` | `base` (default), `evil` (multi-series), `xcmd` |
+| `sankey` | `base` (default), `fund`, `pipeline` |
+| `gauge` | `base` (default), `gradient`, `reliability` (zoned ring gauge) |
+| `scatter` / `combo` / `qr` | `base` (combo also has `evil`) |
 
-## 传数据的两种方式
+## Two ways to pass data
 
-**扁平参数(URL 永远可读,推荐)**:
+**Flat params** (URL stays readable — recommended):
 
 ```
 /draw?type=pie&title=Stars by language&unit=stars&labels=TypeScript,Python,Go,Rust&values=4821,2312,980,645
 /draw?type=bar&title=Weekly downloads&labels=Mon,Tue&values=1200,1800
 ```
 
-标签含逗号时用重复参数:`labels=Q1, 2024&labels=Q2&values=1&values=2`
+When labels contain commas, use repeated params: `labels=Q1, 2024&labels=Q2&values=1&values=2`
 
-**多系列对比**(type=bar 分组/堆叠、type=line 多折线、type=area 多面积,≤6 系列):
+**Multi-series comparison** (type=bar grouped/stacked, type=line, type=area, ≤6 series):
 
 ```
 /draw?type=area&labels=Mon,Tue,Wed&series=Desktop:120,180,150&series=Mobile:80,90,85
 ```
 
-**JSON 形态(复杂数据)**:`?d=` + URL 编码的 JSON:
+**JSON form** (complex data): `?d=` + URL-encoded JSON:
 
 ```json
 {"title":"Stars by language","unit":"stars","data":[{"label":"TypeScript","value":4821},{"label":"Python","value":2312}]}
 ```
 
-多系列 JSON:`{"labels":["Mon","Tue"],"series":[{"name":"draw","values":[120,180]},{"name":"qc","values":[80,90]}]}`
+Multi-series JSON: `{"labels":["Mon","Tue"],"series":[{"name":"draw","values":[120,180]},{"name":"qc","values":[80,90]}]}`
 
-二维码:`/draw?type=qr&d=https://github.com/tzw&fg=%236366f1`
+QR code: `/draw?type=qr&d=https://github.com/tzw&fg=%236366f1`
 
-仪表盘:`/draw?type=gauge&title=Build pass rate&value=87&max=100`
+Gauge: `/draw?type=gauge&title=Build pass rate&value=87&max=100`
 
-散点图:`/draw?type=scatter&x=10,20,30&y=5,8,7`
+Scatter: `/draw?type=scatter&x=10,20,30&y=5,8,7`
 
-混合图:`/draw?type=combo&labels=Mon,Tue&series=dl:120,180&line=growth:5,8`(柱与线量级差 >5 倍时自动启用双 y 轴)
+Combo: `/draw?type=combo&labels=Mon,Tue&series=dl:120,180&line=growth:5,8` (dual y-axes kick in automatically when bars and lines differ by >5×)
 
-## 短链接(数据存 GitHub 仓库,内容寻址、永不过期)
+## Short links (data stored in a GitHub repo; content-addressed, never expires)
 
 ```
-POST /draw?type=pie                body = 图表 spec JSON
-POST /draw?type=bar&t=evil         body = CSV(text/csv,首行表头)
+POST /draw?type=pie                body = chart spec JSON
+POST /draw?type=bar&t=evil         body = CSV (text/csv, header row)
 → 201 {"hash":"a3f9c2d4e5f60718","url":"https://x-cmd.com/draw/c/a3f9c2d4e5f60718"}
 
-GET /draw/c/<hash>                 → SVG,永久 immutable 缓存
+GET /draw/c/<hash>                 → SVG, cached immutable forever
 ```
 
-- 指纹 = 规范化数据(template+theme+spec,递归排序 key)的 SHA-256 前 16 位;相同数据 → 相同短链(自动去重、幂等);读取时复核指纹,存档被改即拒绝
-- 多系列支持 bar/line/area/radar,以及 hbar(仅 `t=xcmd-issue`/`t=rank`,恰好 2 系列);其余 type 提交多系列会被 400 拒绝;POST 限 30 次/分钟/IP
-- 服务端配置:`DATA_REPO`(公开仓,`owner/name`,wrangler.jsonc)、`GITHUB_TOKEN`(secret,fine-grained PAT 仅授该仓 **Contents 写**;读取走 raw 免 token);数据文件存于 `charts/<hash>.json`
-- 可见性:数据仓是公开的,任何人可浏览目录——**请勿创建含敏感数据的短链**(私有存储方案规划中,将收费提供)
-- 对比 quickchart:短链会过期(6个月/数天),我们的永不过期
+- The fingerprint is the first 16 hex chars of SHA-256 over canonicalized data (template+theme+spec, keys recursively sorted); identical data → identical short link (dedup, idempotent). On read the fingerprint is re-verified — tampered archives are rejected
+- Multi-series is supported for bar/line/area/radar, plus hbar (only `t=xcmd-issue`/`t=rank`, exactly 2 series); other types reject multi-series bodies with 400. POST is rate-limited to 30/min/IP
+- Server-side config: `DATA_REPO` (public repo, `owner/name`, in wrangler.jsonc) and `GITHUB_TOKEN` (secret; fine-grained PAT with **Contents: write** on that repo only — reads go through raw, tokenless). Data files live at `charts/<hash>.json`
+- Visibility: the data repo is public and browsable — **do not create short links with sensitive data** (private storage is planned, as a paid feature)
+- Compared to quickchart: their short links expire (6 months / days); ours never do
 
-## 版本语义
+## Version semantics
 
-- 不带 `v`:渲染**最新版**,`Cache-Control: max-age=300`(链接随升级变化)
-- `?v=1`:钉住版本,`Cache-Control: max-age=86400`(1 天;渲染仍随部署演进,不承诺永久冻结)。`v` 取值 1..当前版本,超出报 400
-- `immutable` 仅用于短链 `/c/<hash>`(内容寻址,输出真正永不变化;短链忽略 `v` 参数)
+- No `v`: renders the **latest** version, `Cache-Control: max-age=300` (output changes as the service upgrades)
+- `?v=1`: pins a version, `Cache-Control: max-age=86400` (1 day; rendering still evolves with deploys — not frozen forever). `v` accepts 1..current; out of range → 400
+- `immutable` is reserved for short links `/c/<hash>` (content-addressed, truly unchanging; `v` is ignored there)
 
-## AI 可读
+## AI-friendly
 
-每个 SVG 内嵌 `<metadata>`(转义 JSON):`{generator, template, version, spec}`,数据与参数可直接 round-trip。文字全部用 `<text>`(真文本)。
+Every SVG embeds `<metadata>` (escaped JSON): `{generator, template, version, spec}` — data and params round-trip directly. All text is real `<text>` elements.
 
-## 项目结构
+## Project structure
 
-一次请求的路径:**index.ts(路由)→ specs/(解析)→ styles/(选皮肤)→ render/(算几何出 SVG)**,四层各管一事。
+A request flows **handler.ts (HTTP routing) → render/query.ts (params → render core) → specs/ (parse) → styles/ (pick skin) → render/ (geometry → SVG)**. The render core is pure functions shared by three runtimes: the Cloudflare Worker (index.ts thin shell), the Node server (node/server.ts), and the npm/JSR library + CLI (lib.ts + node/cli.ts).
 
 ```
 src/
-├── index.ts        路由入口:GET /draw?type= 分发、演示页、短链 /c/、错误处理
-├── dispatch.ts     短链存档 → 渲染器的模板分发
-├── demo.ts         演示页(图种 tab、风格变体、URL 双形态面板)
-├── theme.ts        皮肤 → CSS 变量(:root + 暗色媒体查询)
-├── store.ts        短链存储(GitHub repo 读写、指纹、幂等)
-├── version.ts      版本号与缓存语义
+├── index.ts        Cloudflare Workers entry (thin shell: edge cache, rate-limit binding, waitUntil)
+├── handler.ts      shared HTTP layer: routing, POST short-link creation, short-link render, demo page, error wrapper
+├── lib.ts          npm/JSR library entry (barrel + high-level synchronous draw())
+├── demo.ts         demo page (type tabs, style variants, dual URL forms)
+├── theme.ts        skin → CSS variables (:root + dark media query)
+├── store.ts        short-link storage (GitHub repo read/write, fingerprint, idempotency)
+├── version.ts      version numbers and cache semantics
+├── types.ts        cross-runtime structural types (DrawEnv/Platform)
 │
-├── specs/          【解析层】URL 参数 → 强类型 spec(校验、截断、上限)
-│   ├── base.ts       ChartSpec + 扁平参数/JSON 双形态解析
-│   ├── multi.ts      多系列(series=)解析
-│   └── gauge/scatter/combo/csv.ts  图种专属解析
+├── specs/          [parse]     URL params → strongly-typed spec (validation, clipping, limits)
+│   ├── base.ts       ChartSpec + both flat-params and JSON forms
+│   ├── multi.ts      multi-series (series=) parsing
+│   └── gauge/scatter/combo/csv.ts  per-type parsers
 │
-├── render/         【渲染层】spec + 皮肤 → SVG 字符串(纯计算,无布局引擎)
-│   ├── svg.ts        公共构造:布局几何、刻度、网格、图例、标签防碰撞、文字测量
-│   ├── pie/line/line-multi/area/…  每图种一个渲染文件(bar 拆 3、line 拆 2)
-│   └── qr.ts         二维码
+├── render/         [render]    spec + skin → SVG string (pure computation, no layout engine)
+│   ├── svg.ts        shared helpers: layout geometry, scales, grid, legend, label collision, text measurement
+│   ├── query.ts      params→SVG synchronous core (GET dispatch + short-link segment; shared by lib and HTTP)
+│   ├── dispatch.ts   stored chart → renderer template dispatch
+│   ├── pie/line/line-multi/area/…  one file per chart type (bar ×3, line ×2)
+│   └── qr.ts         QR codes
 │
-└── styles/         【风格层】设计师规范 SVG 的规则化
-    ├── types.ts      Rules 词汇表 + 默认值(方向/圆角/图例/虚线/标注…)
-    ├── pie/line/area/…  每图种变体定义(色板明暗双值 + 规则差异 + 规范画布尺寸)
-    ├── common.ts     规范色板常量
-    ├── handlee.ts    手绘字体 base64(star 风格)
-    └── index.ts      resolveSkin:图种 + ?t= + 明暗 → 皮肤
+├── styles/         [style]     designer-spec SVGs turned into rules
+│   ├── types.ts      Rules vocabulary + defaults (orientation/radius/legend/dash/labels…)
+│   ├── pie/line/area/…  per-type variants (light+dark palettes + rule deltas + spec canvas size)
+│   ├── common.ts     spec palette constants
+│   ├── handlee.ts    hand-drawn font, base64 (star style)
+│   └── index.ts      resolveSkin: type + ?t= + scheme → skin
+│
+└── node/           [Node]      server.ts local server · cli.ts x-draw CLI
 
-test/render.test.ts 单测(解析 + 各渲染器行为断言)
-wrangler.jsonc       部署配置(路由 x-cmd.com/draw*)
+test/               vitest (parsing + renderers + shared HTTP layer + library API)
+wrangler.jsonc      deploy config (route x-cmd.com/draw*)
+deno.json           JSR publishing + Deno tasks
 ```
 
-加新图种 = `specs/xxx.ts` + `render/xxx.ts` + `styles/xxx.ts` 各一个文件,再在 `dispatch.ts` 与 `index.ts` 各注册一行。
+Adding a chart type = one file each in `specs/xxx.ts` + `render/xxx.ts` + `styles/xxx.ts`, plus one registration line each in `render/dispatch.ts` and `render/query.ts`.
 
-## 自部署(一键)
+## One-shot self-deploy
 
-部署一套自己的 draw 到你的 Cloudflare 账号(免费计划即可,只需 CF 账号):
+Deploy your own draw to your Cloudflare account (free tier works; you just need a CF account):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd-hub/draw/main/scripts/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
 ```
 
-脚本流程:克隆仓库 → wrangler 浏览器登录 → 部署 → 冒烟测试,结束打印你的 `*.workers.dev` 地址。GET 渲染全家桶(11 图种、全部风格)开箱即用。
+The script: clones the repo → browser login for wrangler → deploys → smoke test → prints your `*.workers.dev` URL. All GET rendering (11 chart types, every style) works out of the box.
 
-- **短链(POST)第一阶段未默认启用**,调用会返回"未配置"提示。启用方法:建一个公开仓存数据 → 本地 wrangler.jsonc 的 vars 设 `DATA_REPO=owner/name` → `npx wrangler secret put GITHUB_TOKEN`(fine-grained PAT 仅授该仓 Contents 写)→ 重新部署
-- 已 clone 仓库的,在仓库目录里跑 `npm run setup` 即可(跳过克隆)
-- 路径前缀自动适配:workers.dev 根路径与 `/draw` 子路由都能用,无需改代码;也可用 `BASE_PATH` var 显式钉死
-- 绑自有域名:dashboard → Workers → Settings → Domains & Routes 加 route(任意路径前缀)
-- Windows 请用 WSL 或 Git Bash 运行
+- **Short links (POST) are not enabled by default** — calls return a "not configured" message. To enable: create a public data repo → set `DATA_REPO=owner/name` in the local wrangler.jsonc vars → `npx wrangler secret put GITHUB_TOKEN` (fine-grained PAT, Contents: write on that repo only) → redeploy
+- Already cloned the repo? Run `npm run setup` inside it (skips the clone)
+- Path prefix auto-adapts: both the workers.dev root and a `/draw` sub-route work with zero code changes; or pin it explicitly with the `BASE_PATH` var
+- Custom domain: dashboard → Workers → Settings → Domains & Routes, add a route (any path prefix)
+- On Windows, run under WSL or Git Bash
 
-## 开发
+## Development
 
 ```sh
 npm install
-npm run dev      # wrangler dev 本地起服
+npm run dev      # wrangler dev, local server
 npm test         # vitest
-npm run check    # tsc --noEmit × 3(worker / node / build)
-npm run build    # 产 dist/(npm 库 + CLI)
+npm run check    # tsc --noEmit × 3 (worker / node / build)
+npm run build    # emit dist/ (npm library + CLI)
 npm run deploy   # wrangler deploy
 ```
 
-## 许可
+## License
 
-代码 [Apache-2.0](LICENSE)。内嵌字体遵循各自许可:Inter(OFL,全文见 `src/styles/inter-OFL.txt`)、Handlee(OFL)。
+Code is [Apache-2.0](LICENSE). Bundled fonts keep their own licenses: Inter (OFL, full text in `src/styles/inter-OFL.txt`) and Handlee (OFL).

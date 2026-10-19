@@ -36,4 +36,4 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw?type=gauge
 related:
-  overview: docs/0-draw-overview.cn.md
+  overview: docs/1-overview/cn.md

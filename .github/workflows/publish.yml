@@ -50,7 +50,7 @@ jobs:
         continue-on-error: true
         run: |
           V=$(node -p "require('./package.json').version")
-          if curl -fsS "https://api.jsr.io/@x-cmd/draw/$V/meta" >/dev/null 2>&1; then
+          if curl -fsS "https://jsr.io/@x-cmd/draw/${V}_meta.json" >/dev/null 2>&1; then
             echo "@x-cmd/draw@$V already on JSR, skipping"
           else
             deno publish --unstable-sloppy-imports
