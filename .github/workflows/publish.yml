@@ -13,7 +13,7 @@ jobs:
   npm:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # 发布成功后打 tag + 建 GitHub Release
       id-token: write # OIDC:trusted publishing 与 provenance
     steps:
       - uses: actions/checkout@v6
@@ -24,12 +24,28 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - name: Publish to npm (skip if version already there)
+        id: npm_publish
         run: |
           V=$(node -p "require('./package.json').version")
           if npm view "@x-cmd/draw@$V" version >/dev/null 2>&1; then
             echo "@x-cmd/draw@$V already on npm, skipping"
           else
             npm publish --access public --provenance
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Tag + GitHub Release
+        if: steps.npm_publish.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V=$(node -p "require('./package.json').version")
+          TAG="v$V"
+          if git ls-remote --exit-code --tags origin "$TAG" >/dev/null 2>&1; then
+            echo "$TAG already exists, skipping"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            gh release create "$TAG" --title "$TAG" --generate-notes
           fi
 
   jsr:
