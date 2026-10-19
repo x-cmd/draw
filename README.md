@@ -36,6 +36,22 @@ bash scripts/setup.sh            # 一键部署到你自己的 Cloudflare 账号
 
 环境变量(Node 服务):`PORT`(默认 8787)· `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN`(配置后 POST 短链同样可用,未配置时与线上自部署一样优雅降级)。
 
+**Deno**(原生 TS;渲染核心是纯函数 — 不碰网络/文件,零权限沙盒即安全边界):
+
+```ts
+import { draw } from "jsr:@x-cmd/draw";   // JSR(Deno 原生注册表)
+// 或 npm:import { draw } from "npm:@x-cmd/draw";
+const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
+```
+
+```sh
+deno add jsr:@x-cmd/draw
+# 仓库内直跑源码(免构建):
+deno task cli --type pie --labels A,B --values 3,2 --out pie.svg   # 仅需 --allow-write
+deno task serve                                                    # 本地服务(同 npm run serve)
+# 渲染零权限可证:deno eval 默认无任何授权,直接 import 即渲染成功
+```
+
 ## 端点
 
 **`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — 渲染图表

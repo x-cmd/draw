@@ -30,7 +30,7 @@ export const VARIANTS: Record<ChartTemplate, Variant[]> = {
 };
 
 /** 全部有效风格家族(错误提示/演示页用) */
-export const FAMILIES = [...new Set(Object.values(VARIANTS).flat().map((v) => v.family))];
+export const FAMILIES: string[] = [...new Set(Object.values(VARIANTS).flat().map((v) => v.family))];
 
 // 系列色兜底:规范稿色板多为 2-5 色(按稿上的系列数设计),系列更多时逐对撞色。
 // 补齐到 8 色分类板(跳过皮肤已有色),确定性输出;渲染器 i % 色板长 循环自然取到互异色
