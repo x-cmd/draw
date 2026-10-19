@@ -7,6 +7,42 @@
 
 AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,数据在 URL 里、输出带机器可读 `<metadata>`、Cloudflare Workers + TypeScript 直生成 SVG。风格体系对齐设计师规范(13 张 SVG),每图种多风格变体。
 
+## 先睹为快
+
+数据全在 URL 里 — 浏览器打开、`<img>` 嵌入、Markdown 粘贴,SVG 直接渲染:
+
+**桑基图 — 增长漏斗**(`type=sankey&t=pipeline`)
+
+```text
+https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k
+```
+
+![桑基图:增长漏斗](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k)
+
+**混合图 — 柱+线,量级差自动双 y 轴**(`type=combo`)
+
+```text
+https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl
+```
+
+![混合图:柱+线](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl)
+
+**雷达图 — 多系列对比**(`type=radar&t=evil`)
+
+```text
+https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison
+```
+
+![雷达图:v1 vs v2](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison)
+
+**环形图 — 灰阶 + 环心总计**(`type=pie&t=market-mono`)
+
+```text
+https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12
+```
+
+![环形图:市场份额](https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
+
 ## 三种使用方式(同一份渲染核心)
 
 **托管服务**(零安装):直接拼 URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

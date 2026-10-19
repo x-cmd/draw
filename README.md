@@ -7,6 +7,42 @@
 
 SVG chart generation for the AI era. One endpoint — `/draw?type=...` — with the data in the URL, machine-readable `<metadata>` embedded in every output, and SVG rendered directly by TypeScript. The style system mirrors a designer spec (13 SVGs), with multiple style variants per chart type.
 
+## Sneak peek
+
+All the data lives in the URL — open it in a browser, drop it into an `<img>`, paste it into Markdown: the SVG renders right away.
+
+**Sankey — growth funnel** (`type=sankey&t=pipeline`)
+
+```text
+https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k
+```
+
+![Sankey: growth funnel](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k)
+
+**Combo — bars + line, dual y-axis on magnitude spread** (`type=combo`)
+
+```text
+https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl
+```
+
+![Combo: bars + line](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl)
+
+**Radar — multi-series comparison** (`type=radar&t=evil`)
+
+```text
+https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison
+```
+
+![Radar: v1 vs v2](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison)
+
+**Pie — grayscale with ring total** (`type=pie&t=market-mono`)
+
+```text
+https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12
+```
+
+![Pie: market share](https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
+
 ## Three ways to use it (one render core)
 
 **Hosted service** (zero install): just build a URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
