@@ -1,0 +1,25 @@
+# CodeQL — 静态分析(Scorecard SAST 项)
+name: CodeQL
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '53 2 * * 1' # 每周一 02:53 UTC
+
+permissions: read-all
+
+jobs:
+  analyze:
+    name: Analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+      - uses: github/codeql-action/analyze@v3
