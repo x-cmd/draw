@@ -199,6 +199,11 @@ curl -fsSL https://raw.githubusercontent.com/x-cmd-hub/draw/main/scripts/setup.s
 npm install
 npm run dev      # wrangler dev 本地起服
 npm test         # vitest
-npm run check    # tsc --noEmit
+npm run check    # tsc --noEmit × 3(worker / node / build)
+npm run build    # 产 dist/(npm 库 + CLI)
 npm run deploy   # wrangler deploy
 ```
+
+## 许可
+
+代码 [Apache-2.0](LICENSE)。内嵌字体遵循各自许可:Inter(OFL,全文见 `src/styles/inter-OFL.txt`)、Handlee(OFL)。
