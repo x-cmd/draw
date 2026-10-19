@@ -1,4 +1,4 @@
-# .github/workflows/publish.yml
+# .github/workflows/publish.yml — 推 main 即发布:npm + JSR(版本已存在则各自跳过)
 
 name: Publish
 
@@ -8,7 +8,30 @@ on:
       - main
 
 jobs:
-  publish:
+  npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - name: Publish to npm (skip if version already there)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          V=$(node -p "require('./package.json').version")
+          if npm view "@x-cmd/draw@$V" version >/dev/null 2>&1; then
+            echo "@x-cmd/draw@$V already on npm, skipping"
+          else
+            npm publish --access public
+          fi
+
+  jsr:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,4 +43,11 @@ jobs:
           deno-version: v2.x
       # deno publish 解析 package.json 裸依赖(d3/uqr)需要 node_modules
       - run: npm ci --omit=dev
-      - run: deno publish --unstable-sloppy-imports
+      - name: Publish to JSR (skip if version already there)
+        run: |
+          V=$(node -p "require('./package.json').version")
+          if curl -fsS "https://api.jsr.io/@x-cmd/draw/$V/meta" >/dev/null 2>&1; then
+            echo "@x-cmd/draw@$V already on JSR, skipping"
+          else
+            deno publish --unstable-sloppy-imports
+          fi
