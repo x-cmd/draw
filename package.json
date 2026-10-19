@@ -1,6 +1,6 @@
 {
   "name": "@x-cmd/draw",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "SVG chart rendering as a service, a library, and a CLI — pie/bar/hbar/line/area/radar/gauge/scatter/combo/sankey/qr, same params everywhere",
   "license": "Apache-2.0",
   "type": "module",
@@ -11,8 +11,14 @@
     }
   },
   "bin": {
-    "x-draw": "./dist/node/cli.js"
+    "draw": "./dist/node/cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x-cmd/draw.git"
+  },
+  "homepage": "https://x-cmd.com/draw",
+  "bugs": "https://github.com/x-cmd/draw/issues",
   "files": [
     "dist"
   ],

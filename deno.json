@@ -5,7 +5,7 @@
   },
   "// JSR (jsr.io) — Deno 原生发布;与 npm 的 package.json 版本号保持同步": "",
   "name": "@x-cmd/draw",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "exports": "./src/lib.ts",
   "imports": {
     "d3-array": "npm:d3-array@^3.2.4",

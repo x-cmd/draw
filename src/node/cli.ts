@@ -1,28 +1,32 @@
 #!/usr/bin/env node
 // CLI:把查询参数渲染成 SVG,写 stdout 或 --out 文件。
-//   x-draw --type pie --labels "A,B" --values "3,2" --out pie.svg
-//   x-draw "?type=bar&labels=Mon,Tue&values=3,5&scheme=dark"        # 裸查询串(与 URL 同参)
+//   draw --type pie --labels "A,B" --values "3,2" --out pie.svg
+//   draw "?type=bar&labels=Mon,Tue&values=3,5&scheme=dark"       # 裸查询串(与 URL 同参)
 // 未知 flag 透传为查询参数(--ref 5 → ref=5);重复 flag → 重复参数(labels 含逗号时用)。
 // 参数语义与 GET /draw 完全一致,见 README 或 x-cmd.com/draw 演示页。
 import { writeFileSync } from 'node:fs';
 import { draw } from '../lib.js';
 import { ApiError } from '../specs/index.js';
 
-const HELP = `usage: x-draw --type <pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr> [params] [--out <file.svg>]
+// 长 flag → 查询参数名(单字母直写也依然有效,经透传)
+const ALIASES: Record<string, string> = { theme: 't', width: 'w', height: 'h' };
+
+const HELP = `usage: draw --type <pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr> [params] [--out <file.svg>]
 
 params are the same as GET /draw query params:
-  --labels "A,B" --values "3,2"    data (repeated flags = repeated params)
-  --t <family> --scheme <auto|dark|light> --w 560 --h 300 --num all
+  --labels "A,B" --values "3,2"            data (repeated flags = repeated params)
+  --theme <family> --scheme <auto|dark|light> --width 560 --height 300 --num all
   --title "Stars by language" --unit stars
+  (single-letter query names also pass through: --t evil --w 560)
 or pass one bare query string:
-  x-draw "?type=pie&labels=A,B&values=3,2"
+  draw "?type=pie&labels=A,B&values=3,2"
 
 examples:
-  x-draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
-  x-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd" | open -f -a Safari`;
+  draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
+  draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd" | open -f -a Safari`;
 
 function fail(msg: string): never {
-  console.error(`x-draw: ${msg}\n\n${HELP}`);
+  console.error(`draw: ${msg}\n\n${HELP}`);
   process.exit(1);
 }
 
@@ -42,7 +46,7 @@ for (let i = 0; i < args.length; i++) {
     continue;
   }
   if (a.startsWith('--')) {
-    const key = a.slice(2);
+    const key = ALIASES[a.slice(2)] ?? a.slice(2);
     const next = args[i + 1];
     if (next === undefined || next.startsWith('--')) {
       sp.set(key, '1'); // 无值 flag → 布尔(--stack → stack=1)
@@ -70,7 +74,7 @@ try {
   }
 } catch (e) {
   if (e instanceof ApiError) {
-    console.error(`x-draw: ${e.message}`);
+    console.error(`draw: ${e.message}`);
     process.exit(1);
   }
   throw e;

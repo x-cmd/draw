@@ -23,8 +23,9 @@ const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', sch
 **CLI**(`npm i -g @x-cmd/draw` 后可用,或 `npx`):
 
 ```sh
-x-draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
-x-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # 裸查询串,与 URL 同参
+draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
+draw --type hbar --labels a,b,c --values 3,2,1 --theme xcmd              # 长参数(--theme/--width/--height)
+draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # 裸查询串,与 URL 同参
 ```
 
 **自托管**:三种入口任选 —
@@ -193,7 +194,7 @@ src/
 │   ├── handlee.ts    手绘字体 base64(star 风格)
 │   └── index.ts      resolveSkin:图种 + ?t= + 明暗 → 皮肤
 │
-└── node/           【Node 入口】server.ts 本地服务 · cli.ts x-draw CLI
+└── node/           【Node 入口】server.ts 本地服务 · cli.ts draw CLI
 
 test/               vitest(解析 + 渲染 + 共享 HTTP 层 + 库 API)
 wrangler.jsonc      部署配置(路由 x-cmd.com/draw*)

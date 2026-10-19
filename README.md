@@ -24,8 +24,9 @@ draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
 **CLI** (after `npm i -g @x-cmd/draw`, or via `npx`):
 
 ```sh
-x-draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
-x-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # bare query string, same params as the URL
+draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
+draw --type hbar --labels a,b,c --values 3,2,1 --theme xcmd                # long flags (--theme/--width/--height)
+draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # bare query string, same params as the URL
 ```
 
 **Self-host** — pick any entry point:
@@ -194,7 +195,7 @@ src/
 │   ├── handlee.ts    hand-drawn font, base64 (star style)
 │   └── index.ts      resolveSkin: type + ?t= + scheme → skin
 │
-└── node/           [Node]      server.ts local server · cli.ts x-draw CLI
+└── node/           [Node]      server.ts local server · cli.ts draw CLI
 
 test/               vitest (parsing + renderers + shared HTTP layer + library API)
 wrangler.jsonc      deploy config (route x-cmd.com/draw*)
