@@ -1,6 +1,6 @@
 ---
 x-title: draw self-hosting — one-shot Cloudflare deploy / local Node server
-x-desc: Run your own x-cmd/draw: one-shot Cloudflare Workers deploy (setup.sh), wrangler dev, or a dependency-free local Node server; short-link storage (DATA_REPO/GITHUB_TOKEN), BASE_PATH and custom domains included.
+x-desc: 'Run your own x-cmd/draw: one-shot Cloudflare Workers deploy (setup.sh), wrangler dev, or a dependency-free local Node server; short-link storage (DATA_REPO/GITHUB_TOKEN), BASE_PATH and custom domains included.'
 x-sidebar: draw self-hosting
 x-keywords: draw, self-hosted, cloudflare, workers, wrangler, node, setup
 x-json-ld:

@@ -1,6 +1,6 @@
 ---
 name: 18-combo
-description: x-cmd/draw combo chart (type=combo). Bar + line overlay. Bar = absolute (sales), line = rate (conversion). Params: labels + series=A:...&kind=bar + series=B:...&kind=line. kind distinguishes bar from line.
+description: 'x-cmd/draw combo chart (type=combo). Bar + line overlay. Bar = absolute (sales), line = rate (conversion). Params: labels + series=A:...&kind=bar + series=B:...&kind=line. kind distinguishes bar from line.'
 type: reference
 ---
 

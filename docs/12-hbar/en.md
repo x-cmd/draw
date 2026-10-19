@@ -1,6 +1,6 @@
 ---
 x-title: hbar — horizontal bar chart, friendly to long labels
-x-desc: x-cmd/draw `type=hbar` quick reference. Horizontal bar chart, ideal for long labels (names / projects / categories). Same params as bar: labels + values or series, title / unit / t / scheme / num / w/h.
+x-desc: 'x-cmd/draw `type=hbar` quick reference. Horizontal bar chart, ideal for long labels (names / projects / categories). Same params as bar: labels + values or series, title / unit / t / scheme / num / w/h.'
 x-sidebar: draw horizontal bar
 x-keywords: hbar, horizontal bar, draw, svg
 x-json-ld:

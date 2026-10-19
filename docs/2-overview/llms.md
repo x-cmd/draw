@@ -1,6 +1,6 @@
 ---
 name: 2-overview
-description: x-cmd/draw SVG chart endpoint — single GET / POST endpoint supporting 11 chart types (pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr). Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON. Returned SVG embeds <metadata> and is pure text (not binary).
+description: 'x-cmd/draw SVG chart endpoint — single GET / POST endpoint supporting 11 chart types (pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr). Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON. Returned SVG embeds <metadata> and is pure text (not binary).'
 type: reference
 ---
 

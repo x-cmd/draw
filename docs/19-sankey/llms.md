@@ -1,6 +1,6 @@
 ---
 name: 19-sankey
-description: x-cmd/draw sankey diagram (type=sankey). Flow / conversion path visualization: source → middle → endpoint. Params: nodes + links (source,target,value). Node names must exactly match in nodes/ and links/.
+description: 'x-cmd/draw sankey diagram (type=sankey). Flow / conversion path visualization: source → middle → endpoint. Params: nodes + links (source,target,value). Node names must exactly match in nodes/ and links/.'
 type: reference
 ---
 

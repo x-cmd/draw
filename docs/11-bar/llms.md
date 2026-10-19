@@ -1,6 +1,6 @@
 ---
 name: 11-bar
-description: x-cmd/draw bar chart (type=bar). Single series: labels + values. Multi-series grouped: multiple `series=A:...,B:...`. Stacked: add `stack=1`. Default style: evil.
+description: 'x-cmd/draw bar chart (type=bar). Single series: labels + values. Multi-series grouped: multiple `series=A:...,B:...`. Stacked: add `stack=1`. Default style: evil.'
 type: reference
 ---
 

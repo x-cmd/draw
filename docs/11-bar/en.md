@@ -1,6 +1,6 @@
 ---
 x-title: bar chart — grouped / stacked / single series
-x-desc: x-cmd/draw `type=bar` quick reference. Grouped: `labels=` + multiple `series=A:...,B:...`. Stacked: same plus `stack=1`. Single series: `labels=` + `values=`. Style `t=` includes `evil` etc.
+x-desc: 'x-cmd/draw `type=bar` quick reference. Grouped: `labels=` + multiple `series=A:...,B:...`. Stacked: same plus `stack=1`. Single series: `labels=` + `values=`. Style `t=` includes `evil` etc.'
 x-sidebar: draw bar chart
 x-keywords: bar chart, draw, evil, grouped bar, stacked bar
 x-json-ld:

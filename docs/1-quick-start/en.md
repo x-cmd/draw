@@ -1,6 +1,6 @@
 ---
 x-title: draw quick start — up and running in 3 minutes (URL / npm / Deno)
-x-desc: Fastest paths into x-cmd/draw: build a URL and render, npm library + CLI offline, Deno zero-permission sandbox. Complete chart-type table at the end.
+x-desc: 'Fastest paths into x-cmd/draw: build a URL and render, npm library + CLI offline, Deno zero-permission sandbox. Complete chart-type table at the end.'
 x-sidebar: draw quick start
 x-keywords: draw, quickstart, svg, chart, url, npm, deno, cli
 x-json-ld:

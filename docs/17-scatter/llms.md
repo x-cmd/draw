@@ -1,6 +1,6 @@
 ---
 name: 17-scatter
-description: x-cmd/draw scatter plot (type=scatter). Two-dimension correlation: height vs weight / price vs sales / age vs income. Params: points=x1,y1;x2,y2;... (single group) or series=A:...;B:... (multi-group). Format: semicolon between points, comma between coords.
+description: 'x-cmd/draw scatter plot (type=scatter). Two-dimension correlation: height vs weight / price vs sales / age vs income. Params: points=x1,y1;x2,y2;... (single group) or series=A:...;B:... (multi-group). Format: semicolon between points, comma between coords.'
 type: reference
 ---
 

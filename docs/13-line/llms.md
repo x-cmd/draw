@@ -1,6 +1,6 @@
 ---
 name: 13-line
-description: x-cmd/draw line chart (type=line). The default for time series. Params: x (time labels) + y (single) or series=A:...,B:... (multi). All series must have same length. Y axis auto-fits; use ymin/ymax to fix range.
+description: 'x-cmd/draw line chart (type=line). The default for time series. Params: x (time labels) + y (single) or series=A:...,B:... (multi). All series must have same length. Y axis auto-fits; use ymin/ymax to fix range.'
 type: reference
 ---
 

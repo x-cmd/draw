@@ -1,6 +1,6 @@
 ---
 name: 15-radar
-description: x-cmd/draw radar chart (type=radar). Multi-dimension comparison: products / candidates / plans scored across multiple axes. Params: labels (dimensions) + values (scores) or series (multiple objects). Value range usually 0-100. All dimensions must use the same range for fair comparison.
+description: 'x-cmd/draw radar chart (type=radar). Multi-dimension comparison: products / candidates / plans scored across multiple axes. Params: labels (dimensions) + values (scores) or series (multiple objects). Value range usually 0-100. All dimensions must use the same range for fair comparison.'
 type: reference
 ---
 

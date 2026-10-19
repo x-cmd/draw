@@ -1,6 +1,6 @@
 ---
 x-title: pie chart — 6 styles (opendata / evil / evil-mono / market-mono / progress / revenue)
-x-desc: x-cmd/draw `type=pie` quick reference. 6 styles: opendata (labels outside + editorial title), evil (rounded sectors + inline values), evil-mono (leader lines outside), market-mono (grayscale + center total), progress (dotted progress ring), revenue (gradient sectors + right legend). Full params: labels / values / title / unit / donut / t / scheme / num / w/h.
+x-desc: 'x-cmd/draw `type=pie` quick reference. 6 styles: opendata (labels outside + editorial title), evil (rounded sectors + inline values), evil-mono (leader lines outside), market-mono (grayscale + center total), progress (dotted progress ring), revenue (gradient sectors + right legend). Full params: labels / values / title / unit / donut / t / scheme / num / w/h.'
 x-sidebar: draw pie chart
 x-keywords: pie chart, draw, svg, opendata, evil, market-mono, progress, revenue, donut
 x-json-ld:

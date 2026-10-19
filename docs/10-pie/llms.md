@@ -1,6 +1,6 @@
 ---
 name: 10-pie
-description: x-cmd/draw pie chart (type=pie). 6 styles via t=: opendata (default, labels outside + editorial title), evil (rounded sectors + inline values), evil-mono (leader lines outside), market-mono (grayscale + center total), progress (dotted ring + large center percentage), revenue (gradient + dashed inner). donut=0 forces solid (no ring center).
+description: 'x-cmd/draw pie chart (type=pie). 6 styles via t=: opendata (default, labels outside + editorial title), evil (rounded sectors + inline values), evil-mono (leader lines outside), market-mono (grayscale + center total), progress (dotted ring + large center percentage), revenue (gradient + dashed inner). donut=0 forces solid (no ring center).'
 type: reference
 ---
 

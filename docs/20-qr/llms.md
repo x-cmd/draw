@@ -1,6 +1,6 @@
 ---
 name: 20-qr
-description: x-cmd/draw QR code (type=qr). Generate QR for URL / WiFi / vCard / any text. Params: data (content), size (module pixel size), ec (error correction L/M/Q/H, default M). Returned SVG is print/embed-ready.
+description: 'x-cmd/draw QR code (type=qr). Generate QR for URL / WiFi / vCard / any text. Params: data (content), size (module pixel size), ec (error correction L/M/Q/H, default M). Returned SVG is print/embed-ready.'
 type: reference
 ---
 

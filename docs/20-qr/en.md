@@ -1,6 +1,6 @@
 ---
 x-title: QR code — URL / WiFi / contact card
-x-desc: x-cmd/draw `type=qr` quick reference. Generate QR codes for URL / WiFi / vCard / any text. Params: `data=` content (URL / text / WiFi / vCard), `size=` module pixel size, `ec=` error correction level (L/M/Q/H).
+x-desc: 'x-cmd/draw `type=qr` quick reference. Generate QR codes for URL / WiFi / vCard / any text. Params: `data=` content (URL / text / WiFi / vCard), `size=` module pixel size, `ec=` error correction level (L/M/Q/H).'
 x-sidebar: draw QR code
 x-keywords: qr code, qr, draw, svg, wifi qr, vcard qr
 x-json-ld:

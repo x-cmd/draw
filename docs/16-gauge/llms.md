@@ -1,6 +1,6 @@
 ---
 name: 16-gauge
-description: x-cmd/draw gauge dial (type=gauge). Single-value monitoring: CPU / memory / SLA / progress. Params: value (current), max (full scale, default 100), label, unit, t (style).
+description: 'x-cmd/draw gauge dial (type=gauge). Single-value monitoring: CPU / memory / SLA / progress. Params: value (current), max (full scale, default 100), label, unit, t (style).'
 type: reference
 ---
 

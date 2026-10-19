@@ -1,6 +1,6 @@
 ---
 x-title: scatter plot — correlation analysis
-x-desc: x-cmd/draw `type=scatter` quick reference. Two-dimension correlation (height vs weight / price vs sales). Params: `points=x1,y1;x2,y2;...` or `series=A:x1,y1;...&series=B:x1,y1;...`.
+x-desc: 'x-cmd/draw `type=scatter` quick reference. Two-dimension correlation (height vs weight / price vs sales). Params: `points=x1,y1;x2,y2;...` or `series=A:x1,y1;...&series=B:x1,y1;...`.'
 x-sidebar: draw scatter plot
 x-keywords: scatter plot, draw, svg, correlation
 x-json-ld:

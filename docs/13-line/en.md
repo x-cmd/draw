@@ -1,6 +1,6 @@
 ---
 x-title: line chart — the default for time series
-x-desc: x-cmd/draw `type=line` quick reference. The default for time series. Params: `x=` time labels / `y=` single series / `series=A:...,B:...` multi-series / `title=` / `unit=`. Points and lines styled separately.
+x-desc: 'x-cmd/draw `type=line` quick reference. The default for time series. Params: `x=` time labels / `y=` single series / `series=A:...,B:...` multi-series / `title=` / `unit=`. Points and lines styled separately.'
 x-sidebar: draw line chart
 x-keywords: line chart, draw, svg, time series
 x-json-ld:

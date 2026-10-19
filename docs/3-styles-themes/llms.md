@@ -1,6 +1,6 @@
 ---
 name: 3-styles-themes
-description: x-cmd/draw styles (`t=`) cross-chart index. Per-chart style support varies: pie has opendata/evil/evil-mono/market-mono/progress/revenue; bar/line/area default to evil. `scheme=dark|light` controls theme for all charts. Same `t=` produces visually different output per chart.
+description: 'x-cmd/draw styles (`t=`) cross-chart index. Per-chart style support varies: pie has opendata/evil/evil-mono/market-mono/progress/revenue; bar/line/area default to evil. `scheme=dark|light` controls theme for all charts. Same `t=` produces visually different output per chart.'
 type: reference
 ---
 

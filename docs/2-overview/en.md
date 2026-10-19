@@ -1,6 +1,6 @@
 ---
 x-title: draw — SVG chart endpoint quick reference (11 chart types + common params + data formats)
-x-desc: x-cmd/draw is a single-endpoint SVG chart service: GET /draw?type=... returns SVG. Supports 11 chart types: pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr. Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON.
+x-desc: 'x-cmd/draw is a single-endpoint SVG chart service: GET /draw?type=... returns SVG. Supports 11 chart types: pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr. Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON.'
 x-sidebar: draw overview
 x-keywords: draw, svg, chart, pie chart, bar chart, line chart, radar chart, gauge, scatter, sankey, qr code, svg endpoint, x-cmd/draw
 x-json-ld:
