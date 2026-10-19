@@ -1,9 +1,9 @@
 // 折线图(单系列):行为由皮肤规则驱动(规范:折线图 1-5)。
 // 面积填充/数值标注/平滑/点形态/线宽/虚线/发光全部跟随变体规则。
-import type { ChartSpec, MultiSpec } from '../specs';
-import { card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY } from './svg';
-import { plainGeo, type GeoMeasure } from './measure';
+import type { ChartSpec, MultiSpec } from '../specs/index.js';
+import { card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY } from './svg.js';
+import { plainGeo, type GeoMeasure } from './measure.js';
 
 export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;

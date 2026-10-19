@@ -1,7 +1,7 @@
 // 仪表盘风格变体:base = 规范 gauge-1 半圆多环(默认);gradient = 规范 gauge-2 渐变多环;
 // reliability = 规范饼图 6(分区环+刻度条,语义上是仪表盘)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_gauge, C_gaugeGradient, C_reliability } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_gauge, C_gaugeGradient, C_reliability } from './common.js';
 
 export const GAUGE_VARIANTS: Variant[] = [
   // 仪表盘 1 · 半圆多环(规范 gauge-1,860×480):同心半圆弧,每行数据一环,值为百分比

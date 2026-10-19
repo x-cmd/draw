@@ -1,9 +1,9 @@
 // 堆叠柱:同一 x 位置各系列上下堆叠,段间白缝,顶部段顶角圆角,数值标在每个色块内部。
 // 量级差过大(某组的最大段都放不下标签)时自动拉高画布(封顶 3×,用户显式 ?h= 时不介入)。
-import type { MultiSpec } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg';
-import { yTickInset, tickColW } from './measure';
+import type { MultiSpec } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
+import { yTickInset, tickColW } from './measure.js';
 
 export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   let width = o.width;

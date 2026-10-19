@@ -1,11 +1,11 @@
 // 规范水平柱四形态(hbar-1..4):rows 逐行分类色 / cells 像素格 /
 // diverging 蝴蝶图(左新建右关闭)/ lift 实色基础分+斜纹增益。
-import { ApiError } from '../specs';
-import type { ChartSpec, MultiSpec, ChartInput } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtFull, fmtNum, niceTicks, r2, sVar, textW, trunc, type RenderOpts, svgDoc } from './svg';
-import { fitCut } from './measure';
-import { renderHBar } from './hbar';
+import { ApiError } from '../specs/index.js';
+import type { ChartSpec, MultiSpec, ChartInput } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, sVar, textW, trunc, type RenderOpts, svgDoc } from './svg.js';
+import { fitCut } from './measure.js';
+import { renderHBar } from './hbar.js';
 
 export function renderHbarByMode(input: ChartInput, o: RenderOpts): string {
   const mode = o.skin.rules.hbarMode;

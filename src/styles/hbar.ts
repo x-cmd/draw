@@ -1,6 +1,6 @@
 // 水平柱(base 待设计补充;规范款:hbar-1 opendata、hbar-2/3 xcmd、hbar-4 rank)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_shadcn, C_openHbar, C_xcmd, C_scoreHbar } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_shadcn, C_openHbar, C_xcmd, C_scoreHbar } from './common.js';
 
 export const HBAR_VARIANTS: Variant[] = [
   makeVariant({

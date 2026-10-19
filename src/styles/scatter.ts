@@ -1,6 +1,6 @@
 // 散点图(base = 规范 scatter-1 简洁双系列:深浅蓝、完整双数值轴、轴标题)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_scatterBlue } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_scatterBlue } from './common.js';
 
 export const SCATTER_VARIANTS: Variant[] = [
   makeVariant({

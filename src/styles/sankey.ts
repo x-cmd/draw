@@ -1,8 +1,8 @@
 // 桑基图三变体:base=规范 sankey-1 基础款(细节点+源色流带)、
 // fund=规范 sankey-2 渐变 Fund Allocation(盒节点+渐变流带+表头表尾)、
 // pipeline=规范 sankey-3 Revenue Pipeline(双渐变流带+中央总额面板)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_sankey, C_sankeyGradient, C_sankeyPipeline } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_sankey, C_sankeyGradient, C_sankeyPipeline } from './common.js';
 
 const S = (keys: string[]) => keys.map((c) => duo(c));
 

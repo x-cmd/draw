@@ -1,10 +1,10 @@
 // 桑基图:节点高∝数值,封闭三次贝塞尔流带;最长路径分层,堆叠序跟随对端节点位置。
 // 三变体(规范 sankey 1-3):basic 源色流带 / fund 每链渐变 / pipeline 蓝→紫→玫红叙事。
-import { ApiError } from '../specs';
-import type { SankeySpec, SankeyLink } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtFull, r2, sVar, trunc, type RenderOpts, svgDoc } from './svg';
-import { C_sankeyPipeline } from '../styles/common';
+import { ApiError } from '../specs/index.js';
+import type { SankeySpec, SankeyLink } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtFull, r2, sVar, trunc, type RenderOpts, svgDoc } from './svg.js';
+import { C_sankeyPipeline } from '../styles/common.js';
 
 interface LaidNode {
   name: string;

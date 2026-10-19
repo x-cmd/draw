@@ -1,12 +1,12 @@
 // 面积图:行为由皮肤规则驱动(规范 面积图 1-3)。
-import { ApiError, type ChartSpec, type MultiSpec } from '../specs';
-import { card, TAB } from '../theme';
+import { ApiError, type ChartSpec, type MultiSpec } from '../specs/index.js';
+import { card, TAB } from '../theme.js';
 import {
   esc, fmtFull, fmtNum, niceStep, niceTicks, r2, reserveBands, snap, smoothPath, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, toSegments,
   type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, topLegend, findPeak, sVar,
-} from './svg';
-import { xOverhang, yTickInset, type GeoMeasure } from './measure';
-import { HANDEE_WOFF2 } from '../styles/handlee';
+} from './svg.js';
+import { xOverhang, yTickInset, type GeoMeasure } from './measure.js';
+import { HANDEE_WOFF2 } from '../styles/handlee.js';
 
 const SKETCH_FONT = "Handlee,'Comic Sans MS','Chalkboard SE','Comic Neue','Segoe Print',cursive";
 

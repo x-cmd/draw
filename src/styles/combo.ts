@@ -1,6 +1,6 @@
 // 混合图(base 待设计补充;规范款:combo-1 evil 柱线组合)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_shadcn, C_comboEvil, C_sankey } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_shadcn, C_comboEvil, C_sankey } from './common.js';
 
 export const COMBO_VARIANTS: Variant[] = [
   makeVariant({

@@ -1,7 +1,7 @@
 // 测量层:量出固定文字的真实占位,各图种按 留白 = max(规范, 实测) 反推绘图区。
 // 默认数据零漂移(实测 < 规范用规范值);防碰撞是 svg.ts 的 LabelPlacer,与本层互补。
 // 精度来源:inter.ts 字宽表与渲染字体同源。
-import { textW, fmtNum, trunc, labelStride } from './svg';
+import { textW, fmtNum, trunc, labelStride } from './svg.js';
 
 /** 四边留白 */
 export interface Insets {

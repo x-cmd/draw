@@ -1,7 +1,8 @@
 // 短链接存储层:图表 JSON 存在 GitHub 公开仓(charts/<指纹>.json),内容寻址、永不过期。
 // 读取走 raw(免 token);写入需 GITHUB_TOKEN(secret,fine-grained PAT 仅授本仓 Contents 写)。
 // 可见性:公开仓任何人都可浏览目录,请勿存放敏感数据(私有方案规划中,将收费提供)。
-import { ApiError } from './specs';
+import { ApiError } from './specs/index.js';
+import type { DrawEnv } from './types.js';
 
 export const CHART_TEMPLATES = ['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey', 'qr'] as const;
 export type ChartTemplate = (typeof CHART_TEMPLATES)[number];
@@ -59,7 +60,7 @@ function requireRepo(env: { DATA_REPO?: string; DATA_BRANCH?: string }): { repo:
 }
 
 // 写入(幂等):已存在视为成功
-export async function putChart(env: Env, hash: string, doc: StoredChart): Promise<void> {
+export async function putChart(env: DrawEnv, hash: string, doc: StoredChart): Promise<void> {
   const { repo, branch } = requireRepo(env);
   const token = env.GITHUB_TOKEN;
   if (!token) throw new ApiError(400, 'server is not configured: set GITHUB_TOKEN secret first');
@@ -84,13 +85,14 @@ export async function putChart(env: Env, hash: string, doc: StoredChart): Promis
 
 // 读取:恒走 raw(公开仓免 token、CDN 友好)。GITHUB_TOKEN 只是 Worker 的写入凭证
 // (GitHub 对任何仓的写操作都要求认证),读取不再耗 API 配额(5000 req/h 仅剩创建消耗)。
-export async function getChart(env: Env, hash: string): Promise<StoredChart> {
+export async function getChart(env: DrawEnv, hash: string): Promise<StoredChart> {
   const { repo, branch } = requireRepo(env);
   // 内容寻址短链:给 Cloudflare 边缘缓存(同 hash 永同内容,缓存安全),
   // 免每请求回源 raw(延迟 200-800ms)
   // 只缓 200-299:cacheEverything 会连 404/403 一起负缓存(坏哈希可被"预热"、限流瞬态被固化)
   const cfCache = { cacheEverything: true, cacheTtlByStatus: { '200-299': 86400, '300-499': 0, '500-599': 0 } } as const;
-  const res = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/charts/${hash}.json`, { cf: cfCache });
+  // `cf` 是 Workers 专属 fetch 选项(undici 忽略未知 init 键),cast 让两种运行时类型都通过
+  const res = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/charts/${hash}.json`, { cf: cfCache } as RequestInit);
   if (res.status === 404) throw new ApiError(404, `chart ${hash} not found`);
   if (!res.ok) throw new ApiError(502, `failed to load chart data (upstream ${res.status})`);
   const text = await res.text();

@@ -1,8 +1,8 @@
 // 分组并排柱(多系列):≤6 系列主题色板循环,顶部图例,数值入柱;evil 变体 = 规范 bar-1 几何。
-import type { MultiSpec } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg';
-import { yTickInset, type GeoMeasure } from './measure';
+import type { MultiSpec } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
+import { yTickInset, type GeoMeasure } from './measure.js';
 
 // 规范 bar-1 实测几何(960×520):left 76、右留 50、顶 94(0.181h)、底 448(0.862h)、X 标签 480
 // 留白 = max(规范比例, 实测刻度列):长刻度/窄画布时左缘撑大,刻度不裁字

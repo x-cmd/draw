@@ -1,19 +1,19 @@
 // 风格注册表:?t=<family> 作用于任意图种;该图种无此家族变体时回退默认(第一个);
 // family 完全未知(拼写错误)报 400 并列出有效家族。
-import { ApiError } from '../specs';
-import type { ChartTemplate } from '../store';
-import { duo, type Duo, type Scheme, type Skin, type Variant } from './types';
-import { LINE_VARIANTS } from './line';
-import { PIE_VARIANTS } from './pie';
-import { AREA_VARIANTS } from './area';
-import { BAR_VARIANTS } from './bar';
-import { HBAR_VARIANTS } from './hbar';
-import { RADAR_VARIANTS } from './radar';
-import { SANKEY_VARIANTS } from './sankey';
-import { GAUGE_VARIANTS } from './gauge';
-import { SCATTER_VARIANTS } from './scatter';
-import { COMBO_VARIANTS } from './combo';
-import { QR_VARIANTS } from './qr';
+import { ApiError } from '../specs/index.js';
+import type { ChartTemplate } from '../store.js';
+import { duo, type Duo, type Scheme, type Skin, type Variant } from './types.js';
+import { LINE_VARIANTS } from './line.js';
+import { PIE_VARIANTS } from './pie.js';
+import { AREA_VARIANTS } from './area.js';
+import { BAR_VARIANTS } from './bar.js';
+import { HBAR_VARIANTS } from './hbar.js';
+import { RADAR_VARIANTS } from './radar.js';
+import { SANKEY_VARIANTS } from './sankey.js';
+import { GAUGE_VARIANTS } from './gauge.js';
+import { SCATTER_VARIANTS } from './scatter.js';
+import { COMBO_VARIANTS } from './combo.js';
+import { QR_VARIANTS } from './qr.js';
 
 export const VARIANTS: Record<ChartTemplate, Variant[]> = {
   pie: PIE_VARIANTS,
@@ -80,4 +80,4 @@ export function resolveSkin(type: ChartTemplate, family: string | null, scheme: 
 }
 
 
-export { type Skin, type Scheme, type Variant } from './types';
+export { type Skin, type Scheme, type Variant } from './types.js';

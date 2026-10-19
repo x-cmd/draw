@@ -1,7 +1,7 @@
 // 版本与缓存语义(2026-09-20 决定,2026-09-26 修订):
 // 缺省 = 最新版(短 TTL 300s)。?v=N = 钉住版本,长缓存 1 天;
 // immutable 仅用于内容寻址短链 /c/<hash>(渲染代码随部署变化,/draw 的输出做不到真正冻结)。
-import { ApiError } from './specs';
+import { ApiError } from './specs/index.js';
 
 export const CURRENT_VERSION = 1;
 

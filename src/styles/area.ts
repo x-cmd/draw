@@ -1,6 +1,6 @@
 // 面积图风格变体(规范:面积图 1-3)。默认 = evil(规范第 1 个)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_evil, C_star, C_openArea } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_evil, C_star, C_openArea } from './common.js';
 
 export const AREA_VARIANTS: Variant[] = [
   // 面积图 1 · Evil:渐变面积 + 虚线描边 + 大实心点 + 右上图例(方块)

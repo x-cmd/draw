@@ -1,11 +1,11 @@
 // 饼图/环形图:行为由皮肤规则驱动(规范 饼图 1-5、7,六种变体)。
-import type { ChartSpec, Datum } from '../specs';
-import { card, TAB } from '../theme';
+import type { ChartSpec, Datum } from '../specs/index.js';
+import { card, TAB } from '../theme.js';
 import {
   esc, fmtFull, fmtNum, r2, textW, trunc,
   type RenderOpts, svgDoc, editorialTitle, titleBlock, sVar, onVar, LabelPlacer,
-} from './svg';
-import { radialFit } from './measure';
+} from './svg.js';
+import { radialFit } from './measure.js';
 
 const MAX_SLICES = 9; // 8 个分类 + "Other"
 

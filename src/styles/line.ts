@@ -1,6 +1,6 @@
 // 折线图风格变体(规范:折线图 1-5)。默认 = shadcn(规范第 1 个)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_shadcn, C_evil, C_evilGlow, C_evilMono, C_openLine } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_shadcn, C_evil, C_evilGlow, C_evilMono, C_openLine } from './common.js';
 
 // Evil 系策略:亮色用深色、暗色用亮色(规范 line-2 实测)
 const evilSeries = [

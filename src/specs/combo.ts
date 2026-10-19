@@ -1,5 +1,5 @@
 // 混合图(combo):柱系列+线系列同图,扁平 series=/line= 或 JSON(每系列可带 type)。
-import { ApiError, LIMITS, clip, flatList } from './base';
+import { ApiError, LIMITS, clip, flatList } from './base.js';
 
 // ===== 混合图(combo):柱系列 + 线系列同轴 =====
 

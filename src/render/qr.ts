@@ -1,8 +1,8 @@
 // 二维码(uqr 生成,规范 qr-1 卡片样式):白卡静区 rx18 + 圆角模块 + 标题/副标题。
 import { encode } from 'uqr';
-import { ApiError } from '../specs';
-import { r2, esc, svgDoc } from './svg';
-import type { Skin } from '../styles/types';
+import { ApiError } from '../specs/index.js';
+import { r2, esc, svgDoc } from './svg.js';
+import type { Skin } from '../styles/types.js';
 
 const HEX_RE = /^#?[0-9a-fA-F]{6}$/;
 

@@ -1,7 +1,7 @@
 // 水平柱状图:标签左侧、条向右延伸、数值在条尾、竖向网格。排行/长标签场景。
-import type { ChartSpec } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg';
+import type { ChartSpec } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 
 export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const { width, version, skin } = o;

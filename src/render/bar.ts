@@ -1,8 +1,8 @@
 // 柱状图(单系列):卡片容器、主题渐变柱体、顶角 4px 圆角、数值入柱。
-import type { ChartSpec } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, type RenderOpts } from './svg';
-import { yTickInset } from './measure';
+import type { ChartSpec } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, type RenderOpts } from './svg.js';
+import { yTickInset } from './measure.js';
 
 export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const { height, version, skin } = o;

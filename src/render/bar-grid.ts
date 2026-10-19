@@ -1,8 +1,8 @@
 // 单元格柱(规范 bar-2 · Grid):每列自底向上点亮,一格一个单位;
 // 等宽字体表头直接给出总量与峰值,静态可读不依赖 hover。
-import type { ChartSpec } from '../specs';
-import { card } from '../theme';
-import { esc, fmtFull, r2, trunc, type RenderOpts, svgDoc, sVar } from './svg';
+import type { ChartSpec } from '../specs/index.js';
+import { card } from '../theme.js';
+import { esc, fmtFull, r2, trunc, type RenderOpts, svgDoc, sVar } from './svg.js';
 
 const MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,monospace";
 

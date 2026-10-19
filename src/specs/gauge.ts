@@ -1,5 +1,5 @@
 // 仪表盘(gauge):多环(labels+values,每行一环,值为百分比)或单值(value/max)。
-import { ApiError, LIMITS, clip, flatList } from './base';
+import { ApiError, LIMITS, clip, flatList } from './base.js';
 
 export interface GaugeDatum {
   label: string;

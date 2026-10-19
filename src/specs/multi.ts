@@ -1,5 +1,5 @@
 // 多系列(bar 分组/堆叠、line 多曲线):labels + series[{name, values}]。
-import { ApiError, LIMITS, MAX_BY_KIND, clip, flatList } from './base';
+import { ApiError, LIMITS, MAX_BY_KIND, clip, flatList } from './base.js';
 
 // ===== 多系列(bar/line):labels + series[{name, values}] =====
 

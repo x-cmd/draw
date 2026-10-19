@@ -1,8 +1,8 @@
 // SVG 生成通用工具:转义、数字格式化、好看刻度、metadata 嵌入、文档包装与公共图元。
-import { FONT, TAB } from '../theme';
+import { FONT, TAB } from '../theme.js';
 import { ticks as d3Ticks, tickStep } from 'd3-array';
-import { INTER_FACE_CSS, INTER_WIDTHS } from '../styles/inter';
-import type { Skin, Duo } from '../styles/types';
+import { INTER_FACE_CSS, INTER_WIDTHS } from '../styles/inter.js';
+import type { Skin, Duo } from '../styles/types.js';
 
 export function esc(s: string): string {
   return s

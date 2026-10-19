@@ -1,6 +1,6 @@
 // 雷达图(base 待设计补充;规范款:radar-1 evil 双系列、radar-2 xcmd 手绘五维)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_openLine, C_radarEvil, C_xcmdRadar } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_openLine, C_radarEvil, C_xcmdRadar } from './common.js';
 
 export const RADAR_VARIANTS: Variant[] = [
   makeVariant({

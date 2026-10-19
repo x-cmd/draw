@@ -1,5 +1,5 @@
 // 桑基图(sankey):labels + links(A>B:30),扁平或 JSON。
-import { ApiError, LIMITS, clip, flatList } from './base';
+import { ApiError, LIMITS, clip, flatList } from './base.js';
 
 export interface SankeyLink {
   from: string;

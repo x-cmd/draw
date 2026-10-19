@@ -1,6 +1,6 @@
 // 统一输入入口:按参数决定单系列(ChartSpec)或多系列(MultiSpec)。
-import { ApiError, parseChartSpec, specFromParams, type ChartSpec } from './base';
-import { parseSeriesSpec, seriesSpecFromParams, type MultiSpec } from './multi';
+import { ApiError, parseChartSpec, specFromParams, type ChartSpec } from './base.js';
+import { parseSeriesSpec, seriesSpecFromParams, type MultiSpec } from './multi.js';
 
 // 统一入口:单系列(ChartSpec)或多系列(MultiSpec)
 export type ChartInput =

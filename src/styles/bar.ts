@@ -1,6 +1,6 @@
 // 柱状图(base 待设计补充;规范款:bar-1 evil 分组柱、bar-2 grid 单元格柱)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_shadcn, C_barEvil, C_gridMono, C_sankey } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_shadcn, C_barEvil, C_gridMono, C_sankey } from './common.js';
 
 export const BAR_VARIANTS: Variant[] = [
   makeVariant({

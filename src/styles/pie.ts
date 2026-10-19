@@ -1,7 +1,7 @@
 // 饼图风格变体(规范:饼图 1-5、7)。默认 = opendata(规范第 1 个)。
 // reliability(饼图 6)语义上是仪表盘 → 放 src/styles/gauge.ts。
-import { duo, makeVariant, type Variant } from './types';
-import { C_openPie, C_evilPie, C_marketMono, C_progress, C_revenue } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_openPie, C_evilPie, C_marketMono, C_progress, C_revenue } from './common.js';
 
 export const PIE_VARIANTS: Variant[] = [
   // 饼图 1 · OpenData:全部标签圈外(白描边),编辑式大标题,细白缝,无图例

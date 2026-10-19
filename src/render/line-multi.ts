@@ -1,9 +1,9 @@
 // 多折线(多系列):行为由皮肤规则驱动 —— 图例位置/形状、端标签(OpenData)、
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
-import type { MultiSpec } from '../specs';
-import { card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar } from './svg';
-import { lineLayout } from './line';
+import type { MultiSpec } from '../specs/index.js';
+import { card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar } from './svg.js';
+import { lineLayout } from './line.js';
 
 export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;

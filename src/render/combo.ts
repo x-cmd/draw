@@ -1,8 +1,8 @@
 // 混合图:柱系列(分组并排)+ 线系列共用 y 轴与类别轴(量级差大时线走右轴)。
-import type { ComboSpec } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtNum, niceTicks, r2, topLegend, trunc, textW, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg';
-import { yTickInset, tickColW } from './measure';
+import type { ComboSpec } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtNum, niceTicks, r2, topLegend, trunc, textW, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
+import { yTickInset, tickColW } from './measure.js';
 
 export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   if (o.skin.rules.comboMode === 'evil') return renderComboEvil(spec, o);

@@ -1,5 +1,5 @@
 // CSV → spec JSON:首行表头,两列=单系列,多列=多系列。
-import { ApiError } from './base';
+import { ApiError } from './base.js';
 
 // CSV → spec JSON:首行为表头。两列(label,value)=单系列;多列(label,系列A,系列B)=多系列
 export function csvToSpecJson(csv: string): string {

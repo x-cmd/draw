@@ -1,9 +1,9 @@
 // 散点图(规范 scatter-1):双数值轴 + 虚线网格 + 轴标题,深浅蓝系列,点径交替(每 4 个一个大点)。
 // 单系列(x=/y=)无图例;多系列(重复 x=/y= 或 JSON series)右上圆点图例。默认不标数值(轴已可读)。
-import type { ScatterSpec, ScatterSeries } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtNum, niceStep, r2, snap, trunc, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, type RenderOpts, svgDoc, titleBlock } from './svg';
-import { tickColW } from './measure';
+import type { ScatterSpec, ScatterSeries } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtNum, niceStep, r2, snap, trunc, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { tickColW } from './measure.js';
 
 // 取整量程刻度:数据向下/向上取整到步长(规范 -18..19 → -20..20),刻度线铺满整域
 function spanTicks(min: number, max: number, count: number): number[] {

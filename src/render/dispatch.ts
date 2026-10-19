@@ -1,24 +1,24 @@
 // 模板分发:ChartTemplate(+ChartInput/存档 spec)→ 渲染器。短链与 create 共用。
-import { ApiError, parseChartSpec, parseSeriesSpec, parseGaugeSpec, parseScatterSpec, parseComboSpec, looksMultiSeries, type ChartInput } from '../specs';
-import { renderPie } from './pie';
-import { renderBar } from './bar';
-import { renderBarGrid } from './bar-grid';
-import { renderBarMulti } from './bar-grouped';
-import { renderBarStacked } from './bar-stacked';
-import { renderLine } from './line';
-import { renderAreaByMode } from './area';
-import { renderLineMulti } from './line-multi';
-import { renderRadarByMode } from './radar';
-import { renderHBar } from './hbar';
-import { renderHbarByMode } from './hbar-spec';
-import { renderGauge } from './gauge';
-import { renderScatter } from './scatter';
-import { renderCombo } from './combo';
-import { renderQR, requireQRText, parseColor, QR_DEFAULTS } from './qr';
-import { renderSankey } from './sankey';
-import { parseSankeySpec } from '../specs/sankey';
-import type { RenderOpts } from './svg';
-import type { ChartTemplate, StoredChart } from '../store';
+import { ApiError, parseChartSpec, parseSeriesSpec, parseGaugeSpec, parseScatterSpec, parseComboSpec, looksMultiSeries, type ChartInput } from '../specs/index.js';
+import { renderPie } from './pie.js';
+import { renderBar } from './bar.js';
+import { renderBarGrid } from './bar-grid.js';
+import { renderBarMulti } from './bar-grouped.js';
+import { renderBarStacked } from './bar-stacked.js';
+import { renderLine } from './line.js';
+import { renderAreaByMode } from './area.js';
+import { renderLineMulti } from './line-multi.js';
+import { renderRadarByMode } from './radar.js';
+import { renderHBar } from './hbar.js';
+import { renderHbarByMode } from './hbar-spec.js';
+import { renderGauge } from './gauge.js';
+import { renderScatter } from './scatter.js';
+import { renderCombo } from './combo.js';
+import { renderQR, requireQRText, parseColor, QR_DEFAULTS } from './qr.js';
+import { renderSankey } from './sankey.js';
+import { parseSankeySpec } from '../specs/sankey.js';
+import type { RenderOpts } from './svg.js';
+import type { ChartTemplate, StoredChart } from '../store.js';
 
 function dispatch(template: ChartTemplate, input: ChartInput, o: RenderOpts, stack = false): string {
   switch (template) {

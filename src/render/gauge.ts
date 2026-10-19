@@ -33,11 +33,11 @@ function pushLegendRow<T extends { name: string }>(
 }
 
 // 仪表盘:规范 gauge-1 半圆多环(默认)/ gauge-2 渐变整圆多环 / reliability 分区环。
-import { ApiError, type GaugeSpec } from '../specs';
-import { TAB, card } from '../theme';
-import { esc, fmtFull, fmtNum, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg';
-import { segPath, pol } from './pie';
-import { C_gaugeGradient } from '../styles/common';
+import { ApiError, type GaugeSpec } from '../specs/index.js';
+import { TAB, card } from '../theme.js';
+import { esc, fmtFull, fmtNum, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg.js';
+import { segPath, pol } from './pie.js';
+import { C_gaugeGradient } from '../styles/common.js';
 
 export function renderGauge(spec: GaugeSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;

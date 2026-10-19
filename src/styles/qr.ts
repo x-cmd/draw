@@ -1,6 +1,6 @@
 // 二维码(base = 规范 qr-1 简洁蓝色:高对比蓝模块+白卡静区+标题字幕)。
-import { duo, makeVariant, type Variant } from './types';
-import { C_qrBlue } from './common';
+import { duo, makeVariant, type Variant } from './types.js';
+import { C_qrBlue } from './common.js';
 
 export const QR_VARIANTS: Variant[] = [
   makeVariant({

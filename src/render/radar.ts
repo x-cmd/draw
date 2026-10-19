@@ -1,10 +1,10 @@
 // 雷达图:蛛网环 + 轴线 + 主题色半透明填充多边形 + 顶点圆点 + 维度标签。
 // 规范款:radar-1 evil(多系列,轴端内嵌数值)、radar-2 xcmd(手绘五维,方形顶点)。
-import type { ChartSpec, ChartInput, MultiSpec } from '../specs';
-import { ApiError } from '../specs';
-import { card, TAB } from '../theme';
-import { esc, fmtNum, r2, textW, trunc, sVar, type RenderOpts, svgDoc, titleBlock } from './svg';
-import { radialFit } from './measure';
+import type { ChartSpec, ChartInput, MultiSpec } from '../specs/index.js';
+import { ApiError } from '../specs/index.js';
+import { card, TAB } from '../theme.js';
+import { esc, fmtNum, r2, textW, trunc, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { radialFit } from './measure.js';
 
 const HAND_FONT = "Handlee,'Comic Sans MS','Chalkboard SE','Comic Neue','Segoe Print',cursive";
 

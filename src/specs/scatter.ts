@@ -1,5 +1,5 @@
 // 散点图(scatter):x,y 点对;单系列扁平 x=/y=(或 JSON points),多系列重复 x=/y= 参数(或 JSON series)。
-import { ApiError, LIMITS, clip } from './base';
+import { ApiError, LIMITS, clip } from './base.js';
 
 // ===== 散点图(scatter):x,y 点对 =====
 
