@@ -15,6 +15,9 @@ import { SCATTER_VARIANTS } from './scatter.js';
 import { COMBO_VARIANTS } from './combo.js';
 import { QR_VARIANTS } from './qr.js';
 
+/**
+ * Style registry: available variants per chart type (index 0 = default family).
+ */
 export const VARIANTS: Record<ChartTemplate, Variant[]> = {
   pie: PIE_VARIANTS,
   bar: BAR_VARIANTS,
@@ -61,6 +64,13 @@ function padSeries(series: Duo[]): Duo[] {
   return out;
 }
 
+/**
+ * Resolve the render-ready skin for a chart.
+ *
+ * @param family the `?t=` style family; null uses the type default.
+ * An unknown family throws; a family not built for this type falls back to the default.
+ * @param scheme `auto` emits both palettes plus a `prefers-color-scheme` media query.
+ */
 export function resolveSkin(type: ChartTemplate, family: string | null, scheme: Scheme): Skin {
   const variants = VARIANTS[type];
   let variant = variants[0]; // 默认 = 第一个变体

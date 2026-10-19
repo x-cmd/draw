@@ -4,6 +4,9 @@ import { TAB, card } from '../theme.js';
 import { esc, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, type RenderOpts } from './svg.js';
 import { yTickInset } from './measure.js';
 
+/**
+ * Single-series bar chart.
+ */
 export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const { height, version, skin } = o;
   let width = o.width;

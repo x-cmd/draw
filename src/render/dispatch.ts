@@ -46,6 +46,9 @@ function dispatch(template: ChartTemplate, input: ChartInput, o: RenderOpts, sta
 }
 
 // 短链存档 → SVG(结构校验后分发)
+/**
+ * Render a stored chart document under a fully resolved skin — the short-link render path.
+ */
 export function renderStored(doc: StoredChart, o: RenderOpts): string {
   if (doc.template === 'qr') {
     // 存档可能早于校验规则改动:渲染前按 create 同一规则复验(文本长度/颜色必为 hex)

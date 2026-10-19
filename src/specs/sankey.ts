@@ -1,12 +1,18 @@
 // 桑基图(sankey):labels + links(A>B:30),扁平或 JSON。
 import { ApiError, LIMITS, clip, flatList } from './base.js';
 
+/**
+ * One flow: node `from` → node `to` with positive weight `value`.
+ */
 export interface SankeyLink {
   from: string;
   to: string;
   value: number;
 }
 
+/**
+ * Sankey data: node labels + weighted links (must form a DAG).
+ */
 export interface SankeySpec {
   title?: string;
   unit?: string;
@@ -18,6 +24,10 @@ const SANKEY_EXAMPLE = 'labels=Ads,Web,Signup,Buy&links=Ads>Signup:30,Web>Signup
 const MAX_NODES = 24;
 const MAX_LINKS = 60;
 
+/**
+ * Build sankey spec JSON from `?labels=` + `?links=A>B:3;C>B:2`.
+ * Returns null when absent.
+ */
 export function sankeySpecFromParams(params: URLSearchParams): string | null {
   const d = params.get('d');
   if (d !== null && d !== '') return d;
@@ -42,6 +52,11 @@ export function sankeySpecFromParams(params: URLSearchParams): string | null {
   });
 }
 
+/**
+ * Parse and validate sankey JSON (includes the cycle check).
+ *
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseSankeySpec(raw: string | null): SankeySpec {
   if (raw === null || raw === '') {
     throw new ApiError(400, `Missing data. Use ?type=sankey&${SANKEY_EXAMPLE} — or ?d= with {"labels":["A","B"],"links":[{"from":"A","to":"B","value":30}]}`);

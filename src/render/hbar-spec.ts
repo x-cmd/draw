@@ -7,6 +7,9 @@ import { esc, fmtFull, fmtNum, niceTicks, r2, sVar, textW, trunc, type RenderOpt
 import { fitCut } from './measure.js';
 import { renderHBar } from './hbar.js';
 
+/**
+ * Horizontal bars, dispatched by skin family (base / opendata / xcmd / butterfly / rank).
+ */
 export function renderHbarByMode(input: ChartInput, o: RenderOpts): string {
   const mode = o.skin.rules.hbarMode;
   if (mode === 'diverging' || mode === 'lift') {

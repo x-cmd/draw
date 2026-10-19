@@ -5,6 +5,9 @@ import { TAB, card } from '../theme.js';
 import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
+/**
+ * Stacked multi-series bars (auto-switches to 100% stacking on extreme magnitudes).
+ */
 export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   let width = o.width;
   let height = o.height;

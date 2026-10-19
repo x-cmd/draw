@@ -3,12 +3,18 @@ import { ApiError, LIMITS, clip, flatList } from './base.js';
 
 // ===== 混合图(combo):柱系列 + 线系列同轴 =====
 
+/**
+ * One combo series: bars by default, or the line overlay with `type: 'line'`.
+ */
 export interface ComboSeries {
   name: string;
   values: number[];
   kind: 'bar' | 'line';
 }
 
+/**
+ * Combo data: bar series + line series on shared labels.
+ */
 export interface ComboSpec {
   title?: string;
   unit?: string;
@@ -44,6 +50,11 @@ function parseSeriesEntries(rawEntries: unknown[], labels: string[], kind: 'bar'
   });
 }
 
+/**
+ * Parse and validate combo JSON.
+ *
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseComboSpec(raw: string | null): ComboSpec {
   if (raw === null || raw === '') {
     throw new ApiError(400, `Missing data. Use ?type=combo&${COMBO_EXAMPLE}`);
@@ -90,6 +101,10 @@ export function parseComboSpec(raw: string | null): ComboSpec {
   return { title, unit, labels, series, ...(stack ? { stack: true } : {}) };
 }
 
+/**
+ * Build combo spec JSON from `?series=` (bars) and `?line=` (lines).
+ * Returns null when neither is present.
+ */
 export function comboSpecFromParams(params: URLSearchParams): string | null {
   const d = params.get('d');
   if (d !== null && d !== '') return d;

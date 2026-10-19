@@ -265,6 +265,9 @@ export function findPeak(series: readonly { values: readonly number[] }[]): [num
 }
 
 // 渲染公共选项(所有渲染器共用)
+/**
+ * Options shared by every renderer: canvas, version, skin, and feature flags.
+ */
 export interface RenderOpts {
   width: number;
   height: number;

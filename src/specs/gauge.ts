@@ -1,11 +1,17 @@
 // 仪表盘(gauge):多环(labels+values,每行一环,值为百分比)或单值(value/max)。
 import { ApiError, LIMITS, clip, flatList } from './base.js';
 
+/**
+ * One ring of a multi-ring gauge; `value` is a percentage.
+ */
 export interface GaugeDatum {
   label: string;
   value: number; // 百分比 0-100
 }
 
+/**
+ * Gauge data: single value (`{value,max}`) or multi-ring (`{max,data}`).
+ */
 export interface GaugeSpec {
   title?: string;
   unit?: string;
@@ -18,6 +24,10 @@ export interface GaugeSpec {
 
 const GAUGE_EXAMPLE = 'value=87&max=100';
 
+/**
+ * Build gauge spec JSON from `?value=&max=` (single) or `?labels=&values=` (multi-ring).
+ * Returns null when neither form is present.
+ */
 export function gaugeSpecFromParams(params: URLSearchParams): string | null {
   const d = params.get('d');
   if (d !== null && d !== '') return d;
@@ -55,6 +65,11 @@ export function gaugeSpecFromParams(params: URLSearchParams): string | null {
   return JSON.stringify(obj);
 }
 
+/**
+ * Parse and validate gauge JSON.
+ *
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseGaugeSpec(raw: string | null): GaugeSpec {
   if (raw === null || raw === '') {
     throw new ApiError(400, `Missing data. Use ?type=gauge&${GAUGE_EXAMPLE} — or ?d= with {"value":87,"max":100}`);

@@ -1,17 +1,27 @@
 // 公共解析基础:ApiError、LIMITS、单系列 ChartSpec(扁平参数/JSON)、统一入口 parseInput。
 // 各图表专属解析器在本目录独立文件;新增图表 = 新增 specs/xxx.ts + render/xxx.ts。
 
+/**
+ * API error with an HTTP status. Parsers and renderers throw these;
+ * the HTTP layer maps them to `status` + a plain-text body.
+ */
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
     super(message);
   }
 }
 
+/**
+ * One labeled data point: a category and its value.
+ */
 export interface Datum {
   label: string;
   value: number;
 }
 
+/**
+ * Single-series chart data (pie / bar / hbar / line / area / radar).
+ */
 export interface ChartSpec {
   title?: string;
   subtitle?: string; // 编辑式副标题(规范 area-3:16px 灰,随大标题)
@@ -20,6 +30,10 @@ export interface ChartSpec {
   data: Datum[];
 }
 
+/**
+ * Global input limits shared by all parsers: text caps and max
+ * categories / points / axes / series.
+ */
 export const LIMITS = {
   title: 80,
   subtitle: 96,
@@ -35,6 +49,9 @@ export const LIMITS = {
   maxScatter: 200,
 } as const;
 
+/**
+ * Cap on the main data axis per chart kind (categories, points or axes).
+ */
 export const MAX_BY_KIND: Record<string, number> = {
   pie: LIMITS.maxPie,
   bar: LIMITS.maxBar,
@@ -49,6 +66,14 @@ const EXAMPLE = encodeURIComponent(
 );
 const EXAMPLE_FLAT = 'title=Demo&labels=A,B&values=1,2';
 
+/**
+ * Parse and validate a single-series spec from a JSON string (the `?d=` payload).
+ *
+ * @param raw JSON string; null or empty triggers the corrective error
+ * @param kind chart kind — selects the applicable limits
+ * @returns the validated ChartSpec
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' | 'line' | 'area' | 'radar'): ChartSpec {
   if (raw === null || raw === '') {
     throw new ApiError(400, `Missing data. Use flat params: ?${EXAMPLE_FLAT} — or JSON: ?d=${EXAMPLE}`);
@@ -124,6 +149,11 @@ export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' 
 
 // 扁平参数 → JSON 字符串:让 URL 永远可读,无需百分号编码。
 // 支持两种形态:?labels=A,B&values=1,2(逗号)或 ?labels=A&labels=B&values=1&values=2(重复参数,标签含逗号时用)
+/**
+ * Build single-series spec JSON from flat params (`labels=A,B&values=1,2`;
+ * repeated params support comma-containing labels).
+ * Returns null when no data params are present.
+ */
 export function specFromParams(params: URLSearchParams, kind: 'pie' | 'bar' | 'hbar' | 'line' | 'area' | 'radar'): string | null {
   const d = params.get('d');
   if (d !== null && d !== '') return d;
@@ -154,6 +184,9 @@ export function specFromParams(params: URLSearchParams, kind: 'pie' | 'bar' | 'h
   return JSON.stringify(obj);
 }
 
+/**
+ * All values of a repeated query param: `labels=a&labels=b` → `['a','b']`.
+ */
 export function flatList(params: URLSearchParams, key: string): string[] {
   const all = params.getAll(key);
   if (all.length > 1) return all; // 重复参数形态
@@ -166,6 +199,9 @@ function jsonType(v: unknown): string {
   return typeof v;
 }
 
+/**
+ * Truncate a string to at most `n` characters (input hardening for titles/labels).
+ */
 export function clip(s: string, n: number): string {
   return s.length > n ? s.slice(0, n - 1) + '…' : s;
 }

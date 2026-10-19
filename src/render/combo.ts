@@ -4,6 +4,9 @@ import { TAB, card } from '../theme.js';
 import { esc, fmtNum, niceTicks, r2, topLegend, trunc, textW, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
+/**
+ * Bars + line(s) in one chart; dual y-axes on >5× magnitude spread.
+ */
 export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   if (o.skin.rules.comboMode === 'evil') return renderComboEvil(spec, o);
   const { height, version, skin } = o;

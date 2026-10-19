@@ -185,6 +185,9 @@ export function makeVariant(v: VariantInput): Variant {
 /** 渲染期皮肤:变体 + 明暗模式 → 渲染器直接消费 */
 export type Scheme = 'auto' | 'dark' | 'light';
 
+/**
+ * A resolved, render-ready skin: palette, rules, and optional design canvas size.
+ */
 export interface Skin {
   scheme: Scheme;
   series: Duo[];

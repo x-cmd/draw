@@ -3,11 +3,17 @@ import { ApiError, LIMITS, clip } from './base.js';
 
 // ===== 散点图(scatter):x,y 点对 =====
 
+/**
+ * One scatter series: a name plus `[x,y]` points.
+ */
 export interface ScatterSeries {
   name: string;
   points: { x: number; y: number }[];
 }
 
+/**
+ * Scatter data — one or more series; negative coordinates allowed.
+ */
 export interface ScatterSpec {
   title?: string;
   unit?: string;
@@ -19,6 +25,10 @@ export interface ScatterSpec {
 
 const SCATTER_EXAMPLE = 'x=1,2,3&y=4,5,6';
 
+/**
+ * Build scatter spec JSON from `?x=&y=` (repeated pairs form multiple series).
+ * Returns null when absent.
+ */
 export function scatterSpecFromParams(params: URLSearchParams): string | null {
   const d = params.get('d');
   if (d !== null && d !== '') return d;
@@ -86,6 +96,11 @@ function parsePoints(rawPoints: unknown[], at: string): { x: number; y: number }
   });
 }
 
+/**
+ * Parse and validate scatter JSON (`{"points":[[1,4]]}` or `{"series":[...]}`).
+ *
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseScatterSpec(raw: string | null): ScatterSpec {
   if (raw === null || raw === '') {
     throw new ApiError(400, `Missing data. Use ?type=scatter&${SCATTER_EXAMPLE} — or ?d= with {"points":[[1,4],[2,5]]}`);

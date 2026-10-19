@@ -8,6 +8,9 @@ import { radialFit } from './measure.js';
 
 const HAND_FONT = "Handlee,'Comic Sans MS','Chalkboard SE','Comic Neue','Segoe Print',cursive";
 
+/**
+ * Radar chart — single or multi-series, dispatched by the input tag.
+ */
 export function renderRadarByMode(input: ChartInput, o: RenderOpts): string {
   const mode = o.skin.rules.radarMode;
   if (mode === 'evil') {

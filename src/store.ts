@@ -4,9 +4,18 @@
 import { ApiError } from './specs/index.js';
 import type { DrawEnv } from './types.js';
 
+/**
+ * All supported chart template ids — the valid `?type=` values.
+ */
 export const CHART_TEMPLATES = ['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey', 'qr'] as const;
+/**
+ * A chart template id; one of {@link CHART_TEMPLATES}.
+ */
 export type ChartTemplate = (typeof CHART_TEMPLATES)[number];
 
+/**
+ * A stored (short-linked) chart: template + style family + normalized spec.
+ */
 export interface StoredChart {
   template: ChartTemplate;
   theme: string;
@@ -24,6 +33,9 @@ export function assertHash(hash: string): void {
 }
 
 // 规范化 JSON(递归排序 key),让"相同数据"得到相同指纹
+/**
+ * Canonical JSON with keys recursively sorted — equal data, equal text.
+ */
 export function canonicalJson(v: unknown): string {
   const walk = (x: unknown): unknown => {
     if (Array.isArray(x)) return x.map(walk);
@@ -39,6 +51,9 @@ export function canonicalJson(v: unknown): string {
   return JSON.stringify(walk(v));
 }
 
+/**
+ * Content hash (SHA-256, first 16 hex chars) of a stored chart — the short-link id.
+ */
 export async function fingerprint(doc: StoredChart): Promise<string> {
   const data = new TextEncoder().encode(canonicalJson(doc));
   const digest = await crypto.subtle.digest('SHA-256', data);

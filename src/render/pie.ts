@@ -111,6 +111,9 @@ export function segPath(cx: number, cy: number, R: number, r: number, a0: number
 
 const HALO_ATTRS = 'paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round"';
 
+/**
+ * Donut chart (solid pie with `o.donut = false`); label placement follows the skin.
+ */
 export function renderPie(spec: ChartSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
   const rules = skin.rules;

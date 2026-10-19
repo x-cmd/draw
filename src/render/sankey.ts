@@ -172,6 +172,9 @@ function labelStyles(nodes: LaidNode[], cols: number): Map<LaidNode, 'two' | 'on
   return m;
 }
 
+/**
+ * Sankey flow diagram with weighted bands.
+ */
 export function renderSankey(spec: SankeySpec, o: RenderOpts): string {
   const mode = o.skin.rules.sankeyMode;
   if (mode === 'fund') return renderSankeyFund(spec, o);

@@ -17,6 +17,9 @@ function barGeo(w: number, h: number, hasTitle: boolean, m: GeoMeasure = {}) {
   };
 }
 
+/**
+ * Grouped (side-by-side) multi-series bars.
+ */
 export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   const height = o.height;
   const { version, skin } = o;

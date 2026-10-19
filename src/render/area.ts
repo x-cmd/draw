@@ -444,6 +444,9 @@ function renderPolkaArea(spec: MultiSpec, o: RenderOpts): string {
 }
 
 // 面积模式分发:auto=常规;pixel=单系列像素;polka=阶梯波点(单/多系列)
+/**
+ * Area chart — single or multi-series, dispatched by the input tag.
+ */
 export function renderAreaByMode(input: { multi: boolean; spec: ChartSpec | MultiSpec }, o: RenderOpts): string {
   const mode = o.skin.rules.areaMode;
   if (mode === 'pixel') {

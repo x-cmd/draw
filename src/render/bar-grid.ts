@@ -6,6 +6,9 @@ import { esc, fmtFull, r2, trunc, type RenderOpts, svgDoc, sVar } from './svg.js
 
 const MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,monospace";
 
+/**
+ * Table-style bar chart (`t=grid`): rows of label + inline bar + value.
+ */
 export function renderBarGrid(spec: ChartSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
   const plain = skin.rules.canvas === 'plain';

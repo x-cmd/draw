@@ -29,6 +29,9 @@ import { resolveSkin, type Scheme } from '../styles/index.js';
 import { CHART_TEMPLATES, type ChartTemplate, type StoredChart } from '../store.js';
 
 // 渲染结果(HTTP 层据此构造响应头;库用户直接拿 svg)
+/**
+ * A render result: the SVG plus the version and Cache-Control it should carry.
+ */
 export interface DrawResult {
   svg: string;
   version: number;
@@ -141,6 +144,12 @@ function qrRender(request: URL): DrawResult {
 }
 
 // GET ?type=pie|bar|hbar|line|radar|gauge|scatter|combo|sankey|qr&...
+/**
+ * Render a chart synchronously from a URL's query params — exactly the
+ * GET /draw semantics (`type` required; all params documented in the README).
+ *
+ * @throws ApiError(400) with a corrective example on bad params
+ */
 export function renderFromUrl(url: URL): DrawResult {
   const typeParam = url.searchParams.get('type');
   if (!typeParam || !CHART_TEMPLATES.includes(typeParam as ChartTemplate)) {
@@ -217,6 +226,9 @@ export function renderFromUrl(url: URL): DrawResult {
 }
 
 // 短链渲染段:?w/?h/?num/?scheme 应用到存档 doc(immutable,版本恒为当前)
+/**
+ * Render a stored (short-linked) chart, applying `w`/`h`/`num`/`scheme` overrides from the URL.
+ */
 export function renderStoredFromUrl(doc: StoredChart, url: URL): DrawResult {
   const skin = resolveSkin(doc.template, doc.theme, schemeParam(url.searchParams));
   const [dw, dh] = skin.size ?? SIZE[doc.template];

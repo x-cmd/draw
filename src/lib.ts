@@ -43,6 +43,24 @@ function toSearchParams(o: Record<string, string | string[]>): URLSearchParams {
   return sp;
 }
 
+/**
+ * Render a chart to an SVG string — synchronously, with no network access.
+ *
+ * Params mirror the `GET /draw` query string exactly (`type` required):
+ * `labels`/`values` (or `series=`), `t` style family, `scheme`, `w`/`h`, `num`,
+ * `title`, `unit`, `v`, and the chart-specific params from the README.
+ *
+ * @example
+ * ```ts
+ * import { draw } from "@x-cmd/draw";
+ *
+ * const { svg, version } = draw({ type: "pie", labels: "A,B", values: "3,2" });
+ * draw("?type=bar&labels=Mon,Tue&values=3,5");                        // query string form
+ * draw({ type: "bar", labels: ["Q1, 2024", "Q2"], values: [1, 2] });  // arrays = repeated params
+ * ```
+ *
+ * @throws ApiError(400) with a corrective message on bad params
+ */
 export function draw(params: Record<string, string | string[]> | URLSearchParams | string): DrawResult {
   const sp = typeof params === 'string'
     ? new URLSearchParams(params.startsWith('?') ? params.slice(1) : params)

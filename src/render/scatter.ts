@@ -15,6 +15,9 @@ function spanTicks(min: number, max: number, count: number): number[] {
   return out;
 }
 
+/**
+ * Scatter plot with two numeric axes; negative values allowed.
+ */
 export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
   const series: ScatterSeries[] = spec.series?.length

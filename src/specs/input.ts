@@ -3,12 +3,18 @@ import { ApiError, parseChartSpec, specFromParams, type ChartSpec } from './base
 import { parseSeriesSpec, seriesSpecFromParams, type MultiSpec } from './multi.js';
 
 // 统一入口:单系列(ChartSpec)或多系列(MultiSpec)
+/**
+ * A parsed chart input, tagged single- (`multi: false`) or multi-series.
+ */
 export type ChartInput =
   | { multi: false; spec: ChartSpec }
   | { multi: true; spec: MultiSpec };
 
 // 结构判断(而非字符串嗅探):按解析后的对象是否含 "series" 键决定单/多系列,
 // 避免标题里恰好含 "series" 字样时误路由
+/**
+ * Structural check: does this JSON payload carry a `series` array?
+ */
 export function looksMultiSeries(json: string): boolean {
   try {
     const obj: unknown = JSON.parse(json);
@@ -18,6 +24,12 @@ export function looksMultiSeries(json: string): boolean {
   }
 }
 
+/**
+ * Unified parser for the six basic kinds: flat params or `?d=` JSON
+ * → a tagged ChartInput.
+ *
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseInput(params: URLSearchParams, kind: 'pie' | 'bar' | 'hbar' | 'line' | 'area' | 'radar'): ChartInput {
   if (kind === 'pie') {
     if (params.has('series')) {

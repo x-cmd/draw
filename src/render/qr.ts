@@ -18,6 +18,15 @@ export function parseColor(raw: string | null, fallback: string, name: string): 
 export const QR_DEFAULTS = { fg: 'var(--d-s1)', bg: 'var(--d-card)' } as const;
 const MAX_QR_TEXT = 1000;
 
+/**
+ * Render a QR code with optional caption and subtitle.
+ *
+ * @param text payload, at most 1000 characters
+ * @param fg module color, 6-digit hex
+ * @param bg background color, 6-digit hex
+ * @param caption short title line under the code
+ * @param subtitle smaller unit/description line
+ */
 export function renderQR(text: string, fg: string, bg: string, width: number, height: number, version: number, skin: Skin, caption?: string, subtitle?: string): string {
   const qr = encode(text, { ecc: 'M', border: 0 });
   const n = qr.size;

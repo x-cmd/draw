@@ -39,6 +39,9 @@ import { esc, fmtFull, fmtNum, r2, textW, trunc, type RenderOpts, svgDoc, titleB
 import { segPath, pol } from './pie.js';
 import { C_gaugeGradient } from '../styles/common.js';
 
+/**
+ * 240° gauge with a center value (single) or concentric rings (multi).
+ */
 export function renderGauge(spec: GaugeSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
   if (skin.rules.gauge === 'zones') return renderZoneGauge(spec, o);

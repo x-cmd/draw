@@ -5,6 +5,9 @@ import { card } from '../theme.js';
 import { esc, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar } from './svg.js';
 import { lineLayout } from './line.js';
 
+/**
+ * Multi-series lines; only each line peak is value-labeled to avoid clutter.
+ */
 export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
   const allSegs: LineSeg[] = [];

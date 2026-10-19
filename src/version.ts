@@ -3,13 +3,24 @@
 // immutable 仅用于内容寻址短链 /c/<hash>(渲染代码随部署变化,/draw 的输出做不到真正冻结)。
 import { ApiError } from './specs/index.js';
 
+/**
+ * The current render version. Bump when a deploy changes rendered output.
+ */
 export const CURRENT_VERSION = 1;
 
+/**
+ * A resolved version plus the Cache-Control policy it implies.
+ */
 export interface VersionInfo {
   version: number;
   cacheControl: string;
 }
 
+/**
+ * Resolve `?v=`: omitted → latest (300s cache); `v=N` → pinned (1-day cache).
+ *
+ * @throws ApiError(400) for values outside 1..CURRENT_VERSION
+ */
 export function resolveVersion(vParam: string | null): VersionInfo {
   if (vParam === null) {
     return { version: CURRENT_VERSION, cacheControl: 'public, max-age=300' };

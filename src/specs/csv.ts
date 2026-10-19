@@ -2,6 +2,10 @@
 import { ApiError } from './base.js';
 
 // CSV → spec JSON:首行为表头。两列(label,value)=单系列;多列(label,系列A,系列B)=多系列
+/**
+ * Convert CSV (first row = header) into spec JSON: one numeric column
+ * → single-series spec; several → multi-series.
+ */
 export function csvToSpecJson(csv: string): string {
   const rows = csv.replace(/\r/g, '').split('\n').filter((l) => l.trim() !== '');
   if (rows.length < 2) throw new ApiError(400, 'CSV needs a header row and at least one data row');

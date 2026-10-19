@@ -5,6 +5,9 @@ import { card } from '../theme.js';
 import { esc, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY } from './svg.js';
 import { plainGeo, type GeoMeasure } from './measure.js';
 
+/**
+ * Single smooth line with gradient area fill.
+ */
 export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
   const rules = skin.rules;

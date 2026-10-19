@@ -3,11 +3,18 @@ import { ApiError, LIMITS, MAX_BY_KIND, clip, flatList } from './base.js';
 
 // ===== 多系列(bar/line):labels + series[{name, values}] =====
 
+/**
+ * One named series of a multi-series chart.
+ */
 export interface SeriesEntry {
   name: string;
   values: number[];
 }
 
+/**
+ * Multi-series chart data: shared labels + named series
+ * (grouped/stacked bars, multi-line, multi-area, multi-radar).
+ */
 export interface MultiSpec {
   title?: string;
   unit?: string;
@@ -17,6 +24,12 @@ export interface MultiSpec {
 
 const SERIES_EXAMPLE_FLAT = 'labels=Mon,Tue&series=draw:120,180&series=qc:80,90';
 
+/**
+ * Parse and validate a multi-series spec from a JSON string.
+ *
+ * @param kind `'bar'` or `'line'` — selects the applicable limits
+ * @throws ApiError(400) with a corrective example on bad input
+ */
 export function parseSeriesSpec(raw: string | null, kind: 'bar' | 'line'): MultiSpec {
   if (raw === null || raw === '') {
     throw new ApiError(400, `Missing data. Use ?${SERIES_EXAMPLE_FLAT} — or ?d= with {"labels":["A","B"],"series":[{"name":"s1","values":[1,2]}]}`);
@@ -89,6 +102,11 @@ export function parseSeriesSpec(raw: string | null, kind: 'bar' | 'line'): Multi
 }
 
 // 扁平参数 → 多系列 JSON:series=名字:1,2,3 重复参数
+/**
+ * Build multi-series spec JSON from flat params
+ * (`labels=Mon,Tue&series=a:1,2&series=b:3,4`).
+ * Returns null when no series params are present.
+ */
 export function seriesSpecFromParams(params: URLSearchParams): string | null {
   const entries = params.getAll('series');
   if (entries.length === 0) return null;
