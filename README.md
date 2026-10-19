@@ -9,39 +9,39 @@ SVG chart generation for the AI era. One endpoint — `/draw?type=...` — with 
 
 ## Sneak peek
 
-All the data lives in the URL — open it in a browser, drop it into an `<img>`, paste it into Markdown: the SVG renders right away.
+All the data lives in the URL — open it in a browser, drop it into an `<img>`, paste it into your repo README: the SVG renders right away.
 
-**Sankey — growth funnel** (`type=sankey&t=pipeline`)
-
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k
-```
-
-![Sankey: growth funnel](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k)
-
-**Combo — bars + line, dual y-axis on magnitude spread** (`type=combo`)
+**Sankey — contributor funnel** (`type=sankey&t=pipeline`)
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl
+https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users
 ```
 
-![Combo: bars + line](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl)
+![Sankey: contributor funnel](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users)
 
-**Radar — multi-series comparison** (`type=radar&t=evil`)
+**Combo — weekly downloads vs star-growth rate** (`type=combo`, dual y-axis on magnitude spread)
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison
+https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl
 ```
 
-![Radar: v1 vs v2](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison)
+![Combo: downloads + star growth](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl)
 
-**Pie — grayscale with ring total** (`type=pie&t=market-mono`)
+**Hbar — open/closed issues by area, butterfly** (`type=hbar&t=xcmd-issue`)
 
 ```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12
+https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
 ```
 
-![Pie: market share](https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
+![Hbar: issues by area](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
+
+**Pie — language composition** (`type=pie&t=market-mono`)
+
+```text
+https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3
+```
+
+![Pie: languages](https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)
 
 ## Three ways to use it (one render core)
 

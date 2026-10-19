@@ -9,39 +9,39 @@ AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,�
 
 ## 先睹为快
 
-数据全在 URL 里 — 浏览器打开、`<img>` 嵌入、Markdown 粘贴,SVG 直接渲染:
+数据全在 URL 里 — 浏览器打开、`<img>` 嵌入、贴进仓库 README,SVG 直接渲染:
 
-**桑基图 — 增长漏斗**(`type=sankey&t=pipeline`)
-
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k
-```
-
-![桑基图:增长漏斗](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Ads,Search,Blog,Signup,Trial,Buy&links=Ads>Trial:30;Search>Trial:22;Blog>Signup:18;Signup>Trial:25;Trial>Buy:40&title=Growth%20funnel&unit=k)
-
-**混合图 — 柱+线,量级差自动双 y 轴**(`type=combo`)
+**桑基图 — 贡献者漏斗**(`type=sankey&t=pipeline`)
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl
+https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users
 ```
 
-![混合图:柱+线](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20downloads&unit=dl)
+![桑基图:贡献者漏斗](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Visitors>Forks:18;Stars>Forks:17;Forks>PRs:9;Visitors>PRs:3;PRs>Merged:7&title=Contributor%20funnel&unit=users)
 
-**雷达图 — 多系列对比**(`type=radar&t=evil`)
+**混合图 — 周下载 vs 星标增速,量级差自动双 y 轴**(`type=combo`)
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison
+https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl
 ```
 
-![雷达图:v1 vs v2](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=v2:85,90,70,80,95&series=v1:70,78,62,72,84&title=Product%20comparison)
+![混合图:周下载与星标增速](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=Downloads:120,180,150,210,240,200,260&line=Star%20growth:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Weekly%20npm%20downloads&unit=dl)
 
-**环形图 — 灰阶 + 环心总计**(`type=pie&t=market-mono`)
+**水平柱 — 分区 issue 开/闭蝴蝶图**(`type=hbar&t=xcmd-issue`)
 
 ```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12
+https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
 ```
 
-![环形图:市场份额](https://x-cmd.com/draw?type=pie&t=market-mono&title=Market%20share&unit=B&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
+![水平柱:分区 issue 开闭](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
+
+**环形图 — 语言构成**(`type=pie&t=market-mono`)
+
+```text
+https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3
+```
+
+![环形图:语言构成](https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)
 
 ## 三种使用方式(同一份渲染核心)
 
