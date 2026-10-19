@@ -99,19 +99,19 @@ deno task serve                                                    # local serve
 
 **`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — render a chart
 
-| type | chart | limits |
-|---|---|---|
-| `pie` | donut; `donut=0` for a solid pie | ≤100 categories (>9 auto-merge into Other) |
-| `bar` | grouped columns; multi-series with `stack=1` for stacked | ≤30 groups |
-| `hbar` | horizontal bars (rankings; labels left, values right) | ≤30 bars, single series (some styles take two) |
-| `line` | smooth line + gradient area / multi-line | ≤60 points |
-| `area` | area / multi-series area (gradient fill) | ≤60 points |
-| `radar` | radar chart | 3–12 axes |
-| `gauge` | gauge (240° arc + center value) | `value`+`max` (default 100), value ≤ max; multi-ring ≤8 |
-| `scatter` | scatter (two numeric axes, negatives supported; no value labels by default) | `x=&y=`, ≤200 points |
-| `combo` | bars (`series=`) + line (`line=`) in one chart; `stack=1` to stack the bars | ≤30 groups, ≤6 series total |
-| `sankey` | flow diagram with weighted bands | `labels=`+`links=A>B:30`, ≤24 nodes/60 links |
-| `qr` | QR code | `d`=text (≤1000 chars), `fg`/`bg` colors, `title`/`unit` captions |
+| type | chart | limits | example |
+|---|---|---|---|
+| `pie` | donut; `donut=0` for a solid pie | ≤100 categories (>9 auto-merge into Other) | [view](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language) |
+| `bar` | grouped columns; multi-series with `stack=1` for stacked | ≤30 groups | [view](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6) |
+| `hbar` | horizontal bars (rankings; labels left, values right) | ≤30 bars, single series (some styles take two) | [view](https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area) |
+| `line` | smooth line + gradient area / multi-line | ≤60 points | [view](https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,25,22,30&title=Stars) |
+| `area` | area / multi-series area (gradient fill) | ≤60 points | [view](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Downloads) |
+| `radar` | radar chart | 3–12 axes | [view](https://x-cmd.com/draw?type=radar&t=evil&labels=perf,docs,tests,dx&series=v1:7,5,8,6&series=v2:8,8,9,8) |
+| `gauge` | gauge (240° arc + center value) | `value`+`max` (default 100), value ≤ max; multi-ring ≤8 | [view](https://x-cmd.com/draw?type=gauge&title=CI%20pass%20rate&value=87&max=100) |
+| `scatter` | scatter (two numeric axes, negatives supported; no value labels by default) | `x=&y=`, ≤200 points | [view](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latency) |
+| `combo` | bars (`series=`) + line (`line=`) in one chart; `stack=1` to stack the bars | ≤30 groups, ≤6 series total | [view](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri&series=dl:120,180,150,210,240&line=growth:3.1,3.4,3.2,3.8,4.1&title=Downloads) |
+| `sankey` | flow diagram with weighted bands | `labels=`+`links=A>B:30`, ≤24 nodes/60 links | [view](https://x-cmd.com/draw?type=sankey&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Stars>Forks:17;Forks>PRs:9;PRs>Merged:7&title=Contributor%20funnel) |
+| `qr` | QR code | `d`=text (≤1000 chars), `fg`/`bg` colors, `title`/`unit` captions | [view](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me) |
 
 **`GET /draw`** (no params) or `?tab=pie` — the demo page (11 chart types, all style variants, dual URL forms)
 **`POST /draw?type=...`** — submit a JSON/CSV body to create a permanent short link

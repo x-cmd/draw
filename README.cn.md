@@ -98,19 +98,19 @@ deno task serve                                                    # 本地服�
 
 **`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — 渲染图表
 
-| type | 图表 | 限制 |
-|---|---|---|
-| `pie` | 环形图;`donut=0` 变实心饼 | ≤100 类(>9 自动合并 Other) |
-| `bar` | 柱状图/分组并排;多系列加 `stack=1` 变堆叠柱 | ≤30 组 |
-| `hbar` | 水平柱状图(排行场景,标签左值右) | ≤30 条,单系列(部分风格双系列) |
-| `line` | 折线图(平滑+渐变面积)/多折线 | ≤60 点 |
-| `area` | 面积图/多系列面积(渐变填充) | ≤60 点 |
-| `radar` | 雷达图 | 3-12 维 |
-| `gauge` | 仪表盘(240° 弧+中心数值) | `value`+`max`(默认100),value≤max;多环 ≤8 |
-| `scatter` | 散点图(双数值轴,支持负值;默认不标数值) | `x=&y=`,≤200 点 |
-| `combo` | 混合图:柱(`series=`)+线(`line=`)同图,`stack=1` 变堆叠柱 | ≤30 组,共 ≤6 系列 |
-| `sankey` | 桑基图(流向带宽) | `labels=`+`links=A>B:30`,≤24 节点/60 链接 |
-| `qr` | 二维码 | `d`=文本(≤1000 字符),`fg`/`bg` 配色,`title`/`unit` 标注 |
+| type | 图表 | 限制 | 示例 |
+|---|---|---|---|
+| `pie` | 环形图;`donut=0` 变实心饼 | ≤100 类(>9 自动合并 Other) | [看效果](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language) |
+| `bar` | 柱状图/分组并排;多系列加 `stack=1` 变堆叠柱 | ≤30 组 | [看效果](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6) |
+| `hbar` | 水平柱状图(排行场景,标签左值右) | ≤30 条,单系列(部分风格双系列) | [看效果](https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area) |
+| `line` | 折线图(平滑+渐变面积)/多折线 | ≤60 点 | [看效果](https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,25,22,30&title=Stars) |
+| `area` | 面积图/多系列面积(渐变填充) | ≤60 点 | [看效果](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Downloads) |
+| `radar` | 雷达图 | 3-12 维 | [看效果](https://x-cmd.com/draw?type=radar&t=evil&labels=perf,docs,tests,dx&series=v1:7,5,8,6&series=v2:8,8,9,8) |
+| `gauge` | 仪表盘(240° 弧+中心数值) | `value`+`max`(默认100),value≤max;多环 ≤8 | [看效果](https://x-cmd.com/draw?type=gauge&title=CI%20pass%20rate&value=87&max=100) |
+| `scatter` | 散点图(双数值轴,支持负值;默认不标数值) | `x=&y=`,≤200 点 | [看效果](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latency) |
+| `combo` | 混合图:柱(`series=`)+线(`line=`)同图,`stack=1` 变堆叠柱 | ≤30 组,共 ≤6 系列 | [看效果](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri&series=dl:120,180,150,210,240&line=growth:3.1,3.4,3.2,3.8,4.1&title=Downloads) |
+| `sankey` | 桑基图(流向带宽) | `labels=`+`links=A>B:30`,≤24 节点/60 链接 | [看效果](https://x-cmd.com/draw?type=sankey&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Stars>Forks:17;Forks>PRs:9;PRs>Merged:7&title=Contributor%20funnel) |
+| `qr` | 二维码 | `d`=文本(≤1000 字符),`fg`/`bg` 配色,`title`/`unit` 标注 | [看效果](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me) |
 
 **`GET /draw`**(无参数)或 `?tab=pie` — 演示页(11 图种分类、全部风格变体、URL 双形态面板)
 **`POST /draw?type=...`** — 提交 JSON/CSV body 创建永久短链
