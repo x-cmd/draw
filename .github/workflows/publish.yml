@@ -45,8 +45,10 @@ jobs:
       # deno publish 解析 package.json 裸依赖(d3/uqr)需要 node_modules
       - run: npm ci --omit=dev
       - name: Publish to JSR (skip if version already there)
-        # JSR 服务端发布队列偶发卡住(too many requests),限时+容错,下推自动重试
-        timeout-minutes: 5
+        # 语义:trigger 优先,不陪跑。正常路径上传+处理 <30s 即确认退出;
+        # JSR 队列偶发卡住(too many requests)时 2 分钟放弃 —— 发布任务是
+        # 服务端持久的,照常落地,由下一次 push 的版本守卫确认。
+        timeout-minutes: 2
         continue-on-error: true
         run: |
           V=$(node -p "require('./package.json').version")
