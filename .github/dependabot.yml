@@ -1,0 +1,14 @@
+# Dependabot — 依赖与 GitHub Actions 的周期更新(OpenSSF Scorecard 提分项)
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dev-deps:
+        dependency_type: development
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

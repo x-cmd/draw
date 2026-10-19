@@ -1,0 +1,44 @@
+# OpenSSF Scorecard — 供应链安全评分
+# 每周 + push 到 main 时扫描,结果发布到 api.securityscorecards.dev
+# (README 徽章的数据源)并上传 SARIF 到 Code scanning。
+# 参考模板: https://github.com/ossf/scorecard-action
+
+name: Scorecard supply-chain security
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: '41 2 * * 1' # 每周一 02:41 UTC(避开整点)
+  push:
+    branches:
+      - main
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      # 上传 SARIF 到 Code scanning
+      security-events: write
+      # 发布结果到 api.securityscorecards.dev(徽章数据源)
+      id-token: write
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: 'Run analysis'
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - name: 'Upload SARIF to Code scanning'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
