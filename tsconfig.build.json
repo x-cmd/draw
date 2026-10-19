@@ -1,0 +1,22 @@
+// npm 发包构建:tsc 产 ESM JS + d.ts 到 dist/。
+// lib.ts(库入口)与 node/cli.ts(bin)两个入口;依赖闭包自动带入
+// specs/render/styles/version/theme/store(后者仅经 dispatch 的 type-only 链)。
+// DOM lib 提供 URLSearchParams/TextEncoder/crypto.subtle/btoa 等标准类型;
+// types:["node"] 仅为 cli.ts 的 process/fs(不影响 lib.d.ts 的纯净)。
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "files": ["src/lib.ts", "src/node/cli.ts"]
+}

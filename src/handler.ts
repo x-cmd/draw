@@ -29,7 +29,7 @@ function baseOf(url: URL, env: DrawEnv): string {
   return url.pathname === '/draw' || url.pathname.startsWith('/draw/') ? '/draw' : '';
 }
 
-function svgResponse(result: DrawResult, extra?: HeadersInit): Response {
+function svgResponse(result: DrawResult, extra?: Record<string, string>): Response {
   return new Response(result.svg, {
     headers: {
       'content-type': SVG_CT,
@@ -40,7 +40,7 @@ function svgResponse(result: DrawResult, extra?: HeadersInit): Response {
   });
 }
 
-function textResponse(status: number, msg: string, extra?: HeadersInit): Response {
+function textResponse(status: number, msg: string, extra?: Record<string, string>): Response {
   return new Response(msg + '\n', {
     status,
     headers: { 'content-type': TEXT_CT, 'cache-control': 'no-store', ...extra },

@@ -2,6 +2,40 @@
 
 AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,数据在 URL 里、输出带机器可读 `<metadata>`、Cloudflare Workers + TypeScript 直生成 SVG。风格体系对齐设计师规范(13 张 SVG),每图种多风格变体。
 
+## 三种使用方式(同一份渲染核心)
+
+**托管服务**(零安装):直接拼 URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
+
+**npm 库**(离线/嵌入,同步无网络,参数与 URL 完全一致):
+
+```sh
+npm install @x-cmd/draw
+```
+```ts
+import { draw } from '@x-cmd/draw';
+const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
+// 也接受查询串: draw('?type=bar&labels=Mon,Tue&values=3,5')
+// 数组值 = 重复参数(labels 含逗号时): draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
+```
+
+**CLI**(`npm i -g @x-cmd/draw` 后可用,或 `npx`):
+
+```sh
+x-draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
+x-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # 裸查询串,与 URL 同参
+```
+
+**自托管**:三种入口任选 —
+
+```sh
+git clone https://github.com/x-cmd/draw && cd draw && npm install
+npm run serve                    # Node 本地服务(默认 http://localhost:8787/draw,含演示页)
+npm run dev                      # Cloudflare wrangler 本地开发
+bash scripts/setup.sh            # 一键部署到你自己的 Cloudflare 账号
+```
+
+环境变量(Node 服务):`PORT`(默认 8787)· `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN`(配置后 POST 短链同样可用,未配置时与线上自部署一样优雅降级)。
+
 ## 端点
 
 **`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — 渲染图表

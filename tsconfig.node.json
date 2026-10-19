@@ -1,0 +1,13 @@
+// Node 侧(本地服务 server.ts / CLI cli.ts + 共享层)类型检查:
+// 与根 tsconfig 的关键差异 — 用 @types/node 的 undici 全局(Request/Response/fetch),
+// 不加载 worker-configuration.d.ts(其 NodeJS 命名空间合并会与 @types/node 冲突),
+// 因此排除依赖 Workers 全局(Env/ExecutionContext/caches)的 Worker 入口与 env.d.ts。
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ES2022"]
+  },
+  "include": ["src", "test"],
+  "exclude": ["node_modules", "src/index.ts", "src/env.d.ts"]
+}

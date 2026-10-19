@@ -7,3 +7,4 @@ REPORT-*.md
 
 # 本地待办/遗留记录,不入库
 BACKLOG.md
+dist/

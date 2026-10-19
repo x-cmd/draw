@@ -97,3 +97,4 @@ Tue,180,90
 - 错误返回 4xx 纯文本并附修正示例,按提示重拼即可
 - POST 限 30 次/分钟/IP
 - 文字绝不重叠(放不下会整层省略);数值必须 ≥0(scatter 可负)
+- 无网络/离线场景:`npm install @x-cmd/draw` 后用 `draw(params)` 同步渲染(参数与 URL 完全一致),或 `npx @x-cmd/draw --type pie --labels A,B --values 3,2`;自托管见仓库 README(`npm run serve` 起本地服务,`scripts/setup.sh` 一键部署 Cloudflare)
