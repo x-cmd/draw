@@ -37,6 +37,6 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw?type=combo
 related:
-  overview: docs/2-overview/cn.md
-  bar: docs/11-bar/cn.md
-  line: docs/13-line/cn.md
+  overview: docs/2-overview/zh.md
+  bar: docs/11-bar/zh.md
+  line: docs/13-line/zh.md

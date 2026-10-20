@@ -30,7 +30,7 @@ data:
             Same `t=` renders differently per chart (e.g., `evil` is rounded sectors in pie, thick line in line).
         confidence: 10
         reference:
-          - docs/3-styles-themes/cn.md
+          - docs/3-styles-themes/zh.md
           - docs/3-styles-themes/en.md
 
       - id: styles-default-per-chart
@@ -54,7 +54,7 @@ data:
             | qr | (black-on-white) |
         confidence: 10
         reference:
-          - docs/3-styles-themes/cn.md
+          - docs/3-styles-themes/zh.md
 
       - id: dark-mode-scheme
         question:
@@ -89,5 +89,5 @@ data:
             - Some styles (evil, revenue) auto-adjust color saturation
         confidence: 10
         reference:
-          - docs/3-styles-themes/cn.md
-          - docs/2-overview/cn.md
+          - docs/3-styles-themes/zh.md
+          - docs/2-overview/zh.md

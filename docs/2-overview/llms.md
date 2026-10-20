@@ -43,8 +43,8 @@ official:
   endpoint: https://x-cmd.com/draw
   repo: https://github.com/x-cmd/draw
 related:
-  pie: docs/10-pie/cn.md
-  bar: docs/11-bar/cn.md
-  line: docs/13-line/cn.md
-  styles: docs/3-styles-themes/cn.md
-  formats: docs/5-data-formats/cn.md
+  pie: docs/10-pie/zh.md
+  bar: docs/11-bar/zh.md
+  line: docs/13-line/zh.md
+  styles: docs/3-styles-themes/zh.md
+  formats: docs/5-data-formats/zh.md

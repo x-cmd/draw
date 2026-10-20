@@ -36,5 +36,5 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw?type=line
 related:
-  overview: docs/2-overview/cn.md
-  area: docs/14-area/cn.md
+  overview: docs/2-overview/zh.md
+  area: docs/14-area/zh.md

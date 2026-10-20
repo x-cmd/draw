@@ -45,7 +45,7 @@ import { draw } from "jsr:@x-cmd/draw";
 const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
 ```
 
-更多细节:总览见 [2-overview](../2-overview/cn.md),风格见 [3-styles-themes](../3-styles-themes/cn.md),自托管见 [4-self-hosting](../4-self-hosting/cn.md),各类型详解从 [10-pie](../10-pie/cn.md) 起。
+更多细节:总览见 [2-overview](../2-overview/zh.md),风格见 [3-styles-themes](../3-styles-themes/zh.md),自托管见 [4-self-hosting](../4-self-hosting/zh.md),各类型详解从 [10-pie](../10-pie/zh.md) 起。
 
 ## 全表(11 种类型)
 

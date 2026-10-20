@@ -38,7 +38,7 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw
 related:
-  overview: docs/2-overview/cn.md
-  pie: docs/10-pie/cn.md
-  bar: docs/11-bar/cn.md
-  formats: docs/5-data-formats/cn.md
+  overview: docs/2-overview/zh.md
+  pie: docs/10-pie/zh.md
+  bar: docs/11-bar/zh.md
+  formats: docs/5-data-formats/zh.md

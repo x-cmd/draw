@@ -26,7 +26,7 @@ data:
             Label count ≤ 100; > 9 auto-collapsed into "Other".
         confidence: 10
         reference:
-          - docs/10-pie/cn.md
+          - docs/10-pie/zh.md
           - docs/10-pie/en.md
 
       - id: pie-style-choose
@@ -58,7 +58,7 @@ data:
             Full comparison in [3-styles-themes](3-styles-themes).
         confidence: 9
         reference:
-          - docs/10-pie/cn.md
+          - docs/10-pie/zh.md
 
       - id: pie-solid-vs-donut
         question:
@@ -83,7 +83,7 @@ data:
             Other params and style unchanged.
         confidence: 10
         reference:
-          - docs/10-pie/cn.md
+          - docs/10-pie/zh.md
 
       - id: pie-many-categories
         question:
@@ -100,4 +100,4 @@ data:
             If you really have many categories, switch to [11-bar](11-bar) / [12-hbar](12-hbar) — pie with > 7 categories gets hard to read.
         confidence: 9
         reference:
-          - docs/10-pie/cn.md
+          - docs/10-pie/zh.md
