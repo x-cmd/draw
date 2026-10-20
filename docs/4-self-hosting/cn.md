@@ -53,4 +53,4 @@ npm run serve        # http://localhost:8787/draw(含演示页)
 
 ## 四、库内嵌(零部署)
 
-不想要服务?`npm install @x-cmd/draw` 或 `jsr:@x-cmd/draw`,直接 `draw(params)` 同步渲染 —— 见 [快速使用](../1-quick-start/zh.md)。
+不想要服务?`npm install @x-cmd/draw` 或 `jsr:@x-cmd/draw`,直接 `draw(params)` 同步渲染 —— 见 [快速使用](../1-quick-start/cn.md)。

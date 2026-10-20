@@ -36,5 +36,5 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw?type=sankey
 related:
-  overview: docs/2-overview/zh.md
-  formats: docs/5-data-formats/zh.md
+  overview: docs/2-overview/cn.md
+  formats: docs/5-data-formats/cn.md

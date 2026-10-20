@@ -28,7 +28,7 @@ data:
             Detail: [2-overview](2-overview) §6.
         confidence: 10
         reference:
-          - docs/2-overview/zh.md
+          - docs/2-overview/cn.md
           - docs/2-overview/en.md
 
       - id: draw-supported-chart-types
@@ -48,7 +48,7 @@ data:
             [10-pie](10-pie) / [11-bar](11-bar) / [12-hbar](12-hbar) / [13-line](13-line) / [14-area](14-area) / [15-radar](15-radar) / [16-gauge](16-gauge) / [17-scatter](17-scatter) / [18-combo](18-combo) / [19-sankey](19-sankey) / [20-qr](20-qr).
         confidence: 10
         reference:
-          - docs/2-overview/zh.md
+          - docs/2-overview/cn.md
 
       - id: draw-common-params
         question:
@@ -81,7 +81,7 @@ data:
             Each chart's own params in its dedicated article. Full style catalog in [3-styles-themes](3-styles-themes).
         confidence: 10
         reference:
-          - docs/2-overview/zh.md
+          - docs/2-overview/cn.md
 
       - id: draw-data-format-choice
         question:
@@ -104,8 +104,8 @@ data:
             Full comparison, edge cases in [5-data-formats](5-data-formats).
         confidence: 9
         reference:
-          - docs/2-overview/zh.md
-          - docs/5-data-formats/zh.md
+          - docs/2-overview/cn.md
+          - docs/5-data-formats/cn.md
 
       - id: draw-get-vs-post
         question:
@@ -130,7 +130,7 @@ data:
             - Long-term sharing (short URL doesn't carry query params)
         confidence: 9
         reference:
-          - docs/2-overview/zh.md
+          - docs/2-overview/cn.md
 
       - id: draw-svg-text-format
         question:
@@ -169,4 +169,4 @@ data:
             Benefit: `grep "<text>"` finds all labels, `git diff` shows chart changes, paste directly into issues / Slack.
         confidence: 10
         reference:
-          - docs/2-overview/zh.md
+          - docs/2-overview/cn.md

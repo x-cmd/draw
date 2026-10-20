@@ -43,6 +43,6 @@ official:
   endpoint: https://x-cmd.com/draw?type=pie
   repo: https://github.com/x-cmd/draw
 related:
-  overview: docs/2-overview/zh.md
-  styles: docs/3-styles-themes/zh.md
-  formats: docs/5-data-formats/zh.md
+  overview: docs/2-overview/cn.md
+  styles: docs/3-styles-themes/cn.md
+  formats: docs/5-data-formats/cn.md

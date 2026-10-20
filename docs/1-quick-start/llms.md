@@ -14,4 +14,4 @@ three_paths:
 
 complete_table:
 
-  - pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr - limits + live thumbnails in zh.md / en.md
+  - pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr - limits + live thumbnails in cn.md / en.md

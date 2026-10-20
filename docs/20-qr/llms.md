@@ -43,4 +43,4 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw?type=qr
 related:
-  overview: docs/2-overview/zh.md
+  overview: docs/2-overview/cn.md
