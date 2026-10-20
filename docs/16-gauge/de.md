@@ -1,15 +1,60 @@
 ---
-x-title: >-
-  TODO translate (de): gauge dial — single-value monitoring
-x-desc: >-
-  TODO translate (de): 'x-cmd/draw `type=gauge` quick reference. Single-value monitoring (CPU / memory / progress / completion rate). Params: `value=` current value, `max=` max (defau
-x-sidebar: TODO
-x-keywords: []
+x-title: gauge Messuhr — x-cmd/draw
+x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=gauge.
+x-sidebar: draw
+x-keywords: draw, gauge, Messuhr, svg, chart
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **de** (German). The source of truth is `cn.md` / `en.md` in this folder.
+# gauge Messuhr
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+`GET /draw?type=gauge&...` — Diagramm rendern
+
+## Beispiele
+
+**base**
+
+```text
+https://x-cmd.com/draw?type=gauge&title=CI-Quote&value=87&max=100
+```
+
+![gauge base](https://x-cmd.com/draw?type=gauge&title=CI-Quote&value=87&max=100)
+
+**gradient**
+
+```text
+https://x-cmd.com/draw?type=gauge&t=gradient&title=CI-Quote&value=87&max=100
+```
+
+![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI-Quote&value=87&max=100)
+
+**reliability**
+
+```text
+https://x-cmd.com/draw?type=gauge&t=reliability&title=CI-Quote&value=99.9&max=100
+```
+
+![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=CI-Quote&value=99.9&max=100)
+
+## Parameter
+
+| Parameter | | |
+|---|---|---|
+| `value=` | aktueller Wert | ✓ |
+| `max=` | Maximum (Standard 100) | ✗ |
+| `labels=` | Ring-Beschriftungen (Mehrfachring) | ✗ |
+| `values=` | Ring-Werte (Prozent) | ✗ |
+| `title=` | Titel | ✗ |
+| `t=` | Stil-Familie | ✗ |
+
+## `t=`
+
+| | |
+|---|---|
+| `base` |
+| `gradient` |
+| `reliability` |
+
+## Stolpersteine
+
+- Ein Messwert pro Diagramm; mehrere Werte → combo/line
+- Leerzeichen im Titel als `%20` kodieren

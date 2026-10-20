@@ -1,15 +1,51 @@
 ---
-x-title: >-
-  TODO translate (de): combo chart — bar + line overlay
-x-desc: >-
-  TODO translate (de): 'x-cmd/draw `type=combo` quick reference. Bar + line overlay (bar = absolute / line = trend or ratio). Params: bar series `series=A:...` + line series `series=B
-x-sidebar: TODO
-x-keywords: []
+x-title: combo Kombination — x-cmd/draw
+x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=combo.
+x-sidebar: draw
+x-keywords: draw, combo, Kombination, svg, chart
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **de** (German). The source of truth is `cn.md` / `en.md` in this folder.
+# combo Kombination
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+`GET /draw?type=combo&...` — Diagramm rendern
+
+## Beispiele
+
+**base**
+
+```text
+https://x-cmd.com/draw?type=combo&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downloads:120,180,150,210,240,200,260&line=Wachstum:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=W%C3%B6chentliche%20Downloads&unit=dl
+```
+
+![combo base](https://x-cmd.com/draw?type=combo&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downloads:120,180,150,210,240,200,260&line=Wachstum:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=W%C3%B6chentliche%20Downloads&unit=dl)
+
+**evil**
+
+```text
+https://x-cmd.com/draw?type=combo&t=evil&labels=Mo,Di,Mi&series=Downloads:9,12,15&line=Wachstum:1.1,1.4,1.8&title=W%C3%B6chentliche%20Downloads
+```
+
+![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Mo,Di,Mi&series=Downloads:9,12,15&line=Wachstum:1.1,1.4,1.8&title=W%C3%B6chentliche%20Downloads)
+
+## Parameter
+
+| Parameter | | |
+|---|---|---|
+| `labels=` | Beschriftungen, kommagetrennt | ✓ |
+| `series=` | Serien `name:werte`, wiederholbar | ✓ |
+| `line=` | Linienserie `name:werte` | ✗ |
+| `stack=` | 1 = gestapelt | ✗ |
+| `title=` | Titel | ✗ |
+| `t=` | Stil-Familie | ✗ |
+
+## `t=`
+
+| | |
+|---|---|
+| `base` |
+| `evil` |
+
+## Stolpersteine
+
+- Balken + Linie; Doppelachse ab 5× Größenunterschied
+- Leerzeichen im Titel als `%20` kodieren

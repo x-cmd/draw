@@ -1,15 +1,57 @@
 ---
-x-title: >-
-  TODO translate (es): scatter plot — correlation analysis
-x-desc: >-
-  TODO translate (es): 'x-cmd/draw `type=scatter` quick reference. Two-dimension correlation (height vs weight / price vs sales). Params: `points=x1,y1;x2,y2;...` or `series=A:x1,y1;.
-x-sidebar: TODO
-x-keywords: []
+x-title: scatter dispersión — x-cmd/draw
+x-desc: Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=scatter.
+x-sidebar: draw
+x-keywords: draw, scatter, dispersión, svg, chart
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **es** (Spanish). The source of truth is `cn.md` / `en.md` in this folder.
+# scatter dispersión
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+`GET /draw?type=scatter&...` — renderizar un gráfico
+
+## Ejemplos
+
+**base**
+
+```text
+https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia
+```
+
+![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia)
+
+**base neg**
+
+```text
+https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia
+```
+
+![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia)
+
+**base num**
+
+```text
+https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latencia
+```
+
+![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latencia)
+
+## Parámetros
+
+| Parámetros | | |
+|---|---|---|
+| `x=` | valores x | ✓ |
+| `y=` | valores y | ✓ |
+| `title=` | título | ✗ |
+| `num=` | marcas de valor: all/peak/none | ✗ |
+| `t=` | familia de estilo | ✗ |
+
+## `t=`
+
+| | |
+|---|---|
+| `base` |
+
+## Errores comunes
+
+- ≤200 puntos por serie; se permiten negativos
+- codifica los espacios del título como `%20`

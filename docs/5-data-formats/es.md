@@ -1,15 +1,24 @@
 ---
-x-title: >-
-  TODO translate (es): data formats — flat params vs `?d=` JSON
-x-desc: >-
-  TODO translate (es): x-cmd/draw two data format comparison. Flat params (URL always readable, `?labels=A,B&values=10,20`) vs `?d=` JSON (cleaner for big data, `?d={"data":[...]}`). 
-x-sidebar: TODO
-x-keywords: []
+x-title: Español — draw data formats
+x-desc: labels/values, series, ?d= JSON.
+x-sidebar: draw
+x-keywords: draw, data, json, csv
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **es** (Spanish). The source of truth is `cn.md` / `en.md` in this folder.
+# draw — Pasar datos
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+```text
+https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
+```
+
+Etiquetas con comas: repite el parámetro (`labels=Q1, 2024&labels=Q2`). Datos complejos: `?d=` + JSON codificado en URL:
+
+```json
+{"title":"...","data":[{"label":"A","value":1}]}
+```
+
+```json
+{"labels":["A","B"],"series":[{"name":"x","values":[1,2]}]}
+```
+
+POST /draw — body JSON/CSV crea un enlace corto permanente

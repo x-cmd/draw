@@ -1,15 +1,57 @@
 ---
-x-title: >-
-  TODO translate (de): scatter plot — correlation analysis
-x-desc: >-
-  TODO translate (de): 'x-cmd/draw `type=scatter` quick reference. Two-dimension correlation (height vs weight / price vs sales). Params: `points=x1,y1;x2,y2;...` or `series=A:x1,y1;.
-x-sidebar: TODO
-x-keywords: []
+x-title: scatter Streudiagramm — x-cmd/draw
+x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=scatter.
+x-sidebar: draw
+x-keywords: draw, scatter, Streudiagramm, svg, chart
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **de** (German). The source of truth is `cn.md` / `en.md` in this folder.
+# scatter Streudiagramm
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+`GET /draw?type=scatter&...` — Diagramm rendern
+
+## Beispiele
+
+**base**
+
+```text
+https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latenz
+```
+
+![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latenz)
+
+**base neg**
+
+```text
+https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latenz
+```
+
+![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latenz)
+
+**base num**
+
+```text
+https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latenz
+```
+
+![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latenz)
+
+## Parameter
+
+| Parameter | | |
+|---|---|---|
+| `x=` | x-Werte | ✓ |
+| `y=` | y-Werte | ✓ |
+| `title=` | Titel | ✗ |
+| `num=` | Wertmarken: all/peak/none | ✗ |
+| `t=` | Stil-Familie | ✗ |
+
+## `t=`
+
+| | |
+|---|---|
+| `base` |
+
+## Stolpersteine
+
+- ≤200 Punkte pro Serie; Negative erlaubt
+- Leerzeichen im Titel als `%20` kodieren

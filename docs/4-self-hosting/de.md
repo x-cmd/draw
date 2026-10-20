@@ -1,15 +1,31 @@
 ---
-x-title: >-
-  TODO translate (de): draw self-hosting — one-shot Cloudflare deploy / local Node server
-x-desc: >-
-  TODO translate (de): 'Run your own x-cmd/draw: one-shot Cloudflare Workers deploy (setup.sh), wrangler dev, or a dependency-free local Node server; short-link storage (DATA_REPO/GIT
-x-sidebar: TODO
-x-keywords: []
+x-title: Deutsch — draw self-hosting
+x-desc: Cloudflare / Node / Deno.
+x-sidebar: draw
+x-keywords: draw, self-hosting, cloudflare, node
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **de** (German). The source of truth is `cn.md` / `en.md` in this folder.
+# draw — Selbst-Hosting
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+```sh
+curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
+```
+
+Das Skript klont, meldet wrangler an, deployt und druckt deine `*.workers.dev`-URL. Kurzlinks (POST) aktivierst du per `DATA_REPO` + `GITHUB_TOKEN`.
+
+## Node
+
+```sh
+git clone https://github.com/x-cmd/draw && cd draw && npm install
+npm run serve
+```
+
+Umgebungsvariablen (Node): `PORT` (8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (aktiviert POST-Kurzlinks).
+
+## Deno
+
+```sh
+deno task serve
+```
+
+reine Renderfunktion, kein Netzwerk — die Sandbox ohne Berechtigungen ist die Sicherheitsgrenze

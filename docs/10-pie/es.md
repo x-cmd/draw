@@ -1,15 +1,89 @@
 ---
-x-title: >-
-  TODO translate (es): pie chart — 6 styles (opendata / evil / evil-mono / market-mono / progress / revenue)
-x-desc: >-
-  TODO translate (es): 'x-cmd/draw `type=pie` quick reference. 6 styles: opendata (labels outside + editorial title), evil (rounded sectors + inline values), evil-mono (leader lines o
-x-sidebar: TODO
-x-keywords: []
+x-title: pie pastel — x-cmd/draw
+x-desc: Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=pie.
+x-sidebar: draw
+x-keywords: draw, pie, pastel, svg, chart
 ---
 
-::: warning Translation pending
-This article has not yet been translated to **es** (Spanish). The source of truth is `cn.md` / `en.md` in this folder.
+# pie pastel
 
-Run the article-maintain pipeline (or a translation agent) to fill this in.
-See `AGENTS.md` + `.x-cmd/skills/article-maintain/SKILL.md` in x-cmd/doc-2026 for the workflow.
-:::
+`GET /draw?type=pie&...` — renderizar un gráfico
+
+## Ejemplos
+
+**opendata**
+
+```text
+https://x-cmd.com/draw?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
+```
+
+![pie opendata](https://x-cmd.com/draw?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+
+**evil**
+
+```text
+https://x-cmd.com/draw?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
+```
+
+![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+
+**evil-mono**
+
+```text
+https://x-cmd.com/draw?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
+```
+
+![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+
+**market-mono**
+
+```text
+https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
+```
+
+![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+
+**progress**
+
+```text
+https://x-cmd.com/draw?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
+```
+
+![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+
+**revenue**
+
+```text
+https://x-cmd.com/draw?type=pie&t=revenue&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
+```
+
+![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+
+## Parámetros
+
+| Parámetros | | |
+|---|---|---|
+| `labels=` | etiquetas, separadas por comas | ✓ |
+| `values=` | valores, separados por comas | ✓ |
+| `title=` | título | ✗ |
+| `unit=` | unidad | ✗ |
+| `donut=` | 0 = pastel sólido | ✗ |
+| `t=` | familia de estilo | ✗ |
+
+## `t=`
+
+| | |
+|---|---|
+| `opendata` |
+| `evil` |
+| `evil-mono` |
+| `market-mono` |
+| `progress` |
+| `revenue` |
+
+## Errores comunes
+
+- ≤100 clases; más de 9 se agrupan en Other
+- pastel sólido vs. anillo es solo `donut=` — no cambies de estilo
+- el contraste de algunos estilos cambia en modo oscuro
+- codifica los espacios del título como `%20`
