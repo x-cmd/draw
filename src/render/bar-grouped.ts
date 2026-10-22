@@ -98,7 +98,7 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
     ? Math.max(4, Math.min(22, (step * 0.72 - (k - 1) * gap) / k))
     : Math.max(4, Math.min(40, (step * 0.72) / k));
   const num = o.valueLabels ?? rules.num;
-  const numItems: { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; row?: number; fx?: number; fyt?: number; haloColor?: string; insideOnly?: boolean }[] = [];
+  const numItems: { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; row?: number; fx?: number; fyt?: number; haloColor?: string; insideOnly?: boolean; series?: number }[] = [];
   // 回退位:组中线 + 组内最高柱顶(同组标签在组上方单列堆叠)
   const groupTop = spec.labels.map((_, pi) => Math.min(...spec.series.map((s) => y(s.values[pi]))));
   spec.series.forEach((s, si) => {

@@ -70,7 +70,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
 
   // 线穿过各组中心;先画线再画柱,线始终连续
   const cx = (pi: number): number => left + step * pi + step / 2;
-  const lineLabels: { px: number; py: number; text: string; isPeak: boolean }[] = [];
+  const lineLabels: { px: number; py: number; text: string; isPeak: boolean; series?: number }[] = [];
   const lineSvg: string[] = [];
   const lineSegs: LineSeg[] = [];
   lines.forEach((s) => {
@@ -91,8 +91,8 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   // 柱系列:stack 时上下堆叠(段内标值,微小段不标),否则并排分组
   const k = bars.length;
   const placer = new LabelPlacer();
-  const barLabels: { x: number; yt: number; v: number; color: string; isPeak: boolean; barW: number; row: number; fx: number; fyt: number }[] = [];
-  const withinStack: { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; center: boolean; haloColor?: string }[] = [];
+  const barLabels: { x: number; yt: number; v: number; color: string; isPeak: boolean; barW: number; row: number; fx: number; fyt: number; series?: number }[] = [];
+  const withinStack: { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; center: boolean; haloColor?: string; series?: number }[] = [];
   const pendingBarLabels: string[] = []; // 折线之后才输出的柱内标签
   if (k > 0) {
     const barW = stacked ? Math.min(56, Math.max(6, step * 0.55)) : Math.max(4, Math.min(40, (step * 0.66) / k));

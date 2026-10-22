@@ -100,7 +100,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   const step = (right - left) / n;
   const barW = Math.min(56, Math.max(6, step * 0.55));
   const num = o.valueLabels ?? skin.rules.num;
-  const numItems: { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; center: boolean; haloColor?: string }[] = [];
+  const numItems: { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; center: boolean; haloColor?: string; series?: number }[] = [];
   const xStride = labelStride(spec.labels, step);
   spec.labels.forEach((label, pi) => {
     const x = left + step * pi + (step - barW) / 2;
