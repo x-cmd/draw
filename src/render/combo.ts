@@ -172,7 +172,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
       const barOut: string[] = [];
       const ok = pushBarLabelsAllOrNothing(
         barOut,
-        barLabels.map((l) => ({ x: l.x, yt: l.yt, w: l.barW, hAvail: bottom - l.yt, text: fmtNum(l.v), fs: l.isPeak ? 12 : 10.5, peak: l.isPeak, fill: onVar(0), row: l.row, fx: l.fx, fyt: l.fyt, insideOnly: true })), // 只进柱:放不下整层不标(同 bar-grouped)
+        barLabels.map((l) => ({ x: l.x, yt: l.yt, w: l.barW, hAvail: bottom - l.yt, text: fmtNum(l.v), fs: l.isPeak ? 12 : 10.5, peak: l.isPeak, fill: onVar(0), row: l.row, fx: l.fx, fyt: l.fyt, insideOnly: true, series: l.series })), // 只进柱:放不下整层不标(同 bar-grouped)
         placer,
         lineSegs,
       );
