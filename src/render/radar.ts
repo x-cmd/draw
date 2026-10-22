@@ -3,7 +3,7 @@
 import type { ChartSpec, ChartInput, MultiSpec } from '../specs/index.js';
 import { ApiError } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
-import { esc, fmtNum, r2, textW, trunc, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { esc, fmtFull, fmtNum, r2, textW, trunc, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
 import { radialFit } from './measure.js';
 
 const HAND_FONT = "Handlee,'Comic Sans MS','Chalkboard SE','Comic Neue','Segoe Print',cursive";
@@ -69,10 +69,15 @@ export function renderRadar(spec: ChartSpec, o: RenderOpts): string {
     .map((d, i) => pt(i, (d.value / max) * R).map(r2).join(' '))
     .join('L');
   parts.push(`<path d="M${dataPoly}Z" fill="var(--d-s1)" fill-opacity="0.18" stroke="var(--d-s1)" stroke-width="2" stroke-linejoin="round"/>`);
-  // 顶点圆点
+  // 顶点圆点(interactive:外加透明命中圈,小点也可 hover)
+  const unit = spec.unit ? ` ${spec.unit}` : '';
   spec.data.forEach((d, i) => {
     const [px, py] = pt(i, (d.value / max) * R);
     parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="3" fill="var(--d-s1)" stroke="var(--d-card)" stroke-width="2"/>`);
+    if (o.interactive) {
+      const tip = ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${unit}`)}"`;
+      parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="11" fill="none" pointer-events="all"${tip}/>`);
+    }
   });
   // 维度标签
   spec.data.forEach((d, i) => {
@@ -149,8 +154,12 @@ function renderRadarEvil(spec: MultiSpec, o: RenderOpts): string {
     parts.push(`<path d="M${pts.map((p) => p.map(r2).join(' ')).join('L')}Z" fill="${colors[si]}" fill-opacity="${r2(0.12 + si * 0.02)}" stroke="${colors[si]}" stroke-width="2" stroke-linejoin="round"/>`);
   });
   allPts.forEach((pts, si) => {
-    pts.forEach(([px, py]) => {
+    pts.forEach(([px, py], i) => {
       parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="5" fill="var(--d-card)" stroke="${colors[si]}" stroke-width="2"/>`);
+      if (o.interactive) {
+        const tip = ` data-tip="${esc(`${spec.labels[i]} · ${spec.series[si].name}: ${fmtFull(spec.series[si].values[i])}${spec.unit ? ` ${spec.unit}` : ''}`)}" data-series="${si}"`;
+        parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="11" fill="none" pointer-events="all"${tip}/>`);
+      }
     });
   });
   // 轴端标签:维度名 + 各系列数值内嵌(系列色,13px 粗体)
@@ -231,8 +240,13 @@ function renderRadarXcmd(spec: ChartSpec, o: RenderOpts): string {
   // 数据多边形 + 方形顶点标记(6×6 rx1)
   const pts = spec.data.map((d, i) => pt(i, (d.value / scaleMax) * R));
   parts.push(`<path d="M${pts.map((p) => p.map(r2).join(' ')).join('L')}Z" fill="var(--d-s1)" fill-opacity="0.16" stroke="var(--d-s1)" stroke-width="2.25" stroke-linejoin="round"/>`);
-  pts.forEach(([px, py]) => {
+  pts.forEach(([px, py], i) => {
     parts.push(`<rect x="${r2(px - 3)}" y="${r2(py - 3)}" width="6" height="6" rx="1" fill="var(--d-s1)"/>`);
+    if (o.interactive) {
+      const d = spec.data[i];
+      const tip = ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${spec.unit ? ` ${spec.unit}` : ''}`)}"`;
+      parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="11" fill="none" pointer-events="all"${tip}/>`);
+    }
   });
   // 手写维度标签(Handlee,18px)
   spec.data.forEach((d, i) => {

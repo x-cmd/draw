@@ -189,12 +189,14 @@ function renderSankeyBasic(spec: SankeySpec, o: RenderOpts): string {
   const { nodes, links, cols } = layoutSankey(spec, width * 0.1667, width * 0.8806, height * 0.119, height * 0.871, nodeW);
 
   const styles = labelStyles(nodes, cols);
+  const unit = spec.unit ? ` ${spec.unit}` : '';
+  const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   const parts: string[] = [card(width, height, true)];
   for (const l of links) {
-    parts.push(`<path d="${l.d}" fill="${sVar(l.from.colorIdx % skin.series.length)}" fill-opacity="0.46"/>`);
+    parts.push(`<path d="${l.d}" fill="${sVar(l.from.colorIdx % skin.series.length)}" fill-opacity="0.46"${tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.value)}${unit}`)}/>`);
   }
   for (const n of nodes) {
-    parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(nodeW)}" height="${r2(n.h)}" rx="${r2(nodeW * 0.286)}" fill="${sVar(n.colorIdx % skin.series.length)}"/>`);
+    parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(nodeW)}" height="${r2(n.h)}" rx="${r2(nodeW * 0.286)}" fill="${sVar(n.colorIdx % skin.series.length)}"${tip(`${n.name} · ${fmtFull(n.value)}${unit}`)}/>`);
     const last = n.col === cols - 1;
     const st = styles.get(n) ?? 'two';
     if (n.col === 0) nodeLabel(parts, n.name, n.value, n.x - 12, n.y + n.h / 2, 'end', false, st);
@@ -226,12 +228,14 @@ function renderSankeyFund(spec: SankeySpec, o: RenderOpts): string {
   // 表头:标题 + 右注(unit)
   if (spec.title) parts.push(`<text x="${r2(width * 0.033)}" y="${r2(height * 0.067)}" font-size="18" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(trunc(spec.title, 40))}</text>`);
   if (spec.unit) parts.push(`<text x="${r2(width * 0.967)}" y="${r2(height * 0.067)}" text-anchor="end" font-size="12" fill="var(--d-muted)">${esc(trunc(spec.unit, 24))}</text>`);
+  const unit = spec.unit ? ` ${spec.unit}` : '';
+  const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   for (const l of links) {
-    parts.push(`<path d="${l.d}" fill="url(#sk-${links.indexOf(l)})" fill-opacity="0.38"/>`);
+    parts.push(`<path d="${l.d}" fill="url(#sk-${links.indexOf(l)})" fill-opacity="0.38"${tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.value)}${unit}`)}/>`);
   }
   for (const n of nodes) {
     const c = sVar(n.colorIdx % k);
-    parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(n.w)}" height="${r2(n.h)}" rx="${r2(height * 0.0174)}" fill="${c}" fill-opacity="0.42" stroke="${c}" stroke-width="1.5"/>`);
+    parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(n.w)}" height="${r2(n.h)}" rx="${r2(height * 0.0174)}" fill="${c}" fill-opacity="0.42" stroke="${c}" stroke-width="1.5"${tip(`${n.name} · ${fmtFull(n.value)}${unit}`)}/>`);
     if (n.h >= 34) {
       parts.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y + n.h / 2 - 3)}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--d-ink)">${esc(trunc(n.name, 12))}</text>`);
       parts.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y + n.h / 2 + 14)}" text-anchor="middle" font-size="11" fill="var(--d-muted)" style="${TAB}">${fmtFull(n.value)}</text>`);
@@ -292,18 +296,21 @@ function renderSankeyPipeline(spec: SankeySpec, o: RenderOpts): string {
   // 中缝 = 中央面板各内缩 0.0395w(规范 760 宽下为 350/410)
   const xa = midX - width * 0.0395;
   const xb = midX + width * 0.0395;
-  const half = (x1: number, x2: number, y1: number, y2: number, lh: number, fill: string): string => {
+  const half = (x1: number, x2: number, y1: number, y2: number, lh: number, fill: string, tip = ''): string => {
     const c1 = x1 + (x2 - x1) * 0.52;
     const c2 = x2 - (x2 - x1) * 0.52;
     return `<path d="M${r2(x1)} ${r2(y1)}C${r2(c1)} ${r2(y1)} ${r2(c2)} ${r2(y2)} ${r2(x2)} ${r2(y2)}` +
-      `L${r2(x2)} ${r2(y2 + lh)}C${r2(c2)} ${r2(y2 + lh)} ${r2(c1)} ${r2(y1 + lh)} ${r2(x1)} ${r2(y1 + lh)}Z" fill="${fill}" fill-opacity="0.34"/>`;
+      `L${r2(x2)} ${r2(y2 + lh)}C${r2(c2)} ${r2(y2 + lh)} ${r2(c1)} ${r2(y1 + lh)} ${r2(x1)} ${r2(y1 + lh)}Z" fill="${fill}" fill-opacity="0.34"${tip}/>`;
   };
+  const unit = spec.unit ? ` ${spec.unit}` : '';
+  const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   for (const l of links) {
-    parts.push(half(l.from.x + nodeW, xa, l.sy, l.ty, l.lh, 'url(#sk-in)'));
-    parts.push(half(xb, l.to.x, l.sy, l.ty, l.lh, 'url(#sk-out)'));
+    const t = tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.value)}${unit}`);
+    parts.push(half(l.from.x + nodeW, xa, l.sy, l.ty, l.lh, 'url(#sk-in)', t));
+    parts.push(half(xb, l.to.x, l.sy, l.ty, l.lh, 'url(#sk-out)', t));
   }
   for (const n of nodes) {
-    parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(nodeW)}" height="${r2(n.h)}" rx="${r2(nodeW * 0.286)}" fill="${nodeColor(n)}"/>`);
+    parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(nodeW)}" height="${r2(n.h)}" rx="${r2(nodeW * 0.286)}" fill="${nodeColor(n)}"${tip(`${n.name} · ${fmtFull(n.value)}${unit}`)}/>`);
     if (n.x < midX) nodeLabel(parts, n.name, n.value, n.x - 12, n.y + n.h / 2, 'end', false, 'two');
     else nodeLabel(parts, n.name, n.value, n.x + nodeW + 12, n.y + n.h / 2, 'start', false, 'two');
   }
