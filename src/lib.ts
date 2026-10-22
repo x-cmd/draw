@@ -22,6 +22,10 @@ export { renderCombo } from './render/combo.js';
 export { renderQR } from './render/qr.js';
 export { renderSankey } from './render/sankey.js';
 export { renderStored } from './render/dispatch.js';
+// Small helpers that page builders (and the x-cmd-hosted worker) reuse:
+export { esc, fmtFull, fmtNum, textW } from './render/svg.js';
+export { parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
+export { assertDims } from './render/radar.js';
 export type { RenderOpts } from './render/svg.js';
 import { renderFromUrl, type DrawResult } from './render/query.js';
 export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
