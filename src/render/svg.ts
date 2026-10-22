@@ -410,11 +410,12 @@ export function pushPoints(
 // 全有或全无的柱内数值标注:入柱(字号可缩到 7px)→ 回退柱顶/柱右侧 → 整层不标
 export function pushBarLabelsAllOrNothing(
   parts: string[],
-  items: readonly { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; center?: boolean; side?: boolean; fallFill?: string; row?: number; fx?: number; fyt?: number; haloColor?: string; insideOnly?: boolean }[],
+  items: readonly { x: number; yt: number; w: number; hAvail: number; text: string; fs: number; peak: boolean; fill: string; center?: boolean; side?: boolean; fallFill?: string; row?: number; fx?: number; fyt?: number; haloColor?: string; insideOnly?: boolean; series?: number }[],
   sharedPlacer?: LabelPlacer,
   segments: readonly LineSeg[] = [],
 ): boolean {
   const out: string[] = [];
+  const ds = (s?: number): string => (s === undefined ? '' : ` data-series="${s}"`);
   const placer = sharedPlacer ?? new LabelPlacer();
   for (const l of items) {
     // 优先入柱:宽度/高度不够先自动缩字号(下限 7px)
@@ -442,7 +443,7 @@ export function pushBarLabelsAllOrNothing(
           if (!placer.fits(bx, ty - fs, tw + 2, fs + 2)) continue;
           const halo = l.haloColor ? `paint-order="stroke" stroke="${l.haloColor}" stroke-width="3" stroke-linejoin="round" ` : '';
           out.push(
-            `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${r2(fs)}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fill}" ${halo}style="${TAB}">${l.text}</text>`,
+            `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${r2(fs)}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fill}" ${halo}style="${TAB}"${ds(l.series)}>${l.text}</text>`,
           );
           placed = true;
           break;
@@ -466,7 +467,7 @@ export function pushBarLabelsAllOrNothing(
         if (segments.some(([sx1, sy1, sx2, sy2]) => segRectIntersect(sx1, sy1, sx2, sy2, bx - 1, ty - l.fs - 1, fTw + 2, l.fs + 2))) continue;
         if (!placer.fits(bx, ty - l.fs, fTw + 2, l.fs + 2)) continue;
         out.push(
-          `<text x="${r2(bx)}" y="${r2(ty)}" text-anchor="start" font-size="${l.fs}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fallFill ?? 'var(--d-ink)'}" ${HALO} style="${TAB}">${l.text}</text>`,
+          `<text x="${r2(bx)}" y="${r2(ty)}" text-anchor="start" font-size="${l.fs}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fallFill ?? 'var(--d-ink)'}" ${HALO} style="${TAB}"${ds(l.series)}>${l.text}</text>`,
         );
         ok = true;
         break;
@@ -479,7 +480,7 @@ export function pushBarLabelsAllOrNothing(
       const bx = cx - fTw / 2 - 1;
       if (!placer.fits(bx, ty - l.fs, fTw + 2, l.fs + 2)) return false;
       out.push(
-        `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${l.fs}" ${l.peak ? 'font-weight="600" ' : ''}fill="var(--d-ink)" paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round" style="${TAB}">${l.text}</text>`,
+        `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${l.fs}" ${l.peak ? 'font-weight="600" ' : ''}fill="var(--d-ink)" paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round" style="${TAB}"${ds(l.series)}>${l.text}</text>`,
       );
     }
   }
@@ -491,13 +492,13 @@ export function pushBarLabelsAllOrNothing(
 export function pushLineLabelsAllOrNothing(
   parts: string[],
   placer: LabelPlacer,
-  items: readonly { px: number; py: number; text: string; isPeak: boolean }[],
+  items: readonly { px: number; py: number; text: string; isPeak: boolean; series?: number }[],
   segments: readonly LineSeg[] = [],
 ): boolean {
   const out: string[] = [];
   for (const l of items) {
     const probe: string[] = [];
-    pushLineLabel(probe, placer, l.px, l.py, l.text, l.isPeak, segments);
+    pushLineLabel(probe, placer, l.px, l.py, l.text, l.isPeak, segments, l.series);
     if (probe.length === 0) return false;
     out.push(...probe);
   }
@@ -549,6 +550,7 @@ export function pushLineLabel(
   text: string,
   isPeak: boolean,
   segments: readonly LineSeg[] = [],
+  series?: number,
 ): void {
   const fs = isPeak ? 13 : 11;
   const w = textW(text, fs);
@@ -573,7 +575,7 @@ export function pushLineLabel(
     if (relevant.some(([sx1, sy1, sx2, sy2]) => segRectIntersect(sx1, sy1, sx2, sy2, bx - 1, by - 1, w + 2, fs + 2))) continue;
     if (placer.fits(bx, by, w, fs)) {
       parts.push(
-        `<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" font-size="${fs}" ${isPeak ? 'font-weight="600" ' : ''}fill="${isPeak ? 'var(--d-ink)' : 'var(--d-text)'}" ${HALO} style="${TAB}">${text}</text>`,
+        `<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" font-size="${fs}" ${isPeak ? 'font-weight="600" ' : ''}fill="${isPeak ? 'var(--d-ink)' : 'var(--d-text)'}" ${HALO} style="${TAB}"${series === undefined ? '' : ` data-series="${series}"`}>${text}</text>`,
       );
       return;
     }

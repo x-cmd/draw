@@ -83,7 +83,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
       lineSvg.push(`<circle cx="${r2(lx)}" cy="${r2(ly)}" r="2.5" fill="${colors[gIdx]}" stroke="#ffffff" stroke-width="1.5"${tip}/>`);
       const isPeak = gIdx === peakS && pi === peakP;
       if (num === 'all' || (num === 'peak' && isPeak)) {
-        lineLabels.push({ px: lx, py: ly, text: fmtNum(s.values[pi]), isPeak });
+        lineLabels.push({ px: lx, py: ly, text: fmtNum(s.values[pi]), isPeak, series: gIdx });
       }
     });
   });
@@ -123,7 +123,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
           if (num === 'all' || (num === 'peak' && isPeak)) {
             const text = fmtNum(v);
             if (barW >= textW(text, 7) + 4 && segH >= 7 + 4) {
-              withinStack.push({ x, yt: yTop, w: barW, hAvail: segH, text, fs: isPeak ? 12 : 11, peak: isPeak, fill: onVar(gIdx % skin.series.length), center: true, haloColor: colors[gIdx] });
+              withinStack.push({ x, yt: yTop, w: barW, hAvail: segH, text, fs: isPeak ? 12 : 11, peak: isPeak, fill: onVar(gIdx % skin.series.length), center: true, haloColor: colors[gIdx], series: gIdx });
             }
           }
         } else {
@@ -137,7 +137,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
           );
           // 零值不标(标注克制原则:零高柱上飘"0"是噪音)
           if (v > 0 && (num === 'all' || (num === 'peak' && isPeak))) {
-            barLabels.push({ x, yt, v, color: colors[gIdx], isPeak, barW, row: bi, fx: left + step * pi + step / 2, fyt: groupTop[pi] });
+            barLabels.push({ x, yt, v, color: colors[gIdx], isPeak, barW, row: bi, fx: left + step * pi + step / 2, fyt: groupTop[pi], series: gIdx });
           }
         }
       });
@@ -183,7 +183,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
       const sorted = [...lineLabels].sort((a, b) => Number(b.isPeak) - Number(a.isPeak));
       for (const l of sorted) {
         const probe: string[] = [];
-        pushLineLabel(probe, placer, l.px, l.py, l.text, l.isPeak, lineSegs);
+        pushLineLabel(probe, placer, l.px, l.py, l.text, l.isPeak, lineSegs, l.series);
         if (probe.length === 0) {
           allPlaced = false;
           break;

@@ -123,7 +123,7 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
         // 数值只进柱:柱内放不下(缩到 7px 也不行)→ 整层不标。
         // 不做组顶飘浮回退——密集图上一群数字浮在柱群上方比没有数字难看(标注克制)
         const text = fmtNum(v);
-        numItems.push({ x, yt, w: barW, hAvail: bottom - yt, text, fs: isPeak ? 12 : 10.5, peak: isPeak, fill: onVar(si % skin.series.length), row: si, fx: left + step * pi + step / 2, fyt: groupTop[pi], haloColor: colors[si], insideOnly: true });
+        numItems.push({ x, yt, w: barW, hAvail: bottom - yt, text, fs: isPeak ? 12 : 10.5, peak: isPeak, fill: onVar(si % skin.series.length), row: si, fx: left + step * pi + step / 2, fyt: groupTop[pi], haloColor: colors[si], insideOnly: true, series: si });
       }
     });
   });

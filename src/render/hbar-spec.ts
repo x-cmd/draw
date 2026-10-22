@@ -204,12 +204,12 @@ export function renderHbarDiverging(spec: MultiSpec, o: RenderOpts): string {
     const lw = (half * left.values[i]) / max;
     const rw = (half * right.values[i]) / max;
     parts.push(`<text x="${r2(width * 0.0707)}" y="${r2(y + barH * 0.77)}" font-size="16" fill="var(--d-muted)">${esc(trunc(l, lblCut))}</text>`);
-    parts.push(`<text x="${r2(width * 0.2707)}" y="${r2(y + barH * 0.77)}" text-anchor="end" font-size="15" font-weight="700" fill="var(--d-text)" style="${TAB}">${fmtFull(left.values[i])}</text>`);
+    parts.push(`<text x="${r2(width * 0.2707)}" y="${r2(y + barH * 0.77)}" text-anchor="end" font-size="15" font-weight="700" fill="var(--d-text)" style="${TAB}"${o.interactive ? ' data-series="0"' : ''}>${fmtFull(left.values[i])}</text>`);
     parts.push(`<rect x="${r2(width * 0.2878)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="var(--d-faint)"/>`);
     parts.push(`<rect x="${r2(center - lw - gap)}" y="${r2(y)}" width="${r2(lw)}" height="${r2(barH)}" rx="4" fill="var(--d-s1)"${o.interactive ? ` data-series="0" data-tip="${esc(`${l} · ${left.name}: ${fmtFull(left.values[i])}${spec.unit ? ' ' + spec.unit : ''}`)}"` : ''}/>`);
     parts.push(`<rect x="${r2(center + gap)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="var(--d-faint)"/>`);
     parts.push(`<rect x="${r2(center + gap)}" y="${r2(y)}" width="${r2(rw)}" height="${r2(barH)}" rx="4" fill="var(--d-s2)"${o.interactive ? ` data-series="1" data-tip="${esc(`${l} · ${right.name}: ${fmtFull(right.values[i])}${spec.unit ? ' ' + spec.unit : ''}`)}"` : ''}/>`);
-    parts.push(`<text x="${r2(width * 0.9268)}" y="${r2(y + barH * 0.77)}" font-size="15" font-weight="700" fill="var(--d-text)" style="${TAB}">${fmtFull(right.values[i])}</text>`);
+    parts.push(`<text x="${r2(width * 0.9268)}" y="${r2(y + barH * 0.77)}" font-size="15" font-weight="700" fill="var(--d-text)" style="${TAB}"${o.interactive ? ' data-series="1"' : ''}>${fmtFull(right.values[i])}</text>`);
   });
 
   return svgDoc(width, height, 'hbar', version, spec.title ?? 'issues', spec, skin, parts.join(''));

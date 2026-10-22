@@ -131,7 +131,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
         const fs = isPeakSeg ? 12 : 11;
         const minFs = 7;
         if (barW >= textW(text, minFs) + 4 && segH >= minFs + 4) {
-          numItems.push({ x, yt: yTop, w: barW, hAvail: segH, text, fs, peak: isPeakSeg, fill: onVar(si % skin.series.length), center: true, haloColor: colors[si] });
+          numItems.push({ x, yt: yTop, w: barW, hAvail: segH, text, fs, peak: isPeakSeg, fill: onVar(si % skin.series.length), center: true, haloColor: colors[si], series: si });
         }
       }
       cursor = yTop;
