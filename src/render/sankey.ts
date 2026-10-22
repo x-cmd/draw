@@ -193,7 +193,7 @@ function renderSankeyBasic(spec: SankeySpec, o: RenderOpts): string {
   const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   const parts: string[] = [card(width, height, true)];
   for (const l of links) {
-    parts.push(`<path d="${l.d}" fill="${sVar(l.from.colorIdx % skin.series.length)}" fill-opacity="0.46"${tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.value)}${unit}`)}/>`);
+    parts.push(`<path d="${l.d}" fill="${sVar(l.from.colorIdx % skin.series.length)}" fill-opacity="0.46"${tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.link.value)}${unit}`)}/>`);
   }
   for (const n of nodes) {
     parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(nodeW)}" height="${r2(n.h)}" rx="${r2(nodeW * 0.286)}" fill="${sVar(n.colorIdx % skin.series.length)}"${tip(`${n.name} · ${fmtFull(n.value)}${unit}`)}/>`);
@@ -231,7 +231,7 @@ function renderSankeyFund(spec: SankeySpec, o: RenderOpts): string {
   const unit = spec.unit ? ` ${spec.unit}` : '';
   const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   for (const l of links) {
-    parts.push(`<path d="${l.d}" fill="url(#sk-${links.indexOf(l)})" fill-opacity="0.38"${tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.value)}${unit}`)}/>`);
+    parts.push(`<path d="${l.d}" fill="url(#sk-${links.indexOf(l)})" fill-opacity="0.38"${tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.link.value)}${unit}`)}/>`);
   }
   for (const n of nodes) {
     const c = sVar(n.colorIdx % k);
@@ -305,7 +305,7 @@ function renderSankeyPipeline(spec: SankeySpec, o: RenderOpts): string {
   const unit = spec.unit ? ` ${spec.unit}` : '';
   const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   for (const l of links) {
-    const t = tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.value)}${unit}`);
+    const t = tip(`${l.from.name} → ${l.to.name} · ${fmtFull(l.link.value)}${unit}`);
     parts.push(half(l.from.x + nodeW, xa, l.sy, l.ty, l.lh, 'url(#sk-in)', t));
     parts.push(half(xb, l.to.x, l.sy, l.ty, l.lh, 'url(#sk-out)', t));
   }
