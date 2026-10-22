@@ -49,12 +49,26 @@ const OVERFLOW_SERIES: Duo[] = [
   duo('#E11D48', '#FB7185'), // rose
   duo('#06B6D4', '#22D3EE'), // cyan
 ];
+// Overflow for monochrome (grayscale) palettes: bright series colors would
+// break the monochrome look (e.g. market-mono), so pad with grays instead.
+const MONO_OVERFLOW: Duo[] = [
+  duo('#8E8E8E', '#B4B4B4'),
+  duo('#A6A6A6', '#8E8E8E'),
+  duo('#C2C2C2', '#A6A6A6'),
+];
+const isGray = (hex: string): boolean => {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return false;
+  const n = parseInt(m[1], 16);
+  return (n >> 16) === ((n >> 8) & 0xff) && ((n >> 8) & 0xff) === (n & 0xff);
+};
 function padSeries(series: Duo[]): Duo[] {
   const MIN = 10; // 饼图按扇区着色:9 类 + Other = 10 色,末扇与首扇相邻不得同色
   if (series.length >= MIN) return series;
   const have = new Set(series.map((d) => d.light));
+  const mono = series.every((d) => isGray(d.light) && isGray(d.dark));
   const out = [...series];
-  for (const d of OVERFLOW_SERIES) {
+  for (const d of mono ? MONO_OVERFLOW : OVERFLOW_SERIES) {
     if (out.length >= MIN) break;
     if (!have.has(d.light)) {
       out.push(d);

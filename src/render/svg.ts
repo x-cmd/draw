@@ -83,25 +83,33 @@ function metaTag(template: string, version: number, spec: unknown): string {
 }
 
 // 顶部图例:anchor='left' 从左往右(shadcn 圆点) | 'right' 从右往左(Evil 方块)
+// item.index is only passed by interactive embedders: the legend item gets a
+// data-legend attribute plus an invisible hit rect (for click-to-toggle series).
 export function topLegend(
-  items: readonly { name: string; color: string }[],
+  items: readonly { name: string; color: string; index?: number }[],
   x: number,
   y: number,
   anchor: 'left' | 'right' = 'right',
   shape: 'circle' | 'square' = 'circle',
 ): string {
   const parts: string[] = [];
-  const swatch = (sx: number, color: string): string =>
+  const lg = (index: number | undefined): string => (index === undefined ? '' : ` data-legend="${index}"`);
+  const swatch = (sx: number, color: string, index?: number): string =>
     shape === 'square'
-      ? `<rect x="${r2(sx - 5)}" y="${r2(y - 9)}" width="11" height="11" rx="3" fill="${color}"/>`
-      : `<circle cx="${r2(sx)}" cy="${r2(y - 4)}" r="5" fill="${color}"/>`;
+      ? `<rect x="${r2(sx - 5)}" y="${r2(y - 9)}" width="11" height="11" rx="3" fill="${color}"${lg(index)}/>`
+      : `<circle cx="${r2(sx)}" cy="${r2(y - 4)}" r="5" fill="${color}"${lg(index)}/>`;
+  const hit = (bx: number, bw: number, index?: number): string =>
+    index === undefined
+      ? ''
+      : `<rect x="${r2(bx)}" y="${r2(y - 16)}" width="${r2(bw)}" height="20" fill="none" pointer-events="all" role="button" tabindex="0"${lg(index)}/>`;
   const gap = shape === 'square' ? 18 : 13;
   if (anchor === 'left') {
     let cx = x;
     for (const it of items) {
       const w = textW(it.name, 12);
-      parts.push(swatch(cx, it.color));
-      parts.push(`<text x="${r2(cx + gap)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-text)">${esc(it.name)}</text>`);
+      parts.push(swatch(cx, it.color, it.index));
+      parts.push(`<text x="${r2(cx + gap)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-text)"${lg(it.index)}>${esc(it.name)}</text>`);
+      parts.push(hit(cx - 10, gap + w + 16, it.index));
       cx += gap + w + 26;
     }
   } else {
@@ -109,8 +117,10 @@ export function topLegend(
     for (let i = items.length - 1; i >= 0; i--) {
       const it = items[i];
       const w = textW(it.name, 12);
-      parts.push(`<text x="${r2(cx)}" y="${r2(y)}" text-anchor="end" font-size="12" font-weight="500" fill="var(--d-text)">${esc(it.name)}</text>`);
-      parts.push(swatch(cx - w - (shape === 'square' ? 18 : 10), it.color));
+      const swatchX = cx - w - (shape === 'square' ? 18 : 10);
+      parts.push(`<text x="${r2(cx)}" y="${r2(y)}" text-anchor="end" font-size="12" font-weight="500" fill="var(--d-text)"${lg(it.index)}>${esc(it.name)}</text>`);
+      parts.push(swatch(swatchX, it.color, it.index));
+      parts.push(hit(swatchX - 8, w + (shape === 'square' ? 18 : 10) + 14, it.index));
       cx -= w + 28 + (shape === 'square' ? 8 : 0);
     }
   }
@@ -285,6 +295,8 @@ export interface RenderOpts {
   refLine?: number;
   /** 参考线文案(?reflabel=WCAG AA) */
   refLabel?: string;
+  /** Interactive embedders (/explore): emit data-tip on data shapes for client tooltips */
+  interactive?: boolean;
 }
 
 // 文字宽度:与内嵌 Inter 子集同源的 advance 表,宽度 = fs × Σ(advance/em)。

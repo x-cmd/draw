@@ -2,7 +2,7 @@
 // 量级差过大(某组的最大段都放不下标签)时自动拉高画布(封顶 3×,用户显式 ?h= 时不介入)。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -84,7 +84,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
 
   const parts: string[] = [
     card(width, height),
-    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i] })), width - pad, pad + 16),
+    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 16),
   ];
   if (pctMode) {
     for (const t of tickVals) {
@@ -121,7 +121,8 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
         `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yTop)} ${r2(x + barW)} ${r2(yTop + m)}V${r2(cursor)}Z`;
       // 分隔白描边按段高自适应:段太矮时描边会盖掉颜色
       const sw = segH >= 6 ? 2 : 0;
-      parts.push(`<path d="${path}" fill="${colors[si]}"${sw ? ` stroke="var(--d-card)" stroke-width="${sw}"` : ''}/>`);
+      const tip = o.interactive ? ` data-tip="${esc(`${label} · ${s.name}: ${fmtFull(v)}${spec.unit ? ' ' + spec.unit : ''}`)}" data-series="${si}"` : '';
+      parts.push(`<path d="${path}" fill="${colors[si]}"${sw ? ` stroke="var(--d-card)" stroke-width="${sw}"` : ''}${tip}/>`);
       const isPeakSeg = si === peakS && pi === peakP;
       if (num === 'all' || (num === 'peak' && isPeakSeg)) {
         // 数值一律入柱(像 900/1k 那样),字号自适应缩小;

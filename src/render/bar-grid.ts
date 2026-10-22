@@ -23,14 +23,26 @@ export function renderBarGrid(spec: ChartSpec, o: RenderOpts): string {
 
   // 几何(规范 960×520 实测):起点 78/214,格 14×12,横距 18 纵距 6
   const sx = Math.round(width * 0.0604);
-  const startX = Math.round(width * 0.0813);
-  const startY = Math.round(height * 0.4115);
-  const pitch = Math.min(32, (width - startX * 2) / Math.max(n, 1));
+  const baseX = Math.round(width * 0.0813);
+  const baseY = Math.round(height * 0.4115);
+  const pitch = Math.min(32, (width - baseX * 2) / Math.max(n, 1));
   const cellW = pitch * (14 / 32);
   const vs = height / 520;
   const cellH = 12 * vs;
   const gapY = 6 * vs;
   const headR = Math.round(width * 0.9396);
+  // Sparse data (fewer columns/rows than the designer spec's dense series):
+  // center the cell block instead of leaving a small cluster in one corner.
+  // Dense layouts (n>=12 and rows>=10) keep the exact spec geometry.
+  const blockW = n * pitch - (pitch - cellW);
+  const blockH = rows * (cellH + gapY) - gapY;
+  const sparse = n < 12 || rows < 10;
+  const plotTop = Math.round(154 * vs) + Math.round(24 * vs);
+  const plotBottom = Math.round(height * 0.86);
+  const startX = sparse ? baseX + Math.max(0, (width - baseX * 2 - blockW) / 2) : baseX;
+  const startY = sparse
+    ? baseY + Math.max(0, plotTop + (plotBottom - plotTop - blockH) / 2 - baseY)
+    : baseY;
 
   const parts: string[] = [card(width, height, plain)];
   // 表头(等宽):[Σ] Total | [◆] Peak | 右侧注释行
@@ -47,10 +59,12 @@ export function renderBarGrid(spec: ChartSpec, o: RenderOpts): string {
 
   // 单元格:行 0 在顶,active = 自底向上 levels[col] 格
   for (let col = 0; col < n; col++) {
+    const d = spec.data[col];
+    const tip = o.interactive ? ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"` : '';
     for (let row = 0; row < rows; row++) {
       const active = row >= rows - levels[col];
       parts.push(
-        `<rect x="${r2(startX + col * pitch)}" y="${r2(startY + row * (cellH + gapY))}" width="${r2(cellW)}" height="${r2(cellH)}" rx="1" fill="${active ? sVar(0) : 'var(--d-faint)'}"/>`,
+        `<rect x="${r2(startX + col * pitch)}" y="${r2(startY + row * (cellH + gapY))}" width="${r2(cellW)}" height="${r2(cellH)}" rx="1" fill="${active ? sVar(0) : 'var(--d-faint)'}"${tip}/>`,
       );
     }
   }

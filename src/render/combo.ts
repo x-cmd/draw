@@ -1,7 +1,7 @@
 // 混合图:柱系列(分组并排)+ 线系列共用 y 轴与类别轴(量级差大时线走右轴)。
 import type { ComboSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceTicks, r2, topLegend, trunc, textW, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, topLegend, trunc, textW, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -49,7 +49,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
 
   const parts: string[] = [
     card(width, height),
-    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i] })), width - pad, pad + 16),
+    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 16),
   ];
   for (const t of ticks) {
     const gy = r2(y(t));
@@ -77,9 +77,10 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
     const gIdx = spec.series.indexOf(s);
     const pts = s.values.map((v, pi) => [cx(pi), (dual ? yLine : y)(v)] as [number, number]);
     lineSegs.push(...toSegments(pts));
-    lineSvg.push(`<path d="${smoothPath(pts)}" fill="none" stroke="${colors[gIdx]}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`);
+    lineSvg.push(`<path d="${smoothPath(pts)}" fill="none" stroke="${colors[gIdx]}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${o.interactive ? ` data-series="${gIdx}"` : ''}/>`);
     pts.forEach(([lx, ly], pi) => {
-      lineSvg.push(`<circle cx="${r2(lx)}" cy="${r2(ly)}" r="2.5" fill="${colors[gIdx]}" stroke="#ffffff" stroke-width="1.5"/>`);
+      const tip = o.interactive ? ` data-tip="${esc(`${spec.labels[pi]} · ${s.name}: ${fmtFull(s.values[pi])}${spec.unit ? ' ' + spec.unit : ''}`)}" data-series="${gIdx}"` : '';
+      lineSvg.push(`<circle cx="${r2(lx)}" cy="${r2(ly)}" r="2.5" fill="${colors[gIdx]}" stroke="#ffffff" stroke-width="1.5"${tip}/>`);
       const isPeak = gIdx === peakS && pi === peakP;
       if (num === 'all' || (num === 'peak' && isPeak)) {
         lineLabels.push({ px: lx, py: ly, text: fmtNum(s.values[pi]), isPeak });
@@ -103,6 +104,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
       s.values.forEach((v, pi) => {
         if (stacked && v <= 0) return;
         const isPeak = gIdx === peakS && pi === peakP;
+        const tip = o.interactive ? ` data-tip="${esc(`${spec.labels[pi]} · ${s.name}: ${fmtFull(v)}${spec.unit ? ' ' + spec.unit : ''}`)}" data-series="${gIdx}"` : '';
         if (stacked) {
           const x = left + step * pi + (step - barW) / 2;
           const segH = (v / yMax) * (bottom - contentTop);
@@ -115,7 +117,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
           const sw = segH >= 12 ? 2 : 0;
           parts.push(
             `<path d="M${r2(x)} ${r2(yTop + drawH)}V${r2(yTop + m)}Q${r2(x)} ${r2(yTop)} ${r2(x + m)} ${r2(yTop)}` +
-            `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yTop)} ${r2(x + barW)} ${r2(yTop + m)}V${r2(yTop + drawH)}Z" fill="${colors[gIdx]}"${sw ? ` stroke="var(--d-card)" stroke-width="${sw}"` : ''}/>`,
+            `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yTop)} ${r2(x + barW)} ${r2(yTop + m)}V${r2(yTop + drawH)}Z" fill="${colors[gIdx]}"${sw ? ` stroke="var(--d-card)" stroke-width="${sw}"` : ''}${tip}/>`
           );
           // 堆叠段一律入柱,微小段不标
           if (num === 'all' || (num === 'peak' && isPeak)) {
@@ -131,7 +133,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
           const m = Math.min(3, barW / 2, bottom - yt);
           parts.push(
             `<path d="M${r2(x)} ${r2(bottom)}V${r2(yt + m)}Q${r2(x)} ${r2(yt)} ${r2(x + m)} ${r2(yt)}` +
-            `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yt)} ${r2(x + barW)} ${r2(yt + m)}V${r2(bottom)}Z" fill="${colors[gIdx]}"/>`,
+            `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yt)} ${r2(x + barW)} ${r2(yt + m)}V${r2(bottom)}Z" fill="${colors[gIdx]}"${tip}/>`
           );
           // 零值不标(标注克制原则:零高柱上飘"0"是噪音)
           if (v > 0 && (num === 'all' || (num === 'peak' && isPeak))) {
@@ -240,37 +242,43 @@ function renderComboEvil(spec: ComboSpec, o: RenderOpts): string {
   }
   // 柱:圆角 rx5,槽内缩 12
   const barW = Math.max(4, slot - Math.min(24, width * 0.025));
+  const evilTip = (i: number, name: string, v: number, idx: number): string =>
+    o.interactive ? ` data-tip="${esc(`${spec.labels[i]} · ${name}: ${fmtFull(v)}${spec.unit ? ' ' + spec.unit : ''}`)}" data-series="${idx}"` : '';
   bars.forEach((s) => {
+    const gIdx = spec.series.indexOf(s);
     s.values.forEach((v, i) => {
       if (v <= 0) return;
-      parts.push(`<rect x="${r2(x0 + i * slot + (slot - barW) / 2)}" y="${r2(yBar(v))}" width="${r2(barW)}" height="${r2(y0 - yBar(v))}" rx="5" fill="${barColor}"/>`);
+      parts.push(`<rect x="${r2(x0 + i * slot + (slot - barW) / 2)}" y="${r2(yBar(v))}" width="${r2(barW)}" height="${r2(y0 - yBar(v))}" rx="5" fill="${barColor}"${evilTip(i, s.name, v, gIdx)}/>`);
     });
   });
   // 线:独立量程,平滑折线 + r4 实心点
   lines.forEach((s) => {
+    const gIdx = spec.series.indexOf(s);
     const pts = s.values.map((v, i) => [x0 + i * slot + slot / 2, yLine(v)] as [number, number]);
-    parts.push(`<path d="${smoothPath(pts)}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`);
-    pts.forEach(([px, py]) => {
-      parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="4" fill="${lineColor}"/>`);
+    parts.push(`<path d="${smoothPath(pts)}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${o.interactive ? ` data-series="${gIdx}"` : ''}/>`);
+    pts.forEach(([px, py], i) => {
+      parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="4" fill="${lineColor}"${evilTip(i, s.name, s.values[i], gIdx)}/>`);
     });
   });
   const xStride = labelStride(spec.labels, slot);
   spec.labels.forEach((l, i) => {
     if (i % xStride === 0) parts.push(`<text x="${r2(x0 + i * slot + slot / 2)}" y="${r2(height * 0.936)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
-  // 右上图例(方块 11×11 rx3,13px)
+  // 右上图例(方块 11×11 rx3,13px);interactive 模式带 data-legend + 透明命中区
   const items = [
-    ...(bars.length ? [{ name: bars[0].name, color: barColor }] : []),
-    ...(lines.length ? [{ name: lines[0].name, color: lineColor }] : []),
+    ...(bars.length ? [{ name: bars[0].name, color: barColor, idx: spec.series.indexOf(bars[0]) }] : []),
+    ...(lines.length ? [{ name: lines[0].name, color: lineColor, idx: spec.series.indexOf(lines[0]) }] : []),
   ];
   let lx = x0 + w;
   const legendY = Math.round(height * 0.116);
   for (let i = items.length - 1; i >= 0; i--) {
     const it = items[i];
     const tw = textW(it.name, 13);
-    parts.push(`<text x="${r2(lx)}" y="${r2(legendY)}" text-anchor="end" font-size="13" fill="var(--d-muted)">${esc(it.name)}</text>`);
+    const lg = o.interactive ? ` data-legend="${it.idx}"` : '';
+    parts.push(`<text x="${r2(lx)}" y="${r2(legendY)}" text-anchor="end" font-size="13" fill="var(--d-muted)"${lg}>${esc(it.name)}</text>`);
     lx -= tw + 16;
-    parts.push(`<rect x="${r2(lx)}" y="${r2(legendY - 9)}" width="11" height="11" rx="3" fill="${it.color}"/>`);
+    parts.push(`<rect x="${r2(lx)}" y="${r2(legendY - 9)}" width="11" height="11" rx="3" fill="${it.color}"${lg}/>`);
+    if (o.interactive) parts.push(`<rect x="${r2(lx - 4)}" y="${r2(legendY - 16)}" width="${r2(tw + 24)}" height="20" fill="none" pointer-events="all" role="button" tabindex="0"${lg}/>`);
     lx -= 27;
   }
 

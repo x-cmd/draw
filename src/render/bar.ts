@@ -1,7 +1,7 @@
 // 柱状图(单系列):卡片容器、主题渐变柱体、顶角 4px 圆角、数值入柱。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, type RenderOpts } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, type RenderOpts } from './svg.js';
 import { yTickInset } from './measure.js';
 
 /**
@@ -66,7 +66,8 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
     const path =
       `M${r2(x)} ${r2(bottom)}V${r2(yt + m)}Q${r2(x)} ${r2(yt)} ${r2(x + m)} ${r2(yt)}` +
       `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yt)} ${r2(x + barW)} ${r2(yt + m)}V${r2(bottom)}Z`;
-    parts.push(`<path d="${path}" fill="url(#dg-bar)"/>`);
+    const tip = o.interactive ? ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"` : '';
+    parts.push(`<path d="${path}" fill="url(#dg-bar)"${tip}/>`);
     const isPeak = i === peakIdx;
     // 零值不标:没有柱子的"0"是噪音(标注克制原则)
     if (d.value > 0 && (num === 'all' || (num === 'peak' && isPeak))) {

@@ -1006,4 +1006,45 @@ describe('文字不得重叠(硬规则回归)', () => {
     const svg = renderSankey(spec, { width: 720, height: 420, version: 1, skin: resolveSkin('sankey', null, 'light') });
     expect(overlaps(svg)).toEqual([]);
   });
+
+  it('interactive mode emits data-tip/data-series/data-legend', () => {
+    const o = { interactive: true, version: 1, skin: resolveSkin('bar', null, 'light') } as const;
+    const multi = renderBarMulti(parseSeriesSpec(JSON.stringify({ labels: ['Mon', 'Tue'], series: [{ name: 'a', values: [1, 2] }, { name: 'b', values: [2, 3] }] }), 'bar'), { width: 560, height: 320, ...o });
+    expect(multi).toContain('data-tip="Mon · a: 1"');
+    expect(multi).toContain('data-series="0"');
+    expect(multi).toContain('data-legend="0"');
+    expect(multi).toContain('role="button"');
+    // non-interactive output stays clean
+    const plain = renderBarMulti(parseSeriesSpec(JSON.stringify({ labels: ['Mon'], series: [{ name: 'a', values: [1] }] }), 'bar'), { width: 560, height: 320, version: 1, skin: resolveSkin('bar', null, 'light') });
+    expect(plain).not.toContain('data-tip=');
+    expect(plain).not.toContain('data-legend=');
+  });
+
+  it('interactive pie tooltip includes share; grid bars carry data-tip', () => {
+    const pieSkin = resolveSkin('pie', null, 'light');
+    const pie = renderPie(parseChartSpec(JSON.stringify({ data: [{ label: 'A', value: 3 }, { label: 'B', value: 1 }] }), 'pie'), { width: 560, height: 300, version: 1, skin: pieSkin, interactive: true });
+    expect(pie).toContain('A · 3 (75.0%)');
+    const grid = renderBarGrid({ data: [{ label: 'Mon', value: 2 }, { label: 'Tue', value: 3 }] }, { width: 960, height: 520, version: 1, skin: resolveSkin('bar', 'grid', 'light'), interactive: true });
+    expect(grid).toContain('data-tip="Mon · 2"');
+  });
+
+  it('sparse grid centers its cell block', () => {
+    const skin = resolveSkin('bar', 'grid', 'light');
+    const svg = renderBarGrid({ data: [{ label: '00:00', value: 2 }, { label: '02:00', value: 1 }, { label: '04:00', value: 3 }] }, { width: 960, height: 520, version: 1, skin });
+    // block width = 3*32-18 = 78; centered start = 78 + (960-156-78)/2 = 441
+    expect(svg).toContain(`x="441"`);
+  });
+
+  it('monochrome palettes overflow with grays, not colors', () => {
+    const skin = resolveSkin('pie', 'market-mono', 'light');
+    expect(skin.series.length).toBeGreaterThanOrEqual(10);
+    for (const d of skin.series) {
+      const n = parseInt(d.light.slice(1), 16);
+      const r = n >> 16;
+      const g = (n >> 8) & 0xff;
+      const b = n & 0xff;
+      expect(r, `${d.light} should be gray`).toBe(g);
+      expect(g).toBe(b);
+    }
+  });
 });

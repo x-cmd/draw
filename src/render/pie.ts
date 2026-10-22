@@ -182,6 +182,11 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<defs>${defs}</defs>`);
   }
   const sliceFill = (i: number): string => (rules.pieGradient ? `url(#dgs-${i})` : rowColor(rows[i].colorIdx));
+  // Interactive embedders: preformatted tooltip text (value + share) on each slice
+  const tipAttr = (row: Row): string =>
+    o.interactive
+      ? ` data-tip="${esc(`${row.label} · ${fmtFull(row.value)}${spec.unit ? ' ' + spec.unit : ''} (${((row.value / total) * 100).toFixed(1)}%)`)}"`
+      : '';
 
   // 扇区方向/起始角:规范 Evil 系 = 逆时针(ECharts 度),OpenData = 顺时针自 12 点钟
   const startRad = (rules.pieStart * Math.PI) / 180;
@@ -194,9 +199,9 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
   if (rows.length === 1) {
     const stroke = gap > 0 ? ` stroke="var(--d-halo)" stroke-width="${gap}"` : '';
     if (r > 0) {
-      parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="${r2((R + r) / 2)}" fill="none" stroke="${sliceFill(0)}" stroke-width="${r2(R - r - Math.max(gap, 0))}"/>`);
+      parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="${r2((R + r) / 2)}" fill="none" stroke="${sliceFill(0)}" stroke-width="${r2(R - r - Math.max(gap, 0))}"${tipAttr(rows[0])}/>`);
     } else {
-      parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="${r2(R)}" fill="${sliceFill(0)}"${stroke}/>`);
+      parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="${r2(R)}" fill="${sliceFill(0)}"${stroke}${tipAttr(rows[0])}/>`);
     }
   } else {
     const twoPi = Math.PI * 2;
@@ -213,7 +218,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
       if (d) {
         const fill = rules.pieGradient ? `url(#dgs-${rows.indexOf(row)})` : rowColor(row.colorIdx);
         const stroke = gap > 0 ? ` stroke="var(--d-halo)" stroke-width="${gap}" stroke-linejoin="round" stroke-linecap="round"` : '';
-        parts.push(`<path d="${d}" fill="${fill}"${stroke}/>`);
+        parts.push(`<path d="${d}" fill="${fill}"${stroke}${tipAttr(row)}/>`);
       }
     });
   }

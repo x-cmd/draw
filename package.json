@@ -1,6 +1,6 @@
 {
   "name": "@x-cmd/draw",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "SVG chart rendering as a service, a library, and a CLI — pie/bar/hbar/line/area/radar/gauge/scatter/combo/sankey/qr, same params everywhere",
   "license": "Apache-2.0",
   "type": "module",

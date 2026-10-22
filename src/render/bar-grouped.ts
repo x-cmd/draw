@@ -1,7 +1,7 @@
 // 分组并排柱(多系列):≤6 系列主题色板循环,顶部图例,数值入柱;evil 变体 = 规范 bar-1 几何。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
 import { yTickInset, type GeoMeasure } from './measure.js';
 
 // 规范 bar-1 实测几何(960×520):left 76、右留 50、顶 94(0.181h)、底 448(0.862h)、X 标签 480
@@ -84,9 +84,9 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
       `<stop offset="0" stop-color="var(--d-ramp-a)"/><stop offset="1" stop-color="var(--d-ramp-b)"/></linearGradient></defs>`,
   ];
   if (rules.legend === 'top-left') {
-    parts.push(topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i] })), left, legendY, 'left', rules.legendShape));
+    parts.push(topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), left, legendY, 'left', rules.legendShape));
   } else {
-    parts.push(topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i] })), plain ? right : width - pad, legendY, 'right', rules.legendShape));
+    parts.push(topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), plain ? right : width - pad, legendY, 'right', rules.legendShape));
   }
 
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, false, rules.baseline, [], rules.tickFont, geo ? 18 : 8);
@@ -107,14 +107,15 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
       const groupX = left + step * pi + (step - (barW * k + (k - 1) * gap)) / 2;
       const x = groupX + si * (barW + gap);
       const yt = y(v);
+      const tip = o.interactive ? ` data-tip="${esc(`${spec.labels[pi]} · ${s.name}: ${fmtFull(v)}${spec.unit ? ' ' + spec.unit : ''}`)}" data-series="${si}"` : '';
       if (rules.barCorner > 0) {
-        parts.push(`<rect x="${r2(x)}" y="${r2(yt)}" width="${r2(barW)}" height="${r2(bottom - yt)}" rx="${rules.barCorner}" fill="${colors[si]}"/>`);
+        parts.push(`<rect x="${r2(x)}" y="${r2(yt)}" width="${r2(barW)}" height="${r2(bottom - yt)}" rx="${rules.barCorner}" fill="${colors[si]}"${tip}/>`);
       } else {
         const m = Math.min(3, barW / 2, bottom - yt);
         const path =
           `M${r2(x)} ${r2(bottom)}V${r2(yt + m)}Q${r2(x)} ${r2(yt)} ${r2(x + m)} ${r2(yt)}` +
           `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yt)} ${r2(x + barW)} ${r2(yt + m)}V${r2(bottom)}Z`;
-        parts.push(`<path d="${path}" fill="${colors[si]}"/>`);
+        parts.push(`<path d="${path}" fill="${colors[si]}"${tip}/>`);
       }
       const isPeak = si === peakS && pi === peakP;
       // 零值/占位不标:零高柱上飘"0"是噪音(标注克制原则)
