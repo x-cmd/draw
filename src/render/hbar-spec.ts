@@ -7,6 +7,8 @@ import { esc, fmtFull, fmtNum, niceTicks, r2, sVar, textW, trunc, type RenderOpt
 import { fitCut } from './measure.js';
 import { renderHBar } from './hbar.js';
 
+const tipOf = (o: RenderOpts, text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
+
 /**
  * Horizontal bars, dispatched by skin family (base / opendata / xcmd / butterfly / rank).
  */
@@ -94,7 +96,7 @@ export function renderHbarOpendata(spec: ChartSpec, o: RenderOpts): string {
     const y = top + i * pitch;
     const w = (plotW * d.value) / yMax;
     parts.push(`<text x="${r2(labelEnd)}" y="${r2(y + pitch * 0.36)}" text-anchor="end" font-size="14" fill="var(--d-muted)">${esc(trunc(d.label, lblCut))}</text>`);
-    parts.push(`<rect x="${x}" y="${r2(y)}" width="${r2(w)}" height="${r2(barH)}" rx="3" fill="${sVar(i % skin.series.length)}"/>`);
+    parts.push(`<rect x="${x}" y="${r2(y)}" width="${r2(w)}" height="${r2(barH)}" rx="3" fill="${sVar(i % skin.series.length)}"${tipOf(o, `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}/>`);
     // 数值内标白字;放不下则外置墨色
     const text = fmtFull(d.value);
     if (textW(text, 11) + 14 <= w) {
@@ -148,10 +150,11 @@ export function renderHbarCells(spec: ChartSpec, o: RenderOpts): string {
     const exact = (d.value / 100) * CELLS; // 值为百分比
     for (let c = 0; c < CELLS; c++) {
       const cx = startX + c * cellPitch;
-      parts.push(`<rect x="${r2(cx)}" y="${r2(y)}" width="${r2(cw)}" height="${r2(cellH)}" rx="1" fill="var(--d-faint)"/>`);
+      const cellTip = tipOf(o, `${d.label} · ${Math.round(d.value * 10) / 10}%`);
+      parts.push(`<rect x="${r2(cx)}" y="${r2(y)}" width="${r2(cw)}" height="${r2(cellH)}" rx="1" fill="var(--d-faint)"${cellTip}/>`);
       const cover = Math.max(0, Math.min(1, exact - c));
       if (cover > 0) {
-        parts.push(`<rect x="${r2(cx)}" y="${r2(y)}" width="${r2(cw * cover)}" height="${r2(cellH)}" rx="1" fill="${sVar(0)}"/>`);
+        parts.push(`<rect x="${r2(cx)}" y="${r2(y)}" width="${r2(cw * cover)}" height="${r2(cellH)}" rx="1" fill="${sVar(0)}"${cellTip}/>`);
       }
     }
     parts.push(`<text x="${r2(valueEndX)}" y="${r2(rowY + height * 0.06)}" text-anchor="end" font-size="18" font-weight="700" fill="var(--d-muted)" style="${TAB}">${Math.round(d.value * 10) / 10}%</text>`);
@@ -190,10 +193,12 @@ export function renderHbarDiverging(spec: MultiSpec, o: RenderOpts): string {
   const ly = shrunk ? 30 : height * 0.0811;
   const lx1 = width * 0.4756;
   const lx2 = width * 0.5756;
-  parts.push(`<circle cx="${r2(lx1)}" cy="${r2(shrunk ? 20 : height * 0.0541)}" r="5" fill="var(--d-s1)"/>`);
-  parts.push(`<text x="${r2(lx1 + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)">${esc(trunc(left.name, 12))}</text>`);
-  parts.push(`<circle cx="${r2(lx2)}" cy="${r2(shrunk ? 20 : height * 0.0541)}" r="5" fill="var(--d-s2)"/>`);
-  parts.push(`<text x="${r2(lx2 + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)">${esc(trunc(right.name, 12))}</text>`);
+  const lg0 = o.interactive ? ' data-legend="0"' : '';
+  const lg1 = o.interactive ? ' data-legend="1"' : '';
+  parts.push(`<circle cx="${r2(lx1)}" cy="${r2(shrunk ? 20 : height * 0.0541)}" r="5" fill="var(--d-s1)"${lg0}/>`);
+  parts.push(`<text x="${r2(lx1 + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)"${lg0}>${esc(trunc(left.name, 12))}</text>`);
+  parts.push(`<circle cx="${r2(lx2)}" cy="${r2(shrunk ? 20 : height * 0.0541)}" r="5" fill="var(--d-s2)"${lg1}/>`);
+  parts.push(`<text x="${r2(lx2 + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)"${lg1}>${esc(trunc(right.name, 12))}</text>`);
   spec.labels.forEach((l, i) => {
     const y = top + i * pitch;
     const lw = (half * left.values[i]) / max;
@@ -201,9 +206,9 @@ export function renderHbarDiverging(spec: MultiSpec, o: RenderOpts): string {
     parts.push(`<text x="${r2(width * 0.0707)}" y="${r2(y + barH * 0.77)}" font-size="16" fill="var(--d-muted)">${esc(trunc(l, lblCut))}</text>`);
     parts.push(`<text x="${r2(width * 0.2707)}" y="${r2(y + barH * 0.77)}" text-anchor="end" font-size="15" font-weight="700" fill="var(--d-text)" style="${TAB}">${fmtFull(left.values[i])}</text>`);
     parts.push(`<rect x="${r2(width * 0.2878)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="var(--d-faint)"/>`);
-    parts.push(`<rect x="${r2(center - lw - gap)}" y="${r2(y)}" width="${r2(lw)}" height="${r2(barH)}" rx="4" fill="var(--d-s1)"/>`);
+    parts.push(`<rect x="${r2(center - lw - gap)}" y="${r2(y)}" width="${r2(lw)}" height="${r2(barH)}" rx="4" fill="var(--d-s1)"${o.interactive ? ` data-series="0" data-tip="${esc(`${l} · ${left.name}: ${fmtFull(left.values[i])}${spec.unit ? ' ' + spec.unit : ''}`)}"` : ''}/>`);
     parts.push(`<rect x="${r2(center + gap)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="var(--d-faint)"/>`);
-    parts.push(`<rect x="${r2(center + gap)}" y="${r2(y)}" width="${r2(rw)}" height="${r2(barH)}" rx="4" fill="var(--d-s2)"/>`);
+    parts.push(`<rect x="${r2(center + gap)}" y="${r2(y)}" width="${r2(rw)}" height="${r2(barH)}" rx="4" fill="var(--d-s2)"${o.interactive ? ` data-series="1" data-tip="${esc(`${l} · ${right.name}: ${fmtFull(right.values[i])}${spec.unit ? ' ' + spec.unit : ''}`)}"` : ''}/>`);
     parts.push(`<text x="${r2(width * 0.9268)}" y="${r2(y + barH * 0.77)}" font-size="15" font-weight="700" fill="var(--d-text)" style="${TAB}">${fmtFull(right.values[i])}</text>`);
   });
 
@@ -263,9 +268,10 @@ export function renderHbarLift(spec: MultiSpec, o: RenderOpts): string {
     parts.push(`<text x="${r2(width * 0.0292)}" y="${r2(y + barH * 0.73)}" font-size="12" fill="var(--d-muted)" style="${TAB}">${i + 1}</text>`);
     parts.push(`<rect x="${r2(width * 0.049)}" y="${r2(y + barH * 0.09)}" width="3" height="${r2(barH * 0.82)}" fill="${i === 0 ? '#E5A719' : 'var(--d-muted)'}"/>`);
     parts.push(`<text x="${r2(width * 0.075)}" y="${r2(y + barH * 0.77)}" font-size="14" fill="var(--d-text)">${esc(trunc(l, nameCut))}</text>`);
-    parts.push(`<rect x="${r2(x0)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(barH)}" rx="1" fill="${baseColor}"/>`);
+    const liftTip = tipOf(o, `${l} · ${fmtFull(total)} +${fmtFull(lift.values[i])}${spec.unit ? ' ' + spec.unit : ''}`);
+    parts.push(`<rect x="${r2(x0)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(barH)}" rx="1" fill="${baseColor}"${liftTip}/>`);
     if (tw > bw) {
-      parts.push(`<rect x="${r2(x0 + bw)}" y="${r2(y)}" width="${r2(tw - bw)}" height="${r2(barH)}" rx="1" fill="url(#dgl-hatch)" stroke="${baseColor}"/>`);
+      parts.push(`<rect x="${r2(x0 + bw)}" y="${r2(y)}" width="${r2(tw - bw)}" height="${r2(barH)}" rx="1" fill="url(#dgl-hatch)" stroke="${baseColor}"${liftTip}/>`);
     }
     parts.push(`<text x="${r2(x0 + tw + 8)}" y="${r2(y + barH * 0.73)}" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtFull(total)}  +${fmtFull(lift.values[i])}</text>`);
   });
