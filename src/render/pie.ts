@@ -3,7 +3,7 @@ import type { ChartSpec, Datum } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
 import {
   esc, fmtFull, fmtNum, r2, textW, trunc,
-  type RenderOpts, svgDoc, editorialTitle, titleBlock, sVar, onVar, LabelPlacer,
+  type RenderOpts, svgDoc, editorialTitle, titleBlock, sVar, LabelPlacer,
 } from './svg.js';
 import { radialFit } from './measure.js';
 
@@ -13,6 +13,7 @@ interface Row {
   label: string;
   value: number;
   colorIdx: number; // 皮肤系列号;-1 = Other(用 faint)
+  color?: string;   // 显式指定色(#rrggbb,来自 datum.color)
 }
 
 function buildRows(data: Datum[], seriesCount: number): Row[] {
@@ -37,7 +38,7 @@ function buildRows(data: Datum[], seriesCount: number): Row[] {
 }
 
 const rowColor = (i: number): string => (i === -1 ? 'var(--d-faint)' : sVar(i));
-const rowOn = (i: number): string => (i === -1 ? 'var(--d-ink)' : onVar(i));
+const fillOf = (row: Row): string => row.color ?? rowColor(row.colorIdx);
 
 // ECharts 极坐标(0=3 点钟,正角逆时针);圆角扇区恒 a0→a1 逆时针,
 // 外弧两端切线 fillet(Evil 系签名),角半径受跨距/环宽约束。
@@ -181,7 +182,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     }).join('');
     parts.push(`<defs>${defs}</defs>`);
   }
-  const sliceFill = (i: number): string => (rules.pieGradient ? `url(#dgs-${i})` : rowColor(rows[i].colorIdx));
+  const sliceFill = (i: number): string => (rules.pieGradient && !rows[i].color ? `url(#dgs-${i})` : fillOf(rows[i]));
   // Interactive embedders: preformatted tooltip text (value + share) on each slice
   const tipAttr = (row: Row): string =>
     o.interactive
@@ -216,7 +217,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
       cum += frac;
       const d = segPath(cx, cy, R, r, lo, hi, rules.pieCorner);
       if (d) {
-        const fill = rules.pieGradient ? `url(#dgs-${rows.indexOf(row)})` : rowColor(row.colorIdx);
+        const fill = rules.pieGradient && !row.color ? `url(#dgs-${rows.indexOf(row)})` : fillOf(row);
         const stroke = gap > 0 ? ` stroke="var(--d-halo)" stroke-width="${gap}" stroke-linejoin="round" stroke-linecap="round"` : '';
         parts.push(`<path d="${d}" fill="${fill}"${stroke}${tipAttr(row)}/>`);
       }
@@ -369,7 +370,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
         const x = pad + (i % cols) * colW;
         const y = legendTop + Math.floor(i / cols) * 26;
         const pct = Math.round((row.value / total) * 100);
-        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${rowColor(row.colorIdx)}"/>`);
+        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(row)}"/>`);
         parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-ink)">${esc(trunc(row.label, 14))}</text>`);
         if (rules.legendValue) {
           parts.push(
@@ -393,7 +394,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
           x = pad;
           y += 24;
         }
-        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${rowColor(it.row.colorIdx)}"/>`);
+        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(it.row)}"/>`);
         parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(it.name)}</text>`);
         x += it.w;
       }
@@ -406,7 +407,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     const firstY = legendTop + (legendAvail - rowStep * (rows.length - 1)) / 2;
     rows.forEach((row, i) => {
       const y = firstY + i * rowStep;
-      parts.push(`<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${rowColor(row.colorIdx)}"/>`);
+      parts.push(`<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${fillOf(row)}"/>`);
       parts.push(`<text x="${r2(lx + 16)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(trunc(row.label, 14))}</text>`);
       if (rules.legendValue) {
         parts.push(`<text x="${r2(width - pad)}" y="${r2(y)}" text-anchor="end" font-size="12" font-weight="500" fill="var(--d-ink)" style="${TAB}">${fmtFull(row.value)}</text>`);

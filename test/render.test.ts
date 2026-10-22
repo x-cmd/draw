@@ -1047,4 +1047,14 @@ describe('文字不得重叠(硬规则回归)', () => {
       expect(g).toBe(b);
     }
   });
+
+  it('pie honors per-datum colors from ?colors=', () => {
+    const spec = parseChartSpec(
+      specFromParams(new URLSearchParams('labels=A,B&values=3,1&colors=%23ff0000,%2300ff00'), 'pie'),
+      'pie',
+    );
+    const svg = renderPie(spec, { width: 560, height: 300, version: 1, skin: resolveSkin('pie', null, 'light') });
+    expect(svg).toContain('#ff0000');
+    expect(svg).toContain('#00ff00');
+  });
 });

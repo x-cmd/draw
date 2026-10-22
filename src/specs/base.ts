@@ -17,6 +17,8 @@ export class ApiError extends Error {
 export interface Datum {
   label: string;
   value: number;
+  /** Optional explicit color (#rrggbb); renderers that color per datum (pie) honor it. */
+  color?: string;
 }
 
 /**
@@ -136,7 +138,14 @@ export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' 
     if (d.value < 0) {
       throw new ApiError(400, `data[${i}].value must be >= 0, got ${d.value}`);
     }
-    return { label, value: d.value };
+    let color: string | undefined;
+    if (d.color !== undefined) {
+      if (typeof d.color !== 'string' || !/^#[0-9a-f]{6}$/i.test(d.color)) {
+        throw new ApiError(400, `data[${i}].color must be a hex color like "#6366f1", got ${JSON.stringify(d.color)}`);
+      }
+      color = d.color.toLowerCase();
+    }
+    return color ? { label, value: d.value, color } : { label, value: d.value };
   });
 
   const total = data.reduce((s, d) => s + d.value, 0);
@@ -170,8 +179,13 @@ export function specFromParams(params: URLSearchParams, kind: 'pie' | 'bar' | 'h
     if (!Number.isFinite(n)) throw new ApiError(400, `values[${i}] is not a number: ${JSON.stringify(v)}`);
     return n;
   });
+  // ?colors=%23aa00ff,...:parallel to labels, per-datum explicit colors (pie etc.)
+  const colors = flatList(params, 'colors');
   const obj: Record<string, unknown> = {
-    data: labels.map((label, i) => ({ label, value: nums[i] })),
+    data: labels.map((label, i) => {
+      const c = colors[i];
+      return c && /^#[0-9a-f]{6}$/i.test(c) ? { label, value: nums[i], color: c.toLowerCase() } : { label, value: nums[i] };
+    }),
   };
   const title = params.get('title');
   if (title) obj.title = title;
