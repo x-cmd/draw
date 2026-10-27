@@ -8,3 +8,8 @@ REPORT-*.md
 # 本地待办/遗留记录,不入库
 BACKLOG.md
 dist/
+
+# 个人部署试验产物(cf/wrangler 本地配置与生成物),不入库
+.cloudflare/
+cloudflare.config.ts
+wrangler.*.jsonc

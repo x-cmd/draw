@@ -116,6 +116,15 @@ Environment variables: `PORT` (default 8787) · `BASE_PATH` · `DATA_REPO`/`DATA
 
 ### 5. Deploy on Cloudflare — one shot
 
+Hand it to your agent (deploy skill in this repo):
+
+```text
+Follow the deploy-on-cloudflare skill in deploy-on-cloudflare.SKILL.md:
+deploy this repo to my Cloudflare account, serving at charts.example.com/draw
+```
+
+Or run the script yourself:
+
 ```sh
 bash scripts/setup.sh        # inside the repo: wrangler login → deploy to workers.dev → smoke test
 # or from anywhere:
