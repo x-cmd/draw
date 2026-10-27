@@ -25,6 +25,8 @@ import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './qr.js';
 import { renderSankey } from './sankey.js';
 import { parseSankeySpec, sankeySpecFromParams } from '../specs/sankey.js';
 import { renderStored } from './dispatch.js';
+import { renderArchmapFromUrl } from './archmap.js';
+import { renderMindmapFromUrl } from './mindmap.js';
 import { resolveSkin, type Scheme } from '../styles/index.js';
 import { CHART_TEMPLATES, type ChartTemplate, type StoredChart } from '../store.js';
 
@@ -152,6 +154,10 @@ function qrRender(request: URL): DrawResult {
  */
 export function renderFromUrl(url: URL): DrawResult {
   const typeParam = url.searchParams.get('type');
+  // 拓扑图族(x-cmd-hub/draw#17/#20):在 CHART_TEMPLATES 校验前拦截,短链注册表保持零接触
+  // (CLI 透传/lib.draw()/裸查询串与 /draw/archmap 端点同参同输出)
+  if (typeParam === 'archmap') return renderArchmapFromUrl(url);
+  if (typeParam === 'mindmap') return renderMindmapFromUrl(url);
   if (!typeParam || !CHART_TEMPLATES.includes(typeParam as ChartTemplate)) {
     throw new ApiError(400, `"type" query param is required: one of ${CHART_TEMPLATES.join(', ')}. Example: /draw?type=pie&labels=A,B&values=1,2`);
   }
