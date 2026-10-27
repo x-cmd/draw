@@ -59,24 +59,25 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=Ty
 
 ![Pie: languages](https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)
 
-## Three ways to use it (one render core)
+## Five ways to use it (one render core)
 
-**Hosted service** (zero install): just build a URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
+Every way below hits the same render core with the same parameters — a URL tested one way works every other way.
 
-**npm library** (offline/embedded, synchronous, no network; params identical to the URL):
+### 1. Direct — call our URL (zero install)
 
-```sh
-npm install @x-cmd/draw
-```
-```ts
-import { draw } from '@x-cmd/draw';
-const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// also accepts a query string: draw('?type=bar&labels=Mon,Tue&values=3,5')
-// array values = repeated params (when labels contain commas):
-draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
+Data lives in the query string, so the URL itself is the semantics — readable by humans and AI, no install, no key:
+
+```text
+https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language
+https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
+https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison
 ```
 
-**CLI** (after `npm i -g @x-cmd/draw`, or via `npx`):
+Embed as `<img>` in markdown/html, fetch from scripts, or open the demo page: `https://x-cmd.com/draw`. The same contract extends to the ECharts coverage layer — `/draw/echarts?d=<urlencoded option>` (see Endpoints).
+
+### 2. CLI — render from the shell
+
+After `npm i -g @x-cmd/draw`, or via `npx` (stdout = SVG, stderr = diagnostics, so `>` and pipes just work):
 
 ```sh
 draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
@@ -86,31 +87,65 @@ draw echarts '{"series":[{"type":"treemap","data":[{"name":"a","value":3}]}]}'  
 draw echarts opt.json > chart.svg 2>/dev/null     # stdout = SVG, stderr = diagnostics (batch/pipe friendly)
 ```
 
-**Self-host** — pick any entry point:
+Inside the repo, Deno runs the same CLI straight from source: `deno task cli --type pie --labels A,B --values 3,2 --out pie.svg` (only needs `--allow-write`).
+
+### 3. Run a local web service — sandboxed, deny by default
 
 ```sh
-git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve                    # local Node server (http://localhost:8787/draw, demo page included)
-npm run dev                      # Cloudflare wrangler local dev
-bash scripts/setup.sh            # one-shot deploy to your own Cloudflare account
+git clone https://github.com/x-cmd/draw && cd draw
+deno task serve    # = deno run --allow-net --allow-env --sloppy-imports src/node/server.ts
+                   # ONLY net+env granted; fs/subprocess/ffi stay denied — the render core needs
+                   # none of them, so Deno's permission sandbox is the security boundary
+npm run serve      # same server on Node (http://localhost:8787/draw, demo page included)
+npm run dev        # Cloudflare wrangler local dev (workerd sandbox)
+bash scripts/setup.sh   # one-shot deploy to your own Cloudflare account
 ```
 
 Environment variables (Node server): `PORT` (default 8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (set these to enable POST short links; unset degrades gracefully, exactly like self-deployed workers).
 
-**Deno** (native TS; the render core is pure — no network, no files — so the zero-permission sandbox is the security boundary):
+### 4. Embed into your own web service
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";   // JSR (Deno's native registry)
-// or npm: import { draw } from "npm:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+In-process library (npm / JSR) — the core renders synchronously with no network or files; params identical to the URL:
 
 ```sh
-deno add jsr:@x-cmd/draw
-# run straight from source inside the repo (no build):
-deno task cli --type pie --labels A,B --values 3,2 --out pie.svg   # only needs --allow-write
-deno task serve                                                    # local server (same as npm run serve)
-# proof of zero permissions: deno eval defaults to no grants — importing and rendering just works
+npm install @x-cmd/draw
+```
+```ts
+import { draw, renderEchartsOption } from '@x-cmd/draw';
+const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
+draw('?type=bar&labels=Mon,Tue&values=3,5');                        // query-string form
+draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] });  // arrays = repeated params
+const e = await renderEchartsOption({ series: [{ type: 'bar', data: [1, 2] }] }, new URLSearchParams());
+```
+
+Wire it into any route:
+
+```ts
+app.get('/chart', (req, res) => res.type('image/svg+xml').send(draw(req.query).svg));
+```
+
+Deno: `import { draw } from "jsr:@x-cmd/draw";`
+
+Or mount the full HTTP layer from this repo (routing, short links, error handling — web-standard `Request`/`Response`, runs on Node/Deno/Bun/Workers):
+
+```ts
+import { handleRequest } from './src/handler.js';
+const response = await handleRequest(request, env, {});
+```
+
+### 5. Skill — let your AI agent draw
+
+The repo ships [`SKILL.md`](SKILL.md) — a ready-made agent skill: a pick-the-chart-by-data-shape table, per-type param cheat sheets, style families, ECharts-layer usage, short-link creation, and error-recovery guidance. Drop it into your agent's skills folder (Claude Code: `~/.claude/skills/draw/SKILL.md`; any skill-loading agent works), then just ask in plain language:
+
+```text
+Use the draw skill to chart this data as a URL:
+language stars — TypeScript 4821, Python 2312, Go 980
+```
+
+The agent answers with the URL (and the chart it points to):
+
+```text
+https://x-cmd.com/draw?type=pie&labels=TypeScript,Python,Go&values=4821,2312,980&title=Language%20stars
 ```
 
 ## Endpoints

@@ -58,6 +58,18 @@ https://x-cmd.com/draw?type=<图种>&labels=A,B,C&values=1,2,3
 | sankey | `fund` `pipeline` |
 | combo | `evil` |
 
+## 长尾图种:`/draw/echarts`(echarts option 直渲)
+
+核心 11 种外的图(热力图/箱线/烛台/旭日/漏斗/关系图/仪表盘…)直接把 echarts option 放进 `?d=`(URL 编码 JSON):
+
+```
+https://x-cmd.com/draw/echarts?d=%7B%22xAxis%22%3A%7B%22type%22%3A%22category%22%2C%22data%22%3A%5B%22A%22%2C%22B%22%5D%7D%2C%22yAxis%22%3A%7B%22type%22%3A%22value%22%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22bar%22%2C%22data%22%3A%5B1%2C2%5D%7D%5D%7D
+```
+
+- 最简 option 即可出图(bar/line/scatter/boxplot 裸 option 自动补轴);`?d=` 之外共用 `w/h/t/scheme/v`
+- 风格自动注入(系列色板/轴中性色/Inter 字体/明暗 auto),option 里显式写的样式恒优先;`?d=` ≤16000 字符
+- 输出同嵌 `<metadata>`(option 原文,可解析还原);离线等价:`draw echarts '<option json>'`(文件/stdin 亦可,无 URL 长度限制)
+
 ## JSON 形态(`?d=`,URL 编码)
 
 | 适用 | 结构 |
@@ -97,4 +109,4 @@ Tue,180,90
 - 错误返回 4xx 纯文本并附修正示例,按提示重拼即可
 - POST 限 30 次/分钟/IP
 - 文字绝不重叠(放不下会整层省略);数值必须 ≥0(scatter 可负)
-- 无网络/离线场景:`npm install @x-cmd/draw` 后用 `draw(params)` 同步渲染(参数与 URL 完全一致),或 `npx @x-cmd/draw --type pie --labels A,B --values 3,2`;自托管见仓库 README(`npm run serve` 起本地服务,`scripts/setup.sh` 一键部署 Cloudflare)
+- 无网络/离线场景:`npm install @x-cmd/draw` 后用 `draw(params)` 同步渲染(参数与 URL 完全一致),或 `npx @x-cmd/draw --type pie --labels A,B --values 3,2`(echarts 层:`npx @x-cmd/draw echarts '<option json>'`);自托管见仓库 README(`npm run serve` 起本地服务,`scripts/setup.sh` 一键部署 Cloudflare)
