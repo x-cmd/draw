@@ -76,8 +76,8 @@ export function rangeTicks(min: number, max: number, count = 4): number[] {
   return out.length > 0 ? out : [min, max];
 }
 
-// 内嵌结构化 metadata:数据 + 模板 + 版本,AI 可直接读取
-function metaTag(template: string, version: number, spec: unknown): string {
+// 内嵌结构化 metadata:数据 + 模板 + 版本,AI 可直接读取(echarts 覆盖层亦复用)
+export function metaTag(template: string, version: number, spec: unknown): string {
   const json = JSON.stringify({ generator: 'draw', template, version, spec });
   return `<metadata>${esc(json)}</metadata>`;
 }
@@ -140,8 +140,9 @@ const onDuo = (d: Duo): Duo => ({
   dark: lumaHex(d.dark) > 150 ? '#18181b' : '#ffffff',
 });
 
-// 皮肤 → 内嵌样式块(auto=双套+media query,dark/light=单套);含 Inter 子集 @font-face
-function skinStyle(skin: Skin): string {
+// 皮肤 → 内嵌样式块(auto=双套+media query,dark/light=单套);含 Inter 子集 @font-face。
+// echarts 覆盖层(echarts-ssr.ts)复用:option 里的 var(--d-*) 颜色由此解析
+export function skinStyle(skin: Skin): string {
   const n = skin.neutrals;
   const varsOf = (side: 'light' | 'dark'): string => {
     const items: string[] = [];

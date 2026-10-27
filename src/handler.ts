@@ -10,6 +10,7 @@ import { parseSankeySpec } from './specs/sankey.js';
 import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
+import { renderEchartsFromUrl } from './render/echarts-ssr.js';
 import { resolveSkin, VARIANTS } from './styles/index.js';
 import { indexHandler } from './demo.js';
 import {
@@ -161,7 +162,7 @@ async function shortHandler(sub: string, url: URL, env: DrawEnv): Promise<Respon
   return svgResponse(renderStoredFromUrl(doc, url), { 'x-draw-hash': hash });
 }
 
-function route(request: Request, env: DrawEnv, platform: Platform): Response | Promise<Response> {
+async function route(request: Request, env: DrawEnv, platform: Platform): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname;
   const base = baseOf(url, env);
@@ -177,6 +178,13 @@ function route(request: Request, env: DrawEnv, platform: Platform): Response | P
     }
     return shortHandler(sub, url, env);
   }
+  // /draw/echarts 覆盖层(x-cmd-hub/draw#12):echarts SSR,option 明文走 ?d=
+  if (sub === '/echarts' || sub === '/echart') { // 别名 /echart 容拼写差异
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<urlencoded echarts option>`, { allow: 'GET' });
+    }
+    return svgResponse(await renderEchartsFromUrl(url));
+  }
   if (sub === '' || sub === '/') {
     if (method === 'POST') return createHandler(request, env, platform, base);
     if (method !== 'GET') {
@@ -187,7 +195,7 @@ function route(request: Request, env: DrawEnv, platform: Platform): Response | P
     if (url.search === '' || onlyTab) return indexHandler(base);
     return svgResponse(renderFromUrl(url));
   }
-  return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
+  return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · GET ${base}/echarts?d=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
 }
 
 // 统一入口:Worker 的 fetch handler 与 Node 适配器都调这里。

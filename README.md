@@ -82,6 +82,8 @@ draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
 draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
 draw --type hbar --labels a,b,c --values 3,2,1 --theme xcmd                # long flags (--theme/--width/--height)
 draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # bare query string, same params as the URL
+draw echarts '{"series":[{"type":"treemap","data":[{"name":"a","value":3}]}]}'   # ECharts coverage layer (also: file / stdin)
+draw echarts opt.json > chart.svg 2>/dev/null     # stdout = SVG, stderr = diagnostics (batch/pipe friendly)
 ```
 
 **Self-host** — pick any entry point:

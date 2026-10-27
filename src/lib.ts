@@ -29,6 +29,8 @@ export { assertDims } from './render/radar.js';
 export type { RenderOpts } from './render/svg.js';
 import { renderFromUrl, type DrawResult } from './render/query.js';
 export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
+// echarts 覆盖层:异步(SSR 引擎按需加载),与 GET /draw/echarts 同参同输出
+export { renderEchartsFromUrl, renderEchartsOption } from './render/echarts-ssr.js';
 export type { DrawResult } from './render/query.js';
 export {
   CHART_TEMPLATES, fingerprint, canonicalJson,
