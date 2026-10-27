@@ -84,13 +84,24 @@ curl -fsS "https://<host>/draw" | grep -q '<title>draw'                         
 
 刚部署冒烟失败多为传播延迟,等 1 分钟重试;若本机 `*.workers.dev` 解析到非 CF IP(如 128.121.x.x)是本地网络 DNS 污染,换网络或以域名路由入口验收,不是部署问题。
 
-## ⚠️ 路径路由的优先级陷阱(实测:ljh.sh)
+## ⚠️ 谁接流量:DNS 三态模型(必读)
 
-**Workers Custom Domain 绑定 > 同主机上的任何 path route。** 若目标主机已被现有 Worker 以 Custom Domain 方式占用(特征:整站任意路径都回同一个 SPA、响应头带 `x-deployment-id`),则 `ljh.sh/draw*` 这类 route 会**挂载成功但永远拿不到流量**——现站照常服务。
+同主机上"静态站 + /draw 共存"能否成立,由该主机 DNS 记录的代理状态决定:
 
-- **不要动现站**(把现站 Custom Domain 改成 route 可以解决,但影响整站,必须站点 owner 决策)
-- 正确做法:换**子域**给 draw(如 `draw.ljh.sh`:cf 建 proxied 记录 + route `draw.ljh.sh/*`),或与 owner 协商改绑定
-- 诊断命令:`curl -sI https://<host>/ | grep x-deployment-id`(是 Worker);`curl https://<host>/whatever`(任意路径回同一 HTML = SPA/Custom Domain 占位)
+| DNS 状态 | 流量路径 | path route(`/draw*`)结局 |
+|---|---|---|
+| **橙云 proxied**(源站随意:占位 IP / GitHub Pages / 任意源) | 浏览器 → CF edge → route 匹配的路径进 Worker,其余回源站 | ✅ 共成:route 优先于回源,静态站与 /draw 互不干扰 |
+| **灰云 DNS-only**(GitHub Pages 官方推荐) | 浏览器直连源站,**不过 CF** | ❌ Worker 无从生效,`/draw` 回源站 404(不是被抢,是流量根本不来) |
+| 主机被 Worker **Custom Domain** 绑定 | 整主机流量归该 Worker | ❌ route 挂载成功但永远抢不到(CF 内部优先级:Custom Domain > route) |
+
+**Custom Domain 占用的识别**(实测:ljh.sh 整站任意路径回同一 SPA、响应头带 `x-deployment-id`)与处置:
+
+- **不要动现站**(把现站 Custom Domain 改成 route 可解,但影响整站,必须 owner 决策)
+- 正确做法:给 draw 换**子域**(如 `draw.ljh.sh`:cf 建 proxied 记录 + route `draw.ljh.sh/*`)
+
+**静态站(GitHub Pages 等)共存的推荐姿势 = 子域拆分**:静态站占主域(灰云直连 GitHub,HTTPS 干净),draw 挂 `draw.<domain>`(橙云 + route)。同主机全橙云也能共存(route 优先),但 GitHub Pages + 橙云有回源 HTTPS 证书坑(GitHub 签 Let's Encrypt,SNI 对不上,需 Full 模式折腾),不推荐。
+
+诊断命令:`dig +short <host>` 看是否 CF IP(橙云);`curl -sI https://<host>/ | grep x-deployment-id`(是 Worker);`curl https://<host>/whatever` 回同一 HTML = SPA 占位。
 
 ## 部署后
 
@@ -113,6 +124,7 @@ curl -fsS "https://<host>/draw" | grep -q '<title>draw'                         
 | 部署报 ratelimit binding 不支持(部分计划) | 删配置的 `ratelimits` 段重试(POST 不限流,GET 渲染不受影响) |
 | curl\|bash 报 `./draw 已存在` | 换目录或先删再跑 |
 | POST /draw 返回 "not configured" | 正常——短链未开启,按上节配置 |
-| route 挂上但 URL 回 HTML/SPA | 见「优先级陷阱」:主机被 Custom Domain 占用,换子域 |
+| route 挂上但 URL 回 HTML/SPA | 见「DNS 三态」:主机被 Custom Domain 占用,换子域 |
+| 挂了静态站(GitHub Pages 等)后 /draw 404 | 灰云直连源站、流量不过 CF:改橙云或按「子域拆分」重构 |
 | 域名 522/超时 | 该主机名无 proxied DNS 记录:cf 建(路径 B)或 dashboard 手建 |
 | `cf` 读配置报 Node 版本错 | cloudflare.config.ts 需 Node ≥22.18 |
