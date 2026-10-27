@@ -65,18 +65,18 @@ Every way below hits the same render core with the same parameters — a URL tes
 
 ### 1. Prompt — tell your AI agent (skill)
 
-Copy [`SKILL.md`](SKILL.md) into your agent's skills folder (Claude Code: `~/.claude/skills/draw/SKILL.md`; any skill-loading agent works). The skill carries the whole contract — chart-type selection by data shape, params, styles, the ECharts layer, short links, error recovery — so you just prompt:
+Zero install: point any web-connected agent at the skill by URL and ask in plain language —
 
-```text
-Follow the x-cmd draw skill in ~/.claude/skills/draw/SKILL.md:
-chart language stars as a pie — TypeScript 4821, Python 2312, Go 980
-```
+> Follow the draw skill at https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md:
+> chart language stars as a pie — TypeScript 4821, Python 2312, Go 980
 
-The agent answers with a URL (and the chart it points to):
+The skill carries the whole contract — chart-type selection by data shape, params, styles, the ECharts layer, short links, error recovery — so the agent answers with a URL:
 
 ```text
 https://x-cmd.com/draw?type=pie&labels=TypeScript,Python,Go&values=4821,2312,980&title=Language%20stars
 ```
+
+Agents that load skills natively (Claude Code etc.): drop [`SKILL.md`](SKILL.md) into your skills folder (`~/.claude/skills/draw/SKILL.md`) once, and the same prompt works without the URL line.
 
 ### 2. Click a URL — charts straight in the browser
 
@@ -118,10 +118,8 @@ Environment variables: `PORT` (default 8787) · `BASE_PATH` · `DATA_REPO`/`DATA
 
 Hand it to your agent (deploy skill in this repo):
 
-```text
-Follow the deploy-on-cloudflare skill in deploy-on-cloudflare.SKILL.md:
-deploy this repo to my Cloudflare account, serving at charts.example.com/draw
-```
+> Follow the deploy skill at https://raw.githubusercontent.com/x-cmd/draw/main/deploy-on-cloudflare.SKILL.md:
+> deploy x-cmd/draw to my Cloudflare account, serving at charts.example.com/draw
 
 Or run the script yourself:
 
