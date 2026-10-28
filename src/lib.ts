@@ -31,6 +31,10 @@ import { renderFromUrl, type DrawResult } from './render/query.js';
 export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
 // echarts 覆盖层:异步(SSR 引擎按需加载),与 GET /draw/echarts 同参同输出
 export { renderEchartsFromUrl, renderEchartsOption } from './render/echarts-ssr.js';
+// archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
+export { renderArchmapFromUrl } from './render/archmap.js';
+// mindmap 树形导图:同步,与 GET /draw/mindmap 同参同输出
+export { renderMindmapFromUrl } from './render/mindmap.js';
 export type { DrawResult } from './render/query.js';
 export {
   CHART_TEMPLATES, fingerprint, canonicalJson,

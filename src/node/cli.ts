@@ -12,7 +12,7 @@ import { ApiError } from '../specs/index.js';
 // 长 flag → 查询参数名(单字母直写也依然有效,经透传)
 const ALIASES: Record<string, string> = { theme: 't', width: 'w', height: 'h' };
 
-const HELP = `usage: draw --type <pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr> [params] [--out <file.svg>]
+const HELP = `usage: draw --type <pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr|archmap> [params] [--out <file.svg>]
        draw echarts '<option json>' [params] [--out <file.svg>]        # ECharts coverage layer
 
 params are the same as GET /draw query params:
@@ -22,6 +22,14 @@ params are the same as GET /draw query params:
   (single-letter query names also pass through: --t evil --w 560)
 or pass one bare query string:
   draw "?type=pie&labels=A,B&values=3,2"
+
+archmap (architecture map) — repeated --n/--e/--b, same as GET /draw/archmap:
+  draw --type archmap --title "Web App" \\
+       --n "user;ext;User;;r0c0" --n "cdn;cloud;CDN;;r0c1" --n "api;be;API;;r1c0" \\
+       --n "db;db;Postgres;;r2c0" \\
+       --e "user;cdn;https" --e "cdn;api" --e "api;db;sql" \\
+       --b "Data Layer;db"
+  node = id;type(ext|fe|be|db|cloud|sec|bus|svc);label[;sublabel][;r<row>c<col>[w<span>][h<span>] | p<x>,<y>]
 
 echarts subcommand — the option comes from an inline JSON arg, a file, or stdin
 (no URL-length cap; --theme/--scheme/--width/--height apply like everywhere else):
