@@ -19,6 +19,7 @@ const NODE_FS = 13;
 const BOX_PAD = 10;   // tree 形态盒内边距
 const BOX_H = 24;     // tree 形态盒高
 const RAD_GAP = 56;   // radial 形态环间距
+const LEAF_SIDE_NEED = 24; // radial 侧面叶的切向占位(径向排版只需行高+呼吸)
 const MAX_DEPTH = 8;
 const MAX_NODES = 500;
 const STYLES = ['organic', 'tree', 'radial'] as const;
@@ -125,17 +126,45 @@ function layoutRadial(root: MindNode, colW: number[]): { W: number; H: number; d
   };
   collect(root);
   const L = Math.max(leaves.length, 1);
-  let li = 0;
   let minX = 0, maxX = 0, minY = 0, maxY = 0;
-  const place = (n: MindNode): void => {
+  // 第一遍:均匀分角,只为判定每个叶落在侧面(径向排版,占角小)还是顶底(水平排版,占角=字宽/半径)
+  let li = 0;
+  const placeUniform = (n: MindNode): void => {
     if (!n.children.length) {
-      n.angle = -Math.PI / 2 + (2 * Math.PI * li++) / L; // 叶全局均匀分角
+      n.angle = -Math.PI / 2 + (2 * Math.PI * li++) / L;
     } else {
-      n.children.forEach(place);
+      n.children.forEach(placeUniform);
       n.angle = (n.children[0].angle + n.children[n.children.length - 1].angle) / 2;
     }
   };
-  place(root);
+  placeUniform(root);
+  root.angle = -Math.PI / 2;
+  // 第二遍:叶槽位按占角需求分配(比例归一铺满整圈),溢出则整体放大半径
+  const angularNeed = (leaf: MindNode): number => {
+    const r = radius[leaf.depth] || 120;
+    const c = Math.cos(leaf.angle);
+    return c > 0.35 || c < -0.35 ? LEAF_SIDE_NEED / r : (leaf.w + 26) / r;
+  };
+  const needs = leaves.map(angularNeed);
+  const total = needs.reduce((a, b) => a + b, 0);
+  const BUDGET = Math.PI * 2 * 0.92; // 全局留 8% 呼吸
+  if (total > BUDGET) {
+    const grow = total / BUDGET;
+    for (let d = 1; d < radius.length; d++) radius[d] *= grow;
+  }
+  let a = -Math.PI / 2;
+  leaves.forEach((leaf, i) => {
+    const slot = (needs[i] / total) * Math.PI * 2;
+    leaf.angle = a + slot / 2; // 槽位中心
+    a += slot;
+  });
+  const reCenter = (n: MindNode): void => {
+    if (n.children.length) {
+      n.children.forEach(reCenter);
+      n.angle = (n.children[0].angle + n.children[n.children.length - 1].angle) / 2;
+    }
+  };
+  reCenter(root);
   root.angle = -Math.PI / 2;
   const project = (n: MindNode): void => {
     const a = n.angle;
