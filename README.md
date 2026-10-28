@@ -59,6 +59,44 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=Ty
 
 ![Pie: languages](https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)
 
+### Archmap — three-tier web app (`/draw/archmap`: grid cells you author, the engine packs & routes)
+
+```text
+https://po6.sh/draw/archmap?title=Web%20App&n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&n=web;fe;Web%20App;SSR;r0c2&n=api;be;API;;r1c1&n=db;db;Postgres;;r2c1&n=redis;db;Redis;;r2c2&e=user;cdn;https&e=cdn;web&e=web;api;json&e=api;db;sql;dash&e=api;redis&b=Data%20Layer;db%20redis
+```
+
+![Archmap: web app three tiers](https://po6.sh/draw/archmap?title=Web%20App&n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&n=web;fe;Web%20App;SSR;r0c2&n=api;be;API;;r1c1&n=db;db;Postgres;;r2c1&n=redis;db;Redis;;r2c2&e=user;cdn;https&e=cdn;web&e=web;api;json&e=api;db;sql;dash&e=api;redis&b=Data%20Layer;db%20redis)
+
+`n=id;type;label;sublabel;r0c1` — the cell address **is** the layout: rows read as tiers, adjacency is legible straight from the URL. `ext/fe/be/db/cloud/sec/bus/svc` map to semantic colors; `b=` wraps a boundary; `e=` takes `main`/`dash` variants.
+
+### Archmap — RAG pipeline (`t=evil`; spans `w2`, two boundaries, emphasis + dashed edges)
+
+```text
+https://po6.sh/draw/archmap?title=RAG%20Pipeline&t=evil&n=user;ext;User;Chat%20API;r0c0&n=gw;be;API%20Gateway;rate%20limit;r0c1w2&n=guard;sec;Guardrail;;r1c1&n=llm;be;LLM;embed+rerank;r1c2&n=vec;db;Vector%20Store;;r2c1&n=kb;db;Knowledge%20Base;docs;r2c2&n=obs;cloud;Object%20Storage;;r3c0w2&e=user;gw;question;main&e=gw;guard&e=gw;llm;context&e=guard;llm&e=llm;vec;knn&e=kb;vec;index;dash&e=llm;obs;artifacts&b=Retrieval;vec%20kb&b=Query%20Runtime;gw%20guard%20llm
+```
+
+![Archmap: RAG pipeline](https://po6.sh/draw/archmap?title=RAG%20Pipeline&t=evil&n=user;ext;User;Chat%20API;r0c0&n=gw;be;API%20Gateway;rate%20limit;r0c1w2&n=guard;sec;Guardrail;;r1c1&n=llm;be;LLM;embed+rerank;r1c2&n=vec;db;Vector%20Store;;r2c1&n=kb;db;Knowledge%20Base;docs;r2c2&n=obs;cloud;Object%20Storage;;r3c0w2&e=user;gw;question;main&e=gw;guard&e=gw;llm;context&e=guard;llm&e=llm;vec;knn&e=kb;vec;index;dash&e=llm;obs;artifacts&b=Retrieval;vec%20kb&b=Query%20Runtime;gw%20guard%20llm)
+
+### Mindmap — LLM technology landscape, 42 nodes (`/draw/mindmap`: `n=root/branch/leaf` paths)
+
+```text
+https://po6.sh/draw/mindmap?title=大模型技术全景&n=大模型/预训练/数据/清洗去重&n=大模型/预训练/数据/合成数据&n=大模型/预训练/训练/MoE架构&n=大模型/对齐/SFT&n=大模型/对齐/RLHF&n=大模型/对齐/DPO&n=大模型/推理/采样/temperature&n=大模型/推理/采样/top-p&n=大模型/推理/加速/KV%20Cache&n=大模型/推理/加速/投机解码&n=大模型/推理/加速/量化&n=大模型/推理/部署/vLLM&n=大模型/RAG/向量库&n=大模型/RAG/嵌入模型&n=大模型/RAG/重排序&n=大模型/Agent/工具调用&n=大模型/Agent/任务规划&n=大模型/Agent/多智能体&n=大模型/Agent/MCP协议&n=大模型/微调/LoRA&n=大模型/微调/全参数微调&n=大模型/微调/知识蒸馏&n=大模型/评测/MMLU&n=大模型/评测/HumanEval&n=大模型/评测/LLM评审&n=大模型/多模态/视觉编码器&n=大模型/多模态/语音&n=大模型/多模态/视频
+```
+
+![Mindmap: LLM technology landscape](https://po6.sh/draw/mindmap?title=大模型技术全景&n=大模型/预训练/数据/清洗去重&n=大模型/预训练/数据/合成数据&n=大模型/预训练/训练/MoE架构&n=大模型/对齐/SFT&n=大模型/对齐/RLHF&n=大模型/对齐/DPO&n=大模型/推理/采样/temperature&n=大模型/推理/采样/top-p&n=大模型/推理/加速/KV%20Cache&n=大模型/推理/加速/投机解码&n=大模型/推理/加速/量化&n=大模型/推理/部署/vLLM&n=大模型/RAG/向量库&n=大模型/RAG/嵌入模型&n=大模型/RAG/重排序&n=大模型/Agent/工具调用&n=大模型/Agent/任务规划&n=大模型/Agent/多智能体&n=大模型/Agent/MCP协议&n=大模型/微调/LoRA&n=大模型/微调/全参数微调&n=大模型/微调/知识蒸馏&n=大模型/评测/MMLU&n=大模型/评测/HumanEval&n=大模型/评测/LLM评审&n=大模型/多模态/视觉编码器&n=大模型/多模态/语音&n=大模型/多模态/视频)
+
+Every `n=` is one root-to-leaf path — an agent reading the URL rebuilds the whole tree without ever rendering it. CJK and Latin labels mix freely.
+
+### Mindmap — three forms from one tree (`style=organic|tree|radial`)
+
+```text
+https://po6.sh/draw/mindmap?style=radial&title=Product%20Plan&n=Product/Features/Speed&n=Product/Features/Simple&n=Product/Features/Secure/SSO&n=Product/Features/Secure/Audit%20log&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Markets/JP&n=Product/Team/Core&n=Product/Team/Growth
+```
+
+![Mindmap: radial form](https://po6.sh/draw/mindmap?style=radial&title=Product%20Plan&n=Product/Features/Speed&n=Product/Features/Simple&n=Product/Features/Secure/SSO&n=Product/Features/Secure/Audit%20log&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Markets/JP&n=Product/Team/Core&n=Product/Team/Growth)
+
+Same params, same tree — swap `style=`: `organic` (bezier, default), `tree` (boxes + elbows), `radial` (root-centred fan). Branch sectors size themselves to leaf count.
+
 ## Six ways to use it (one render core)
 
 Every way below hits the same render core with the same parameters — a URL tested one way works every other way.
@@ -163,7 +201,7 @@ const response = await handleRequest(request, env, {});
 
 ## Endpoints
 
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — render a chart
+**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr|archmap|mindmap>`** — render a chart
 
 | type | chart | example |
 |---|---|---|
@@ -178,8 +216,12 @@ const response = await handleRequest(request, env, {});
 | `combo` | bars (`series=`) + line (`line=`) in one chart; `stack=1` to stack the bars<br><br>**<u>≤30 groups, ≤6 series total</u>** | <a href="https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri&series=dl:120,180,150,210,240&line=growth:3.1,3.4,3.2,3.8,4.1&title=Downloads"><img src="https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri&series=dl:120,180,150,210,240&line=growth:3.1,3.4,3.2,3.8,4.1&title=Downloads" width="360" alt="combo example"></a> |
 | `sankey` | flow diagram with weighted bands<br><br>**<u>`labels=`+`links=A>B:30`, ≤24 nodes/60 links</u>** | <a href="https://x-cmd.com/draw?type=sankey&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Stars>Forks:17;Forks>PRs:9;PRs>Merged:7&title=Contributor%20funnel"><img src="https://x-cmd.com/draw?type=sankey&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Stars>Forks:17;Forks>PRs:9;PRs>Merged:7&title=Contributor%20funnel" width="360" alt="sankey example"></a> |
 | `qr` | QR code<br><br>**<u>`d`=text (≤1000 chars), `fg`/`bg` colors, `title`/`unit` captions</u>** | <a href="https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me"><img src="https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me" width="360" alt="qr example"></a> |
+| `archmap` | architecture map: you author grid cells (`r0c1`, `w`/`h` spans ≤3, pixel escape `p40,80`), the engine auto-sizes tracks and routes orthogonal edges<br><br>**<u>`n=id;type;label[;sub][;pos]` (types `ext/fe/be/db/cloud/sec/bus/svc`), `e=from;to[;label[;main\|dash]]`, `b=label;ids`; ≤500 nodes</u>** | <a href="https://po6.sh/draw/archmap?title=Web%20App&n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&n=web;fe;Web%20App;SSR;r0c2&n=api;be;API;;r1c1&n=db;db;Postgres;;r2c1&n=redis;db;Redis;;r2c2&e=user;cdn;https&e=cdn;web&e=web;api;json&e=api;db;sql;dash&e=api;redis&b=Data%20Layer;db%20redis"><img src="https://po6.sh/draw/archmap?title=Web%20App&n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&n=web;fe;Web%20App;SSR;r0c2&n=api;be;API;;r1c1&n=db;db;Postgres;;r2c1&n=redis;db;Redis;;r2c2&e=user;cdn;https&e=cdn;web&e=web;api;json&e=api;db;sql;dash&e=api;redis&b=Data%20Layer;db%20redis" width="360" alt="archmap example"></a> |
+| `mindmap` | mind map: repeated `n=root/branch/leaf` paths, shared prefixes merge, engine lays out the tree<br><br>**<u>`style=organic\|tree\|radial`; ≤500 nodes, ≤8 levels</u>** | <a href="https://po6.sh/draw/mindmap?title=Product%20Plan&n=Product/Features/Speed&n=Product/Features/Simple&n=Product/Features/Secure/SSO&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Team/Core&n=Product/Team/Growth"><img src="https://po6.sh/draw/mindmap?title=Product%20Plan&n=Product/Features/Speed&n=Product/Features/Simple&n=Product/Features/Secure/SSO&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Team/Core&n=Product/Team/Growth" width="360" alt="mindmap example"></a> |
 
 **`GET /draw`** (no params) or `?tab=pie` — the demo page (11 chart types, all style variants, dual URL forms)
+**`GET /draw/archmap?n=...`** (alias `/draw/arch`) — architecture map sub-path, same params as `type=archmap`
+**`GET /draw/mindmap?n=...`** — mind map sub-path, same params as `type=mindmap`
 **`POST /draw?type=...`** — submit a JSON/CSV body to create a permanent short link
 **`GET /draw/c/<hash>`** — short-link render (immutable)
 
