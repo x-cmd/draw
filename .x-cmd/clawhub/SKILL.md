@@ -1,6 +1,6 @@
 ---
 name: draw
-description: Turn data into a chart by building a URL — pie, bar, line, radar, gauge, sankey, QR and more as SVG from x-cmd.com/draw, plus a full ECharts escape hatch. Embed as [![chart]](/draw/explore) — image preview, one click to explore & edit the data. The URL carries the data itself, so agents read the link instead of the image — zero vision tokens, no hallucinated numbers. No install, no API key.
+description: Build a URL, get an SVG chart — pie, bar, line, radar, gauge, sankey, QR, any ECharts chart, from x-cmd.com/draw. No install, no key. Embed as [![chart]](/draw/explore) — image preview, click to explore & edit. The URL is the data — agents read the link, not the image. Zero vision tokens.
 version: 1.0.1
 metadata:
   openclaw:
