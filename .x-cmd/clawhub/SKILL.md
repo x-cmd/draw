@@ -12,7 +12,7 @@ metadata:
 
 `https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980&title=Stars` — open it and you get an SVG chart. No install, no key, no state: **the URL is the data**, so links are self-describing, shareable, and cacheable forever. Always build URLs on **`https://x-cmd.com/draw`**.
 
-## The embed pattern — GitHub READMEs, issues & PRs
+## The embed pattern — READMEs, issues, PRs, blogs & chat
 
 [![Stars by language](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)
 
@@ -25,6 +25,8 @@ Concrete moments it wins:
 - **README** — put the language mix or downloads trend right under your badges; visitors see the picture, click, and poke at the real numbers.
 - **Issue** — attach the latency spread of that bug instead of a table of numbers; the maintainer hovers, spots the outlier, edits the data to test a theory, and pastes the new URL back into the thread.
 - **PR description** — before/after benchmarks side by side; a reviewer notices a typo'd value, fixes it in explore, and re-posts the corrected chart — no re-run asked for.
+- **Blog post** — a chart in the article stays interactive: readers question a number, click, and re-cut the data their own way instead of taking your word for it.
+- **Chatroom** — drop the link in Discord/Slack: the preview renders the chart, and instead of pasting numbers back and forth, teammates click, tweak, and return a new chart URL.
 - **Reports & notes** — anywhere Markdown renders.
 
 The image is the rendered SVG; the link opens the **explore webapp** — hover the data, tweak params, edit the values, copy the new URL. `/draw/explore` takes the exact same params as `/draw`; the ECharts layer explores at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
