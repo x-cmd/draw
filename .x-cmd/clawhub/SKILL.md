@@ -1,6 +1,6 @@
 ---
 name: draw
-description: Build a URL, get an SVG chart — pie, bar, line, radar, gauge, sankey, QR, any ECharts chart, from x-cmd.com/draw. No install, no key. Embed as [![chart]](/draw/explore) — click to explore & edit. The URL is the data — humans get the picture, agents get exact numbers. No vision tokens.
+description: Build a URL, get an SVG chart — pie, bar, line, radar, gauge, sankey, QR, any ECharts chart, from x-cmd.com/draw. No install, no key. Embed as [![chart]](/draw/explore) — click to explore & edit. The URL is the data — humans see the story, agents get exact numbers. No vision tokens.
 version: 1.0.1
 metadata:
   openclaw:
