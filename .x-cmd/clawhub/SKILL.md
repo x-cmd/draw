@@ -16,6 +16,16 @@ Open it in a browser: you get an SVG chart. Embed it with `<img src>` or Markdow
 
 Always build URLs on **`https://x-cmd.com/draw`** (the hosted service).
 
+## Embed pattern: preview + click-to-explore
+
+Put the SVG behind a link to the explore webapp — readers see the chart as the image, one click opens it to hover the data, tweak params and edit the values:
+
+```markdown
+[![chart](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go&values=4821,2312,980)
+```
+
+`/draw/explore` takes the exact same params as `/draw`; the ECharts layer has its own page at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
+
 ## Pick a chart by data shape
 
 | Data shape | type | Copy-paste example |

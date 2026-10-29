@@ -6,6 +6,14 @@
 https://x-cmd.com/draw?type=<图种>&labels=A,B,C&values=1,2,3
 ```
 
+嵌入推荐形态 = 图预览 + 点击进 explore(explore 是 webapp:悬停看数、调参数、直接改数据):
+
+```
+[![](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go&values=4821,2312,980)
+```
+
+explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)。
+
 数据用扁平参数(如上,AI 可读、免转义);复杂数据可用 `?d=` + URL 编码 JSON(结构见文末)。标签含逗号时用重复参数 `labels=Q1, 2024&labels=Q2`。
 
 ## 按数据形状选图

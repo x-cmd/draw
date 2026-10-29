@@ -104,9 +104,11 @@ Agents that load skills natively (Claude Code etc.): drop [`SKILL.md`](SKILL.md)
 
 ### 2. Click a URL — charts straight in the browser
 
-- [Pie — stars by language](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)
-- [Hbar — open/closed issues by area (butterfly)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
-- [Radar — three-way editor comparison](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison)
+The recommended embed puts the SVG preview behind a click-to-explore link — the image is the chart, a click opens the explore webapp to hover the data, tweak params and edit the values:
+
+[![Pie — stars by language](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)
+
+More to click (open in explore): [Hbar — issues by area, butterfly](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area) · [Radar — editor comparison](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=startup,ecosystem,extensibility,memory,ease&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor%20comparison)
 
 Or browse the demo page with every type & style: <https://x-cmd.com/draw>
 
