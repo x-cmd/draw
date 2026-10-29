@@ -122,6 +122,7 @@ Offline / no network: the same params ship as a binary (`npm i -g @x-cmd/draw`, 
 
 ```sh
 draw --type pie --labels TS,Py,Go --values 4821,2312,980 > pie.svg
+draw --type pie --labels TS,Py,Go --values 4821,2312,980 --out pie.png --scheme dark   # .png = rasterized (resvg-wasm)
 draw "?type=bar&labels=Mon,Tue&values=3,5"                                  # bare query string, same params as the URL
 draw echarts '{"series":[{"type":"treemap","data":[{"name":"a","value":3}]}]}' > treemap.svg   # ECharts layer (also: file / stdin)
 ```

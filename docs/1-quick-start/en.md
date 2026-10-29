@@ -30,7 +30,7 @@ Open it in a browser for the SVG; `<img src>` and Markdown `![]()` work the same
 
 ```sh
 npm install @x-cmd/draw
-x-draw --type pie --labels "TS,Py,Go" --values "48,23,9" --out pie.svg
+draw --type pie --labels "TS,Py,Go" --values "48,23,9" --out pie.svg
 ```
 
 ```ts
@@ -44,6 +44,8 @@ const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2' });  // sync, n
 import { draw } from "jsr:@x-cmd/draw";
 const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
 ```
+
+**PNG output** — any chart URL can rasterize instead: append `&format=png` (`scale=1–3` for retina; `scheme` is baked — omitting it means light; the embedded font subset is latin-only for now). The CLI picks it by extension: `--out chart.png`.
 
 Deeper docs: [2-overview](../2-overview/en.md), [3-styles-themes](../3-styles-themes/en.md), [4-self-hosting](../4-self-hosting/en.md), per-type references from [10-pie](../10-pie/en.md).
 
