@@ -1,0 +1,93 @@
+id: x-draw-3-styles-01-style-families
+
+data:
+  - name:
+      en: styles themes
+      cn: 风格主题
+    qa:
+      - id: styles-cross-chart
+        question:
+          cn: "x-cmd/draw 各图表有哪些风格（t=）？"
+          en: "What styles (t=) does each x-cmd/draw chart support?"
+        answer:
+          cn: |
+            完整跨图表索引见 [3-styles-themes](3-styles-themes) §一。每种图表有自己的默认风格和支持的 `t=`：
+
+            - **pie**：默认 `opendata`，另有 `evil` / `evil-mono` / `market-mono` / `progress` / `revenue`
+            - **bar / hbar / line / area / radar / scatter / combo / sankey**：默认 `evil`
+            - **gauge**：默认带颜色变化
+            - **qr**：默认黑底白图案，可用 `invert=1` 反色
+
+            同一 `t=` 在不同图表上视觉不同（如 `evil` 在 pie 是圆角扇区，在 line 是粗黑线）。
+          en: |
+            Full cross-chart index in [3-styles-themes](3-styles-themes) §1. Each chart has its default style and supported `t=`:
+
+            - **pie**: default `opendata`, also `evil` / `evil-mono` / `market-mono` / `progress` / `revenue`
+            - **bar / hbar / line / area / radar / scatter / combo / sankey**: default `evil`
+            - **gauge**: default has color change
+            - **qr**: default black-on-white, `invert=1` flips
+
+            Same `t=` renders differently per chart (e.g., `evil` is rounded sectors in pie, thick line in line).
+        confidence: 10
+        reference:
+          - docs/3-styles/01-style-families/cn.md
+          - docs/3-styles/01-style-families/en.md
+
+      - id: styles-default-per-chart
+        question:
+          cn: "每个图表的默认风格是什么？"
+          en: "What's the default style for each chart?"
+        answer:
+          cn: |
+            | 图表 | 默认 `t=` |
+            | --- | --- |
+            | pie | `opendata` |
+            | bar / hbar / line / area / radar / scatter / combo / sankey | `evil` |
+            | gauge | （带颜色变化） |
+            | qr | （黑底白图案） |
+          en: |
+            | chart | default `t=` |
+            | --- | --- |
+            | pie | `opendata` |
+            | bar / hbar / line / area / radar / scatter / combo / sankey | `evil` |
+            | gauge | (with color change) |
+            | qr | (black-on-white) |
+        confidence: 10
+        reference:
+          - docs/3-styles/01-style-families/cn.md
+
+      - id: dark-mode-scheme
+        question:
+          cn: "x-cmd/draw 怎么画暗色图表？"
+          en: "How to make dark-theme charts in x-cmd/draw?"
+        answer:
+          cn: |
+            加 `scheme=dark`：
+
+            ```sh
+            curl "https://x-cmd.com/draw?type=pie&scheme=dark&labels=A,B,C&values=10,20,30"
+            ```
+
+            不指定时跟随系统（浏览器 / OS 暗色模式）。
+
+            暗色模式下：
+            - 背景变深
+            - 文字反色
+            - 部分风格（evil、revenue）的颜色饱和度自动调整
+          en: |
+            Add `scheme=dark`:
+
+            ```sh
+            curl "https://x-cmd.com/draw?type=pie&scheme=dark&labels=A,B,C&values=10,20,30"
+            ```
+
+            Default follows system (browser / OS dark mode).
+
+            In dark mode:
+            - Background darkens
+            - Text inverts
+            - Some styles (evil, revenue) auto-adjust color saturation
+        confidence: 10
+        reference:
+          - docs/3-styles/01-style-families/cn.md
+          - docs/1-overview/01-what-is-draw/cn.md

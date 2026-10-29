@@ -1,0 +1,46 @@
+id: x-draw-2-chart-types-10-sankey
+
+data:
+  - name:
+      en: sankey diagram
+      cn: 桑基图
+    qa:
+      - id: flow-definition
+        question:
+          en: "How do I define the flow?"
+          cn: "流量怎么定义?"
+        answer:
+          en: >
+            nodes= lists the names, links=Source>Target:value describes the edges. The names in links must match the nodes exactly.
+          cn: >
+            nodes= 列出节点名,links=Source>Target:value 描述连线。links 里的名字必须和 nodes 完全一致。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/10-sankey/en.md
+          - docs/2-chart-types/10-sankey/cn.md
+      - id: missing-link
+        question:
+          en: "Why does one of my links not show up?"
+          cn: "为什么有一条连线没画出来?"
+        answer:
+          en: >
+            Two reasons: the name does not match a node exactly, or the value is zero — zero-value links are deliberately not drawn.
+          cn: >
+            两个原因:名字和节点没完全对上,或者值是 0——值为 0 的连线本来就不画。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/10-sankey/en.md
+          - docs/2-chart-types/10-sankey/cn.md
+      - id: node-limit
+        question:
+          en: "How many nodes can a sankey hold?"
+          cn: "sankey 最多放多少个节点?"
+        answer:
+          en: >
+            About 20. Beyond that it gets crowded and you should group the small steps into one band.
+          cn: >
+            大约 20 个。再多就挤,小的步骤应该合并成一条带。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/10-sankey/en.md
+          - docs/2-chart-types/10-sankey/cn.md

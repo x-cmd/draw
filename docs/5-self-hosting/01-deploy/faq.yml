@@ -1,0 +1,46 @@
+id: x-draw-5-self-hosting-01-deploy
+
+data:
+  - name:
+      en: self-hosting
+      cn: 自托管
+    qa:
+      - id: which-one
+        question:
+          en: "Which deployment should I pick?"
+          cn: "我该选哪种部署?"
+        answer:
+          en: >
+            Cloudflare Workers is the recommended one and the free tier is enough; run the Node server locally if you want to own the process; use the npm library if you do not want a service at all.
+          cn: >
+            推荐 Cloudflare Workers,免费额度就够;想自己掌控进程就在本地跑 Node 服务器;完全不想有服务,那就用 npm 库。
+        confidence: 9
+        reference:
+          - docs/5-self-hosting/01-deploy/en.md
+          - docs/5-self-hosting/01-deploy/cn.md
+      - id: short-links
+        question:
+          en: "How do I enable short links?"
+          cn: "短链接怎么开?"
+        answer:
+          en: >
+            POST to /draw with the same params; the response returns a hash and an immutable URL you can share.
+          cn: >
+            用同样的参数 POST 到 /draw,返回里会给出 hash 和一个不可变的分享链接。
+        confidence: 9
+        reference:
+          - docs/5-self-hosting/01-deploy/en.md
+          - docs/5-self-hosting/01-deploy/cn.md
+      - id: no-service
+        question:
+          en: "Can I use draw without running any service?"
+          cn: "能不起服务就用 draw 吗?"
+        answer:
+          en: >
+            Yes: npm install @x-cmd/draw (or jsr:@x-cmd/draw) and call draw(params) — it renders synchronously in your own process.
+          cn: >
+            能:npm install @x-cmd/draw(或 jsr:@x-cmd/draw),然后调用 draw(params),在你自己的进程里同步渲染。
+        confidence: 9
+        reference:
+          - docs/5-self-hosting/01-deploy/en.md
+          - docs/5-self-hosting/01-deploy/cn.md

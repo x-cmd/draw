@@ -1,0 +1,46 @@
+id: x-draw-2-chart-types-11-qr
+
+data:
+  - name:
+      en: QR code
+      cn: 二维码
+    qa:
+      - id: encode
+        question:
+          en: "How do I encode the content?"
+          cn: "内容怎么编码?"
+        answer:
+          en: >
+            Put it in data= and URL-encode it. Characters like : ; # % all have to be escaped.
+          cn: >
+            放进 data= 并做 URL 编码。: ; # % 这些字符都得转义。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/11-qr/en.md
+          - docs/2-chart-types/11-qr/cn.md
+      - id: length
+        question:
+          en: "How long can the content be?"
+          cn: "内容能有多长?"
+        answer:
+          en: >
+            About 2953 bytes at the lowest error-correction level. Chinese characters cost three bytes each after URL encoding, so keep it short.
+          cn: >
+            在最低纠错级别下大约 2953 字节。中文经 URL 编码后一个字算三字节,所以要短。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/11-qr/en.md
+          - docs/2-chart-types/11-qr/cn.md
+      - id: dark-bg
+        question:
+          en: "How do I make a QR code work on a dark background?"
+          cn: "二维码放在深色背景上怎么办?"
+        answer:
+          en: >
+            The default is dark code on a light background; invert=1 flips it for dark pages.
+          cn: >
+            默认是浅底深码;加 invert=1 就能反过来,适合深色页面。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/11-qr/en.md
+          - docs/2-chart-types/11-qr/cn.md

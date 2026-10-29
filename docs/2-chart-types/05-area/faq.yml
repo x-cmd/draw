@@ -1,0 +1,33 @@
+id: x-draw-2-chart-types-05-area
+
+data:
+  - name:
+      en: area chart
+      cn: 面积图
+    qa:
+      - id: area-vs-line
+        question:
+          en: "When should I use area instead of line?"
+          cn: "什么时候用 area 而不是 line?"
+        answer:
+          en: >
+            line emphasises the value at each point; area emphasises accumulation and overall magnitude. If the total matters, use area.
+          cn: >
+            line 强调每个时点上的数值;area 强调累计和整体量级。如果“总量”是重点,就用 area。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/05-area/en.md
+          - docs/2-chart-types/05-area/cn.md
+      - id: multi-series
+        question:
+          en: "Can an area chart show several series?"
+          cn: "area 能画多条 series 吗?"
+        answer:
+          en: >
+            Yes — the default evil style draws two series as dashed areas with a gradient fill.
+          cn: >
+            能——默认的 evil 样式会把两条 series 画成带渐变填充的虚线面积。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/05-area/en.md
+          - docs/2-chart-types/05-area/cn.md

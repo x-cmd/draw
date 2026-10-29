@@ -1,0 +1,103 @@
+id: x-draw-2-chart-types-01-pie
+
+data:
+  - name:
+      en: pie chart
+      cn: 饼图
+    qa:
+      - id: pie-required-params
+        question:
+          cn: "x-cmd/draw 饼图必填哪些参数？"
+          en: "Required params for x-cmd/draw pie chart?"
+        answer:
+          cn: |
+            必填：
+            - `labels=` 扇区标签，逗号分隔
+            - `values=` 扇区数值，逗号分隔
+            - `title=` 看场景
+
+            标签数 ≤ 100，> 9 自动合并 Other。
+          en: |
+            Required:
+            - `labels=` sector labels, comma-separated
+            - `values=` sector values, comma-separated
+            - `title=` depends on use case
+
+            Label count ≤ 100; > 9 auto-collapsed into "Other".
+        confidence: 10
+        reference:
+          - docs/2-chart-types/01-pie/cn.md
+          - docs/2-chart-types/01-pie/en.md
+
+      - id: pie-style-choose
+        question:
+          cn: "x-cmd/draw 饼图该选哪个风格？"
+          en: "Which pie style should I pick?"
+        answer:
+          cn: |
+            按场景选：
+
+            - **通用** → `opendata`（默认）
+            - **营收 / 市场份额 + 现代感** → `evil`
+            - **黑白印刷 / 单色文档** → `evil-mono`
+            - **商业报告 / 正式** → `market-mono`
+            - **调研 / 调查 / 投票** → `progress`
+            - **营收分析 / 多色** → `revenue`
+
+            完整对比见 [3-styles-themes](3-styles-themes)。
+          en: |
+            Pick by situation:
+
+            - **General** → `opendata` (default)
+            - **Revenue / market share + modern feel** → `evil`
+            - **B&W print / monochrome doc** → `evil-mono`
+            - **Business report / formal** → `market-mono`
+            - **Survey / poll / response share** → `progress`
+            - **Revenue analysis / colorful** → `revenue`
+
+            Full comparison in [3-styles-themes](3-styles-themes).
+        confidence: 9
+        reference:
+          - docs/2-chart-types/01-pie/cn.md
+
+      - id: pie-solid-vs-donut
+        question:
+          cn: "x-cmd/draw 怎么画实心饼图（不要环心）？"
+          en: "How to make a solid pie (no donut center)?"
+        answer:
+          cn: |
+            加 `donut=0`：
+
+            ```sh
+            curl "https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9"
+            ```
+
+            其他参数不变，风格不变。
+          en: |
+            Add `donut=0`:
+
+            ```sh
+            curl "https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9"
+            ```
+
+            Other params and style unchanged.
+        confidence: 10
+        reference:
+          - docs/2-chart-types/01-pie/cn.md
+
+      - id: pie-many-categories
+        question:
+          cn: "x-cmd/draw 饼图类别很多（> 20）怎么办？"
+          en: "Pie chart has too many categories (> 20) — what to do?"
+        answer:
+          cn: |
+            限制：标签 ≤ 100，> 9 自动合并为 "Other"。
+
+            如果类别真的多，建议换 [11-bar](11-bar) / [12-hbar](12-hbar)——饼图 > 7 类就开始难读。
+          en: |
+            Limit: labels ≤ 100, > 9 auto-collapsed into "Other".
+
+            If you really have many categories, switch to [11-bar](11-bar) / [12-hbar](12-hbar) — pie with > 7 categories gets hard to read.
+        confidence: 9
+        reference:
+          - docs/2-chart-types/01-pie/cn.md

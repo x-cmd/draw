@@ -1,0 +1,33 @@
+id: x-draw-2-chart-types-03-hbar
+
+data:
+  - name:
+      en: hbar chart
+      cn: 条形图
+    qa:
+      - id: hbar-vs-bar
+        question:
+          en: "When should I use hbar instead of bar?"
+          cn: "什么时候用 hbar 而不是 bar?"
+        answer:
+          en: >
+            bar is for time series (the X axis reads left to right like time); hbar is for category comparison, especially when the labels are long text.
+          cn: >
+            bar 适合时间序列(X 轴从左到右读起来像时间);hbar 适合类别对比,尤其是标签很长的时候。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/03-hbar/en.md
+          - docs/2-chart-types/03-hbar/cn.md
+      - id: butterfly
+        question:
+          en: "What is the butterfly style?"
+          cn: "蝴蝶图是什么?"
+        answer:
+          en: >
+            t=xcmd-issue draws two series back to back from the same baseline, so you can compare open against closed for each category.
+          cn: >
+            t=xcmd-issue 把两条 series 从同一条基线往两侧画,于是每个类别的 open 和 closed 可以直接对比。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/03-hbar/en.md
+          - docs/2-chart-types/03-hbar/cn.md

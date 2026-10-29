@@ -1,0 +1,46 @@
+id: x-draw-2-chart-types-02-bar
+
+data:
+  - name:
+      en: bar chart
+      cn: 柱状图
+    qa:
+      - id: stacked
+        question:
+          en: "How do I make a stacked bar?"
+          cn: "怎么画堆叠柱状图?"
+        answer:
+          en: >
+            Add stack=1. Without it, multiple series are drawn side by side (grouped) by default.
+          cn: >
+            加 stack=1。不加的话,多条 series 默认是并排(分组)的。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/02-bar/en.md
+          - docs/2-chart-types/02-bar/cn.md
+      - id: second-series
+        question:
+          en: "How do I add a second series?"
+          cn: "怎么加第二条 series?"
+        answer:
+          en: >
+            Use series=A:10,20,30. The part before the colon is the legend name and can be any text, including Chinese.
+          cn: >
+            写 series=A:10,20,30。冒号前面是图例名,可以是任意文字,中文也行。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/02-bar/en.md
+          - docs/2-chart-types/02-bar/cn.md
+      - id: category-limit
+        question:
+          en: "How many categories fit on the X axis?"
+          cn: "X 轴最多放多少个类别?"
+        answer:
+          en: >
+            About 50 labels stay readable; beyond that the labels start to collide and you should switch to hbar.
+          cn: >
+            大约 50 个标签还能看清;再多标签就会挤在一起,那种情况改用 hbar。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/02-bar/en.md
+          - docs/2-chart-types/02-bar/cn.md
