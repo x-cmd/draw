@@ -1,6 +1,6 @@
 ---
 name: draw
-description: Turn data into a chart by building a URL — pie, bar, line, radar, gauge, sankey, QR and more as SVG from x-cmd.com/draw, plus a full ECharts escape hatch for anything else. No install, no API key; the URL itself carries the data, so links are readable, cacheable and AI-friendly.
+description: Turn data into a chart by building a URL — pie, bar, line, radar, gauge, sankey, QR and more as SVG from x-cmd.com/draw, plus a full ECharts escape hatch. Embed as [![chart]](/draw/explore link) — image preview, one click to explore and edit the data. No install, no API key; the URL itself carries the data.
 version: 0.2.5
 metadata:
   openclaw:
@@ -10,21 +10,17 @@ metadata:
 
 # draw — charts as URLs
 
-`https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980&title=Stars`
+`https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980&title=Stars` — open it and you get an SVG chart. No install, no key, no state: **the URL is the data**, so links are self-describing, shareable, and cacheable forever. Always build URLs on **`https://x-cmd.com/draw`**.
 
-Open it in a browser: you get an SVG chart. Embed it with `<img src>` or Markdown `![]()` — same link, same result. No install, no key, no state: **the URL is the data**, so a link is self-describing, shareable, and cacheable forever.
+## The embed pattern (use this everywhere)
 
-Always build URLs on **`https://x-cmd.com/draw`** (the hosted service).
-
-## Embed pattern: preview + click-to-explore
-
-Put the SVG behind a link to the explore webapp — readers see the chart as the image, one click opens it to hover the data, tweak params and edit the values:
+[![Stars by language](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)
 
 ```markdown
-[![chart](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go&values=4821,2312,980)
+[![chart](https://x-cmd.com/draw?...)](https://x-cmd.com/draw/explore?...)
 ```
 
-`/draw/explore` takes the exact same params as `/draw`; the ECharts layer has its own page at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
+The image is the rendered SVG; the click opens the **explore webapp** — hover the data, tweak params, edit the values, copy the new URL. `/draw/explore` takes the exact same params as `/draw`; the ECharts layer explores at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
 
 ## Pick a chart by data shape
 
