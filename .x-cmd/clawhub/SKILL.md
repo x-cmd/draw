@@ -12,7 +12,7 @@ metadata:
 
 `https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980&title=Stars` — open it and you get an SVG chart. No install, no key, no state: **the URL is the data**, so links are self-describing, shareable, and cacheable forever. Always build URLs on **`https://x-cmd.com/draw`**.
 
-Rendering is **stateless**: every chart is derived from the URL alone — no database, no server-side data retention (edge caches hold finished responses briefly, like any CDN). The only data ever stored is what you explicitly POST to create a short link.
+Rendering is **stateless**: every chart is derived from the URL alone — no database, no server-side data retention (edge caches hold finished responses briefly, like any CDN).
 
 ## The embed pattern — READMEs, issues, PRs, blogs & chat
 
@@ -76,19 +76,6 @@ https://x-cmd.com/draw/echarts?d=%7B%22xAxis%22%3A%7B%22type%22%3A%22category%22
 ```
 
 Minimal options work (cartesian series get axes auto-injected); the shared `w/h/t/scheme/v` params apply; the option may not exceed 16,000 chars. Charts come back in the same house style — palette, fonts, light/dark — because style tokens are injected as defaults your option can override.
-
-## Permanent short links (for big data)
-
-When data is too big for a URL, POST it and get a content-addressed link that never expires:
-
-```sh
-curl -X POST 'https://x-cmd.com/draw?type=pie&title=Stars' \
-  -H 'content-type: application/json' \
-  --data '{"data":[{"label":"TypeScript","value":4821},{"label":"Python","value":2312}]}'
-# → 201 {"url":"https://x-cmd.com/draw/c/<hash>","template":"pie"}
-```
-
-CSV bodies work too (`content-type: text/csv`, header row = series names). Same data → same link (idempotent). Rate limit: 30 creates/min/IP.
 
 ## Errors
 
