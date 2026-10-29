@@ -1,6 +1,6 @@
 ---
 name: draw
-description: Build a URL, get an SVG chart — pie, bar, line, radar, gauge, sankey, QR, any ECharts chart, from x-cmd.com/draw. No install, no key. Embed as [![chart]](/draw/explore) — click to explore & edit. The URL is the data — humans see the story, agents get exact numbers. No vision tokens.
+description: Build a URL, get an SVG chart — pie, bar, line, radar, gauge, sankey, QR, any ECharts chart, from x-cmd.com/draw. No install, no key, no stored data. Embed as [![chart]](/draw/explore) — click to explore/edit. The URL is the data — humans see the story, agents get exact numbers. No vision tokens.
 version: 1.0.1
 metadata:
   openclaw:
@@ -11,6 +11,8 @@ metadata:
 # draw — charts as URLs
 
 `https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980&title=Stars` — open it and you get an SVG chart. No install, no key, no state: **the URL is the data**, so links are self-describing, shareable, and cacheable forever. Always build URLs on **`https://x-cmd.com/draw`**.
+
+Rendering is **stateless**: every chart is derived from the URL alone — no database, no server-side data retention (edge caches hold finished responses briefly, like any CDN). The only data ever stored is what you explicitly POST to create a short link.
 
 ## The embed pattern — READMEs, issues, PRs, blogs & chat
 
