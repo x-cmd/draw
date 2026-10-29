@@ -11,6 +11,7 @@ import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
 import { renderEchartsFromUrl } from './render/echarts-ssr.js';
+import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { resolveSkin, VARIANTS } from './styles/index.js';
@@ -36,6 +37,28 @@ function svgResponse(result: DrawResult, extra?: Record<string, string>): Respon
   return new Response(result.svg, {
     headers: {
       'content-type': SVG_CT,
+      'cache-control': result.cacheControl,
+      'x-draw-version': String(result.version),
+      ...extra,
+    },
+  });
+}
+
+// ?format=png(x-cmd-hub/draw#24):位图没有自适应明暗,scheme 强制固化(缺省 light;
+// 显式 auto 亦落 light)。所有 SVG 产出点(核心/echarts/archmap/mindmap/短链)共用。
+async function chartResponse(url: URL, result: DrawResult, extra?: Record<string, string>): Promise<Response> {
+  const format = url.searchParams.get('format');
+  if (format === null || format === '' || format === 'svg') return svgResponse(result, extra);
+  if (format !== 'png') {
+    throw new ApiError(400, `"format" must be svg (default) or png. Got: ${JSON.stringify(format)}`);
+  }
+  const scale = url.searchParams.get('scale');
+  const png = await svgToPng(result.svg, url.searchParams.get('scheme') === 'dark' ? 'dark' : 'light', {
+    ...(scale !== null && scale !== '' ? { scale: Number(scale) } : {}),
+  });
+  return new Response(png, {
+    headers: {
+      'content-type': 'image/png',
       'cache-control': result.cacheControl,
       'x-draw-version': String(result.version),
       ...extra,
@@ -161,7 +184,7 @@ async function shortHandler(sub: string, url: URL, env: DrawEnv): Promise<Respon
   const hash = sub.slice(3);
   assertHash(hash);
   const doc = await getChart(env, hash);
-  return svgResponse(renderStoredFromUrl(doc, url), { 'x-draw-hash': hash });
+  return chartResponse(url, renderStoredFromUrl(doc, url), { 'x-draw-hash': hash });
 }
 
 async function route(request: Request, env: DrawEnv, platform: Platform): Promise<Response> {
@@ -185,21 +208,21 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<urlencoded echarts option>`, { allow: 'GET' });
     }
-    return svgResponse(await renderEchartsFromUrl(url));
+    return chartResponse(url, await renderEchartsFromUrl(url));
   }
   // /draw/archmap 拓扑图(x-cmd-hub/draw#17/#20):AI/人写粗格布局,引擎打包+路由;别名 /arch
   if (sub === '/archmap' || sub === '/arch') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;...;<r0c1>] params`, { allow: 'GET' });
     }
-    return svgResponse(renderArchmapFromUrl(url));
+    return chartResponse(url, renderArchmapFromUrl(url));
   }
   // /draw/mindmap 树形导图(x-cmd-hub/draw#17/#20):n=<根/枝/叶 路径>,树→自动布局
   if (sub === '/mindmap') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<root/branch/leaf> paths`, { allow: 'GET' });
     }
-    return svgResponse(renderMindmapFromUrl(url));
+    return chartResponse(url, renderMindmapFromUrl(url));
   }
   if (sub === '' || sub === '/') {
     if (method === 'POST') return createHandler(request, env, platform, base);
@@ -209,7 +232,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     // 演示页:无查询,或仅带演示页自身的 tab 参数(?tab=pie)
     const onlyTab = url.searchParams.get('type') === null && [...url.searchParams.keys()].every((k) => k === 'tab');
     if (url.search === '' || onlyTab) return indexHandler(base);
-    return svgResponse(renderFromUrl(url));
+    return chartResponse(url, renderFromUrl(url));
   }
   return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · GET ${base}/echarts?d=... · GET ${base}/archmap?n=... · GET ${base}/mindmap?n=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
 }

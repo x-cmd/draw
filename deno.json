@@ -12,7 +12,8 @@
     "d3-sankey": "npm:d3-sankey@^0.12.3",
     "d3-scale": "npm:d3-scale@^4.0.2",
     "uqr": "npm:uqr@^0.1.3",
-    "echarts": "npm:echarts@^6.1.0"
+    "echarts": "npm:echarts@^6.1.0",
+    "@resvg/resvg-wasm": "npm:@resvg/resvg-wasm@^2.6.2"
   },
   "publish": {
     "include": ["src/**", "LICENSE", "README.md"],

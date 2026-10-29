@@ -10,11 +10,16 @@
 //           + render/query.ts 一行 + render/dispatch.ts 一行
 import { handleRequest } from './handler.js';
 import type { Platform } from './types.js';
+// resvg-wasm 模块(workers 打包规则把 .wasm 识别为 WebAssembly.Module)。
+// 只有 Workers 入口静态 import 它;Node/Deno 走 png.ts 里的 node_modules 文件读取。
+import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
+import { injectResvgWasm } from './render/png.js';
+injectResvgWasm(resvgWasm);
 
 // 边缘缓存读:GET 图表/演示页响应按 URL 命中 Cache API(每 CF 节点独立)。
 // POST、错误、no-store 不进缓存;?v= 与短链的 TTL 语义由 Cache-Control 承载。
 // 缓存键带版本号:渲染逻辑修复的部署 bump ECV,旧条目(可能含坏渲染)整体作废
-const ECV = '3';
+const ECV = '4'; // v4: 新增 ?format=png(渲染输出随 format/scheme/scale 变化),旧缓存条目作废
 function edgeKey(request: Request): Request {
   const u = new URL(request.url);
   u.searchParams.set('ecv', ECV);
