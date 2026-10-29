@@ -29,6 +29,10 @@ Concrete moments it wins:
 
 The image is the rendered SVG; the link opens the **explore webapp** — hover the data, tweak params, edit the values, copy the new URL. `/draw/explore` takes the exact same params as `/draw`; the ECharts layer explores at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
 
+## Agents read the URL, not the pixels
+
+A draw embed costs an agent **zero vision tokens**. The data is in the URL itself, and every rendered SVG carries a `<metadata>` block with the full dataset — so an agent that meets a chart in an issue or PR parses the link and knows the chart *exactly*: type, labels, values, style, version. No image reading, no OCR guessing, no pixel-counting — and no hallucinated numbers, because the values are plain text, not something to squint at.
+
 ## Pick a chart by data shape
 
 | Data shape | type | Copy-paste example |
