@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "cli": "deno run --allow-write --sloppy-imports src/node/cli.ts",
-    "serve": "deno run --allow-net --allow-env --sloppy-imports src/node/server.ts"
+    "cli": "deno run --allow-write --allow-read=node_modules/@resvg/resvg-wasm --sloppy-imports src/node/cli.ts",
+    "serve": "deno run --allow-net --allow-env --allow-read=node_modules/@resvg/resvg-wasm --sloppy-imports src/node/server.ts"
   },
   "// JSR (jsr.io) — Deno 原生发布;与 npm 的 package.json 版本号保持同步": "",
   "name": "@x-cmd/draw",
