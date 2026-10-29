@@ -12,7 +12,7 @@ metadata:
 
 `https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980&title=Stars` — open it and you get an SVG chart. No install, no key, no state: **the URL is the data**, so links are self-describing, shareable, and cacheable forever. Always build URLs on **`https://x-cmd.com/draw`**.
 
-## The embed pattern (use this everywhere)
+## The embed pattern — GitHub READMEs, issues & PRs
 
 [![Stars by language](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stars%20by%20language)
 
@@ -20,7 +20,14 @@ metadata:
 [![chart](https://x-cmd.com/draw?...)](https://x-cmd.com/draw/explore?...)
 ```
 
-The image is the rendered SVG; the click opens the **explore webapp** — hover the data, tweak params, edit the values, copy the new URL. `/draw/explore` takes the exact same params as `/draw`; the ECharts layer explores at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
+Concrete moments it wins:
+
+- **README** — put the language mix or downloads trend right under your badges; visitors see the picture, click, and poke at the real numbers.
+- **Issue** — attach the latency spread of that bug instead of a table of numbers; the maintainer hovers, spots the outlier, edits the data to test a theory, and pastes the new URL back into the thread.
+- **PR description** — before/after benchmarks side by side; a reviewer notices a typo'd value, fixes it in explore, and re-posts the corrected chart — no re-run asked for.
+- **Reports & notes** — anywhere Markdown renders.
+
+The image is the rendered SVG; the link opens the **explore webapp** — hover the data, tweak params, edit the values, copy the new URL. `/draw/explore` takes the exact same params as `/draw`; the ECharts layer explores at `/draw/explore/echarts?d=<urlencoded option>`. Works in GitHub-flavored Markdown and plain HTML.
 
 ## Pick a chart by data shape
 
