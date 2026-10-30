@@ -481,16 +481,13 @@ export function renderArchmapFromUrl(url: URL): DrawResult {
   const { placed, W, H } = packGrid(nodes, gridCols);
   const titleH = title ? 40 : 0;
   let width = Math.max(W, 320);
-  let height = H + titleH;
+  let bodyH = H;
   for (const p of placed) { // 像素节点可能超出轨道画布
     width = Math.max(width, p.box.x + p.box.w + PAD);
-    height = Math.max(height, p.box.y + p.box.h + PAD + titleH);
+    bodyH = Math.max(bodyH, p.box.y + p.box.h + PAD);
   }
   width = Math.max(width, clampInt(params, 'w', 0, 200, 2000));
-  height = Math.max(height, clampInt(params, 'h', 0, 140, 2000));
-  const titleSvg = title
-    ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
-    : '';
+  const height = Math.max(bodyH + titleH, clampInt(params, 'h', 0, 140, 2000));
   // 管线:路由 → 边界标签选角(避开走线) → 边标签避让(节点盒 ∪ 边界标签区)
   const routed = computeRoutes(placed, edges);
   const byId = new Map(placed.map(p => [p.id, p]));
@@ -504,13 +501,17 @@ export function renderArchmapFromUrl(url: URL): DrawResult {
     ...boxes.map(b => ({ x: b.x - 2, y: b.y - 2, w: b.w + 4, h: b.h + 4 })),
     ...boundaries.map((bd, i) => cornerRect(bd, corners[i])),
   ];
+  const titleSvg = title
+    ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
+    : '';
   const body = DEFS
     + drawBoundaries(placed, boundaries, corners)
     + drawRoutes(routed)
     + drawEdgeLabels(routed, avoid)
     + placed.map(drawNode).join('');
-  // 有标题时内容整体下移
-  const children = titleH ? titleSvg + `<g transform="translate(0 ${titleH})">` + body + `</g>` : body;
+  // 标题占位下移 + h 垫高的剩余空间上下均分(内容垂直居中,标题仍在顶部)
+  const dy = titleH + (height - titleH - bodyH) / 2;
+  const children = titleSvg + `<g transform="translate(0 ${r2(dy)})">` + body + `</g>`;
   const spec: ArchSpec = { type: 'archmap', ...(title ? { title } : {}), nodes, edges, boundaries };
   const svg = svgDoc(width, height, 'archmap', v.version, title ?? `architecture map, ${nodes.length} nodes`, spec, skin, children);
   return { svg, version: v.version, cacheControl: v.cacheControl };
