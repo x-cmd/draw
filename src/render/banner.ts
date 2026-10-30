@@ -77,29 +77,46 @@ function titleLines(title: string): string[] {
   return best;
 }
 
-// 纸底:对角 #fff→#F0EDD8(顶恒白,种子决定底部偏左/偏右)+ 点阵颗粒
+// 纸底:复刻 paper-bg.mjs 的渐变数学 —— t = clip(yy + lean*(xx-0.5)*yy),hold 区恒白,
+// 再 γ0.82 下沉;lean ∈ ±{0,0.22,0.42} 由种子决定。SVG 侧用「倾斜线性渐变 + 按曲线
+// 采样停靠点」等价表达(纯矢量零滤镜),叠加原有点阵颗粒。
 function paper(seed: number): string {
   const r = rng(seed);
-  const lean = 0.25 + r() * 0.5; // 底部着色中心的横向倾向
+  const leans = [-0.42, -0.22, 0, 0.22, 0.42];
+  const lean = leans[Math.floor(r() * leans.length)];
+  const hold = 0.28 + Math.floor(r() * 3) * 0.02;
   const T = 64;
   let dots = '';
   for (let i = 0; i < 12; i++) {
     dots += `<circle cx="${(r() * T).toFixed(1)}" cy="${(r() * T).toFixed(1)}" r="0.7" fill="#6b5d3f" fill-opacity="${(0.03 + r() * 0.07).toFixed(3)}"/>`;
   }
+  // 停靠点:t 均匀采样 9 点,经 hold + γ0.82 映射后与 #F0EDD8 混色
+  const stops: string[] = [];
+  for (let i = 0; i <= 8; i++) {
+    const t = i / 8;
+    const tt = Math.pow(Math.min(1, Math.max(0, (t - hold) / (1 - hold))), 0.82);
+    const mix = (c: number): number => Math.round(255 + (c - 255) * tt);
+    const hex = (n: number): string => n.toString(16).padStart(2, '0');
+    const [tr, tg, tb] = [0xf0, 0xed, 0xd8]; // #F0EDD8 锁定色
+    stops.push(`<stop offset="${t.toFixed(3)}" stop-color="#${hex(mix(tr))}${hex(mix(tg))}${hex(mix(tb))}"/>`);
+  }
   return (
-    `<linearGradient id="tint" x1="0" y1="0" x2="${lean.toFixed(2)}" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="${TINT}"/></linearGradient>` +
+    `<linearGradient id="tint" x1="0" y1="0" x2="${lean.toFixed(2)}" y2="1">${stops.join('')}</linearGradient>` +
     `<rect width="${W}" height="${H}" fill="url(#tint)"/>` +
     `<pattern id="grain" width="${T}" height="${T}" patternUnits="userSpaceOnUse">${dots}</pattern>` +
     `<rect width="${W}" height="${H}" fill="url(#grain)"/>`
   );
 }
 
-// 终端左晕投影(参考 = BLUR56 左重 halo;廉价近似 = 双层左偏半透明圆角矩形)
+// 终端投影:参考 = BLUR56 左重 diffuse halo。矢量等价 = 椭圆径向渐变光晕
+// (中心左移 90px + OFFSET_Y 8,向外透明衰减)——柔和无边线,零滤镜零位图。
 function termShadow(): string {
-  const { x, y, w, h, r } = TERM;
+  const { x, y, w, h } = TERM;
+  const cx = Math.round(x + w / 2 - 50);
+  const cy = y + h / 2 + 8;
   return (
-    `<rect x="${x - 56}" y="${y + 14}" width="${w}" height="${h}" rx="${r}" fill="#3a3325" fill-opacity="0.08"/>` +
-    `<rect x="${x - 24}" y="${y + 6}" width="${w}" height="${h}" rx="${r}" fill="#3a3325" fill-opacity="0.1"/>`
+    `<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#3a3325" stop-opacity="0.08"/><stop offset="0.5" stop-color="#3a3325" stop-opacity="0.045"/><stop offset="1" stop-color="#3a3325" stop-opacity="0"/></radialGradient>` +
+    `<ellipse cx="${cx}" cy="${cy}" rx="${Math.round(w * 0.72)}" ry="${Math.round(h * 0.68)}" fill="url(#halo)"/>`
   );
 }
 
