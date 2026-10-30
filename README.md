@@ -211,6 +211,7 @@ const response = await handleRequest(request, env, {});
 **`GET /draw`** (no params) or `?tab=pie` — the demo page (11 chart types, all style variants, dual URL forms)
 **`GET /draw/archmap?n=...`** (alias `/draw/arch`) — architecture map sub-path, same params as `type=archmap`
 **`GET /draw/mindmap?n=...`** — mind map sub-path, same params as `type=mindmap`
+**`GET /draw/banner?theme=cli-release-v1&title=<...>&cmd=<...>[&tagline=<...>]`** — themed OG cover (1200×630): paper texture, big title, fake terminal, version ribbon; `&format=png` rasterizes for og:image. [Try it](https://po6.sh/draw/banner?theme=cli-release-v1&title=Release%20v0.10.13&tagline=bug%20fixes%20and%20stability&cmd=x%20upgrade)
 **`POST /draw?type=...`** — submit a JSON/CSV body to create a permanent short link
 **`GET /draw/c/<hash>`** — short-link render (immutable)
 
