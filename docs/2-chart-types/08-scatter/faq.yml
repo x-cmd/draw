@@ -1,0 +1,46 @@
+id: x-draw-2-chart-types-08-scatter
+
+data:
+  - name:
+      en: scatter plot
+      cn: 散点图
+    qa:
+      - id: data-format
+        question:
+          en: "How do I pass scatter data?"
+          cn: "散点图的数据怎么传?"
+        answer:
+          en: >
+            As x1,y1;x2,y2;x3,y3 — semicolons between points, commas between the two coordinates. Easy to mix up.
+          cn: >
+            写成 x1,y1;x2,y2;x3,y3——点之间用分号,一个点的两个坐标之间用逗号。这两个符号很容易搞混。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/08-scatter/en.md
+          - docs/2-chart-types/08-scatter/cn.md
+      - id: point-limit
+        question:
+          en: "How many points can I plot?"
+          cn: "最多能画多少个点?"
+        answer:
+          en: >
+            Around 200 points stay readable; beyond that the cloud turns into a solid blob.
+          cn: >
+            大约 200 个点还能看清;再多就糊成一坨。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/08-scatter/en.md
+          - docs/2-chart-types/08-scatter/cn.md
+      - id: trend-line
+        question:
+          en: "Does scatter draw a trend line?"
+          cn: "散点图会画趋势线吗?"
+        answer:
+          en: >
+            Not currently — draw renders the points only. Compute the fit yourself and add it as a separate series.
+          cn: >
+            目前不会——draw 只画点。拟合要自己算,再当成另一条 series 加进去。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/08-scatter/en.md
+          - docs/2-chart-types/08-scatter/cn.md

@@ -8,6 +8,23 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { draw, renderEchartsOption } from '../lib.js';
 import { ApiError } from '../specs/index.js';
+import { svgToPng } from '../render/png.js';
+
+// 输出:svg 直写;.png 后缀 → resvg 光栅化(位图无自适应明暗,scheme 固化,缺省 light)
+async function emit(svg: string, out: string | undefined, sp: URLSearchParams): Promise<void> {
+  if (out === undefined) {
+    process.stdout.write(svg);
+    return;
+  }
+  if (out.endsWith('.png')) {
+    const png = await svgToPng(svg, sp.get('scheme') === 'dark' ? 'dark' : 'light');
+    writeFileSync(out, png);
+    console.error(`wrote ${out} (${png.byteLength} bytes, png)`);
+    return;
+  }
+  writeFileSync(out, svg);
+  console.error(`wrote ${out} (${svg.length} bytes)`);
+}
 
 // 长 flag → 查询参数名(单字母直写也依然有效,经透传)
 const ALIASES: Record<string, string> = { theme: 't', width: 'w', height: 'h' };
@@ -39,6 +56,7 @@ echarts subcommand — the option comes from an inline JSON arg, a file, or stdi
 
 examples:
   draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
+  draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.png --scheme dark   # .png = rasterized
   draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd" | open -f -a Safari
   draw echarts '{"series":[{"type":"treemap","data":[{"name":"a","value":3}]}]}'`;
 
@@ -95,12 +113,7 @@ async function runEcharts(rest: string[]): Promise<void> {
     fail(`option must be a JSON object (the ECharts option), got ${Array.isArray(option) ? 'an array' : typeof option}`);
   }
   const { svg } = await renderEchartsOption(option as Record<string, unknown>, sp);
-  if (out !== undefined) {
-    writeFileSync(out, svg);
-    console.error(`wrote ${out} (${svg.length} bytes)`);
-  } else {
-    process.stdout.write(svg);
-  }
+  await emit(svg, out, sp);
 }
 
 const args = process.argv.slice(2);
@@ -153,12 +166,7 @@ for (let i = 0; i < args.length; i++) {
 
 try {
   const { svg } = draw(sp);
-  if (out !== undefined) {
-    writeFileSync(out, svg);
-    console.error(`wrote ${out} (${svg.length} bytes)`);
-  } else {
-    process.stdout.write(svg);
-  }
+  await emit(svg, out, sp);
 } catch (e) {
   if (e instanceof ApiError) {
     console.error(`draw: ${e.message}`);

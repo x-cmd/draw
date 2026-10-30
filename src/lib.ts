@@ -35,6 +35,9 @@ export { renderEchartsFromUrl, renderEchartsOption } from './render/echarts-ssr.
 export { renderArchmapFromUrl } from './render/archmap.js';
 // mindmap 树形导图:同步,与 GET /draw/mindmap 同参同输出
 export { renderMindmapFromUrl } from './render/mindmap.js';
+// PNG 导出(x-cmd-hub/draw#24):任意渲染产出的 SVG → 平面化(烘焙) → resvg-wasm 光栅化;
+// 异步且 lazy 加载 wasm,库用户不调 png 则零成本
+export { svgToPng, bakeFlatSvg } from './render/png.js';
 export type { DrawResult } from './render/query.js';
 export {
   CHART_TEMPLATES, fingerprint, canonicalJson,

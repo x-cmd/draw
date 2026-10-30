@@ -1,0 +1,46 @@
+id: x-draw-2-chart-types-04-line
+
+data:
+  - name:
+      en: line chart
+      cn: 折线图
+    qa:
+      - id: y-axis
+        question:
+          en: "How do I fix the Y axis range?"
+          cn: "怎么固定 Y 轴范围?"
+        answer:
+          en: >
+            Set ymin= and/or ymax=. The axis otherwise auto-fits to the data, which can make a small change look dramatic.
+          cn: >
+            设 ymin= 和/或 ymax=。默认 Y 轴会跟着数据自动缩放,一点点变化就会显得很惊心动魄。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/04-line/en.md
+          - docs/2-chart-types/04-line/cn.md
+      - id: series-length
+        question:
+          en: "What happens if my series have different lengths?"
+          cn: "几条 series 长度不一样会怎样?"
+        answer:
+          en: >
+            All series are drawn to the shortest one, so the extra points are dropped. Give every series the same number of values.
+          cn: >
+            所有 series 都会按最短的那条来画,多出来的点被丢掉。每条 series 给同样多的值就行。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/04-line/en.md
+          - docs/2-chart-types/04-line/cn.md
+      - id: x-labels
+        question:
+          en: "Do I have to repeat the X labels for every point?"
+          cn: "每个点都要重复写 X 标签吗?"
+        answer:
+          en: >
+            No. If you pass fewer labels than data points, the first N are used; if you pass more, the extras become missing values.
+          cn: >
+            不用。标签比数据点少就取前 N 个;比数据点多,多出来的会当成缺失值。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/04-line/en.md
+          - docs/2-chart-types/04-line/cn.md

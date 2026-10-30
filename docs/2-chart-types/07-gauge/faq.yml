@@ -1,0 +1,33 @@
+id: x-draw-2-chart-types-07-gauge
+
+data:
+  - name:
+      en: gauge
+      cn: 仪表盘
+    qa:
+      - id: one-value
+        question:
+          en: "Can I show several values on one gauge?"
+          cn: "一张图里能放几个值吗?"
+        answer:
+          en: >
+            No — one gauge per chart. Use combo (bars plus a line) or line for multiple values.
+          cn: >
+            一个表盘只能放一个值。要多个值就用 combo(柱加线)或者 line。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/07-gauge/en.md
+          - docs/2-chart-types/07-gauge/cn.md
+      - id: max
+        question:
+          en: "What is max= for?"
+          cn: "max= 是干什么的?"
+        answer:
+          en: >
+            It sets the scale. Too small and the needle pegs at the end, which loses all precision.
+          cn: >
+            它定刻度上限。设太小指针会顶死在尽头,精度全丢了。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/07-gauge/en.md
+          - docs/2-chart-types/07-gauge/cn.md

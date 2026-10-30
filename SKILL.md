@@ -6,6 +6,14 @@
 https://x-cmd.com/draw?type=<图种>&labels=A,B,C&values=1,2,3
 ```
 
+嵌入推荐形态 = 图预览 + 点击进 explore(explore 是 webapp:悬停看数、调参数、直接改数据):
+
+```
+[![](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go&values=4821,2312,980)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go&values=4821,2312,980)
+```
+
+explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)。
+
 数据用扁平参数(如上,AI 可读、免转义);复杂数据可用 `?d=` + URL 编码 JSON(结构见文末)。标签含逗号时用重复参数 `labels=Q1, 2024&labels=Q2`。
 
 ## 按数据形状选图
@@ -43,6 +51,7 @@ https://x-cmd.com/draw?type=<图种>&labels=A,B,C&values=1,2,3
 - `w=` / `h=` 尺寸(缺省用该风格规范画布,数据密集时自动微调;范围 200–1600 / 140–1200,短链 w 可至 120,qr 为 120–1000)
 - `num=all|peak|none` 数值标注(pie/bar/hbar/line/area/scatter/combo;radar/gauge/sankey/qr 忽略)
 - `v=N` 钉住版本,缓存 1 天(N 为 1..当前版本);不带 = 最新版(短缓存 300s)
+- `format=png` 输出位图(配 `scale=1–3` 倍率;scheme 固化,缺省 light;仅内嵌拉丁字体子集,中文在 PNG 中无字形)
 
 ## 风格家族(可选 `t=`)
 

@@ -1,0 +1,33 @@
+id: x-draw-2-chart-types-06-radar
+
+data:
+  - name:
+      en: radar chart
+      cn: 雷达图
+    qa:
+      - id: dimensions
+        question:
+          en: "How many dimensions should a radar chart have?"
+          cn: "雷达图放几个维度合适?"
+        answer:
+          en: >
+            Three to seven. Below three the shape says nothing; above seven it turns into a spiderweb.
+          cn: >
+            三到七个。少于三个形状说明不了什么,多于七个就成了一张蛛网。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/06-radar/en.md
+          - docs/2-chart-types/06-radar/cn.md
+      - id: scale
+        question:
+          en: "Why does my radar look distorted?"
+          cn: "为什么我的雷达图是歪的?"
+        answer:
+          en: >
+            Every dimension must use the same value range. Mixing 0-100 and 0-10 scales makes the comparison meaningless.
+          cn: >
+            每个维度必须用同一套数值范围。把 0-100 和 0-10 混在一起,对比就没有意义了。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/06-radar/en.md
+          - docs/2-chart-types/06-radar/cn.md

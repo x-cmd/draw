@@ -1,0 +1,46 @@
+id: x-draw-1-overview-02-quick-start
+
+data:
+  - name:
+      en: quick start
+      cn: 快速上手
+    qa:
+      - id: first-chart
+        question:
+          en: "What is the fastest way to get my first chart?"
+          cn: "最快拿到第一张图的办法是什么?"
+        answer:
+          en: >
+            Open https://x-cmd.com/draw?type=pie&labels=A,B,C&values=1,2,3 in a browser — the SVG comes back right there. Everything else in draw is the same URL with more parameters.
+          cn: >
+            浏览器打开 https://x-cmd.com/draw?type=pie&labels=A,B,C&values=1,2,3,SVG 直接就出来了。draw 的其它东西都只是同一个 URL 加更多参数。
+        confidence: 9
+        reference:
+          - docs/1-overview/02-quick-start/en.md
+          - docs/1-overview/02-quick-start/cn.md
+      - id: three-paths
+        question:
+          en: "What are the three ways to run draw?"
+          cn: "draw 有哪三种用法?"
+        answer:
+          en: >
+            Use the hosted service (nothing to deploy), run the Node server yourself, or install @x-cmd/draw and call draw(params) synchronously from your own code.
+          cn: >
+            用托管服务(什么都不用部署)、自己跑 Node 服务器、或者装 @x-cmd/draw 在自己的代码里同步调用 draw(params)。
+        confidence: 9
+        reference:
+          - docs/1-overview/02-quick-start/en.md
+          - docs/1-overview/02-quick-start/cn.md
+      - id: api-key
+        question:
+          en: "Do I need an API key or a token?"
+          cn: "需要 API key 或令牌吗?"
+        answer:
+          en: >
+            No. draw is a public, stateless endpoint — every request carries its own data in the URL, and nothing is stored.
+          cn: >
+            不需要。draw 是公开、无状态的端点——每个请求都把数据装在 URL 里,什么都不留存。
+        confidence: 9
+        reference:
+          - docs/1-overview/02-quick-start/en.md
+          - docs/1-overview/02-quick-start/cn.md

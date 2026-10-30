@@ -1,0 +1,33 @@
+id: x-draw-2-chart-types-09-combo
+
+data:
+  - name:
+      en: combo chart
+      cn: 组合图
+    qa:
+      - id: add-line
+        question:
+          en: "How do I put a line on top of the bars?"
+          cn: "怎么在柱子上叠一条线?"
+        answer:
+          en: >
+            Use line= with the same labels as the bars: line=Conversion:2,3,4,5. The line gets its own right-hand axis automatically.
+          cn: >
+            用 line=,标签跟柱子一致:line=Conversion:2,3,4,5。线会自动配一根右侧的 Y 轴。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/09-combo/en.md
+          - docs/2-chart-types/09-combo/cn.md
+      - id: unit-mismatch
+        question:
+          en: "Why do my two axes confuse the reader?"
+          cn: "为什么两根轴让人看糊涂?"
+        answer:
+          en: >
+            The dual axis adapts automatically, but if the two sides carry different units — a percentage against dollars — label both axes or the reader will misread it.
+          cn: >
+            双轴是自动适配的,但两边单位不同的时候(百分比对美元),要么把两边都标出来,否则读者一定会误读。
+        confidence: 9
+        reference:
+          - docs/2-chart-types/09-combo/en.md
+          - docs/2-chart-types/09-combo/cn.md
