@@ -4,42 +4,50 @@ import { handleRequest } from '../src/handler.js';
 
 const BASE = 'https://draw.test/draw';
 
-describe('renderBannerFromUrl · cli-release-v1', () => {
-  it('renders paper + title + terminal + ribbon', () => {
-    const { svg, version } = renderBannerFromUrl(new URL(`${BASE}/banner?theme=cli-release-v1&title=Release%20v0.10.13&tagline=bug%20fixes%20and%20stability&cmd=x%20upgrade`));
+describe('renderBannerFromUrl · cli-release-v1 (v2, spec-true)', () => {
+  const Q = 'theme=cli-release-v1&title=Validate%20files%7Cagainst%20JSON%20Schema&version=0.10.13&cmd=x%20ajv';
+
+  it('renders paper + slogan title + X-CMD tag + bare terminal', () => {
+    const { svg } = renderBannerFromUrl(new URL(`${BASE}/banner?${Q}`));
     expect(svg).toMatch(/^<svg/);
-    expect(svg).toContain('Release v0.10.13');
-    expect(svg).toContain('~ $');
-    expect(svg).toContain('x-cmd');
-    expect(svg).toContain('<pattern id="grain"');
-    expect(svg).toContain('fill-opacity="0.1"'); // 双层廉价投影(feDropShadow 会撞免费档 CPU 限)
-    expect(svg).toContain('&quot;template&quot;:&quot;banner&quot;'); // metaTag 统一转义,与核心层一致
-    expect(version).toBe(1);
+    expect(svg).toContain('Validate files');
+    expect(svg).toContain('against JSON Schema');
+    expect(svg).toContain('X-CMD - v0.10.13'); // 版本号只出现在左下 tag
+    expect(svg).toContain('❯');               // 绿色提示符
+    expect(svg).toContain('fill="#4fb9f3"');   // bin 蓝
+    expect(svg).toContain('DrawInterBold');    // 真 Bold 字族
+    expect(svg).toContain('DrawMono');
+    expect(svg).toContain('<pattern id="grain"'); // 点阵颗粒(非滤镜)
+    expect(svg).not.toContain('ribbon');          // v1 的黄旗已废
+    expect(svg).not.toContain('~ $');             // v1 的提示符已废
+    expect(svg).not.toContain('>bash<');          // v1 发明的终端栏已废
   });
 
-  it('wraps a long title into two balanced lines', () => {
-    const { svg } = renderBannerFromUrl(new URL(`${BASE}/banner?title=${encodeURIComponent('Release v0.11.0 with new chart engine')}&cmd=x upgrade`));
-    const titles = [...svg.matchAll(/font-size="72"[^>]*>([^<]+)</g)].map((m) => m[1]);
-    expect(titles.length).toBe(2);
-    expect(titles.join(' ')).toContain('engine');
+  it('splits title with | into two lines, single string stays one line', () => {
+    const one = renderBannerFromUrl(new URL(`${BASE}/banner?title=Faster%20everything&version=1&cmd=x`));
+    expect(one.svg.match(/DrawInterBold/g)?.length).toBeGreaterThanOrEqual(2); // @font-face + 文本
+    expect([...one.svg.matchAll(/font-family="DrawInterBold"[^>]*>([^<]+)</g)]).toHaveLength(1);
+    const two = renderBannerFromUrl(new URL(`${BASE}/banner?title=${encodeURIComponent('A very long slogan line that cannot fit on one single line')}&version=1&cmd=x`));
+    expect([...two.svg.matchAll(/font-family="DrawInterBold"[^>]*>([^<]+)</g)]).toHaveLength(2);
   });
 
   it('is deterministic: same input, same svg', () => {
-    const u = new URL(`${BASE}/banner?title=Release%20v0.10.13&cmd=x%20upgrade`);
+    const u = new URL(`${BASE}/banner?${Q}`);
     expect(renderBannerFromUrl(u).svg).toBe(renderBannerFromUrl(new URL(u.toString())).svg);
   });
 
-  it('400s on missing title / cmd, oversize cmd, unknown theme', () => {
-    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?cmd=x upgrade`))).toThrowError(/title/);
-    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?title=Release v1`))).toThrowError(/cmd/);
-    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?title=Release v1&cmd=${'x'.repeat(31)}`))).toThrowError(/30/);
-    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?theme=nope&title=R&cmd=x`))).toThrowError(/theme/);
+  it('400s on missing title/version/cmd, oversize cmd, unknown theme', () => {
+    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?version=1&cmd=x`))).toThrowError(/title/);
+    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?title=T&cmd=x`))).toThrowError(/X-CMD/);
+    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?title=T&version=1`))).toThrowError(/cmd/);
+    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?title=T&version=1&cmd=${'x'.repeat(29)}`))).toThrowError(/28/);
+    expect(() => renderBannerFromUrl(new URL(`${BASE}/banner?theme=nope&title=T&version=1&cmd=x`))).toThrowError(/theme/);
   });
 });
 
 describe('handleRequest · /draw/banner', () => {
-  it('serves svg and png (og cover via format=png)', async () => {
-    const q = 'theme=cli-release-v1&title=Release%20v0.10.13&tagline=bug%20fixes&cmd=x%20upgrade';
+  it('serves svg and png (og cover via format=png, scale=2 retina)', async () => {
+    const q = 'theme=cli-release-v1&title=Validate%20files%7Cagainst%20JSON%20Schema&version=0.10.13&cmd=x%20ajv';
     const svg = await handleRequest(new Request(`${BASE}/banner?${q}`), {}, {});
     expect(svg.status).toBe(200);
     expect(svg.headers.get('content-type')).toContain('image/svg+xml');
