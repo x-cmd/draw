@@ -21,7 +21,20 @@ const TAG = { size: 34, bottom: 75 };             // 左下 "X-CMD - vX.Y.Z"
 const TERM = { x: 553, y: 328, w: 720, h: 400, r: 18, pad: 24, dot: 17, dotGap: 10, barH: 18, mb: 52 };
 const CMD = { size: 34 };                          // FiraCode 0.6em 等宽 advance
 const CURSOR = { w: 24, h: 47 };
-const TINT = '#f0edd8';                            // 锁定色,勿调(paper-bg.mjs)
+
+// 纸底色板:?paper=<name>。前 8 色为 paper-bg.mjs 的 TINTS(锁定色,勿调);
+// apple = 苹果白(#fff→#F5F5F7,中性灰颗粒)。yellow 为缺省。
+const PAPERS: Record<string, { tint: string; grain: string }> = {
+  yellow: { tint: '#f0edd8', grain: '#6b5d3f' },
+  orange: { tint: '#f6eee7', grain: '#6b5d3f' },
+  pink: { tint: '#f6e7ec', grain: '#6b5d3f' },
+  purple: { tint: '#f1e7f6', grain: '#6b5d3f' },
+  green: { tint: '#daefe0', grain: '#6b5d3f' },
+  cyan: { tint: '#e7f6f2', grain: '#6b5d3f' },
+  blue: { tint: '#dbecfa', grain: '#6b5d3f' },
+  gray: { tint: '#e2e6e6', grain: '#6b5d3f' },
+  apple: { tint: '#f5f5f7', grain: '#7a7a7a' },
+};
 
 const INK = '#000000';
 const TAG_C = '#4f514c';
@@ -80,7 +93,8 @@ function titleLines(title: string): string[] {
 // 纸底:复刻 paper-bg.mjs 的渐变数学 —— t = clip(yy + lean*(xx-0.5)*yy),hold 区恒白,
 // 再 γ0.82 下沉;lean ∈ ±{0,0.22,0.42} 由种子决定。SVG 侧用「倾斜线性渐变 + 按曲线
 // 采样停靠点」等价表达(纯矢量零滤镜),叠加原有点阵颗粒。
-function paper(seed: number): string {
+function paper(seed: number, name: keyof typeof PAPERS | string): string {
+  const p = PAPERS[name] ?? PAPERS.yellow;
   const r = rng(seed);
   const leans = [-0.42, -0.22, 0, 0.22, 0.42];
   const lean = leans[Math.floor(r() * leans.length)];
@@ -88,17 +102,17 @@ function paper(seed: number): string {
   const T = 64;
   let dots = '';
   for (let i = 0; i < 12; i++) {
-    dots += `<circle cx="${(r() * T).toFixed(1)}" cy="${(r() * T).toFixed(1)}" r="0.7" fill="#6b5d3f" fill-opacity="${(0.03 + r() * 0.07).toFixed(3)}"/>`;
+    dots += `<circle cx="${(r() * T).toFixed(1)}" cy="${(r() * T).toFixed(1)}" r="0.7" fill="${p.grain}" fill-opacity="${(0.03 + r() * 0.07).toFixed(3)}"/>`;
   }
-  // 停靠点:t 均匀采样 9 点,经 hold + γ0.82 映射后与 #F0EDD8 混色
+  // 停靠点:t 均匀采样 9 点,经 hold + γ0.82 映射后与所选纸色混色
+  const hex = (n: number): string => n.toString(16).padStart(2, '0');
+  const tintRgb = [1, 3, 5].map((i) => parseInt(p.tint.slice(i, i + 2), 16));
   const stops: string[] = [];
   for (let i = 0; i <= 8; i++) {
     const t = i / 8;
     const tt = Math.pow(Math.min(1, Math.max(0, (t - hold) / (1 - hold))), 0.82);
     const mix = (c: number): number => Math.round(255 + (c - 255) * tt);
-    const hex = (n: number): string => n.toString(16).padStart(2, '0');
-    const [tr, tg, tb] = [0xf0, 0xed, 0xd8]; // #F0EDD8 锁定色
-    stops.push(`<stop offset="${t.toFixed(3)}" stop-color="#${hex(mix(tr))}${hex(mix(tg))}${hex(mix(tb))}"/>`);
+    stops.push(`<stop offset="${t.toFixed(3)}" stop-color="#${tintRgb.map((c) => hex(mix(c))).join('')}"/>`);
   }
   return (
     `<linearGradient id="tint" x1="0" y1="0" x2="${lean.toFixed(2)}" y2="1">${stops.join('')}</linearGradient>` +
@@ -144,53 +158,58 @@ function terminal(cmd: string): string {
   );
 }
 
-// 主题注册表:新主题 = 注册一个纯函数;未知 theme 400 列出可用项
-interface BannerParams { title: string; version: string; cmd: string; }
-const THEMES: Record<string, (p: BannerParams, url: URL) => DrawResult> = {
-  'cli-release-v1'(p, url) {
-    const v = resolveVersion(url.searchParams.get('v'));
-    const cmd = p.cmd.trim();
-    if (cmd.length === 0) throw new ApiError(400, '"cmd" is required, e.g. cmd=x upgrade');
-    if (cmd.length > 28) throw new ApiError(400, `"cmd" is ${cmd.length} chars; the terminal keeps at most 28`);
-    const ver = p.version.trim();
-    if (ver === '') throw new ApiError(400, '"version" is required, e.g. version=0.10.13 (shown as X-CMD - vX.Y.Z)');
-    const version = ver.startsWith('v') ? ver : `v${ver}`;
-    const lines = titleLines(p.title.replace(/%0A/gi, '\n'));
-    const seed = seedOf(`${lines.join(' ')}|${version}|${cmd}`);
+// x-cmd 命名空间的发布封面(/draw/x-cmd/release-banner)。新主题/新命名空间 = 新函数;
+// paper=? 选择纸底色板。所有渲染器共享同一 1200×630 锁、字体、终端几何。
+interface BannerParams { title: string; version: string; cmd: string; paper: string; }
 
-    const parts: string[] = [paper(seed), terminal(cmd)];
-    // 标题:Inter Bold 72 #000,ink 顶 83,行距 1.1(baseline = inkTop + cap + i*lh*size)
-    const base1 = TITLE.inkTop + TITLE.cap;
-    lines.forEach((l, i) => {
-      const y = Math.round(base1 + i * TITLE.lh * TITLE.size);
-      parts.push(`<text x="${TITLE.left}" y="${y}" font-family="DrawInterBold" font-size="${TITLE.size}" letter-spacing="${TITLE.ls}" fill="${INK}">${esc(l)}</text>`);
-    });
-    // 左下 tag: X-CMD - vX.Y.Z
-    const tagY = H - TAG.bottom;
-    parts.push(`<text x="${TITLE.left}" y="${tagY}" font-family="DrawInterMedium" font-size="${TAG.size}" letter-spacing="-0.1" fill="${TAG_C}" style="${TAB}">X-CMD - ${esc(version)}</text>`);
+function renderReleaseBanner(p: BannerParams, url: URL): DrawResult {
+  const v = resolveVersion(url.searchParams.get('v'));
+  const cmd = p.cmd.trim();
+  if (cmd.length === 0) throw new ApiError(400, '"cmd" is required, e.g. cmd=x upgrade');
+  if (cmd.length > 28) throw new ApiError(400, `"cmd" is ${cmd.length} chars; the terminal keeps at most 28`);
+  const ver = p.version.trim();
+  if (ver === '') throw new ApiError(400, '"version" is required, e.g. version=0.10.13 (shown as X-CMD - vX.Y.Z)');
+  const version = ver.startsWith('v') ? ver : `v${ver}`;
+  const paperName = p.paper.trim().toLowerCase();
+  if (paperName !== '' && !(paperName in PAPERS)) {
+    throw new ApiError(400, `"paper" must be one of: ${Object.keys(PAPERS).join(', ')} (default yellow). Got: ${JSON.stringify(paperName)}`);
+  }
+  const lines = titleLines(p.title.replace(/%0A/gi, '\n'));
+  const seed = seedOf(`${lines.join(' ')}|${version}|${cmd}`);
+  const pName = paperName || 'yellow';
 
-    const svg =
-      `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}" role="img" aria-label="${esc(lines.join(' '))}">` +
-      `<style>${INTER_FACE_CSS}${BANNER_FACE_CSS}</style>` +
-      `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'banner', theme: 'cli-release-v1', version: v.version, title: lines.join('\n'), release: version, cmd }))}</metadata>` +
-      parts.join('') + `</svg>`;
-    return { svg, version: v.version, cacheControl: v.cacheControl };
-  },
-};
+  const parts: string[] = [paper(seed, pName), terminal(cmd)];
+  // 标题:Inter Bold 72 #000,ink 顶 83,行距 1.1(baseline = inkTop + cap + i*lh*size)
+  const base1 = TITLE.inkTop + TITLE.cap;
+  lines.forEach((l, i) => {
+    const y = Math.round(base1 + i * TITLE.lh * TITLE.size);
+    parts.push(`<text x="${TITLE.left}" y="${y}" font-family="DrawInterBold" font-size="${TITLE.size}" letter-spacing="${TITLE.ls}" fill="${INK}">${esc(l)}</text>`);
+  });
+  // 左下 tag: X-CMD - vX.Y.Z
+  const tagY = H - TAG.bottom;
+  parts.push(`<text x="${TITLE.left}" y="${tagY}" font-family="DrawInterMedium" font-size="${TAG.size}" letter-spacing="-0.1" fill="${TAG_C}" style="${TAB}">X-CMD - ${esc(version)}</text>`);
+
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}" role="img" aria-label="${esc(lines.join(' '))}">` +
+    `<style>${INTER_FACE_CSS}${BANNER_FACE_CSS}</style>` +
+    `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'release-banner', namespace: 'x-cmd', version: v.version, title: lines.join('\n'), release: version, cmd, paper: pName }))}</metadata>` +
+    parts.join('') + `</svg>`;
+  return { svg, version: v.version, cacheControl: v.cacheControl };
+}
 
 /**
- * GET /draw/banner?theme=cli-release-v1&title=<slogan[|slogan2]>&version=<x.y.z>&cmd=<cmd>
- * 主题化 OG 封面(1200×630);位图加 &format=png(og:image 尺寸,scale=2 为 retina)。
+ * GET /draw/x-cmd/release-banner?title=<slogan[|slogan2]>&version=<x.y.z>&cmd=<cmd>[&paper=<yellow|orange|pink|purple|green|cyan|blue|gray|apple>]
+ * x-cmd 命名空间的发布封面(1200×630);位图加 &format=png(og:image 尺寸,scale=2 为 retina)。
  * @throws ApiError(400) with a corrective example on bad input
  */
-export function renderBannerFromUrl(url: URL): DrawResult {
-  const theme = url.searchParams.get('theme') ?? 'cli-release-v1';
-  const render = THEMES[theme];
-  if (!render) {
-    throw new ApiError(400, `"theme" must be one of: ${Object.keys(THEMES).join(', ')}. Got: ${JSON.stringify(theme)}`);
-  }
-  return render(
-    { title: url.searchParams.get('title') ?? '', version: url.searchParams.get('version') ?? '', cmd: url.searchParams.get('cmd') ?? '' },
+export function renderReleaseBannerFromUrl(url: URL): DrawResult {
+  return renderReleaseBanner(
+    {
+      title: url.searchParams.get('title') ?? '',
+      version: url.searchParams.get('version') ?? '',
+      cmd: url.searchParams.get('cmd') ?? '',
+      paper: url.searchParams.get('paper') ?? '',
+    },
     url,
   );
 }

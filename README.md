@@ -211,7 +211,7 @@ const response = await handleRequest(request, env, {});
 **`GET /draw`** (no params) or `?tab=pie` — the demo page (11 chart types, all style variants, dual URL forms)
 **`GET /draw/archmap?n=...`** (alias `/draw/arch`) — architecture map sub-path, same params as `type=archmap`
 **`GET /draw/mindmap?n=...`** — mind map sub-path, same params as `type=mindmap`
-**`GET /draw/banner?theme=cli-release-v1&title=<slogan|slogan2>&version=<x.y.z>&cmd=<cmd>`** — themed OG cover (1200×630): paper wash + grain, Inter-Bold slogan, `X-CMD - vX.Y.Z` tag bottom-left, bare terminal with `❯` prompt; `&format=png` rasterizes for og:image. [Try it](https://po6.sh/draw/banner?theme=cli-release-v1&title=Validate%20files%7Cagainst%20JSON%20Schema&version=0.10.13&cmd=x%20ajv)
+**`GET /draw/x-cmd/release-banner?title=<slogan|slogan2>&version=<x.y.z>&cmd=<cmd>[&paper=<yellow|orange|pink|purple|green|cyan|blue|gray|apple>]`** — x-cmd release OG cover (1200×630): paper wash + grain, Inter-Bold slogan, `X-CMD - vX.Y.Z` tag bottom-left, bare terminal with `❯` prompt; `paper=apple` for Apple-white. `&format=png` rasterizes for og:image. [Try it](https://po6.sh/draw/x-cmd/release-banner?title=Validate%20files%7Cagainst%20JSON%20Schema&version=0.10.13&cmd=x%20ajv)
 **`POST /draw?type=...`** — submit a JSON/CSV body to create a permanent short link
 **`GET /draw/c/<hash>`** — short-link render (immutable)
 
