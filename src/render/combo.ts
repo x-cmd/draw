@@ -49,7 +49,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
 
   const parts: string[] = [
     card(width, height),
-    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 16),
+    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 14),
   ];
   for (const t of ticks) {
     const gy = r2(y(t));
@@ -150,7 +150,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
 
   // 堆叠柱内标签:规划(占用 placer 供线标签避让),输出延后到折线之后
   if (stacked && withinStack.length > 0) {
-    reserveBands(placer, left, right, contentTop, bottom, null, spec.series, width - pad, pad + 16);
+    reserveBands(placer, left, right, contentTop, bottom, null, spec.series, width - pad, pad + 14);
     // 折线始终在上且连续;堆叠柱内标签靠同色描边遮线,不传 lineSegs(传了会整层放弃)
     pushBarLabelsAllOrNothing(pendingBarLabels, withinStack, placer);
   }
@@ -161,7 +161,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   if (!stacked) {
     // 分组路径同样要预留 Y 刻度带/X 标签带/图例带(此前只有堆叠分支预留,
     // 分组密集时柱标签回退位可压图例,线标签峰值位可撞右轴刻度)
-    reserveBands(placer, left, right, contentTop, bottom, bottom + 20, spec.series, width - pad, pad + 16);
+    reserveBands(placer, left, right, contentTop, bottom, bottom + 20, spec.series, width - pad, pad + 14);
     if (dual) placer.reserve(right + 2, contentTop - 10, Math.max(width - pad - right - 2, 1), bottom - contentTop + 20); // 双轴右刻度带
     reserveEdges(placer, width, height);
   }

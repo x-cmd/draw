@@ -95,8 +95,11 @@ function decorate(svg: string, skin: Skin, version: number, option: unknown): st
   const tagFs = Math.max(10, Math.min(18, Math.round(w / 55)));
   const hMatch = /height="(\d+)"/.exec(root);
   const h = hMatch ? +hMatch[1] : 320;
-  const tag = `<text x="${w - 8}" y="${tagFs + 5}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-faint)" opacity="0.7">Edit @X-CMD</text>`;
-  return root + skinStyle(skin) + metaTag('echarts', version, option) + svg.slice(m[0].length) + tag;
+  const opt = option as Obj | undefined;
+  const tag = `<text x="${w - 8}" y="54" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text>`;
+  // 标签必须在 </svg> 之前(之后的 XML 非法,img 严格解析失败)
+  const body = svg.slice(m[0].length).replace(/<\/svg>\s*$/, '');
+  return root + skinStyle(skin) + metaTag('echarts', version, option) + body + tag + '</svg>';
 }
 
 const EXAMPLE_D = encodeURIComponent(

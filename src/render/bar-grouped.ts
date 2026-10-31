@@ -73,7 +73,7 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   const right = geo ? geo.right : width - pad;
   const bottom = geo ? geo.bottom : height - pad - 30;
   const xLabelY = geo ? geo.xLabelY : bottom + 20;
-  const legendY = geo ? geo.legendY : pad + 16;
+  const legendY = geo ? geo.legendY : pad + 14;
 
   const yMax = ticks[ticks.length - 1];
   const y = (v: number): number => bottom - (v / yMax) * (bottom - contentTop);

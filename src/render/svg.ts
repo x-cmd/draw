@@ -113,7 +113,7 @@ export function topLegend(
       cx += gap + w + 26;
     }
   } else {
-    let cx = x;
+    let cx = x - TAG_RESERVE; // 右对齐图例向左让出标签宽度(#27)
     for (let i = items.length - 1; i >= 0; i--) {
       const it = items[i];
       const w = textW(it.name, 12);
@@ -128,6 +128,8 @@ export function topLegend(
 }
 
 // 系列色 / 系列上文字色的 var 引用(渲染器一律使用)
+// Edit @X-CMD 角标宽度预留(#27):右对齐图例向左让出此宽度,标签独占右上角
+export const TAG_RESERVE = 100;
 export const sVar = (i: number): string => `var(--d-s${i + 1})`;
 export const onVar = (i: number): string => `var(--d-on-s${i + 1})`;
 
@@ -172,10 +174,10 @@ export function svgDoc(
   skin: Skin,
   children: string,
 ): string {
-  // Edit @X-CMD 角标(#27):所有 SVG 产出统一带;var(--d-faint) 自适应明暗,
-  // 字号随画布宽度缩放;右上角(issue #27 要求)
+  // Edit @X-CMD 角标(#27):右上角,与标题同一基线(y=38/54,普通 baseline)
   const tagFs = Math.max(10, Math.min(18, Math.round(width / 55)));
-  const tag = `<text x="${width - 8}" y="${tagFs + 5}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-faint)" opacity="0.7">Edit @X-CMD</text>`;
+  const tagY = skin.rules.title === 'editorial' ? 54 : 38;
+  const tag = `<text x="${width - 8}" y="${tagY}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text>`;
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" ` +
     `font-family="${FONT}" role="img" aria-label="${esc(aria)}">` +

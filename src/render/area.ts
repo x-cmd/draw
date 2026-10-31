@@ -69,7 +69,7 @@ function areaLayout(spec: { title?: string; unit?: string; subtitle?: string }, 
     right: geo ? geo.right : width - pad,
     bottom: geo ? geo.bottom : height - pad - 30,
     xLabelY: geo ? geo.xLabelY : height - pad - 30 + (rules.baseline === 'dots' ? 34 : 20),
-    legendY: geo ? geo.legendY : pad + 16,
+    legendY: geo ? geo.legendY : pad + 14,
     // area-3:数据点自 left 内缩(时间轴留白)
     xFirst: rules.title === 'editorial' && geo ? left + Math.round(width * 0.0574) : left,
   };

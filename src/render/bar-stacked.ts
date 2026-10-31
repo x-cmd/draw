@@ -40,7 +40,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     }
   }
   // 百分比模式柱顶要标总量,绘图区需下移到图例之下,否则总量与图例文字重叠
-  const contentTop = pctMode ? Math.max(fixedTop, pad + 16 + 30) : fixedTop;
+  const contentTop = pctMode ? Math.max(fixedTop, pad + 14 + 30) : fixedTop;
   // 百分比模式:各组的段按 pct 布局,轴刻度 0-100%
   const tickVals = pctMode ? [0, 20, 40, 60, 80, 100] : niceTicks(gMax, 5);
   // 左内边距 = max(规范 44, 实测刻度列;百分比模式刻度带 "%" 后缀)
@@ -84,7 +84,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
 
   const parts: string[] = [
     card(width, height),
-    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 16),
+    topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 14),
   ];
   if (pctMode) {
     for (const t of tickVals) {
@@ -145,7 +145,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     }
   });
   const placer = new LabelPlacer();
-  reserveBands(placer, left, right, contentTop, bottom, bottom + 20, spec.series, width - pad, pad + 16);
+  reserveBands(placer, left, right, contentTop, bottom, bottom + 20, spec.series, width - pad, pad + 14);
   pushBarLabelsAllOrNothing(parts, numItems, placer);
 
   return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
