@@ -14,7 +14,7 @@ import { renderEchartsFromUrl } from './render/echarts-ssr.js';
 import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
-import { renderBannerFromUrl } from './render/banner.js';
+import { renderReleaseBannerFromUrl } from './render/banner.js';
 import { resolveSkin, VARIANTS } from './styles/index.js';
 import { indexHandler } from './demo.js';
 import {
@@ -225,12 +225,19 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     }
     return chartResponse(url, renderMindmapFromUrl(url));
   }
-  // /draw/banner 主题化 OG 封面:?theme=<预设> + title/cmd;位图走共用 ?format=png
+  // /draw/x-cmd/release-banner 命名空间路由(x-cmd 发布封面):title/version/cmd/paper
+  if (sub === '/x-cmd/release-banner' || sub === '/x-cmd/release') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?title=<...>&version=<x.y.z>&cmd=<...>[&paper=<yellow|apple|...>]`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderReleaseBannerFromUrl(url));
+  }
+  // /draw/banner 旧别名(已发布链接用):同逻辑,参数不变
   if (sub === '/banner') {
     if (method !== 'GET') {
-      return textResponse(405, `method ${request.method} not allowed; use GET with ?theme=<name>&title=<...>&cmd=<...>`, { allow: 'GET' });
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?title=<...>&version=<x.y.z>&cmd=<...>`, { allow: 'GET' });
     }
-    return chartResponse(url, renderBannerFromUrl(url));
+    return chartResponse(url, renderReleaseBannerFromUrl(url));
   }
   if (sub === '' || sub === '/') {
     if (method === 'POST') return createHandler(request, env, platform, base);
@@ -242,7 +249,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (url.search === '' || onlyTab) return indexHandler(base);
     return chartResponse(url, renderFromUrl(url));
   }
-  return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · GET ${base}/echarts?d=... · GET ${base}/archmap?n=... · GET ${base}/mindmap?n=... · GET ${base}/banner?theme=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
+  return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · GET ${base}/echarts?d=... · GET ${base}/archmap?n=... · GET ${base}/mindmap?n=... · GET ${base}/x-cmd/release-banner?title=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
 }
 
 // 统一入口:Worker 的 fetch handler 与 Node 适配器都调这里。

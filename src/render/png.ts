@@ -13,6 +13,7 @@
 // 本就无系统字体;子集外字符——如 CJK——PNG 中无回退,见 #24 已知边界)。
 import { ApiError } from '../specs/index.js';
 import { INTER_TTF_B64, HANDEE_TTF_B64 } from '../styles/fonts-ttf.js';
+import { FONT_FILES_B64 } from '../styles/fonts-banner.js';
 
 // ── 烘焙:var() → 具体色值,产出平面 SVG ─────────────────────────────────────
 
@@ -89,7 +90,7 @@ export async function svgToPng(svg: string, scheme: 'light' | 'dark', opts: PngO
   if (!(scale >= 1 && scale <= 3)) {
     throw new ApiError(400, `"scale" must be between 1 and 3, got ${JSON.stringify(scale)}`);
   }
-  fonts ??= [fontBytes(INTER_TTF_B64), fontBytes(HANDEE_TTF_B64)];
+  fonts ??= [fontBytes(INTER_TTF_B64), fontBytes(HANDEE_TTF_B64), ...FONT_FILES_B64.map((f) => fontBytes(f.native))];
   let Resvg: (typeof import('@resvg/resvg-wasm'))['Resvg'];
   try {
     ({ Resvg } = await resvgEngine());
