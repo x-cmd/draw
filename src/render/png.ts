@@ -16,6 +16,8 @@ import { INTER_TTF_B64, HANDEE_TTF_B64 } from '../styles/fonts-ttf.js';
 import { FONT_FILES_B64 } from '../styles/fonts-banner.js';
 
 // ── 烘焙:var() → 具体色值,产出平面 SVG ─────────────────────────────────────
+// Edit @X-CMD 角标已上移至 svgDoc(核心/archmap/mindmap)与 decorate(echarts),
+// SVG 层统一注入 → PNG 烘焙后自动保留,此处不再重复注入(#27)
 
 /**
  * Bake a rendered SVG into a flat SVG: resolve every `var(--d-*)` to a concrete

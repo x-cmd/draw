@@ -84,12 +84,19 @@ function ariaOf(option: Obj): string {
   return clip(text, 80) || 'echarts chart';
 }
 
-// 后处理:根 svg 补 role/aria/font-family,内嵌皮肤变量(含 Inter 子集)+ metadata
+// 后处理:根 svg 补 role/aria/font-family,内嵌皮肤变量(含 Inter 子集)+ metadata;
+// 注入 Edit @X-CMD 角标(#27,svgDoc 覆盖核心层,此处覆盖 echarts)
 function decorate(svg: string, skin: Skin, version: number, option: unknown): string {
   const m = /^<svg\b[^>]*>/.exec(svg);
   if (!m) return svg; // echarts 输出恒为 <svg ...> 开头,防御而已
   const root = m[0].replace('<svg', `<svg role="img" aria-label="${esc(ariaOf(option as Obj))}" font-family="${FONT}"`);
-  return root + skinStyle(skin) + metaTag('echarts', version, option) + svg.slice(m[0].length);
+  const wMatch = /width="(\d+)"/.exec(root);
+  const w = wMatch ? +wMatch[1] : 560;
+  const tagFs = Math.max(10, Math.min(18, Math.round(w / 55)));
+  const hMatch = /height="(\d+)"/.exec(root);
+  const h = hMatch ? +hMatch[1] : 320;
+  const tag = `<text x="${w - 8}" y="${tagFs + 5}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-faint)" opacity="0.7">Edit @X-CMD</text>`;
+  return root + skinStyle(skin) + metaTag('echarts', version, option) + svg.slice(m[0].length) + tag;
 }
 
 const EXAMPLE_D = encodeURIComponent(

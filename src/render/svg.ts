@@ -172,10 +172,14 @@ export function svgDoc(
   skin: Skin,
   children: string,
 ): string {
+  // Edit @X-CMD 角标(#27):所有 SVG 产出统一带;var(--d-faint) 自适应明暗,
+  // 字号随画布宽度缩放;右上角(issue #27 要求)
+  const tagFs = Math.max(10, Math.min(18, Math.round(width / 55)));
+  const tag = `<text x="${width - 8}" y="${tagFs + 5}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-faint)" opacity="0.7">Edit @X-CMD</text>`;
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" ` +
     `font-family="${FONT}" role="img" aria-label="${esc(aria)}">` +
-    skinStyle(skin) + metaTag(template, version, spec) + children + `</svg>`
+    skinStyle(skin) + metaTag(template, version, spec) + children + tag + `</svg>`
   );
 }
 
