@@ -2,7 +2,7 @@
 // 面积填充/数值标注/平滑/点形态/线宽/虚线/发光全部跟随变体规则。
 import type { ChartSpec, MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY } from './svg.js';
 import { plainGeo, type GeoMeasure } from './measure.js';
 
 /**
@@ -77,7 +77,7 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<path d="${path}" fill="none" stroke="var(--d-s1)" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`);
   }
 
-  pushPoints(parts, pts, 'var(--d-s1)', rules);
+  pushPoints(parts, pts, 'var(--d-s1)', rules, o.interactive ? spec.data.map((d) => `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, 0);
   const xStride = labelStride(spec.data.map((d) => d.label), (right - left) / Math.max(n - 1, 1));
   spec.data.forEach((d, i) => {
     if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 12))}</text>`);

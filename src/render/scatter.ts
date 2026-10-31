@@ -82,7 +82,7 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     const color = sVar(si % skin.series.length);
     s.points.forEach((p, pi) => {
       const isPeak = si === peakS && pi === peakP;
-      parts.push(`<circle cx="${r2(px(p.x))}" cy="${r2(py(p.y))}" r="${pi % 4 === 0 ? 7 : 5}" fill="${color}" fill-opacity="0.78" stroke="var(--d-halo)" stroke-width="2"/>`);
+      parts.push(`<circle cx="${r2(px(p.x))}" cy="${r2(py(p.y))}" r="${pi % 4 === 0 ? 7 : 5}" fill="${color}" fill-opacity="0.78" stroke="var(--d-halo)" stroke-width="2"${o.interactive ? ` data-tip="${esc(`${fmtNum(p.x)}${spec.unit ? ' ' + spec.unit : ''} · ${fmtNum(p.y)}`)}" data-series="${si}"` : ''}/>`);
       if (num === 'all' || (num === 'peak' && isPeak)) {
         numItems.push({ px: px(p.x), py: py(p.y), text: fmtNum(p.y), isPeak });
       }

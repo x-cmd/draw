@@ -392,19 +392,34 @@ export function reserveEdges(placer: LabelPlacer, width: number, height: number)
   placer.reserve(width, -2, 2, height + 4); // 右
 }
 
-// 数据点(hollow=空心描边 / filled=实心+白描边),折线/面积系列共用
+// 数据点(hollow=空心描边 / filled=实心+白描边),折线/面积系列共用。
+// tips 提供时逐点挂 data-tip(explore 页悬停高亮+数值的载体);
+// points:'none' 的皮肤输出隐形命中圆(fill=transparent+pointer-events=all),
+// 保证无点皮肤同样逐点可悬停
 export function pushPoints(
   parts: string[],
   pts: readonly (readonly [number, number])[],
   color: string,
   rules: { points: 'filled' | 'hollow' | 'none'; pointR: number },
+  tips?: readonly string[],
+  series?: number,
 ): void {
-  if (rules.points === 'none') return;
-  for (const [px, py] of pts) {
+  const ds = series === undefined ? '' : ` data-series="${series}"`;
+  if (rules.points === 'none') {
+    if (!tips) return;
+    for (let i = 0; i < pts.length; i++) {
+      const [px, py] = pts[i];
+      parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="8" fill="transparent" pointer-events="all" data-tip="${esc(tips[i])}"${ds}/>`);
+    }
+    return;
+  }
+  for (let i = 0; i < pts.length; i++) {
+    const [px, py] = pts[i];
     const attrs = rules.points === 'hollow'
       ? `fill="var(--d-halo)" stroke="${color}" stroke-width="2.5"`
       : `fill="${color}" stroke="var(--d-halo)" stroke-width="3"`;
-    parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="${rules.pointR}" ${attrs}/>`);
+    const tip = tips?.[i];
+    parts.push(`<circle cx="${r2(px)}" cy="${r2(py)}" r="${rules.pointR}" ${attrs}${tip !== undefined ? ` data-tip="${esc(tip)}"` : ''}${ds}/>`);
   }
 }
 

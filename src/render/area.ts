@@ -133,7 +133,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   const dash = rules.lineDash ? ` stroke-dasharray="${rules.lineDash}"` : '';
   parts.push(`<path d="${path}" fill="none" stroke="var(--d-s1)" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`);
 
-  pushPoints(parts, pts, 'var(--d-s1)', rules);
+  pushPoints(parts, pts, 'var(--d-s1)', rules, o.interactive ? spec.data.map((d) => `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, 0);
   const skip = n > 14 ? Math.ceil(n / 7) : 1;
   spec.data.forEach((d, i) => {
     if (i % skip !== 0 && i !== n - 1) return;
@@ -222,7 +222,7 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   allPts.forEach((pts, i) => {
     parts.push(`<path d="${pathOf(pts)}" fill="none" stroke="${colors[i]}" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`);
   });
-  allPts.forEach((pts, i) => pushPoints(parts, pts, colors[i], rules));
+  allPts.forEach((pts, i) => pushPoints(parts, pts, colors[i], rules, o.interactive ? spec.series[i].values.map((v, vi) => `${spec.labels[vi]} · ${spec.series[i].name}: ${fmtFull(v)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, i));
   const skip = n > 14 ? Math.ceil(n / 7) : 1;
   spec.labels.forEach((l, i) => {
     if (i % skip !== 0 && i !== n - 1) return;

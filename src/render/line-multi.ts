@@ -2,7 +2,7 @@
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
 import type { MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar } from './svg.js';
 import { lineLayout } from './line.js';
 
 /**
@@ -82,7 +82,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
         );
       }
     }
-    pushPoints(parts, pts, colors[si], rules);
+    pushPoints(parts, pts, colors[si], rules, o.interactive ? s.values.map((v, vi) => `${spec.labels[vi]} · ${s.name}: ${fmtFull(v)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, si);
     // 多系列折线只标"每条线自己的峰值"(全标会挤成一团;全局峰值只标一个也不对)
     if (num !== 'none') {
       let ownPeak = 0;
