@@ -498,14 +498,25 @@ ${sections}
   function withScheme(url) {
     return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'scheme=' + scheme;
   }
+  // 手机:图表默认按桌面宽度(960)出,塞进 ~328px 的卡片只有 0.34 倍 ——
+  // 12px 的字缩成 4px,一片糊。窄屏把画布缩到屏宽(矢量,字就正常大了)。
+  var NARROW =
+    window.matchMedia && window.matchMedia('(max-width: 720px)').matches
+      ? Math.min(Math.round(window.innerWidth), 640)
+      : 0;
+  function finalUrl(url) {
+    var u = url;
+    if (NARROW && !/[?&]w=/.test(u)) u += (u.indexOf('?') >= 0 ? '&' : '?') + 'w=' + NARROW;
+    return withScheme(u);
+  }
   function loadImg(img) {
-    if (!img.getAttribute('src')) img.setAttribute('src', withScheme(img.dataset.src));
+    if (!img.getAttribute('src')) img.setAttribute('src', finalUrl(img.dataset.src));
   }
   function setScheme(next) {
     scheme = next;
     document.documentElement.dataset.theme = next;
     document.querySelectorAll('img[data-src]').forEach(function (img) {
-      if (img.getAttribute('src')) img.setAttribute('src', withScheme(img.dataset.src));
+      if (img.getAttribute('src')) img.setAttribute('src', finalUrl(img.dataset.src));
     });
   }
   function selectTab(type, push) {
@@ -611,5 +622,7 @@ ${sections}
 </body>
 </html>`;
   // 演示页 HTML 静态(tab 参数由前端 JS 读取),可短缓存;变动随部署生效
-  return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=300' } });
+  // 页面壳不缓存:边缘的缓存规则会把 max-age 改写成 4 小时,部署完用户还拿旧页
+  // (ppt 踩过同一个坑)。壳是现生成的,不贵;图表 SVG 自己有缓存。
+  return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }
