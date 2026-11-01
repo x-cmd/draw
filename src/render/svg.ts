@@ -130,6 +130,8 @@ export function topLegend(
 // 系列色 / 系列上文字色的 var 引用(渲染器一律使用)
 // Edit @X-CMD 角标宽度预留(#27):右对齐图例向左让出此宽度,标签独占右上角
 export const TAG_RESERVE = 100;
+// explore 的 ?d= 直收 spec JSON 的图种(角标链接目标,qr 的 d= 是纯文本另算)
+const EXPLORE_D_KINDS = new Set(['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey']);
 export const sVar = (i: number): string => `var(--d-s${i + 1})`;
 export const onVar = (i: number): string => `var(--d-on-s${i + 1})`;
 
@@ -175,9 +177,16 @@ export function svgDoc(
   children: string,
 ): string {
   // Edit @X-CMD 角标(#27):右上角,与标题同一基线(y=38/54,普通 baseline)
+  // 可点击(#13 水印=广告):链到对应 explore 页;图表家族带 ?d= 全量数据,点击即得可编辑副本
   const tagFs = Math.max(10, Math.min(18, Math.round(width / 55)));
   const tagY = skin.rules.title === 'editorial' ? 54 : 38;
-  const tag = `<text x="${width - 8}" y="${tagY}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text>`;
+  let tagHref = 'https://x-cmd.com/draw';
+  if (EXPLORE_D_KINDS.has(template)) {
+    tagHref = `https://x-cmd.com/draw/explore?type=${template}&d=${encodeURIComponent(JSON.stringify(spec))}`;
+  } else if (template === 'qr') {
+    tagHref = `https://x-cmd.com/draw/explore?type=qr&d=${encodeURIComponent(String((spec as { text?: string })?.text ?? ''))}`;
+  }
+  const tag = `<a href="${esc(tagHref)}" target="_blank" rel="noopener"><text x="${width - 8}" y="${tagY}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text></a>`;
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" ` +
     `font-family="${FONT}" role="img" aria-label="${esc(aria)}">` +

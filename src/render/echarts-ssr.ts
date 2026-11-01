@@ -96,7 +96,9 @@ function decorate(svg: string, skin: Skin, version: number, option: unknown): st
   const hMatch = /height="(\d+)"/.exec(root);
   const h = hMatch ? +hMatch[1] : 320;
   const opt = option as Obj | undefined;
-  const tag = `<text x="${w - 8}" y="54" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text>`;
+  // 可点击(#13):链到 echarts explore,?d= 携带完整 option,点击即得可编辑副本
+  const tagHref = `https://x-cmd.com/draw/explore/echarts?d=${encodeURIComponent(JSON.stringify(option))}`;
+  const tag = `<a href="${esc(tagHref)}" target="_blank" rel="noopener"><text x="${w - 8}" y="54" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text></a>`;
   // 标签必须在 </svg> 之前(之后的 XML 非法,img 严格解析失败)
   const body = svg.slice(m[0].length).replace(/<\/svg>\s*$/, '');
   return root + skinStyle(skin) + metaTag('echarts', version, option) + body + tag + '</svg>';
