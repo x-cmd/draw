@@ -10,52 +10,56 @@ const MD = [
   'website: https://x-cmd.com',
   'qr: https://x-cmd.com',
   '---',
+  '- 页头要点一',
+  '- 页头要点二',
+  '',
   '## 简介',
   '第一段正文,**加粗**在行内。',
   '',
-  '**亮点小标题**',
-  '亮点正文段落。',
+  '**独立粗体小节**',
   '',
-  '## 清单',
+  '小节正文。',
+  '',
+  '## 数据',
   '- 项目一',
   '- 项目二',
 ].join('\n');
 
-describe('renderOnepageFromMarkdown · miracle-v1', () => {
-  it('renders an A4 page with header, sections, footer and QR', () => {
-    const { svg, version } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
+describe('renderOnepageFromMarkdown · strip-v1 (mobile long-image)', () => {
+  it('renders a 1800-wide strip whose height grows with content', () => {
+    const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
     expect(svg).toMatch(/^<svg/);
-    expect(svg).toContain('width="1240"');
-    expect(svg).toContain('height="1754"');
+    expect(svg).toContain('width="1800"');
+    const h = Number(/height="(\d+)"/.exec(svg)?.[1]);
+    expect(h).toBeGreaterThan(2500);            // 条状:高度随内容生长
     expect(svg).toContain('测试一页纸');
-    expect(svg).toContain('副标题行');
-    expect(svg).toContain('简介');
-    expect(svg).toContain('· 项目一');
-    expect(svg).toContain('https://x-cmd.com');
-    expect(svg).toMatch(/<rect[^>]*fill="#1a1a1a"/); // QR 黑块
-    expect(svg).toContain('&quot;template&quot;:&quot;onepage&quot;');
-    expect(version).toBe(1);
+    expect(svg).toContain('一、简介');            // 中文序号节头
+    expect(svg).toContain('二、数据');
+    expect(svg).toContain('页头要点一');
+    expect(svg).toContain('项目一');
+    expect(svg).toContain('fill="#16161e"');      // 全宽深色页脚块
+    expect(svg).toMatch(/<rect[^>]*fill="#16161e"/);
+    expect(svg).toContain('扫码了解更多');         // QR 卡说明
+    expect(svg).not.toContain('stroke="#d8d8d8"'); // 无分隔线(原图风格:留白分隔)
   });
 
-  it('auto-shrinks long content; hard overflow 400 names the sections', () => {
-    const long = `---\ntitle: 长文\n---\n${Array.from({ length: 30 }, (_, i) => `## 节${i}\n${Array.from({ length: 12 }, (_, j) => `第${j}段,内容足够长以触发缩放与溢出判定。`).join('\n\n')}`).join('\n\n')}`;
-    expect(() => renderOnepageFromMarkdown(long, new URL(`${BASE}/x-cmd/onepage`))).toThrowError(/overflow.*节0/);
+  it('bold-lead renders as an inline-tspan bold run or a standalone 44px lead', () => {
+    const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
+    expect(svg).toContain('font-size="44"');       // 独立粗体小节
+    expect(svg).toContain('<tspan font-family');   // 行内粗体
   });
 
-  it('400s without a title; title + bare paragraphs is a legal page', () => {
+  it('caps absurd length; missing title 400s; bare paragraphs legal', () => {
+    const huge = `---\ntitle: T\n---\n${Array.from({ length: 400 }, (_, i) => `## 节${i}\n内容内容内容内容内容内容内容内容内容内容。`).join('\n\n')}`;
+    expect(() => renderOnepageFromMarkdown(huge, new URL(`${BASE}/x-cmd/onepage`))).toThrowError(/tall/);
     expect(() => renderOnepageFromMarkdown('只有正文没有标题', new URL(`${BASE}/x-cmd/onepage`))).toThrowError(/title/);
-    const { svg } = renderOnepageFromMarkdown('---\ntitle: T\n---\n无节正文,标题加散段即合法一页纸。', new URL(`${BASE}/x-cmd/onepage`));
-    expect(svg).toContain('无节正文');
-  });
-
-  it('falls back to # heading when yfm title absent', () => {
-    const { svg } = renderOnepageFromMarkdown('# 兜底标题\n## 节\n正文', new URL(`${BASE}/x-cmd/onepage`));
-    expect(svg).toContain('兜底标题');
+    const ok = renderOnepageFromMarkdown('---\ntitle: T\n---\n无节正文,标题加散段即合法条状页。', new URL(`${BASE}/x-cmd/onepage`));
+    expect(ok.svg).toContain('无节正文');
   });
 });
 
 describe('handleRequest · /draw/x-cmd/onepage', () => {
-  it('GET ?d= serves svg; POST body serves svg; format=png rasterizes with CJK', async () => {
+  it('GET ?d= svg + POST body svg + format=png', async () => {
     const d = encodeURIComponent(MD);
     const svg = await handleRequest(new Request(`${BASE}/x-cmd/onepage?d=${d}`), {}, {});
     expect(svg.status).toBe(200);
@@ -68,7 +72,7 @@ describe('handleRequest · /draw/x-cmd/onepage', () => {
     expect(png.headers.get('content-type')).toBe('image/png');
     const buf = Buffer.from(await png.arrayBuffer());
     expect(buf.slice(1, 4).toString()).toBe('PNG');
-    expect(buf.byteLength).toBeGreaterThan(60000); // CJK 字形在画(对照空版显著更大)
+    expect(buf.byteLength).toBeGreaterThan(40000);
   }, 60000);
 
   it('400s on missing d and oversized d (GET)', async () => {

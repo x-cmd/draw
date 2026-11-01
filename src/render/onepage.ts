@@ -1,38 +1,40 @@
 // /draw/x-cmd/onepage 一页纸模式(x-cmd-hub/draw#28):markdown(+yfm 头)进,
-// 一张 A4 密排单页 SVG 出;?format=png 出位图(og/打印)。首个主题 miracle-v1
-// 复刻奇绩融资一页纸风格 —— 黑字密排、节标题加粗、信息密度极高。
-// 独立模块:不依赖其它图表渲染器(仅公共工具 esc/textW 与 qr 部件);
-// SVG 端 CJK 走系统字体栈,PNG 端由 png.ts 检测 CJK 后挂 Noto 子集(fonts-cjk.ts)。
-// og:yfm `og:` 字段收图片 URL 或 data:image/webp;base64(默认图待定,见 #28);
-// data: 形态全端可渲,远程 URL 仅浏览器 SVG 可见(PNG 光栅不回源)。
+// 一张手机分享条状长图出 —— 窄固定宽、高度随内容自动生长,纯白底极简黑白编辑风
+// (miracle-v1,对照用户原图 X-CMD一页纸.png 1800×14180 逐项复刻):
+//   页头 = wordmark + 灰描述 + 大黑标题(2-3 行)+ 要点列表
+//   节头 = 中文序号「一、」粗体,无色条无分隔线,大留白分隔
+//   正文 = 35px/1.8,行内加粗即强调(非卡片);独立粗体小节 44px
+//   页脚 = 全宽深色块:左联系方式白字,右白底 QR 卡
+// 独立模块(仅公共工具);SVG 端 CJK 走系统字体栈,PNG 端由 png.ts 挂 Noto 子集。
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';
 import { esc, textW } from './svg.js';
 import { renderQR } from './qr.js';
 import { resolveSkin } from '../styles/index.js';
 import { INTER_FACE_CSS } from '../styles/inter.js';
-import { FONT, TAB } from '../theme.js';
+import { FONT } from '../theme.js';
 import type { DrawResult } from './query.js';
 
-const W = 1240;                    // A4 纵向(CSS px 基准;scale=2 → 2480×3508 打印)
-const H = 1754;
-const MX = 88;                     // 左右页边
-const MT = 84;                     // 上边
-const MB = 72;                     // 下边(页脚带之上)
-const FOOT_H = 116;                // 页脚带高度(website/contact + QR)
+const W = 1800;                     // 与原图同宽(手机 2x),矢量无谓缩放
+const MX = 150;                     // 左右页边(原图内容宽 ~83%)
+const MT = 150;
+const GAP_SEC_ABOVE = 180;          // 节头上方大留白(原图节奏)
+const GAP_SEC_BELOW = 80;
+const FOOT_H = 1150;                // 全宽深色页脚块
+const H_MAX = 40000;                // 条状 sanity 上限
 
-const INK = '#111111';
-const BODY_C = '#1a1a1a';
-const MUTE = '#5a5a5a';
-const RULE = '#d8d8d8';
+const INK = '#1a1a2e';
+const BODY_C = '#333333';
+const MUTE = '#666666';
+const FOOT_BG = '#16161e';
 
-// 中西混排字体栈:浏览器走系统 CJK;resvg 走 fontdb 的 DrawCJK/DrawCJKBold
 const F_REG = "'DrawInter','DrawCJK',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif";
 const F_BOLD = "'DrawInterBold','DrawCJKBold',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif";
 
-// ── 文本测量与折行 ──────────────────────────────────────────────────────────
+const CN_ORD = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二', '十三', '十四', '十五'];
 
-// 中西混排折行:CJK 逐字可断,拉丁按词断
+// ── 文本测量与折行(中西混排:CJK 逐字断,拉丁按词断) ─────────────────────────
+
 function wrap(text: string, fs: number, maxW: number): string[] {
   const atoms: string[] = [];
   for (const m of text.matchAll(/[A-Za-z0-9'’\-@.:/#%&+]+|\s+|[^\s]/gu)) atoms.push(m[0]);
@@ -54,7 +56,7 @@ function wrap(text: string, fs: number, maxW: number): string[] {
   return lines;
 }
 
-// 行内 **bold** → runs
+// 行内 **bold** → runs;行内混排需要逐段 tspan
 function runs(text: string): { t: string; b: boolean }[] {
   const out: { t: string; b: boolean }[] = [];
   for (const m of text.matchAll(/\*\*([^*]+)\*\*|([^*]+)/g)) {
@@ -64,12 +66,13 @@ function runs(text: string): { t: string; b: boolean }[] {
   return out;
 }
 
-// ── markdown 子集解析(yfm 头 + 标题块 + H2 节 + 段落/加粗引块/列表) ──────────
+// ── markdown 子集解析(yfm + 页头 + 中文序号节 + 段落/粗体小节/列表) ───────────
 
 interface Doc {
-  meta: Record<string, string>;      // yfm:title/subtitle/website/contact/qr/og
+  meta: Record<string, string>;
   title: string;
   subtitle: string;
+  bullets: string[];                 // 页头要点列表(首个节之前的 - 列表)
   sections: { name: string; blocks: Block[] }[];
 }
 type Block = { k: 'p'; text: string } | { k: 'li'; items: string[] };
@@ -89,169 +92,198 @@ function parse(md: string): Doc {
   body = body.replace(/^\*\*副标题\*\*\s*[:：]\s*(.+)\n?/m, (_s, v: string) => { if (!subtitle) subtitle = v.trim(); return ''; });
   if (!title) throw new ApiError(400, 'onepage needs a title: yfm `title:` field or a `# heading` line');
 
+  const bullets: string[] = [];
   const sections: Doc['sections'] = [];
   let cur: Doc['sections'][number] | undefined;
   for (const raw of body.split(/\n{2,}/)) {
     const lines = raw.split('\n').map((l) => l.trim()).filter((l) => l !== '' && l !== '---');
     if (lines.length === 0) continue;
-    // 判型在原始行上(段落合并之前):## 节 / 列表 / 段落
     if (/^##\s+/.test(lines[0])) {
       cur = { name: lines[0].replace(/^##\s+/, '').replace(/\*\*/g, '').trim(), blocks: [] };
       sections.push(cur);
       lines.shift();
       if (lines.length === 0) continue;
     }
-    if (!cur) { cur = { name: '', blocks: [] }; sections.push(cur); }
     const listItems = lines.filter((l) => /^[-*]\s+/.test(l));
     if (listItems.length === lines.length) {
-      cur.blocks.push({ k: 'li', items: listItems.map((l) => l.replace(/^[-*]\s+/, '')) });
+      const items = listItems.map((l) => l.replace(/^[-*]\s+/, ''));
+      if (!cur) bullets.push(...items);            // 首节前的列表 = 页头要点
+      else cur.blocks.push({ k: 'li', items });
+    } else if (!cur) {
+      // 首节前的散段归入无名节(副标题只来自 yfm/**副标题** 行,不吞正文)
+      cur = { name: '', blocks: [{ k: 'p', text: lines.join(' ') }] };
+      sections.push(cur);
     } else {
       cur.blocks.push({ k: 'p', text: lines.join(' ') });
     }
   }
-  if (sections.length === 0) throw new ApiError(400, 'onepage needs content: sections (`## heading`), paragraphs, or lists');
-  return { meta, title, subtitle, sections };
+  if (sections.length === 0 && bullets.length === 0) throw new ApiError(400, 'onepage needs content: sections (`## heading`), paragraphs, or lists');
+  return { meta, title, subtitle, bullets, sections };
 }
 
-// ── 版式引擎:一次走版,产出带 y 的图元;总高超限先整体缩字号(≥82%),仍超 400 ──
+// ── 版式:一次走版产出带绝对 y 的图元;高度自然生长(条状无缩放) ───────────────
 
-interface Item { s: string; y: number }   // 直接产 SVG 片段 + 基线 y,渲染只做排序拼接
-function layout(doc: Doc, mult: number): { items: Item[]; total: number } {
-  const fs = (b: number): number => b * mult;
-  const maxW = W - MX * 2;
+interface Item { s: string }
+function layout(doc: Doc, v: number): { items: Item[]; total: number } {
   const items: Item[] = [];
-  const push = (s: string, y: number): void => { items.push({ s, y }); };
+  const push = (s: string): void => { items.push({ s }); };
+  const maxW = W - MX * 2;
   let y = MT;
 
-  // og 封面带(data: 全端;远程 URL 浏览器可见)
-  if (doc.meta.og) {
-    const ogH = 236;
-    push(`<image x="${MX}" y="${y}" width="${maxW}" height="${ogH}" href="${esc(doc.meta.og)}" preserveAspectRatio="xMidYMin slice"/>`, y);
-    y += ogH + 20 * mult;
+  // 页头:wordmark + 灰描述(website 或 subtitle 前置一行?)
+  push(`<text x="${MX}" y="${y + 56}" font-family="${F_BOLD}" font-size="64" fill="${INK}">X-CMD</text>`);
+  y += 110;
+  if (doc.meta.tagline) {
+    push(`<text x="${MX}" y="${y + 30}" font-family="${F_REG}" font-size="30" fill="${MUTE}">${esc(doc.meta.tagline)}</text>`);
+    y += 66;
   }
-  // 页头:主标题 + 副标题 + 粗规
-  const tFs = fs(46);
-  const tLines = wrap(doc.title, tFs, maxW);
-  tLines.forEach((l, i) => {
-    push(`<text x="${MX}" y="${(y + tFs * 1.05 + i * tFs * 1.16).toFixed(1)}" font-family="${F_BOLD}" font-size="${tFs.toFixed(1)}" fill="${INK}" letter-spacing="-0.5">${esc(l)}</text>`, y + i * tFs * 1.16);
-  });
-  y += tLines.length * tFs * 1.16 + 6 * mult;
+  // 大标题:粗黑 96px,lh 1.25
+  const tFs = 96;
+  for (const l of wrap(doc.title, tFs, maxW)) {
+    push(`<text x="${MX}" y="${(y + tFs).toFixed(0)}" font-family="${F_BOLD}" font-size="${tFs}" fill="${INK}" letter-spacing="-1">${esc(l)}</text>`);
+    y += tFs * 1.25;
+  }
+  y += 26;
   if (doc.subtitle) {
-    const sFs = fs(23);
+    const sFs = 34;
     for (const l of wrap(doc.subtitle, sFs, maxW)) {
-      push(`<text x="${MX}" y="${(y + sFs).toFixed(1)}" font-family="${F_REG}" font-size="${sFs.toFixed(1)}" fill="${MUTE}">${esc(l)}</text>`, y);
-      y += sFs * 1.5;
+      push(`<text x="${MX}" y="${(y + sFs).toFixed(0)}" font-family="${F_REG}" font-size="${sFs}" fill="${MUTE}">${esc(l)}</text>`);
+      y += sFs * 1.6;
     }
   }
-  y += 8 * mult;
-  push(`<line x1="${MX}" y1="${y.toFixed(1)}" x2="${W - MX}" y2="${y.toFixed(1)}" stroke="${INK}" stroke-width="2.5"/>`, y);
-  y += 22 * mult;
+  // 页头要点列表(36px,点标,间距 ~70 含行高)
+  if (doc.bullets.length > 0) {
+    y += 46;
+    const bFs = 36;
+    for (const b of doc.bullets) {
+      const ls = wrap(b, bFs, maxW - 56);
+      ls.forEach((l, i) => {
+        const dot = i === 0 ? `<circle cx="${MX + 14}" cy="${(y + bFs * 0.62).toFixed(0)}" r="8" fill="${INK}"/>` : '';
+        push(`${dot}<text x="${MX + 56}" y="${(y + bFs).toFixed(0)}" font-family="${F_REG}" font-size="${bFs}" fill="${BODY_C}">${esc(l)}</text>`);
+        y += bFs * 1.55;
+      });
+    }
+  }
 
-  // 节:标题(下规)+ 块
-  const hFs = fs(21);
-  const lFs = fs(17);
-  const bFs = fs(15);
-  for (const sec of doc.sections) {
+  // 节:中文序号 + 名(62px 粗,无装饰);正文 35px/1.8;独立粗体小节 44px
+  const hFs = 62;
+  const leadFs = 44;
+  const bFs = 35;
+  doc.sections.forEach((sec, si) => {
     if (sec.name !== '') {
-      push(`<text x="${MX}" y="${(y + hFs * 0.9).toFixed(1)}" font-family="${F_BOLD}" font-size="${hFs.toFixed(1)}" fill="${INK}">${esc(sec.name)}</text>`, y);
-      y += hFs * 0.9 + 5;
-      push(`<line x1="${MX}" y1="${y.toFixed(1)}" x2="${W - MX}" y2="${y.toFixed(1)}" stroke="${RULE}" stroke-width="1"/>`, y);
-      y += 13 * mult;
+      y += si === 0 ? GAP_SEC_BELOW : GAP_SEC_ABOVE;
+      const label = `${CN_ORD[si] ?? ''}、${sec.name}`;
+      push(`<text x="${MX}" y="${(y + hFs * 0.86).toFixed(0)}" font-family="${F_BOLD}" font-size="${hFs}" fill="${INK}">${esc(label)}</text>`);
+      y += hFs * 0.86 + GAP_SEC_BELOW;
     }
     for (const blk of sec.blocks) {
       if (blk.k === 'li') {
         for (const it of blk.items) {
-          const ls = wrap(it, bFs, maxW - 24 * mult);
+          const ls = wrap(it, bFs, maxW - 56);
           ls.forEach((l, i) => {
-            push(`<text x="${MX + 24 * mult}" y="${(y + bFs * 0.95).toFixed(1)}" font-family="${F_REG}" font-size="${bFs.toFixed(1)}" fill="${BODY_C}">${i === 0 ? '· ' : ''}${esc(l)}</text>`, y);
-            y += bFs * 1.42;
+            const dot = i === 0 ? `<circle cx="${MX + 12}" cy="${(y + bFs * 0.6).toFixed(0)}" r="7" fill="${BODY_C}"/>` : '';
+            push(`${dot}<text x="${MX + 50}" y="${(y + bFs).toFixed(0)}" font-family="${F_REG}" font-size="${bFs}" fill="${BODY_C}">${esc(l)}</text>`);
+            y += bFs * 1.7;
           });
-          y += 2 * mult;
+          y += 18;
         }
       } else {
         const rs = runs(blk.text);
-        const lead = rs[0]?.b === true;
-        const leadText = lead ? rs[0].t : '';
-        const restText = rs.slice(lead ? 1 : 0).map((r) => r.t).join('').trim();
-        if (lead && restText) {
-          for (const l of wrap(leadText, lFs, maxW)) {
-            push(`<text x="${MX}" y="${(y + lFs * 0.95).toFixed(1)}" font-family="${F_BOLD}" font-size="${lFs.toFixed(1)}" fill="${INK}">${esc(l)}</text>`, y);
-            y += lFs * 1.5;
-          }
-          for (const l of wrap(restText, bFs, maxW)) {
-            push(`<text x="${MX}" y="${(y + bFs * 0.95).toFixed(1)}" font-family="${F_REG}" font-size="${bFs.toFixed(1)}" fill="${BODY_C}">${esc(l)}</text>`, y);
-            y += bFs * 1.42;
+        const onlyBold = rs.length === 1 && rs[0].b;          // 整段加粗 → 独立粗体小节(44px)
+        if (onlyBold) {
+          for (const l of wrap(rs[0].t, leadFs, maxW)) {
+            push(`<text x="${MX}" y="${(y + leadFs).toFixed(0)}" font-family="${F_BOLD}" font-size="${leadFs}" fill="${INK}">${esc(l)}</text>`);
+            y += leadFs * 1.5;
           }
         } else {
-          for (const l of wrap(blk.text.replace(/\*\*/g, ''), bFs, maxW)) {
-            push(`<text x="${MX}" y="${(y + bFs * 0.95).toFixed(1)}" font-family="${F_REG}" font-size="${bFs.toFixed(1)}" fill="${BODY_C}">${esc(l)}</text>`, y);
-            y += bFs * 1.42;
+          for (const l of wrapMixed(blk.text, bFs, maxW)) {
+            push(`<text x="${MX}" y="${(y + bFs).toFixed(0)}" font-family="${F_REG}" font-size="${bFs}" fill="${BODY_C}">${l}</text>`);
+            y += bFs * 1.8;
           }
         }
       }
-      y += 8 * mult; // 块间
+      y += 36; // 段间
     }
-    y += 8 * mult; // 节间
+  });
+  y += 90; // 页脚前空
+
+  // 全宽深色页脚块:左联系方式白字堆叠,右白底 QR 卡
+  const fy = y;
+  push(`<rect x="0" y="${fy}" width="${W}" height="${FOOT_H}" fill="${FOOT_BG}"/>`);
+  const fl: string[] = [];
+  if (doc.meta.website) fl.push(doc.meta.website);
+  if (doc.meta.contact) fl.push(doc.meta.contact);
+  fl.forEach((line, i) => {
+    push(`<text x="${MX}" y="${(fy + 300 + i * 74).toFixed(0)}" font-family="${F_REG}" font-size="32" fill="#c9c9d4">${esc(line)}</text>`);
+  });
+  push(`<text x="${MX}" y="${(fy + 300 + fl.length * 74 + 60).toFixed(0)}" font-family="${F_BOLD}" font-size="40" fill="#ffffff">X-CMD</text>`);
+  if (doc.meta.qr) {
+    const q = 450;
+    const qx = W - MX - q;
+    push(`<rect x="${qx - 40}" y="${fy + 180}" width="${q + 80}" height="${q + 190}" rx="24" fill="#ffffff"/>`);
+    const qr = renderQR(doc.meta.qr.slice(0, 500), '#16161e', '#ffffff', q, q, v, resolveSkin('qr', null, 'light'), undefined, undefined)
+      .replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+    push(`<g transform="translate(${qx}, ${fy + 220})">${qr}</g>`);
+    push(`<text x="${qx + q / 2}" y="${fy + 220 + q + 90}" text-anchor="middle" font-family="${F_REG}" font-size="28" fill="#666666">扫码了解更多</text>`);
   }
-  return { items, total: y };
+  return { items, total: fy + FOOT_H };
 }
 
-// ── 渲染(miracle-v1) ───────────────────────────────────────────────────────
+// 行内混排折行(带粗体标记):先剥标记折行,再按行重织 tspan
+function wrapMixed(text: string, fs: number, maxW: number): string[] {
+  const plain = text.replace(/\*\*/g, '');
+  const lines = wrap(plain, fs, maxW);
+  // 逐行重织:把 runs 按字符顺序分配到各行(粗体段用 tspan 包裹)
+  const rs = runs(text);
+  const flat: { ch: string; b: boolean }[] = [];
+  for (const r of rs) for (const ch of r.t) flat.push({ ch, b: r.b });
+  const out: string[] = [];
+  let idx = 0;
+  for (const line of lines) {
+    const take = [...line].length;
+    let svg = '';
+    let curB: boolean | null = null;
+    let buf = '';
+    for (let i = 0; i < take && idx < flat.length; i++, idx++) {
+      const f = flat[idx];
+      if (f.b !== curB) {
+        if (buf !== '') svg += curB === true ? `<tspan font-family="${F_BOLD}">${esc(buf)}</tspan>` : esc(buf);
+        curB = f.b;
+        buf = '';
+      }
+      buf += f.ch;
+    }
+    if (buf !== '') svg += curB === true ? `<tspan font-family="${F_BOLD}">${esc(buf)}</tspan>` : esc(buf);
+    out.push(svg);
+  }
+  return out;
+}
+
+// ── 渲染 ───────────────────────────────────────────────────────────────────
 
 function render(md: string, url: URL): DrawResult {
   const v = resolveVersion(url.searchParams.get('v'));
   const doc = parse(md);
-  const availH = H - MB - FOOT_H;
-  let lay = layout(doc, 1);
-  if (lay.total > availH) {
-    const shrink = availH / lay.total;
-    if (shrink < 0.82) {
-      const over = Math.round((lay.total * 0.82 - availH) / 10) * 10;
-      throw new ApiError(400, `onepage overflow: ~${over}px too much even at min font (82%). Cut something — sections: ${doc.sections.map((x) => x.name || '(无名)').join(' / ')}`);
-    }
-    lay = layout(doc, shrink);
+  const lay = layout(doc, v.version);
+  if (lay.total > H_MAX) {
+    throw new ApiError(400, `onepage is ${Math.round(lay.total)}px tall (max ${H_MAX}); split the doc`);
   }
-
-  const parts: string[] = [];
-  // 纸底:极淡暖白 + 点阵颗粒(零滤镜纪律)
-  const seed = [...doc.title].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
-  let dots = '';
-  for (let i = 0; i < 14; i++) {
-    dots += `<circle cx="${((seed * (i + 3) * 977) % 640 / 10).toFixed(1)}" cy="${((seed * (i + 7) * 331) % 640 / 10).toFixed(1)}" r="0.7" fill="#6b5d3f" fill-opacity="0.04"/>`;
-  }
-  parts.push(
-    `<linearGradient id="pw" x1="0" y1="0" x2="0.08" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#faf8f2"/></linearGradient>` +
-    `<rect width="${W}" height="${H}" fill="url(#pw)"/>` +
-    `<pattern id="gr" width="64" height="64" patternUnits="userSpaceOnUse">${dots}</pattern>` +
-    `<rect width="${W}" height="${H}" fill="url(#gr)"/>`,
-  );
-  parts.push(...lay.items.map((it) => it.s));
-
-  // 页脚带:website/contact + QR(yfm qr:)
-  const fy = H - MB - 6;
-  parts.push(`<line x1="${MX}" y1="${fy}" x2="${W - MX}" y2="${fy}" stroke="${RULE}" stroke-width="1"/>`);
-  const fl = [doc.meta.website, doc.meta.contact].filter(Boolean).join('   ·   ');
-  if (fl) parts.push(`<text x="${MX}" y="${fy + 30}" font-family="${F_REG}" font-size="14" fill="${MUTE}">${esc(fl)}</text>`);
-  if (doc.meta.qr) {
-    const q = 116;
-    const qr = renderQR(doc.meta.qr.slice(0, 500), '#1a1a1a', '#ffffff', q, q, v.version, resolveSkin('qr', null, 'light'), undefined, undefined)
-      .replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
-    parts.push(`<g transform="translate(${W - MX - q}, ${fy + 12})">${qr}</g>`);
-  }
-
+  const HT = Math.ceil(lay.total);   // 高度取整(条状高度随内容;浮点属性难看且难匹配)
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}" role="img" aria-label="${esc(doc.title)}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${HT}" viewBox="0 0 ${W} ${HT}" font-family="${FONT}" role="img" aria-label="${esc(doc.title)}">` +
     `<style>${INTER_FACE_CSS}</style>` +
-    `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'onepage', namespace: 'x-cmd', theme: 'miracle-v1', version: v.version, title: doc.title }))}</metadata>` +
-    parts.join('') + `</svg>`;
+    `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'onepage', namespace: 'x-cmd', theme: 'strip-v1', version: v.version, title: doc.title }))}</metadata>` +
+    `<rect width="${W}" height="${HT}" fill="#ffffff"/>` +
+    lay.items.map((it) => it.s).join('') +
+    `</svg>`;
   return { svg, version: v.version, cacheControl: v.cacheControl };
 }
 
 /**
- * GET /draw/x-cmd/onepage?d=<urlencoded markdown> — ≤16000 字符(CJK 会被
- * percent-encoding 放大约 3 倍,长文走 POST)。POST /draw/x-cmd/onepage:body 即
- * markdown,直接渲染返回 SVG(不存储)。`?format=png&scale=1|2` 出位图。
- * yfm 头:title/subtitle/website/contact/qr/og(URL 或 data:image/webp;base64)。
+ * GET /draw/x-cmd/onepage?d=<urlencoded markdown> — ≤16000 字符(CJK percent-encoding
+ * 放大 ~3 倍,长文走 POST)。POST /draw/x-cmd/onepage:body 即 markdown,直接渲染返回
+ * SVG(不存储)。条状长图:1800 宽,高度随内容生长;?format=png 出位图(手机分享)。
+ * yfm:title/subtitle/tagline/website/contact/qr。
  * @throws ApiError(400) with a corrective example on bad input
  */
 export function renderOnepageFromUrl(url: URL): DrawResult {
