@@ -2,11 +2,9 @@
 // 一张手机分享条状长图出 —— 1800 宽、高度随内容生长。
 //
 // v3:对照用户原图 X-CMD一页纸.png(1800×14180)逐项像素实测重写(v2 的比例是错的):
-//   左边距 216 / 内容宽 ~1340;正文 65px 灰(#8d8d8d),行距 108,段距 ~122
-//   标题(即 wordmark)100px 灰 #757575,副标题 68px 同灰
-//   节头与正文同字号、仅加粗变深(#2f2f2f),无「一、二、」序号(原图没有)
-//   顶级节(##)左缘灰色装饰条(x3-82,h110);次级节(###/整段粗体)无条
-//   页脚白底居中:联系方式粗体行 + 灰行 + 居中 QR(530)+ 小字说明 —— 无深色块
+//   左边距 216 / 内容宽 ~1340;正文 73.6px 蓝灰(#808fa5),行距 108,段距 ~122
+//   标题(即 wordmark)/副标题/顶级节左缘装饰条 蓝 #3f78f6;节头黑粗,无序号
+//   页脚白底居中:联系方式黑行 + 居中 QR(530)+ 灰小字 —— 无深色块
 // 独立模块(仅公共工具);SVG 端 CJK 走系统字体栈,PNG 端由 png.ts 挂 Noto 子集。
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';
@@ -24,22 +22,20 @@ const CW = CR - MX;                 // 内容宽 ~1338 → 正文每行 ~20 字(
 const H_MAX = 40000;                // 条状 sanity 上限
 const PAD_BOTTOM = 300;             // 底部留白(原图 ~330)
 
-// 原图取色(墨色像素中位数实测):标题/副标题 #757575,要点 #686868,正文 #8d8d8d,
-// 粗体节头 <#3a → #2f2f2f,装饰条 #5a5a5a,页脚小字 #989898
-const C_TITLE = '#757575';
+// 原图取色(RGB 实测 —— 勿转灰度分析,v3 曾把蓝色全丢):标题/副标题/左缘装饰条
+// 是蓝 #3f78f6;节头纯黑粗体;正文蓝灰 #808fa5;页头要点 #686868;页脚联系行黑;
+// QR 说明 #9e9d9d;QR 模块黑。原图列表点近不可见(≥250),这里给极浅蓝灰仅作分隔
+const C_ACCENT = '#3f78f6';
 const C_BULLET = '#686868';
-const C_BODY = '#8d8d8d';
-const C_HEAD = '#2f2f2f';
-const C_BAR = '#5a5a5a';
-const C_DOT = '#9e9e9e';
-const C_NOTE = '#989898';
+const C_BODY = '#808fa5';
+const C_HEAD = '#000000';
+const C_DOT = '#b8bfcc';
+const C_NOTE = '#9e9d9d';
 
 const F_REG = "'DrawInter','DrawCJK',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif";
 const F_BOLD = "'DrawInterBold','DrawCJKBold',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif";
 const F_MONO = "'DrawMono',ui-monospace,Menlo,Consolas,monospace";
 
-// 字号/节奏(全部原图实测):正文 65/行距108/段extra 79;标题 100;副标题 68/90;
-// 要点 65/135;节头 65 粗;代码 54/76;页脚说明 32
 // 字号/节奏(原图实测):正文 73.6(18 字填满 1324px)/行距108/段extra 79;标题 120
 // (Inter cap≈87 同原图);副标题 73/90;要点 73/135;节头 73 粗;代码 58/80;页脚说明 32
 const FS_TITLE = 120, P_TITLE = 150;
@@ -185,17 +181,17 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
 
   // 标题即 wordmark:100px 灰;左缘灰装饰条(x3-82,h110)与标题带对齐
   const barAt = (bandTop: number): void => {
-    push(`<rect x="3" y="${(bandTop - 22).toFixed(0)}" width="80" height="110" fill="${C_BAR}"/>`);
+    push(`<rect x="3" y="${(bandTop - 22).toFixed(0)}" width="80" height="110" fill="${C_ACCENT}"/>`);
   };
   for (const l of wrap(doc.title, FS_TITLE, CW)) {
     barAt(y);
-    push(`<text x="${MX}" y="${(y + FS_TITLE * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_TITLE}" fill="${C_TITLE}">${esc(l)}</text>`);
+    push(`<text x="${MX}" y="${(y + FS_TITLE * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_TITLE}" fill="${C_ACCENT}">${esc(l)}</text>`);
     y += P_TITLE;
   }
   y += 30;
   if (doc.subtitle) {
     for (const l of wrap(doc.subtitle, FS_SUB, CW)) {
-      push(`<text x="${MX}" y="${(y + FS_SUB * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_SUB}" fill="${C_TITLE}">${esc(l)}</text>`);
+      push(`<text x="${MX}" y="${(y + FS_SUB * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_SUB}" fill="${C_ACCENT}">${esc(l)}</text>`);
       y += P_SUB;
     }
     y -= 12;                          // 原图:副标题末行带底 → 首要点带顶 ~15px
@@ -288,7 +284,7 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
       const q = 530;
       const bw = Math.ceil(q / 0.42), bh = Math.ceil(q / 0.71);
       const qrTop = y + 20;           // 上一行带底 → 码顶(原图几乎紧贴,~50)
-      const qr = renderQR(qrUrl.slice(0, 500), '#1a1a1a', '#ffffff', bw, bh, v, resolveSkin('qr', null, 'light'), undefined, undefined)
+      const qr = renderQR(qrUrl.slice(0, 500), '#000000', '#ffffff', bw, bh, v, resolveSkin('qr', null, 'light'), undefined, undefined)
         .replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')
         .replace(/<style[\s\S]*?<\/style>/g, '')
         .replace(/<metadata>[\s\S]*?<\/metadata>/g, '')

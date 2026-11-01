@@ -42,10 +42,10 @@ describe('renderOnepageFromMarkdown · strip-v3 (mobile long-image, measured fro
 
   it('matches the reference rhythm: body 73px gray, bold heads dark, gutter bars on major sections', () => {
     const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
-    expect(svg).toContain('font-size="73" fill="#8d8d8d"');        // 正文灰
-    expect(svg).toMatch(/rect x="3"[^>]*fill="#5a5a5a"/);         // 左缘装饰条(标题+顶级节)
+    expect(svg).toContain('font-size="73" fill="#808fa5"');        // 正文灰
+    expect(svg).toMatch(/rect x="3"[^>]*fill="#3f78f6"/);         // 左缘装饰条(标题+顶级节)
     expect((svg.match(/rect x="3"/g) ?? []).length).toBe(4);      // 标题 + 简介 + 数据 + 联系方式
-    expect(svg).toMatch(/font-size="73" fill="#2f2f2f"/);         // 节头:同字号,粗且深
+    expect(svg).toMatch(/font-size="73" fill="#000000"/);         // 节头:同字号,粗且深
     expect(svg).not.toContain('#16161e');                          // 原图页脚是白底,无深色块
     expect(svg).toContain('扫码了解更多');                          // QR 说明
     expect(svg).toContain('text-anchor="middle"');                 // 页脚联系行居中
@@ -90,6 +90,7 @@ describe('handleRequest · /draw/x-cmd/onepage', () => {
     expect(doc.headers.get('content-type')).toContain('text/html');
     const html = await doc.text();
     expect(html).toContain('width=device-width');            // 手机视口
+    expect(html).toContain('width:min(100%,420px)');           // 阅读宽度:正文≈17px
     expect(html).toMatch(/<svg[^>]*viewBox="0 0 1800 /);    // 内联 SVG 保留 viewBox
     expect(html).not.toMatch(/<svg[^>]*width="1800"/);       // 根上不再钉死 1800(交 CSS 100%)
     const raw = await handleRequest(new Request(`${BASE}/x-cmd/onepage?d=${d}`), {}, {});

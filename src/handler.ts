@@ -78,11 +78,12 @@ function textResponse(status: number, msg: string, extra?: Record<string, string
   });
 }
 
-// 条状长图直接打开的尺寸问题(#28):SVG 作为文档打开时浏览器按 width="1800" 原生
-// 尺寸渲染、不自适应 —— 手机上只能看到左缘一条。检测到地址栏导航
-// (Sec-Fetch-Dest: document)时改回 HTML 壳:inline SVG 去 width/height 留
-// viewBox,CSS width:100% height:auto → 铺满视口宽,长按/滚动阅读。
-// curl(无该头)、<img>/fetch(Sec-Fetch-Dest: image/empty)仍拿原始 SVG。
+// 条状长图直接打开的阅读体验(#28):SVG 作为文档打开时浏览器按 width="1800" 原生
+// 渲染、不自适应;铺满视口宽又会让桌面端字号巨大。检测到地址栏导航
+// (Sec-Fetch-Dest: document)时改回 HTML 壳:inline SVG 去 width/height 留 viewBox,
+// 以正文 ≈17px 的阅读宽度(min(100%,420px),设计宽 1800/正文 73px)居中展示 ——
+// 手机恰为整屏,桌面是居中窄栏,滚动阅读。curl(无该头)、<img>/fetch
+// (Sec-Fetch-Dest: image)仍拿原始 SVG。
 function onepageDocResponse(request: Request, url: URL, result: DrawResult): Promise<Response> {
   const isDoc = request.headers.get('sec-fetch-dest') === 'document';
   if (!isDoc) return chartResponse(url, result);
@@ -92,7 +93,8 @@ function onepageDocResponse(request: Request, url: URL, result: DrawResult): Pro
     '<!doctype html><html><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
     `<title>${title}</title>` +
-    '<style>html,body{margin:0;padding:0;background:#fff}svg{display:block;width:100%;height:auto}</style>' +
+    '<style>body{margin:0;background:#ededed}' +
+    'svg{display:block;width:min(100%,420px);height:auto;margin:0 auto;background:#fff}</style>' +
     '</head><body>' + inline + '</body></html>';
   return Promise.resolve(new Response(html, {
     headers: {
