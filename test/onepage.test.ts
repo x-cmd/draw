@@ -7,6 +7,8 @@ const MD = [
   '---',
   'title: 测试一页纸',
   'subtitle: 副标题行',
+  'contact: 李均豪 X-CMD',
+  'location: 广东 中山',
   'website: https://x-cmd.com',
   'qr: https://x-cmd.com',
   '---',
@@ -25,7 +27,7 @@ const MD = [
   '- 项目二',
 ].join('\n');
 
-describe('renderOnepageFromMarkdown · strip-v1 (mobile long-image)', () => {
+describe('renderOnepageFromMarkdown · strip-v3 (mobile long-image, measured from reference)', () => {
   it('renders a 1800-wide strip whose height grows with content', () => {
     const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
     expect(svg).toMatch(/^<svg/);
@@ -33,20 +35,26 @@ describe('renderOnepageFromMarkdown · strip-v1 (mobile long-image)', () => {
     const h = Number(/height="(\d+)"/.exec(svg)?.[1]);
     expect(h).toBeGreaterThan(2500);            // 条状:高度随内容生长
     expect(svg).toContain('测试一页纸');
-    expect(svg).toContain('一、简介');            // 中文序号节头
-    expect(svg).toContain('二、数据');
+    expect(svg).not.toContain('一、简介');         // 原图无中文序号
     expect(svg).toContain('页头要点一');
     expect(svg).toContain('项目一');
-    expect(svg).toContain('fill="#16161e"');      // 全宽深色页脚块
-    expect(svg).toMatch(/<rect[^>]*fill="#16161e"/);
-    expect(svg).toContain('扫码了解更多');         // QR 卡说明
-    expect(svg).not.toContain('stroke="#d8d8d8"'); // 无分隔线(原图风格:留白分隔)
   });
 
-  it('bold-lead renders as an inline-tspan bold run or a standalone 44px lead', () => {
+  it('matches the reference rhythm: body 73px gray, bold heads dark, gutter bars on major sections', () => {
     const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
-    expect(svg).toContain('font-size="44"');       // 独立粗体小节
+    expect(svg).toContain('font-size="73" fill="#8d8d8d"');        // 正文灰
+    expect(svg).toMatch(/rect x="3"[^>]*fill="#5a5a5a"/);         // 左缘装饰条(标题+顶级节)
+    expect((svg.match(/rect x="3"/g) ?? []).length).toBe(4);      // 标题 + 简介 + 数据 + 联系方式
+    expect(svg).toMatch(/font-size="73" fill="#2f2f2f"/);         // 节头:同字号,粗且深
+    expect(svg).not.toContain('#16161e');                          // 原图页脚是白底,无深色块
+    expect(svg).toContain('扫码了解更多');                          // QR 说明
+    expect(svg).toContain('text-anchor="middle"');                 // 页脚联系行居中
+  });
+
+  it('bold-lead renders as a bold 73px head and inline bold as tspans', () => {
+    const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
     expect(svg).toContain('<tspan font-family');   // 行内粗体
+    expect(svg).toContain('>独立粗体小节<');        // 整段粗体 → 次级节头
   });
 
   it('caps absurd length; missing title 400s; bare paragraphs legal', () => {

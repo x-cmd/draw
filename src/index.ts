@@ -19,7 +19,7 @@ injectResvgWasm(resvgWasm);
 // 边缘缓存读:GET 图表/演示页响应按 URL 命中 Cache API(每 CF 节点独立)。
 // POST、错误、no-store 不进缓存;?v= 与短链的 TTL 语义由 Cache-Control 承载。
 // 缓存键带版本号:渲染逻辑修复的部署 bump ECV,旧条目(可能含坏渲染)整体作废
-const ECV = '4'; // v4: 新增 ?format=png(渲染输出随 format/scheme/scale 变化),旧缓存条目作废
+const ECV = '5'; // v5: onepage v3 按原图实测重建(字号 73/无序号/白底页脚),旧条目作废
 function edgeKey(request: Request): Request {
   const u = new URL(request.url);
   u.searchParams.set('ecv', ECV);
