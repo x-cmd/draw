@@ -40,6 +40,8 @@ function svgResponse(result: DrawResult, extra?: Record<string, string>): Respon
       'content-type': SVG_CT,
       'cache-control': result.cacheControl,
       'x-draw-version': String(result.version),
+      // 公开图床,允许任何网页的 JS 直接取图内联(如 ppt 的浏览器直读,#4)
+      'access-control-allow-origin': '*',
       ...extra,
     },
   });
@@ -62,6 +64,7 @@ async function chartResponse(url: URL, result: DrawResult, extra?: Record<string
       'content-type': 'image/png',
       'cache-control': result.cacheControl,
       'x-draw-version': String(result.version),
+      'access-control-allow-origin': '*',
       ...extra,
     },
   });
