@@ -23,6 +23,9 @@ const ECV = '5'; // v5: onepage v3 按原图实测重建(字号 73/无序号/白
 function edgeKey(request: Request): Request {
   const u = new URL(request.url);
   u.searchParams.set('ecv', ECV);
+  // 同一 URL 按打开方式产生两种内容(onepage:地址栏导航=HTML 壳,<img>/curl=SVG),
+  // Cache API 不看请求头 → 文档变体独立命名空间,防止 HTML 坏掉 <img> 嵌入
+  if (request.headers.get('sec-fetch-dest') === 'document') u.searchParams.set('dest', 'doc');
   return new Request(u.toString());
 }
 async function edgeCached(request: Request, render: () => Response | Promise<Response>): Promise<Response> {

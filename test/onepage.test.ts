@@ -83,6 +83,20 @@ describe('handleRequest · /draw/x-cmd/onepage', () => {
     expect(buf.byteLength).toBeGreaterThan(40000);
   }, 60000);
 
+  it('browser navigation (Sec-Fetch-Dest: document) gets a width-adaptive HTML shell; curl/img get raw SVG', async () => {
+    const d = encodeURIComponent(MD);
+    const doc = await handleRequest(new Request(`${BASE}/x-cmd/onepage?d=${d}`, { headers: { 'sec-fetch-dest': 'document' } }), {}, {});
+    expect(doc.status).toBe(200);
+    expect(doc.headers.get('content-type')).toContain('text/html');
+    const html = await doc.text();
+    expect(html).toContain('width=device-width');            // 手机视口
+    expect(html).toMatch(/<svg[^>]*viewBox="0 0 1800 /);    // 内联 SVG 保留 viewBox
+    expect(html).not.toMatch(/<svg[^>]*width="1800"/);       // 根上不再钉死 1800(交 CSS 100%)
+    const raw = await handleRequest(new Request(`${BASE}/x-cmd/onepage?d=${d}`), {}, {});
+    expect(raw.headers.get('content-type')).toContain('image/svg+xml'); // curl/<img>/fetch 原样
+    expect(await raw.text()).toMatch(/^<svg[^>]*width="1800"/);
+  });
+
   it('400s on missing d and oversized d (GET)', async () => {
     const bare = await handleRequest(new Request(`${BASE}/x-cmd/onepage`), {}, {});
     expect(bare.status).toBe(400);

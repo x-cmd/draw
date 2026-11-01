@@ -78,6 +78,32 @@ function textResponse(status: number, msg: string, extra?: Record<string, string
   });
 }
 
+// 条状长图直接打开的尺寸问题(#28):SVG 作为文档打开时浏览器按 width="1800" 原生
+// 尺寸渲染、不自适应 —— 手机上只能看到左缘一条。检测到地址栏导航
+// (Sec-Fetch-Dest: document)时改回 HTML 壳:inline SVG 去 width/height 留
+// viewBox,CSS width:100% height:auto → 铺满视口宽,长按/滚动阅读。
+// curl(无该头)、<img>/fetch(Sec-Fetch-Dest: image/empty)仍拿原始 SVG。
+function onepageDocResponse(request: Request, url: URL, result: DrawResult): Promise<Response> {
+  const isDoc = request.headers.get('sec-fetch-dest') === 'document';
+  if (!isDoc) return chartResponse(url, result);
+  const inline = result.svg.replace(/^<svg([^>]*?) width="\d+" height="\d+"/, '<svg$1');
+  const title = /aria-label="([^"]*)"/.exec(result.svg)?.[1] ?? 'draw onepage';
+  const html =
+    '<!doctype html><html><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+    `<title>${title}</title>` +
+    '<style>html,body{margin:0;padding:0;background:#fff}svg{display:block;width:100%;height:auto}</style>' +
+    '</head><body>' + inline + '</body></html>';
+  return Promise.resolve(new Response(html, {
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': result.cacheControl,
+      'x-draw-version': String(result.version),
+      'access-control-allow-origin': '*',
+    },
+  }));
+}
+
 // POST 限流:Worker 入口注入 platform.rateLimit(官方 Rate Limiting binding,
 // 每 CF 数据中心独立计数,30/min/IP);本地 Node 不注入,不限。
 // 计数宽松/最终一致,防滥用足够;内存 Map 方案在多 isolate 下形同虚设,已移除。
@@ -236,17 +262,17 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     }
     return chartResponse(url, renderReleaseBannerFromUrl(url));
   }
-  // /draw/x-cmd/onepage 一页纸(#28):markdown(+yfm)→ A4 单页;GET ?d= 短文,
-  // POST body 直渲长文/CJK(不存储,直接回页)
+  // /draw/x-cmd/onepage 一页纸(#28):markdown(+yfm)→ 手机条状长图;GET ?d= 短文,
+  // POST body 直渲长文/CJK(不存储,直接回页)。浏览器地址栏打开走 HTML 壳自适应宽
   if (sub === '/x-cmd/onepage' || sub === '/x-cmd/one') {
     if (method === 'POST') {
       const body = await readBody(request);
-      return chartResponse(url, renderOnepageFromMarkdown(body, url));
+      return onepageDocResponse(request, url, renderOnepageFromMarkdown(body, url));
     }
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<markdown> or POST the markdown body`, { allow: 'GET, POST' });
     }
-    return chartResponse(url, renderOnepageFromUrl(url));
+    return onepageDocResponse(request, url, renderOnepageFromUrl(url));
   }
   // /draw/banner 旧别名(已发布链接用):同逻辑,参数不变
   if (sub === '/banner') {
