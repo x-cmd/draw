@@ -114,7 +114,6 @@ export interface PlainGeo {
   top: number;
   bottom: number;
   xLabelY: number;
-  legendY: number;
 }
 export function plainGeo(w: number, h: number, hasTitle: boolean, m: GeoMeasure = {}): PlainGeo {
   const halfX = xOverhang(m);
@@ -124,6 +123,5 @@ export function plainGeo(w: number, h: number, hasTitle: boolean, m: GeoMeasure 
     top: Math.round(h * (hasTitle ? 0.185 : 0.163)),
     bottom: Math.round(h * 0.80),
     xLabelY: Math.round(h * 0.896),
-    legendY: Math.round(h * (hasTitle ? 0.096 : 0.077)),
   };
 }

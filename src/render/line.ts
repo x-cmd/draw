@@ -124,7 +124,8 @@ export function lineLayout(spec: MultiSpec, o: RenderOpts): {
       bottom: geo.bottom,
       contentTop: Math.max(geo.top, pad + headH + (hasLegendRow ? 26 : 14) + 10),
       xLabelY: geo.xLabelY,
-      legendY: Math.max(geo.legendY, pad + headH + 16), // 标题存在时图例下移,避免压标题
+      // 右上图例坐标题基线(与 Edit 角标同排 #27);左上图例与左侧标题同位,保持标题下方独立行
+      legendY: rules.legend === 'top-left' ? pad + headH + 16 : pad + 14,
     };
   }
   const bottom = o.height - pad - 30;
@@ -134,6 +135,6 @@ export function lineLayout(spec: MultiSpec, o: RenderOpts): {
     bottom,
     contentTop: pad + headH + (hasLegendRow ? 26 : 14) + 10,
     xLabelY: bottom + (rules.baseline === 'dots' ? 34 : 20),
-    legendY: pad + headH + 16,
+    legendY: rules.legend === 'top-left' ? pad + headH + 16 : pad + 14,
   };
 }

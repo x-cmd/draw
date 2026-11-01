@@ -1,7 +1,7 @@
 // 混合图:柱系列(分组并排)+ 线系列共用 y 轴与类别轴(量级差大时线走右轴)。
 import type { ComboSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, topLegend, trunc, textW, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, topLegend, trunc, textW, TAG_RESERVE, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -269,8 +269,8 @@ function renderComboEvil(spec: ComboSpec, o: RenderOpts): string {
     ...(bars.length ? [{ name: bars[0].name, color: barColor, idx: spec.series.indexOf(bars[0]) }] : []),
     ...(lines.length ? [{ name: lines[0].name, color: lineColor, idx: spec.series.indexOf(lines[0]) }] : []),
   ];
-  let lx = x0 + w;
-  const legendY = Math.round(height * 0.116);
+  let lx = x0 + w - TAG_RESERVE; // 右上图例向左让出 Edit 角标宽度(#27)
+  const legendY = 24 + 14; // 图例坐标题基线,与 Edit 角标同排(#27)
   for (let i = items.length - 1; i >= 0; i--) {
     const it = items[i];
     const tw = textW(it.name, 13);

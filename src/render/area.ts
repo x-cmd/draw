@@ -19,7 +19,6 @@ function areaGeo(w: number, h: number, hasTitle: boolean, m: GeoMeasure = {}) {
     top: Math.round(h * (hasTitle ? 0.2 : 0.173)),
     bottom: Math.round(h * 0.8077),
     xLabelY: Math.round(h * 0.896),
-    legendY: Math.round(h * 0.092),
   };
 }
 
@@ -32,7 +31,6 @@ function opendataGeo(w: number, h: number, m: GeoMeasure = {}) {
     top: Math.round(h * 0.268),
     bottom: Math.round(h * 0.8096),
     xLabelY: Math.round(h * 0.852),
-    legendY: Math.round(h * 0.092),
   };
 }
 
@@ -69,7 +67,7 @@ function areaLayout(spec: { title?: string; unit?: string; subtitle?: string }, 
     right: geo ? geo.right : width - pad,
     bottom: geo ? geo.bottom : height - pad - 30,
     xLabelY: geo ? geo.xLabelY : height - pad - 30 + (rules.baseline === 'dots' ? 34 : 20),
-    legendY: geo ? geo.legendY : pad + 14,
+    legendY: pad + 14, // 图例坐标题基线,与 Edit 角标同排(#27)
     // area-3:数据点自 left 内缩(时间轴留白)
     xFirst: rules.title === 'editorial' && geo ? left + Math.round(width * 0.0574) : left,
   };

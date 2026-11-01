@@ -2,7 +2,7 @@
 // 单系列(x=/y=)无图例;多系列(重复 x=/y= 或 JSON series)右上圆点图例。默认不标数值(轴已可读)。
 import type { ScatterSpec, ScatterSeries } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceStep, r2, snap, trunc, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { esc, fmtNum, niceStep, r2, snap, trunc, TAG_RESERVE, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
 import { tickColW } from './measure.js';
 
 // 取整量程刻度:数据向下/向上取整到步长(规范 -18..19 → -20..20),刻度线铺满整域
@@ -92,15 +92,15 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   // 预留 Y 刻度带/X 刻度带/图例带与画布边带:标签不得压轴文字、不得出画布
   if (numItems.length > 0) {
     const placer = new LabelPlacer();
-    reserveBands(placer, left, right, top, bottom, tickY, spec.series ?? [], right, Math.round(height * 0.09));
+    reserveBands(placer, left, right, top, bottom, tickY, spec.series ?? [], right, 24 + 14);
     reserveEdges(placer, width, height);
     pushLineLabelsAllOrNothing(parts, placer, numItems);
   }
 
-  // 多系列:右上圆点图例
+  // 多系列:右上圆点图例(坐标题基线,与 Edit 角标同排,向左让出角标宽度 #27)
   if (spec.series?.length) {
-    let lx = right;
-    const legendY = Math.round(height * 0.09);
+    let lx = right - TAG_RESERVE;
+    const legendY = 24 + 14;
     for (let i = spec.series.length - 1; i >= 0; i--) {
       const name = trunc(spec.series[i].name, 12);
       parts.push(`<text x="${r2(lx)}" y="${r2(legendY)}" text-anchor="end" font-size="12" fill="var(--d-muted)">${esc(name)}</text>`);

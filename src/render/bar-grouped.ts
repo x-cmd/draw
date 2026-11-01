@@ -13,7 +13,6 @@ function barGeo(w: number, h: number, hasTitle: boolean, m: GeoMeasure = {}) {
     top: Math.round(h * (hasTitle ? 0.2 : 0.181)),
     bottom: Math.round(h * 0.8615),
     xLabelY: Math.round(h * 0.9231),
-    legendY: Math.round(h * 0.0923),
   };
 }
 
@@ -73,7 +72,7 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   const right = geo ? geo.right : width - pad;
   const bottom = geo ? geo.bottom : height - pad - 30;
   const xLabelY = geo ? geo.xLabelY : bottom + 20;
-  const legendY = geo ? geo.legendY : pad + 14;
+  const legendY = pad + 14; // 图例坐标题基线,与 Edit 角标同排(#27)
 
   const yMax = ticks[ticks.length - 1];
   const y = (v: number): number => bottom - (v / yMax) * (bottom - contentTop);
