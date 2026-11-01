@@ -15,6 +15,7 @@ import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
+import { renderOnepageFromUrl, renderOnepageFromMarkdown } from './render/onepage.js';
 import { resolveSkin, VARIANTS } from './styles/index.js';
 import { indexHandler } from './demo.js';
 import {
@@ -234,6 +235,18 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?title=<...>&version=<x.y.z>&cmd=<...>[&paper=<yellow|apple|...>]`, { allow: 'GET' });
     }
     return chartResponse(url, renderReleaseBannerFromUrl(url));
+  }
+  // /draw/x-cmd/onepage 一页纸(#28):markdown(+yfm)→ A4 单页;GET ?d= 短文,
+  // POST body 直渲长文/CJK(不存储,直接回页)
+  if (sub === '/x-cmd/onepage' || sub === '/x-cmd/one') {
+    if (method === 'POST') {
+      const body = await readBody(request);
+      return chartResponse(url, renderOnepageFromMarkdown(body, url));
+    }
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<markdown> or POST the markdown body`, { allow: 'GET, POST' });
+    }
+    return chartResponse(url, renderOnepageFromUrl(url));
   }
   // /draw/banner 旧别名(已发布链接用):同逻辑,参数不变
   if (sub === '/banner') {

@@ -14,6 +14,7 @@
 import { ApiError } from '../specs/index.js';
 import { INTER_TTF_B64, HANDEE_TTF_B64 } from '../styles/fonts-ttf.js';
 import { FONT_FILES_B64 } from '../styles/fonts-banner.js';
+import { CJK_REGULAR_TTF_B64, CJK_BOLD_TTF_B64 } from '../styles/fonts-cjk.js';
 
 // ── 烘焙:var() → 具体色值,产出平面 SVG ─────────────────────────────────────
 // Edit @X-CMD 角标已上移至 svgDoc(核心/archmap/mindmap)与 decorate(echarts),
@@ -93,6 +94,8 @@ export async function svgToPng(svg: string, scheme: 'light' | 'dark', opts: PngO
     throw new ApiError(400, `"scale" must be between 1 and 3, got ${JSON.stringify(scale)}`);
   }
   fonts ??= [fontBytes(INTER_TTF_B64), fontBytes(HANDEE_TTF_B64), ...FONT_FILES_B64.map((f) => fontBytes(f.native))];
+  // CJK 按需挂载:SVG 含 CJK 才解码 Noto 子集(2.3MB),拉丁图表的 PNG 不付这笔内存/时间
+  if (/[⺀-鿿　-〿＀-￯]/.test(svg)) fonts = [...fonts, fontBytes(CJK_REGULAR_TTF_B64), fontBytes(CJK_BOLD_TTF_B64)];
   let Resvg: (typeof import('@resvg/resvg-wasm'))['Resvg'];
   try {
     ({ Resvg } = await resvgEngine());
