@@ -15,7 +15,7 @@ import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
-import { renderOnepageFromUrl, renderOnepageFromMarkdown } from './render/onepage.js';
+import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub } from './render/onepage.js';
 import { resolveSkin, VARIANTS } from './styles/index.js';
 import { indexHandler } from './demo.js';
 import {
@@ -272,9 +272,54 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return onepageDocResponse(request, url, renderOnepageFromMarkdown(body, url));
     }
     if (method !== 'GET') {
-      return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<markdown> or POST the markdown body`, { allow: 'GET, POST' });
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<markdown> or ?src=<url>, or POST the markdown body`, { allow: 'GET, POST' });
+    }
+    // ?src=<http url>(github blob 自动转 raw,#28):长文放 GitHub,一个链接直渲
+    const src = url.searchParams.get('src');
+    if (src !== null && src !== '') {
+      return onepageDocResponse(request, url, await renderOnepageFromSrc(src, url));
     }
     return onepageDocResponse(request, url, renderOnepageFromUrl(url));
+  }
+  // /draw/nocors?url=<(github blob|raw|任意 http)>(#28,参考 x-cmd/ppt):小型代取服务,
+  // 给浏览器端用 —— raw.githubusercontent 自带 ACAO:* 可直取;其它域跨域取不到时走这里。
+  // github blob 链接同样自动转 raw。仅 GET/文本类/512KB,纯透传 + ACAO:*。
+  if (sub === '/nocors' || sub === '/nocors-get') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?url=<http url>`, { allow: 'GET' });
+    }
+    const target = url.searchParams.get('url');
+    if (target === null || target === '') {
+      return textResponse(400, '"url" is required: url=' + encodeURIComponent('https://github.com/x-cmd/draw/blob/main/onepage.SKILL.md') + ' (github blob links are converted to raw automatically)');
+    }
+    const raw = toRawGithub(target);
+    const host = new URL(raw).hostname;
+    if (/^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.0\.0\.0$|\[?::1)/.test(host)) {
+      return textResponse(400, 'refusing to fetch private/loopback addresses');
+    }
+    let up: Response;
+    try {
+      up = await fetch(raw, { headers: { 'user-agent': 'x-cmd-draw/nocors', accept: '*/*' }, redirect: 'follow' });
+    } catch (e) {
+      return textResponse(502, `upstream fetch failed: ${e instanceof Error ? e.message : 'network error'}`);
+    }
+    const buf = await up.arrayBuffer();
+    if (buf.byteLength > 512 * 1024) {
+      return textResponse(413, `upstream body is ${buf.byteLength}B (max 524288)`);
+    }
+    const ct = up.headers.get('content-type') ?? TEXT_CT;
+    if (/(image|audio|video|font)\//i.test(ct) === false && up.status >= 400) {
+      return textResponse(up.status >= 500 ? 502 : 404, `upstream ${up.status} for ${raw}`);
+    }
+    return new Response(buf, {
+      status: 200,
+      headers: {
+        'content-type': ct,
+        'access-control-allow-origin': '*',
+        'cache-control': 'public, max-age=300',
+        'x-draw-src': raw,
+      },
+    });
   }
   // /draw/banner 旧别名(已发布链接用):同逻辑,参数不变
   if (sub === '/banner') {

@@ -12,6 +12,7 @@ import { esc, textW } from './svg.js';
 import { renderQR } from './qr.js';
 import { resolveSkin } from '../styles/index.js';
 import { INTER_FACE_CSS } from '../styles/inter.js';
+import { BANNER_FACE_CSS } from './banner.js';   // 标题品牌字重(浏览器端 @font-face;resvg 端 png.ts 已挂)
 import { FONT } from '../theme.js';
 import type { DrawResult } from './query.js';
 
@@ -32,13 +33,14 @@ const C_HEAD = '#000000';
 const C_DOT = '#b8bfcc';
 const C_NOTE = '#9e9d9d';
 
+const F_TITLE = "'DrawInterBold','DrawCJKBold',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif"; // 原图标题为重字重
 const F_REG = "'DrawInter','DrawCJK',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif";
 const F_BOLD = "'DrawInterBold','DrawCJKBold',Inter,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC',sans-serif";
 const F_MONO = "'DrawMono',ui-monospace,Menlo,Consolas,monospace";
 
 // 字号/节奏(原图实测):正文 73.6(18 字填满 1324px)/行距108/段extra 79;标题 120
 // (Inter cap≈87 同原图);副标题 73/90;要点 73/135;节头 73 粗;代码 58/80;页脚说明 32
-const FS_TITLE = 120, P_TITLE = 150;
+const FS_TITLE = 100, P_TITLE = 128;  // 原图标题 cap 实测 73px(Inter Bold cap 比 0.727 → 100)
 const FS_SUB = 73, P_SUB = 90;
 const FS_BODY = 73, P_BODY = 108, X_PARA = 79;
 const P_BULLET = 135;
@@ -146,6 +148,10 @@ function parse(md: string): Doc {
     const lines = raw.split('\n').map((l) => l.trim()).filter((l) => l !== '' && l !== '---');
     if (lines.length === 0) continue;
     // 围栏代码块:首行 ``` 开,块内空行并入代码(逐行剥围栏)
+    // 行内 `code` 反引号仅是 markdown 标记,长图上按纯文本呈现(围栏行除外)
+    if (!/^```/.test(lines[0])) {
+      for (let i = 0; i < lines.length; i++) lines[i] = lines[i].replace(/`([^`]*)`/g, '$1');
+    }
     if (/^```/.test(lines[0])) {
       const codeLines = raw.split('\n').slice(1).filter((l) => !/^```/.test(l.trim()));
       ensureBody().blocks.push({ k: 'code', lines: codeLines });
@@ -181,11 +187,12 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
 
   // 标题即 wordmark:100px 灰;左缘灰装饰条(x3-82,h110)与标题带对齐
   const barAt = (bandTop: number): void => {
-    push(`<rect x="3" y="${(bandTop - 22).toFixed(0)}" width="80" height="110" fill="${C_ACCENT}"/>`);
+    push(`<rect x="3" y="${(bandTop - 30).toFixed(0)}" width="80" height="110" fill="${C_ACCENT}"/>`); // 原图:条顶高出字面 ~30-37,底至基线
   };
-  for (const l of wrap(doc.title, FS_TITLE, CW)) {
+  const titleText = doc.title.replace(/[–—]/g, '-');  // 原图用短横(en/em dash 在该字号太宽)
+  for (const l of wrap(titleText, FS_TITLE, CW)) {
     barAt(y);
-    push(`<text x="${MX}" y="${(y + FS_TITLE * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_TITLE}" fill="${C_ACCENT}">${esc(l)}</text>`);
+    push(`<text x="${MX}" y="${(y + FS_TITLE * 0.87).toFixed(0)}" font-family="${F_TITLE}" font-size="${FS_TITLE}" fill="${C_ACCENT}">${esc(l)}</text>`);
     y += P_TITLE;
   }
   y += 30;
@@ -236,8 +243,28 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
       } else if (blk.k === 'code') {
         y += 20;
         for (const l of blk.lines) {
-          push(`<text x="${MX + 8}" y="${(y + FS_CODE).toFixed(0)}" font-family="${F_MONO}" font-size="${FS_CODE}" fill="${C_BULLET}">${esc(l.replace(/\s+$/, ''))}</text>`);
-          y += P_CODE;
+          // 代码行按 textW 逐字符硬折(URL 等长 token 无处可软断):PNG 端 resvg 的
+          // DrawMono 家族名不匹配会回退 Inter,故按 Inter 宽度计 —— 浏览器端真
+          // mono(0.6em)只会更窄,两引擎都不溢出(#24 待修字体名)
+          const hard = l.replace(/\s+$/, '');
+          let cur = '';
+          let w = 0;
+          for (const ch of hard) {
+            const cw = textW(ch, FS_CODE);
+            if (w + cw > CW - 16 && cur !== '') {
+              push(`<text x="${MX + 8}" y="${(y + FS_CODE).toFixed(0)}" font-family="${F_MONO}" font-size="${FS_CODE}" fill="${C_BULLET}">${esc(cur)}</text>`);
+              y += P_CODE;
+              cur = ch;
+              w = cw;
+            } else {
+              cur += ch;
+              w += cw;
+            }
+          }
+          if (cur !== '') {
+            push(`<text x="${MX + 8}" y="${(y + FS_CODE).toFixed(0)}" font-family="${F_MONO}" font-size="${FS_CODE}" fill="${C_BULLET}">${esc(cur)}</text>`);
+            y += P_CODE;
+          }
         }
         y += 60;
       } else {
@@ -310,7 +337,7 @@ function render(md: string, url: URL): DrawResult {
   const HT = Math.ceil(lay.total);   // 高度取整(条状高度随内容;浮点属性难看且难匹配)
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${HT}" viewBox="0 0 ${W} ${HT}" font-family="${FONT}" role="img" aria-label="${esc(doc.title)}">` +
-    `<style>${INTER_FACE_CSS}</style>` +
+    `<style>${INTER_FACE_CSS}${BANNER_FACE_CSS}</style>` +
     `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'onepage', namespace: 'x-cmd', theme: 'strip-v3', version: v.version, title: doc.title }))}</metadata>` +
     `<rect width="${W}" height="${HT}" fill="#ffffff"/>` +
     lay.items.map((it) => it.s).join('') +
@@ -320,21 +347,73 @@ function render(md: string, url: URL): DrawResult {
 
 /**
  * GET /draw/x-cmd/onepage?d=<urlencoded markdown> — ≤16000 字符(CJK percent-encoding
- * 放大 ~3 倍,长文走 POST)。POST /draw/x-cmd/onepage:body 即 markdown,直接渲染返回
- * SVG(不存储)。条状长图:1800 宽,高度随内容生长;yfm:title/subtitle/contact/
- * location/website/qr/qr-note。
+ * 放大 ~3 倍,长文走 POST 或 ?src=<github url>)。POST /draw/x-cmd/onepage:body 即
+ * markdown,直接渲染返回 SVG(不存储)。条状长图:1800 宽,高度随内容生长;yfm:
+ * title/subtitle/contact/location/website/qr/qr-note。
  * @throws ApiError(400) with a corrective example on bad input
  */
 export function renderOnepageFromUrl(url: URL): DrawResult {
   const raw = url.searchParams.get('d');
   if (raw === null || raw.trim() === '') {
-    throw new ApiError(400, '"d" is required: urlencoded markdown, e.g. d=' + encodeURIComponent('---\ntitle: Hello\n---\n## 简介\n第一段…') + ' (long docs: POST the body)');
+    throw new ApiError(400, '"d" (urlencoded markdown) or "src" (http url of the markdown) is required, e.g. d=' + encodeURIComponent('---\ntitle: Hello\n---\n## 简介\n第一段…') + ' (long docs: POST the body or src=<github blob url>)');
   }
-  if (raw.length > 16000) throw new ApiError(400, `"d" is ${raw.length} chars (max 16000); POST the markdown instead`);
+  if (raw.length > 16000) throw new ApiError(400, `"d" is ${raw.length} chars (max 16000); POST the markdown or use ?src= instead`);
   return render(raw, url);
 }
 
 /** POST 通道:body 即 markdown(长度由 readBody 上限兜底),长文/CJK 全文走这里。 */
 export function renderOnepageFromMarkdown(md: string, url: URL): DrawResult {
   return render(md, url);
+}
+
+// ── ?src= 远程取文(参考 x-cmd/ppt 的三步逻辑,#28) ────────────────────────────
+// ① github 地址自动转 raw;② client 端能取就自取(raw.githubusercontent 自带
+// ACAO:*);③ 跨域取不到 → /draw/nocors?url= 服务端代取。onepage 的 ?src= 走
+// 服务端 fetch,天然无跨域,①只负责把 blob 链接规范成 raw 直链。
+
+const SRC_MAX = 65536; // 源文档上限(比 ?d= 的 16000 放宽一档,POST 仍最宽)
+
+/** github blob/raw 页面链接 → raw.githubusercontent.com 直链;其余原样返回。 */
+export function toRawGithub(src: string): string {
+  let u: URL;
+  try {
+    u = new URL(src);
+  } catch {
+    throw new ApiError(400, `"src" is not a valid URL: ${JSON.stringify(src.slice(0, 120))}`);
+  }
+  if (u.protocol !== 'https:' && u.protocol !== 'http:') {
+    throw new ApiError(400, `"src" must be http(s), got ${u.protocol}`);
+  }
+  if (u.hostname === 'github.com' || u.hostname === 'www.github.com') {
+    // /{owner}/{repo}/(blob|raw)/{ref}/{path...} → raw 直链
+    const m = u.pathname.match(/^\/([^/]+)\/([^/]+)\/(?:blob|raw)\/(.+)$/);
+    if (m) return `https://raw.githubusercontent.com/${m[1]}/${m[2]}/${m[3]}${u.search}`;
+  }
+  return u.toString();
+}
+
+/** GET ?src=<http url>:服务端取 markdown(≤64KB,文本类)再渲染 —— 长文放 GitHub,链接进 one。 */
+export async function renderOnepageFromSrc(src: string, url: URL): Promise<DrawResult> {
+  const target = toRawGithub(src);
+  let res: Response;
+  try {
+    res = await fetch(target, {
+      headers: { 'user-agent': 'x-cmd-draw/onepage', accept: 'text/plain, text/markdown;q=0.9, */*;q=0.1' },
+      redirect: 'follow',
+    });
+  } catch (e) {
+    throw new ApiError(400, `src fetch failed (${e instanceof Error ? e.message : 'network error'}): ${target}`);
+  }
+  if (!res.ok) {
+    throw new ApiError(res.status === 404 ? 404 : 400, `src fetch got ${res.status} for ${target}`);
+  }
+  const ct = res.headers.get('content-type') ?? '';
+  if (/(image|audio|video|font)\//i.test(ct)) {
+    throw new ApiError(400, `src is ${ct}, expected markdown/text (github blob links are converted to raw automatically)`);
+  }
+  const body = await res.text();
+  if (body.length > SRC_MAX) {
+    throw new ApiError(400, `src doc is ${body.length} chars (max ${SRC_MAX}); POST the markdown instead`);
+  }
+  return render(body, url);
 }

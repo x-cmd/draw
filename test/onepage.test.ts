@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderOnepageFromUrl, renderOnepageFromMarkdown } from '../src/render/onepage.js';
+import { renderOnepageFromUrl, renderOnepageFromMarkdown, toRawGithub } from '../src/render/onepage.js';
 import { handleRequest } from '../src/handler.js';
 
 const BASE = 'https://draw.test/draw';
@@ -104,5 +104,25 @@ describe('handleRequest · /draw/x-cmd/onepage', () => {
     const big = await handleRequest(new Request(`${BASE}/x-cmd/onepage?d=${encodeURIComponent('一'.repeat(16001))}`), {}, {});
     expect(big.status).toBe(400);
     expect(await big.text()).toContain('POST');
+  });
+
+  it('toRawGithub: blob/raw 页面链接转 raw 直链,其余原样(ppt 逻辑①)', () => {
+    expect(toRawGithub('https://github.com/x-cmd/draw/blob/main/onepage.SKILL.md'))
+      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md');
+    expect(toRawGithub('https://github.com/x-cmd/draw/raw/main/onepage.SKILL.md'))
+      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md');
+    expect(toRawGithub('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md'))
+      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md');
+    expect(toRawGithub('https://example.com/doc.md')).toBe('https://example.com/doc.md');
+    expect(() => toRawGithub('ftp://x.md')).toThrowError(/http/);
+  });
+
+  it('/draw/nocors: 400 on missing url / private host / non-GET', async () => {
+    const bare = await handleRequest(new Request(`${BASE}/nocors`), {}, {});
+    expect(bare.status).toBe(400);
+    const priv = await handleRequest(new Request(`${BASE}/nocors?url=${encodeURIComponent('http://127.0.0.1/x.md')}`), {}, {});
+    expect(priv.status).toBe(400);
+    const post = await handleRequest(new Request(`${BASE}/nocors?url=${encodeURIComponent('https://example.com/a.md')}`, { method: 'POST' }), {}, {});
+    expect(post.status).toBe(405);
   });
 });

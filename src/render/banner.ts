@@ -44,7 +44,8 @@ const C_BLUE = '#4fb9f3';
 const C_FG = '#f4f4f4';
 
 // banner 字体的 @font-face(浏览器端);resvg 端走 png.ts 的 fontBuffers
-const BANNER_FACE_CSS = FONT_FILES_B64
+// (onepage 标题同用这套品牌字重,导出共用)
+export const BANNER_FACE_CSS = FONT_FILES_B64
   .map((f) => `@font-face{font-family:'${f.family}';src:url(data:font/woff2;base64,${f.woff2}) format('woff2');font-weight:500 700}`)
   .join('');
 
