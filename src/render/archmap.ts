@@ -329,19 +329,30 @@ function computeRoutes(placed: Placed[], edges: ArchEdge[]): Routed[] {
   });
 }
 
-function drawRoutes(routed: Routed[]): string {
+function drawRoutes(routed: Routed[], interactive = false, style: ArchStyle = 'base', byId?: Map<string, Placed>): string {
   return routed.map(rt => {
     const d = rt.pts.map((p, j) => `${j === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('');
-    return `<path d="${d}" fill="none" stroke="${rt.stroke}" stroke-width="${rt.width}"${rt.dash} marker-end="url(#${rt.marker})"/>`;
+    const ia = interactive ? ` data-from="${esc(rt.e.from)}" data-to="${esc(rt.e.to)}"` : '';
+    let stroke = rt.stroke;
+    let width = rt.width;
+    if (style === 'soft') {
+      const src = byId?.get(rt.e.from);
+      stroke = src && src.color >= 0 ? sVar(src.color) : rt.stroke;
+      width = Math.max(rt.width, 1.6);
+    } else if (style === 'mono') {
+      stroke = 'var(--d-muted)';
+    }
+    return `<path d="${d}"${ia} fill="none" stroke="${stroke}" stroke-width="${width}"${rt.dash} marker-end="url(#${rt.marker})"/>`;
   }).join('');
 }
 
 // 边标签多候选避让:弧长 7 档 × 线两侧(横线上/下,竖线右/左),首个不撞胜出
-function drawEdgeLabels(routed: Routed[], avoid: Box[]): string {
+function drawEdgeLabels(routed: Routed[], avoid: Box[], interactive = false): string {
   const out: string[] = [];
   for (const rt of routed) {
     const text = rt.e.label;
     if (!text) continue;
+    const ia = interactive ? ` data-edge-label="${esc(rt.e.from)} ${esc(rt.e.to)}"` : '';
     const w = textW(text, 11) + 10;
     const rectOf = (p: [number, number], horiz: boolean, mirror: boolean): Box =>
       horiz
@@ -362,24 +373,41 @@ function drawEdgeLabels(routed: Routed[], avoid: Box[]): string {
     const attrs = place.horiz
       ? `x="${r2(place.p[0])}" y="${r2(place.p[1] + (place.mirror ? 14 : -6))}" text-anchor="middle"`
       : `x="${r2(place.p[0] + (place.mirror ? -6 : 6))}" y="${r2(place.p[1] + 3.5)}" text-anchor="${place.mirror ? 'end' : 'start'}"`;
-    out.push(`<text ${attrs} font-size="11" fill="var(--d-text)" paint-order="stroke" stroke="var(--d-card)" stroke-width="4">${esc(text)}</text>`);
+    out.push(`<text${ia} ${attrs} font-size="11" fill="var(--d-text)" paint-order="stroke" stroke="var(--d-card)" stroke-width="4">${esc(text)}</text>`);
   }
   return out.join('');
 }
 
-function drawNode(n: Placed): string {
+// 风格变体(?t=):base=卡片+角色色条(默认);mono=文档线框(墨色直角,无色);
+// soft=柔和填色(圆角胶囊,按节点角色淡填充+同色描边,连线随源节点着色)
+export type ArchStyle = 'base' | 'mono' | 'soft';
+export const ARCH_STYLES: ArchStyle[] = ['base', 'mono', 'soft'];
+
+function drawNode(n: Placed, interactive = false, degree = 0, style: ArchStyle = 'base'): string {
   const { box: b, color } = n;
   const dash = n.type === 'ext' ? ' stroke-dasharray="5 3"' : '';
-  const accent = color >= 0 && n.type !== 'ext'
+  let frame: string;
+  if (style === 'mono') {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="2" fill="var(--d-card)" stroke="var(--d-ink)" stroke-width="1.2"${dash}/>`;
+  } else if (style === 'soft' && color >= 0) {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="14" fill="${sVar(color)}" fill-opacity="0.13" stroke="${sVar(color)}" stroke-width="1.2"${dash}/>`;
+  } else {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="8" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"${dash}/>`;
+  }
+  const accent = style === 'base' && color >= 0 && n.type !== 'ext'
     ? `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="3.5" height="${r2(b.h)}" rx="1.5" fill="${sVar(color)}"/>`
     : '';
   const labelY = n.sub ? boxCy(b) - 3 : boxCy(b) + 4.5;
   const sub = n.sub
     ? `<text x="${r2(boxCx(b))}" y="${r2(boxCy(b) + 15)}" text-anchor="middle" font-size="11" fill="var(--d-muted)">${esc(n.sub)}</text>`
     : '';
+  // interactive(explore 落地页):data-tip 悬停说明 + data-node 供点击高亮连通关系
+  const ia = interactive
+    ? ` data-node="${esc(n.id)}" data-tip="${esc(`${n.label} · ${n.type}${n.sub ? ` · ${n.sub}` : ''}${degree ? ` · ${degree} link${degree > 1 ? 's' : ''}` : ''}`)}" tabindex="0"`
+    : '';
   return (
-    `<g>` +
-    `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="8" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"${dash}/>` +
+    `<g${ia}>` +
+    frame +
     accent +
     `<text x="${r2(boxCx(b))}" y="${r2(labelY)}" text-anchor="middle" font-size="13" font-weight="500" fill="var(--d-ink)">${esc(n.label)}</text>` +
     sub +
@@ -461,7 +489,7 @@ const DEFS =
  * orthogonal edges and rejects cell double-booking. Throws ApiError(400)
  * with a corrective example on malformed params.
  */
-export function renderArchmapFromUrl(url: URL): DrawResult {
+export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult {
   const params = url.searchParams;
   const nRaw = params.getAll('n');
   if (!nRaw.length) bad('at least one node is required');
@@ -476,7 +504,10 @@ export function renderArchmapFromUrl(url: URL): DrawResult {
   const title = params.get('title')?.trim() || undefined;
   const gridCols = clampInt(params, 'grid', 0, 1, 12);
   const v = resolveVersion(params.get('v'));
-  const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
+  // t= 为架构图自有风格(base/mono/soft);其余值透传 sankey 皮肤(调色板复用)
+  const tParam = params.get('t');
+  const style: ArchStyle = tParam === 'mono' || tParam === 'soft' ? tParam : 'base';
+  const skin = resolveSkin('sankey', style === 'base' ? tParam : null, schemeParam(params));
 
   const { placed, W, H } = packGrid(nodes, gridCols);
   const titleH = title ? 40 : 0;
@@ -504,14 +535,26 @@ export function renderArchmapFromUrl(url: URL): DrawResult {
   const titleSvg = title
     ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
     : '';
-  const body = DEFS
+  // interactive 悬停强调 + 点击高亮(1-hop 连通)样式;客户端脚本在 explore 落地页
+  const iStyle = interactive
+    ? `<style>#am g[data-node]{cursor:pointer}#am g[data-node]:hover rect{stroke:var(--d-ink);stroke-width:1.5}` +
+      `#am.hl g[data-node]{opacity:.28}#am.hl g[data-node].on{opacity:1}` +
+      `#am.hl path[data-from]{opacity:.1}#am.hl path[data-from].on{opacity:1}` +
+      `#am.hl text[data-edge-label]{opacity:.1}#am.hl text[data-edge-label].on{opacity:1}</style>`
+    : '';
+  const degree = new Map<string, number>();
+  if (interactive) for (const e of edges) {
+    degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
+    degree.set(e.to, (degree.get(e.to) ?? 0) + 1);
+  }
+  const body = iStyle + DEFS
     + drawBoundaries(placed, boundaries, corners)
-    + drawRoutes(routed)
-    + drawEdgeLabels(routed, avoid)
-    + placed.map(drawNode).join('');
+    + drawRoutes(routed, interactive, style, byId)
+    + drawEdgeLabels(routed, avoid, interactive)
+    + placed.map(p => drawNode(p, interactive, degree.get(p.id) ?? 0, style)).join('');
   // 标题占位下移 + h 垫高的剩余空间上下均分(内容垂直居中,标题仍在顶部)
   const dy = titleH + (height - titleH - bodyH) / 2;
-  const children = titleSvg + `<g transform="translate(0 ${r2(dy)})">` + body + `</g>`;
+  const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">` + body + `</g>`;
   const spec: ArchSpec = { type: 'archmap', ...(title ? { title } : {}), nodes, edges, boundaries };
   const svg = svgDoc(width, height, 'archmap', v.version, title ?? `architecture map, ${nodes.length} nodes`, spec, skin, children);
   return { svg, version: v.version, cacheControl: v.cacheControl };

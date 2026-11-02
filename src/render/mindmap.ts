@@ -184,75 +184,92 @@ function layoutRadial(root: MindNode, colW: number[]): { W: number; H: number; d
 }
 
 // ── organic ────────────────────────────────────────────────────────────────
-function drawOrganic(root: MindNode): { svg: string; W: number; H: number } {
+// interactive(explore 落地页)时:节点 g 带 data-node=<全路径>/data-tip,
+// 连线带 data-link=<子节点全路径> —— 客户端点击可整棵子树高亮(前缀匹配)
+function nodeTip(path: string, n: MindNode): string {
+  const pretty = path.replace(/\//g, ' / ');
+  return n.children.length ? `${pretty} · ${n.children.length}${n.children.length > 1 ? ' branches' : ' branch'}` : `${pretty} · leaf`;
+}
+const nodeIA = (path: string, n: MindNode): string => ` data-node="${esc(path)}" data-tip="${esc(nodeTip(path, n))}" tabindex="0"`;
+
+function drawOrganic(root: MindNode, interactive = false): { svg: string; W: number; H: number } {
   const { W, H } = layoutLinear(root, measure(root, false));
   const out: string[] = [];
-  const walk = (n: MindNode): void => {
+  const walk = (n: MindNode, path: string): void => {
     for (const c of n.children) {
       const x1 = n.x + n.w;
       const mx = (x1 + c.x) / 2;
       const width = Math.max(1.2, 2.4 - c.depth * 0.4);
-      out.push(`<path d="M${r2(x1)} ${r2(n.y)}C${r2(mx)} ${r2(n.y)},${r2(mx)} ${r2(c.y)},${r2(c.x)} ${r2(c.y)}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="${r2(width)}" stroke-linecap="round"/>`);
-      walk(c);
+      const cp = `${path}/${c.label}`;
+      const ia = interactive ? ` data-link="${esc(cp)}"` : '';
+      out.push(`<path${ia} d="M${r2(x1)} ${r2(n.y)}C${r2(mx)} ${r2(n.y)},${r2(mx)} ${r2(c.y)},${r2(c.x)} ${r2(c.y)}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="${r2(width)}" stroke-linecap="round"/>`);
+      walk(c, cp);
     }
   };
-  walk(root);
+  walk(root, root.label);
+  const ra = interactive ? nodeIA(root.label, root) : '';
   out.push(
-    `<rect x="${r2(root.x - 10)}" y="${r2(root.y - 13)}" width="${r2(root.w + 20)}" height="26" rx="13" fill="var(--d-ink)"/>` +
-    `<text x="${r2(root.x)}" y="${r2(root.y)}" dominant-baseline="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(root.label)}</text>`,
+    `<g${ra}><rect x="${r2(root.x - 10)}" y="${r2(root.y - 13)}" width="${r2(root.w + 20)}" height="26" rx="13" fill="var(--d-ink)"/>` +
+    `<text x="${r2(root.x)}" y="${r2(root.y)}" dominant-baseline="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(root.label)}</text></g>`,
   );
-  const walkText = (n: MindNode): void => {
+  const walkText = (n: MindNode, path: string): void => {
     for (const c of n.children) {
+      const cp = `${path}/${c.label}`;
       const attrs = c.depth === 1 ? `font-weight="600" fill="${sVar(c.branch % 10)}"` : `fill="var(--d-text)"`;
-      out.push(`<text x="${r2(c.x)}" y="${r2(c.y)}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text>`);
-      walkText(c);
+      const ia = interactive ? nodeIA(cp, c) : '';
+      out.push(`<g${ia}><text x="${r2(c.x)}" y="${r2(c.y)}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text></g>`);
+      walkText(c, cp);
     }
   };
-  walkText(root);
+  walkText(root, root.label);
   return { svg: out.join(''), W, H };
 }
 
 // ── tree:盒节点 + 直角肘形 ────────────────────────────────────────────────
-function drawTree(root: MindNode): { svg: string; W: number; H: number } {
+function drawTree(root: MindNode, interactive = false): { svg: string; W: number; H: number } {
   const { W, H } = layoutLinear(root, measure(root, true));
   const out: string[] = [];
   const right = (n: MindNode): number => n.x + n.w; // 盒右缘(x 已含 BOX_PAD*2)
   const left = (n: MindNode): number => n.x;
-  const walk = (n: MindNode): void => {
+  const walk = (n: MindNode, path: string): void => {
     for (const c of n.children) {
       const midX = (right(n) + left(c)) / 2;
       const d = `M${r2(right(n))} ${r2(n.y)}H${r2(midX)}V${r2(c.y)}H${r2(left(c))}`;
-      out.push(`<path d="${d}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="1.4"/>`);
-      walk(c);
+      const cp = `${path}/${c.label}`;
+      const ia = interactive ? ` data-link="${esc(cp)}"` : '';
+      out.push(`<path${ia} d="${d}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="1.4"/>`);
+      walk(c, cp);
     }
   };
-  walk(root);
-  const box = (n: MindNode, fill: string, stroke: string, textFill: string, bold: boolean): void => {
-    out.push(`<rect x="${r2(n.x)}" y="${r2(n.y - BOX_H / 2)}" width="${r2(n.w)}" height="${BOX_H}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`);
-    out.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${NODE_FS}"${bold ? ' font-weight="600"' : ''} fill="${textFill}">${esc(n.label)}</text>`);
+  walk(root, root.label);
+  const box = (n: MindNode, fill: string, stroke: string, textFill: string, bold: boolean, ia = ''): void => {
+    out.push(`<g${ia}><rect x="${r2(n.x)}" y="${r2(n.y - BOX_H / 2)}" width="${r2(n.w)}" height="${BOX_H}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`);
+    out.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${NODE_FS}"${bold ? ' font-weight="600"' : ''} fill="${textFill}">${esc(n.label)}</text></g>`);
   };
   // 根:大号 ink 胶囊
+  const ra = interactive ? nodeIA(root.label, root) : '';
   out.push(
-    `<rect x="${r2(root.x)}" y="${r2(root.y - 16)}" width="${r2(root.w)}" height="32" rx="16" fill="var(--d-ink)"/>` +
-    `<text x="${r2(root.x + root.w / 2)}" y="${r2(root.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(root.label)}</text>`,
+    `<g${ra}><rect x="${r2(root.x)}" y="${r2(root.y - 16)}" width="${r2(root.w)}" height="32" rx="16" fill="var(--d-ink)"/>` +
+    `<text x="${r2(root.x + root.w / 2)}" y="${r2(root.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(root.label)}</text></g>`,
   );
-  const walkBox = (n: MindNode): void => {
+  const walkBox = (n: MindNode, path: string): void => {
     for (const c of n.children) {
-      if (c.depth === 1) box(c, sVar(c.branch % 10), 'none', onVar(c.branch % 10), true);
-      else box(c, 'var(--d-card)', 'var(--d-border)', 'var(--d-text)', false);
-      walkBox(c);
+      const cp = `${path}/${c.label}`;
+      if (c.depth === 1) box(c, sVar(c.branch % 10), 'none', onVar(c.branch % 10), true, interactive ? nodeIA(cp, c) : '');
+      else box(c, 'var(--d-card)', 'var(--d-border)', 'var(--d-text)', false, interactive ? nodeIA(cp, c) : '');
+      walkBox(c, cp);
     }
   };
-  walkBox(root);
+  walkBox(root, root.label);
   return { svg: out.join(''), W, H };
 }
 
 // ── radial:根居中,扇形辐射 ────────────────────────────────────────────────
-function drawRadial(root: MindNode): { svg: string; W: number; H: number } {
+function drawRadial(root: MindNode, interactive = false): { svg: string; W: number; H: number } {
   const colW = measure(root, false);
   const { W, H, dx, dy } = layoutRadial(root, colW);
   const out: string[] = [];
-  const walk = (n: MindNode): void => {
+  const walk = (n: MindNode, path: string): void => {
     for (const c of n.children) {
       // 控制点取两代半径中点、各自角度 → 螺旋感平滑曲线
       const rr = (d: number): number => (d === 0 ? 0 : radiusOf(colW, d));
@@ -263,23 +280,28 @@ function drawRadial(root: MindNode): { svg: string; W: number; H: number } {
       const p0 = pol(rr(n.depth), aP);
       const p1 = pol(rr(c.depth), c.angle);
       const width = Math.max(1.2, 2.4 - c.depth * 0.4);
-      out.push(`<path d="M${r2(p0[0])} ${r2(p0[1])}C${r2(c1[0])} ${r2(c1[1])},${r2(c2[0])} ${r2(c2[1])},${r2(p1[0])} ${r2(p1[1])}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="${r2(width)}" stroke-linecap="round"/>`);
-      walk(c);
+      const cp = `${path}/${c.label}`;
+      const ia = interactive ? ` data-link="${esc(cp)}"` : '';
+      out.push(`<path${ia} d="M${r2(p0[0])} ${r2(p0[1])}C${r2(c1[0])} ${r2(c1[1])},${r2(c2[0])} ${r2(c2[1])},${r2(p1[0])} ${r2(p1[1])}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="${r2(width)}" stroke-linecap="round"/>`);
+      walk(c, cp);
     }
   };
-  walk(root);
+  walk(root, root.label);
+  const ra = interactive ? nodeIA(root.label, root) : '';
   out.push(
-    `<rect x="${r2(root.x - 10)}" y="${r2(root.y - 13)}" width="${r2(root.w + 20)}" height="26" rx="13" fill="var(--d-ink)"/>` +
-    `<text x="${r2(root.x)}" y="${r2(root.y)}" dominant-baseline="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(root.label)}</text>`,
+    `<g${ra}><rect x="${r2(root.x - 10)}" y="${r2(root.y - 13)}" width="${r2(root.w + 20)}" height="26" rx="13" fill="var(--d-ink)"/>` +
+    `<text x="${r2(root.x)}" y="${r2(root.y)}" dominant-baseline="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(root.label)}</text></g>`,
   );
-  const walkText = (n: MindNode): void => {
+  const walkText = (n: MindNode, path: string): void => {
     for (const c of n.children) {
+      const cp = `${path}/${c.label}`;
       const attrs = c.depth === 1 ? `font-weight="600" fill="${sVar(c.branch % 10)}"` : `fill="var(--d-text)"`;
-      out.push(`<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text>`);
-      walkText(c);
+      const ia = interactive ? nodeIA(cp, c) : '';
+      out.push(`<g${ia}><text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text></g>`);
+      walkText(c, cp);
     }
   };
-  walkText(root);
+  walkText(root, root.label);
   // 角度→坐标在 layoutRadial 已完成;此处的 pol 只服务连线控制点
   return { svg: `<g transform="translate(${r2(dx)} ${r2(dy)})">${out.join('')}</g>`, W, H };
 }
@@ -299,7 +321,7 @@ function radiusOf(colW: number[], d: number): number {
  * default), `tree` (boxes + elbows), `radial` (root-centred fan). Throws
  * ApiError(400) with a corrective example on malformed params.
  */
-export function renderMindmapFromUrl(url: URL): DrawResult {
+export function renderMindmapFromUrl(url: URL, interactive = false): DrawResult {
   const params = url.searchParams;
   const paths = params.getAll('n');
   if (!paths.length) bad('at least one n=<path> is required');
@@ -311,14 +333,21 @@ export function renderMindmapFromUrl(url: URL): DrawResult {
   const title = params.get('title')?.trim() || undefined;
   const v = resolveVersion(params.get('v'));
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
-  const { svg: body, W, H } = style === 'tree' ? drawTree(root) : style === 'radial' ? drawRadial(root) : drawOrganic(root);
+  const { svg: body, W, H } = style === 'tree' ? drawTree(root, interactive) : style === 'radial' ? drawRadial(root, interactive) : drawOrganic(root, interactive);
   const titleH = title ? 40 : 0;
   const width = Math.max(W, clampInt(params, 'w', 0, 200, 2400));
   const height = Math.max(H + titleH, clampInt(params, 'h', 0, 140, 2000));
   const titleSvg = title
     ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
     : '';
-  const children = (titleH ? titleSvg + `<g transform="translate(0 ${titleH})">` + body + `</g>` : body);
+  // interactive 悬停强调 + 点击整棵子树高亮(前缀匹配);脚本在 explore 落地页
+  const iStyle = interactive
+    ? `<style>#mm [data-node]{cursor:pointer}#mm [data-node]:hover{filter:brightness(1.3)}` +
+      `#mm.hl [data-node]{opacity:.25}#mm.hl [data-node].on{opacity:1}` +
+      `#mm.hl path[data-link]{opacity:.08}#mm.hl path[data-link].on{opacity:1}</style>`
+    : '';
+  const inner = iStyle + `<g id="mm">` + body + `</g>`;
+  const children = titleH ? titleSvg + `<g transform="translate(0 ${titleH})">` + inner + `</g>` : inner;
   const spec = { type: 'mindmap' as const, style, ...(title ? { title } : {}), paths };
   const svg = svgDoc(width, height, 'mindmap', v.version, title ?? `mindmap: ${root.label}`, spec, skin, children);
   return { svg, version: v.version, cacheControl: v.cacheControl };
