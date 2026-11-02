@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "draw",
+  "name": "draw-lib",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -15,8 +15,8 @@
   // POST /draw 全局限流(每 CF 数据中心独立计数,binding 原生支持,替代内存 Map)
   "ratelimits": [
     { "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 30, "period": 60 } }
-  ],
-  "routes": [
-    { "pattern": "x-cmd.com/draw*", "zone_name": "x-cmd.com" }
   ]
+  // 不绑 x-cmd.com 路由:生产域名归 x-cmd-hub/draw 的同名 worker 独占,
+  // 本仓库部署只走 workers.dev(draw-lib.<account>.workers.dev),
+  // 防止误部署覆盖线上页面层(2026-11-01 事故:同名 worker + 同 route 互相顶掉)
 }
