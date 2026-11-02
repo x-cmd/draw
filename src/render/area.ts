@@ -3,7 +3,7 @@ import { ApiError, type ChartSpec, type MultiSpec } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
 import {
   esc, fmtFull, fmtNum, niceStep, niceTicks, r2, reserveBands, snap, smoothPath, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, toSegments,
-  type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, topLegend, findPeak, sVar,
+  type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, topLegend, findPeak, sVar, markPoints, marksLayer,
 } from './svg.js';
 import { xOverhang, yTickInset, type GeoMeasure } from './measure.js';
 import { HANDEE_WOFF2 } from '../styles/handlee.js';
@@ -172,6 +172,9 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<text x="24" y="${r2(Math.round(height * 0.904))}" font-size="13" fill="var(--d-muted)">${esc(spec.source)}</text>`);
   }
 
+  const mpts = markPoints(o.marks, spec.data.map((d) => d.label), xs, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
+
   return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, headSvg + parts.join(''));
 }
 
@@ -244,6 +247,9 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
       pushLineLabelsAllOrNothing(parts, placer, items, allPts.flatMap((p) => toSegments(p)));
     }
   }
+
+  const mpts = markPoints(o.marks, spec.labels, xs, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, headSvg + parts.join(''));
 }

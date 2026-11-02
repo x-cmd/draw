@@ -2,7 +2,7 @@
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
 import type { MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar, markPoints, marksLayer } from './svg.js';
 import { lineLayout } from './line.js';
 
 /**
@@ -98,6 +98,9 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   spec.labels.forEach((l, i) => {
     if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
+
+  const mpts = markPoints(o.marks, spec.labels, xs, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + parts.join(''));
 }

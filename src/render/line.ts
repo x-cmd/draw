@@ -2,7 +2,7 @@
 // 面积填充/数值标注/平滑/点形态/线宽/虚线/发光全部跟随变体规则。
 import type { ChartSpec, MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, markPoints, marksLayer } from './svg.js';
 import { plainGeo, type GeoMeasure } from './measure.js';
 
 /**
@@ -94,6 +94,9 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
     reserveBands(placer, left, right, contentTop, bottom, xLabelY, [], 0, 0);
     pushLineLabelsAllOrNothing(parts, placer, items, toSegments(pts));
   }
+
+  const mpts = markPoints(o.marks, spec.data.map((d) => d.label), xs, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + parts.join(''));
 }

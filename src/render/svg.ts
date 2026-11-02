@@ -1,6 +1,7 @@
 // SVG 生成通用工具:转义、数字格式化、好看刻度、metadata 嵌入、文档包装与公共图元。
 import { FONT, TAB } from '../theme.js';
 import { ticks as d3Ticks, tickStep } from 'd3-array';
+import { ApiError, type Mark } from '../specs/base.js';
 import { INTER_FACE_CSS, INTER_WIDTHS } from '../styles/inter.js';
 import type { Skin, Duo } from '../styles/types.js';
 
@@ -132,8 +133,47 @@ export function topLegend(
 export const TAG_RESERVE = 100;
 // explore 的 ?d= 直收 spec JSON 的图种(角标链接目标,qr 的 d= 是纯文本另算)
 const EXPLORE_D_KINDS = new Set(['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey']);
+
+// ---- 标注层(marker layer,10-30 会议"杀手锏")----
+// mark=<锚x>;<锚y>;<文字>:类目轴图锚x=标签、锚y=数值;散点双数值;可重复。
+// 标注独立成 <g id="marks"> 顶层图层:圈+文字,难免压数据 → explore 页用 markhide=1 整层不画。
+/** 像素锚点已换算好的标注层;文字带底色描边保证压线可读,右缘放不下翻到圈左侧 */
+export function marksLayer(pts: readonly { x: number; y: number; text: string }[], width: number): string {
+  const parts: string[] = ['<g id="marks">'];
+  for (const p of pts) {
+    parts.push(`<circle cx="${r2(p.x)}" cy="${r2(p.y)}" r="11" fill="none" stroke="var(--d-mark)" stroke-width="2.5"/>`);
+    const rightFits = p.x + 15 + textW(p.text, 13) <= width - 8;
+    parts.push(
+      rightFits
+        ? `<text x="${r2(p.x + 15)}" y="${r2(p.y - 9)}" font-size="13" font-weight="600" fill="var(--d-mark)" stroke="var(--d-card)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${esc(p.text)}</text>`
+        : `<text x="${r2(p.x - 15)}" y="${r2(p.y - 9)}" text-anchor="end" font-size="13" font-weight="600" fill="var(--d-mark)" stroke="var(--d-card)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${esc(p.text)}</text>`,
+    );
+  }
+  parts.push('</g>');
+  return parts.join('');
+}
 export const sVar = (i: number): string => `var(--d-s${i + 1})`;
 export const onVar = (i: number): string => `var(--d-on-s${i + 1})`;
+// 标注层用色(强调红,明暗各一):圈+文字同色,固定色不参与皮肤轮换
+const MARK_COLOR: Duo = { light: '#D92D20', dark: '#FF7A6B' };
+
+/** 类目轴图标注锚点 → 像素:ax 按 labels 找列(找不到抛 400),y 数值映射并夹在绘图区内 */
+export function markPoints(
+  marks: readonly Mark[] | undefined,
+  labels: readonly string[],
+  xOf: (i: number) => number,
+  yOf: (v: number) => number,
+  clamp: readonly [number, number],
+): { x: number; y: number; text: string }[] {
+  const out: { x: number; y: number; text: string }[] = [];
+  if (!marks || marks.length === 0) return out;
+  for (const m of marks) {
+    const idx = labels.indexOf(String(m.ax));
+    if (idx < 0) throw new ApiError(400, `"mark" anchor ${JSON.stringify(String(m.ax))} is not one of the labels`);
+    out.push({ x: xOf(idx), y: Math.min(Math.max(yOf(m.ay), clamp[0]), clamp[1]), text: m.text });
+  }
+  return out;
+}
 
 const lumaHex = (hex: string): number => {
   const h = hex.replace('#', '');
@@ -156,6 +196,7 @@ export function skinStyle(skin: Skin): string {
       `--d-ink:${n.ink[side]}`, `--d-text:${n.text[side]}`, `--d-muted:${n.muted[side]}`, `--d-faint:${n.faint[side]}`,
       `--d-grid:${n.grid[side]}`, `--d-baseline:${n.baseline[side]}`, `--d-border:${n.border[side]}`,
       `--d-card:${n.card[side]}`, `--d-halo:${n.halo[side]}`,
+      `--d-mark:${MARK_COLOR[side]}`,
     );
     return `:root{color-scheme:${side};${items.join(';')}}`;
   };
@@ -313,6 +354,8 @@ export interface RenderOpts {
   refLabel?: string;
   /** Interactive embedders (/explore): emit data-tip on data shapes for client tooltips */
   interactive?: boolean;
+  /** 标注层(?mark=锚;值;文字,可重复);undefined=无标注;[] 也不会画任何东西 */
+  marks?: Mark[];
 }
 
 // 文字宽度:与内嵌 Inter 子集同源的 advance 表,宽度 = fs × Σ(advance/em)。

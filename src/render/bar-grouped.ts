@@ -1,7 +1,7 @@
 // 分组并排柱(多系列):≤6 系列主题色板循环,顶部图例,数值入柱;evil 变体 = 规范 bar-1 几何。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands, markPoints, marksLayer } from './svg.js';
 import { yTickInset, type GeoMeasure } from './measure.js';
 
 // 规范 bar-1 实测几何(960×520):left 76、右留 50、顶 94(0.181h)、底 448(0.862h)、X 标签 480
@@ -134,6 +134,9 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
     const cx = left + step * pi + step / 2;
     if (pi % xStride === 0) parts.push(`<text x="${r2(cx)}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
+
+  const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
 }

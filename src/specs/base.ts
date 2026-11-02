@@ -12,6 +12,33 @@ export class ApiError extends Error {
 }
 
 /**
+ * 标注层锚点(10-30 会议"杀手锏"):mark=<锚x>;<锚y>;<文字>,可重复。
+ * 类目轴图:锚x=类目标签、锚y=数值;散点:双数值。文字 48 字截断,可为空(纯圈)。
+ */
+export interface Mark {
+  ax: string | number;
+  ay: number;
+  text: string;
+}
+
+/** 解析重复的 ?mark=;解析失败/锚值非数值抛 400;?markhide=1 整层不画(explore 开关用) */
+export function parseMarks(params: URLSearchParams): Mark[] | undefined {
+  if (params.get('markhide') === '1') return undefined;
+  const raw = params.getAll('mark');
+  if (raw.length === 0) return undefined;
+  const out: Mark[] = [];
+  for (const r of raw) {
+    const i = r.indexOf(';');
+    const j = i < 0 ? -1 : r.indexOf(';', i + 1);
+    if (i < 0 || j < 0) throw new ApiError(400, `"mark" expects anchor;value;text, e.g. mark=Mon;21;peak — got ${JSON.stringify(r)}`);
+    const ay = Number(r.slice(i + 1, j));
+    if (!Number.isFinite(ay)) throw new ApiError(400, `"mark" anchor value is not a number: ${JSON.stringify(r.slice(i + 1, j))}`);
+    out.push({ ax: r.slice(0, i), ay, text: [...r.slice(j + 1)].slice(0, 48).join('') });
+  }
+  return out;
+}
+
+/**
  * One labeled data point: a category and its value.
  */
 export interface Datum {

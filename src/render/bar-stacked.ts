@@ -2,7 +2,7 @@
 // 量级差过大(某组的最大段都放不下标签)时自动拉高画布(封顶 3×,用户显式 ?h= 时不介入)。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands, markPoints, marksLayer } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -147,6 +147,9 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   const placer = new LabelPlacer();
   reserveBands(placer, left, right, contentTop, bottom, bottom + 20, spec.series, width - pad, pad + 14);
   pushBarLabelsAllOrNothing(parts, numItems, placer);
+
+  const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
 }

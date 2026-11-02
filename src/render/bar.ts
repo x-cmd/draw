@@ -1,7 +1,7 @@
 // 柱状图(单系列):卡片容器、主题渐变柱体、顶角 4px 圆角、数值入柱。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, type RenderOpts } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, markPoints, marksLayer, type RenderOpts } from './svg.js';
 import { yTickInset } from './measure.js';
 
 /**
@@ -80,6 +80,10 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   // 预留 Y 刻度带与 X 标签带:数值标签不得压刻度
   reserveBands(placer, left, right, contentTop, bottom, bottom + 20, [], 0, 0);
   pushBarLabelsAllOrNothing(parts, numItems, placer);
+
+  // 标注层(独立 <g id="marks">,markhide 由入口层拦下、这里只管画)
+  const mpts = markPoints(o.marks, spec.data.map((d) => d.label), (i) => left + step * i + step / 2, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
 }

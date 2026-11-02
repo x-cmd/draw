@@ -1,7 +1,7 @@
 // 混合图:柱系列(分组并排)+ 线系列共用 y 轴与类别轴(量级差大时线走右轴)。
 import type { ComboSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, topLegend, trunc, textW, TAG_RESERVE, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, type LineSeg } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, topLegend, trunc, textW, TAG_RESERVE, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, markPoints, marksLayer, type LineSeg } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -202,6 +202,10 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
     if (pi % xStride === 0) parts.push(`<text x="${r2(cx(pi))}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
 
+  // 标注层锚 y 按柱(主)轴换算(双轴时线的量级不同,标注语义默认主轴)
+  const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
+
   return svgDoc(width, height, 'combo', version, spec.title ?? 'combo chart', spec, skin, titleBlock(spec.title) + parts.join(''));
 }
 
@@ -281,6 +285,9 @@ function renderComboEvil(spec: ComboSpec, o: RenderOpts): string {
     if (o.interactive) parts.push(`<rect x="${r2(lx - 4)}" y="${r2(legendY - 16)}" width="${r2(tw + 24)}" height="20" fill="none" pointer-events="all" role="button" tabindex="0"${lg}/>`);
     lx -= 27;
   }
+
+  const mpts = markPoints(o.marks, spec.labels, (i) => x0 + i * slot + slot / 2, yBar, [contentTop, y0]);
+  if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
   return svgDoc(width, height, 'combo', version, spec.title ?? 'combo chart', spec, skin, parts.join(''));
 }
