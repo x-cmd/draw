@@ -22,7 +22,7 @@ const RAD_GAP = 56;   // radial 形态环间距
 const LEAF_SIDE_NEED = 24; // radial 侧面叶的切向占位(径向排版只需行高+呼吸)
 const MAX_DEPTH = 8;
 const MAX_NODES = 500;
-const STYLES = ['organic', 'tree', 'radial'] as const;
+const STYLES = ['organic', 'tree', 'radial', 'bubble'] as const;
 type MindStyle = (typeof STYLES)[number];
 const N_EXAMPLE = 'n=Product/Features/Speed&n=Product/Markets/EU';
 
@@ -306,6 +306,39 @@ function drawRadial(root: MindNode, interactive = false): { svg: string; W: numb
   return { svg: `<g transform="translate(${r2(dx)} ${r2(dy)})">${out.join('')}</g>`, W, H };
 }
 
+// ── bubble:现代胶囊风(XMind/MindMeister 主流主题方向)──────────────────
+// 全盒节点:根=ink 胶囊、一级分支=分支色实心胶囊(反色字)、后代=同色 12% 淡填充;
+// 连线为分支色贝塞尔,近根粗、远端细(视觉重心在主干)
+function drawBubble(root: MindNode, interactive = false): { svg: string; W: number; H: number } {
+  const { W, H } = layoutLinear(root, measure(root, true));
+  const out: string[] = [];
+  const walk = (n: MindNode, path: string): void => {
+    for (const c of n.children) {
+      const cp = `${path}/${c.label}`;
+      const ia = interactive ? ` data-link="${esc(cp)}"` : '';
+      const px = n.x + n.w;
+      const mx = (px + c.x) / 2;
+      const width = Math.max(1.4, 3.4 - c.depth * 0.7);
+      out.push(`<path${ia} d="M${r2(px)} ${r2(n.y)}C${r2(mx)} ${r2(n.y)},${r2(mx)} ${r2(c.y)},${r2(c.x)} ${r2(c.y)}" fill="none" stroke="${sVar(c.branch % 10)}" stroke-width="${r2(width)}" stroke-linecap="round"/>`);
+      walk(c, cp);
+    }
+  };
+  walk(root, root.label);
+  const pill = (n: MindNode, path: string): void => {
+    const ia = interactive ? nodeIA(path, n) : '';
+    if (n.depth === 0) {
+      out.push(`<g${ia}><rect x="${r2(n.x)}" y="${r2(n.y - 16)}" width="${r2(n.w)}" height="32" rx="16" fill="var(--d-ink)"/><text x="${r2(n.x + n.w / 2)}" y="${r2(n.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${ROOT_FS}" font-weight="600" fill="var(--d-card)">${esc(n.label)}</text></g>`);
+    } else if (n.depth === 1) {
+      out.push(`<g${ia}><rect x="${r2(n.x)}" y="${r2(n.y - BOX_H / 2)}" width="${r2(n.w)}" height="${BOX_H}" rx="12" fill="${sVar(n.branch % 10)}"/><text x="${r2(n.x + n.w / 2)}" y="${r2(n.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${NODE_FS}" font-weight="600" fill="${onVar(n.branch % 10)}">${esc(n.label)}</text></g>`);
+    } else {
+      out.push(`<g${ia}><rect x="${r2(n.x)}" y="${r2(n.y - BOX_H / 2)}" width="${r2(n.w)}" height="${BOX_H}" rx="12" fill="${sVar(n.branch % 10)}" fill-opacity="0.12"/><text x="${r2(n.x + n.w / 2)}" y="${r2(n.y)}" dominant-baseline="middle" text-anchor="middle" font-size="${NODE_FS}" fill="var(--d-ink)">${esc(n.label)}</text></g>`);
+    }
+    n.children.forEach(c => pill(c, `${path}/${c.label}`));
+  };
+  pill(root, root.label);
+  return { svg: out.join(''), W, H };
+}
+
 const pol = (r: number, a: number): [number, number] => [r * Math.cos(a), r * Math.sin(a)];
 function radiusOf(colW: number[], d: number): number {
   let r = 0;
@@ -333,7 +366,13 @@ export function renderMindmapFromUrl(url: URL, interactive = false): DrawResult 
   const title = params.get('title')?.trim() || undefined;
   const v = resolveVersion(params.get('v'));
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
-  const { svg: body, W, H } = style === 'tree' ? drawTree(root, interactive) : style === 'radial' ? drawRadial(root, interactive) : drawOrganic(root, interactive);
+  const { svg: body, W, H } = style === 'tree'
+    ? drawTree(root, interactive)
+    : style === 'radial'
+      ? drawRadial(root, interactive)
+      : style === 'bubble'
+        ? drawBubble(root, interactive)
+        : drawOrganic(root, interactive);
   const titleH = title ? 40 : 0;
   const width = Math.max(W, clampInt(params, 'w', 0, 200, 2400));
   const height = Math.max(H + titleH, clampInt(params, 'h', 0, 140, 2000));
