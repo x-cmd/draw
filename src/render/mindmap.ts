@@ -379,10 +379,16 @@ export function renderMindmapFromUrl(url: URL, interactive = false): DrawResult 
   const titleSvg = title
     ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
     : '';
-  // interactive 悬停强调 + 点击整棵子树高亮(前缀匹配);脚本在 explore 落地页
+  // interactive 悬停强调 + 点击整棵子树高亮(前缀匹配);脚本在 explore 落地页。
+  // 悬停 = 提亮(盒) + 下划线(文字);选中 = 下划线 + 未选中淡化;不用 transform
+  // (会被入场动画 fill-both 终态锁死)
   const iStyle = interactive
-    ? `<style>#mm [data-node]{cursor:pointer}#mm [data-node]:hover{filter:brightness(1.3)}` +
-      `#mm.hl [data-node]{opacity:.25}#mm.hl [data-node].on{opacity:1}` +
+    ? `<style>#mm [data-node]{cursor:pointer;transition:filter .12s ease,opacity .15s ease}` +
+      `#mm [data-node]:focus{outline:none}` +
+      `#mm [data-node]:hover,#mm [data-node]:focus-visible{filter:brightness(1.2)}` +
+      `#mm [data-node]:hover text,#mm [data-node]:focus-visible text{text-decoration:underline}` +
+      `#mm.hl [data-node]{opacity:.18}#mm.hl [data-node].on{opacity:1}` +
+      `#mm.hl [data-node].on text{text-decoration:underline}` +
       `#mm.hl path[data-link]{opacity:.08}#mm.hl path[data-link].on{opacity:1}</style>`
     : '';
   const inner = iStyle + `<g id="mm">` + body + `</g>`;

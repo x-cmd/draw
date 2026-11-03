@@ -535,10 +535,15 @@ export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult 
   const titleSvg = title
     ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
     : '';
-  // interactive 悬停强调 + 点击高亮(1-hop 连通)样式;客户端脚本在 explore 落地页
+  // interactive 悬停强调 + 点击高亮(1-hop 连通)样式;客户端脚本在 explore 落地页。
+  // Figma/Miro 式:悬停 = 提亮,选中 = 提亮 + 未选中淡化;无描边/无换色/无 transform
+  // (transform 会被入场动画 draw-rise 的 fill-both 终态锁死,勿用)
   const iStyle = interactive
-    ? `<style>#am g[data-node]{cursor:pointer}#am g[data-node]:hover rect{stroke:var(--d-ink);stroke-width:1.5}` +
-      `#am.hl g[data-node]{opacity:.28}#am.hl g[data-node].on{opacity:1}` +
+    ? `<style>#am g[data-node]{cursor:pointer;transition:filter .12s ease,opacity .15s ease}` +
+      `#am g[data-node]:focus{outline:none}` +
+      `#am g[data-node]:hover,#am g[data-node]:focus-visible{filter:brightness(1.3)}` +
+      `#am g[data-node].on{filter:brightness(1.3)}` +
+      `#am.hl g[data-node]{opacity:.26}#am.hl g[data-node].on{opacity:1}` +
       `#am.hl path[data-from]{opacity:.1}#am.hl path[data-from].on{opacity:1}` +
       `#am.hl text[data-edge-label]{opacity:.1}#am.hl text[data-edge-label].on{opacity:1}</style>`
     : '';
