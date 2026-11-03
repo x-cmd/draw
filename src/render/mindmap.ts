@@ -387,9 +387,9 @@ export function renderMindmapFromUrl(url: URL, interactive = false): DrawResult 
       `#mm [data-node]:focus{outline:none}` +
       `#mm [data-node]:hover,#mm [data-node]:focus-visible{filter:brightness(1.2)}` +
       `#mm [data-node]:hover text,#mm [data-node]:focus-visible text{text-decoration:underline}` +
-      `#mm.hl [data-node]{opacity:.18}#mm.hl [data-node].on{opacity:1}` +
+      `#mm.hl [data-node]{opacity:.42}#mm.hl [data-node].on{opacity:1}` +
       `#mm.hl [data-node].on text{text-decoration:underline}` +
-      `#mm.hl path[data-link]{opacity:.08}#mm.hl path[data-link].on{opacity:1}</style>`
+      `#mm.hl path[data-link]{opacity:.2}#mm.hl path[data-link].on{opacity:1}</style>`
     : '';
   const inner = iStyle + `<g id="mm">` + body + `</g>`;
   const children = titleH ? titleSvg + `<g transform="translate(0 ${titleH})">` + inner + `</g>` : inner;

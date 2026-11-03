@@ -462,14 +462,18 @@ function boundaryLabelCorner(box: Box, label: string, routed: Routed[], boxes: B
   return best;
 }
 
-function drawBoundaries(placed: Placed[], boundaries: ArchBoundary[], corners: Corner[]): string {
+function drawBoundaries(placed: Placed[], boundaries: ArchBoundary[], corners: Corner[], interactive = false): string {
   const byId = new Map(placed.map(p => [p.id, p]));
   return boundaries.map((bd, i) => {
     const box = boundaryBox(byId, bd);
     const c = corners[i];
+    // interactive:带成员 id 清单,选中态下客户端据此判断边界是否相关(相关=含 .on 节点)
+    const ia = interactive ? ` data-boundary="${esc(bd.ids.join(' '))}"` : '';
     return (
+      `<g${ia}>` +
       `<rect x="${r2(box.x)}" y="${r2(box.y)}" width="${r2(box.w)}" height="${r2(box.h)}" rx="10" fill="none" stroke="var(--d-border)" stroke-width="1.2"/>` +
-      `<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)" paint-order="stroke" stroke="var(--d-card)" stroke-width="4">${esc(bd.label.toUpperCase())}</text>`
+      `<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)" paint-order="stroke" stroke="var(--d-card)" stroke-width="4">${esc(bd.label.toUpperCase())}</text>` +
+      `</g>`
     );
   }).join('');
 }
@@ -543,9 +547,10 @@ export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult 
       `#am g[data-node]:focus{outline:none}` +
       `#am g[data-node]:hover,#am g[data-node]:focus-visible{filter:brightness(1.3)}` +
       `#am g[data-node].on{filter:brightness(1.3)}` +
-      `#am.hl g[data-node]{opacity:.26}#am.hl g[data-node].on{opacity:1}` +
-      `#am.hl path[data-from]{opacity:.1}#am.hl path[data-from].on{opacity:1}` +
-      `#am.hl text[data-edge-label]{opacity:.1}#am.hl text[data-edge-label].on{opacity:1}</style>`
+      `#am.hl g[data-node]{opacity:.45}#am.hl g[data-node].on{opacity:1}` +
+      `#am.hl g[data-boundary]{opacity:.4}#am.hl g[data-boundary].on{opacity:1}` +
+      `#am.hl path[data-from]{opacity:.25}#am.hl path[data-from].on{opacity:1}` +
+      `#am.hl text[data-edge-label]{opacity:.3}#am.hl text[data-edge-label].on{opacity:1}</style>`
     : '';
   const degree = new Map<string, number>();
   if (interactive) for (const e of edges) {
@@ -553,7 +558,7 @@ export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult 
     degree.set(e.to, (degree.get(e.to) ?? 0) + 1);
   }
   const body = iStyle + DEFS
-    + drawBoundaries(placed, boundaries, corners)
+    + drawBoundaries(placed, boundaries, corners, interactive)
     + drawRoutes(routed, interactive, style, byId)
     + drawEdgeLabels(routed, avoid, interactive)
     + placed.map(p => drawNode(p, interactive, degree.get(p.id) ?? 0, style)).join('');
