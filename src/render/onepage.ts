@@ -44,8 +44,8 @@ const FS_TITLE = 100, P_TITLE = 128;  // 原图标题 cap 实测 73px(Inter Bold
 const FS_SUB = 73, P_SUB = 90;
 const FS_BODY = 73, P_BODY = 108, X_PARA = 79;
 const P_BULLET = 135;
-const FS_CODE = 58, P_CODE = 80;
-const GAP_MAJOR = 330;              // 顶级节(带装饰条)上方 extra,同原图(~300-400)
+const FS_CODE = 48, P_CODE = 66;  // 代码块比正文小一档(58 太大,长 URL 折行碎)
+const GAP_MAJOR = 290;              // 顶级节(带装饰条)上方 extra(原图 300-400;短文档取下限免稀疏)
 
 // ── 文本测量与折行(中西混排:CJK 逐字断,拉丁按词断) ─────────────────────────
 
@@ -164,9 +164,10 @@ function parse(md: string): Doc {
       lines.shift();
       if (lines.length === 0) continue;
     }
-    const listItems = lines.filter((l) => /^[-*]\s+/.test(l));
+    const listItems = lines.filter((l) => /^([-*]|\d+[.、)])\s+/.test(l));
     if (listItems.length === lines.length) {
-      const items = listItems.map((l) => l.replace(/^[-*]\s+/, ''));
+      // 有序列表保留「1.」标记随文渲染;无序列表由版式画点
+      const items = listItems.map((l) => l.replace(/^([-*])\s+/, '').replace(/^(\d+[.、)])\s+/, '$1 '));
       if (cur === undefined) bullets.push(...items); // 首节前的列表 = 页头要点
       else cur.blocks.push({ k: 'li', items });
     } else {
@@ -233,38 +234,67 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
       if (blk.k === 'li') {
         for (const it of blk.items) {
           const ls = wrap(it, FS_BODY, CW);
+          const numbered = /^\d+[.、)]/.test(it);        // 有序列表自带「1.」标记,不再画点
           ls.forEach((l, i) => {
-            const dot = i === 0 ? `<circle cx="${MX - 19}" cy="${(y + FS_BODY * 0.5).toFixed(0)}" r="7" fill="${C_DOT}"/>` : '';
+            const dot = i === 0 && !numbered ? `<circle cx="${MX - 19}" cy="${(y + FS_BODY * 0.5).toFixed(0)}" r="7" fill="${C_DOT}"/>` : '';
             push(`${dot}<text x="${MX}" y="${(y + FS_BODY * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_BODY}" fill="${C_BODY}">${esc(l)}</text>`);
             y += i === ls.length - 1 ? P_BULLET : P_BODY;
           });
         }
         y += X_PARA - (P_BULLET - P_BODY);
       } else if (blk.k === 'code') {
-        y += 20;
+        // 代码块:比正文小一档,词优先折行(URL 等超长 token 才硬切),续行悬挂
+        // 缩进 60 —— 一眼看出哪些行是同一条命令的延续。
+        // 宽度按 textW(Inter)计:PNG 端 resvg 的 DrawMono 家族名不匹配会回退
+        // Inter(浏览器端真 mono 0.6em 只会更窄),两引擎都不溢出(#24 待修字体名)
+        y += 24;
+        const IND = 60;                 // 续行悬挂缩进
+        const emitCode = (t: string, cont: boolean): void => {
+          push(`<text x="${MX + 8 + (cont ? IND : 0)}" y="${(y + FS_CODE * 0.9).toFixed(0)}" font-family="${F_MONO}" font-size="${FS_CODE}" fill="${C_BULLET}">${esc(t)}</text>`);
+          y += P_CODE;
+        };
         for (const l of blk.lines) {
-          // 代码行按 textW 逐字符硬折(URL 等长 token 无处可软断):PNG 端 resvg 的
-          // DrawMono 家族名不匹配会回退 Inter,故按 Inter 宽度计 —— 浏览器端真
-          // mono(0.6em)只会更窄,两引擎都不溢出(#24 待修字体名)
           const hard = l.replace(/\s+$/, '');
+          if (hard === '') { y += P_CODE / 2; continue; }
           let cur = '';
           let w = 0;
-          for (const ch of hard) {
-            const cw = textW(ch, FS_CODE);
-            if (w + cw > CW - 16 && cur !== '') {
-              push(`<text x="${MX + 8}" y="${(y + FS_CODE).toFixed(0)}" font-family="${F_MONO}" font-size="${FS_CODE}" fill="${C_BULLET}">${esc(cur)}</text>`);
-              y += P_CODE;
-              cur = ch;
-              w = cw;
+          let cont = false;
+          const limit = (): number => CW - 16 - (cont ? IND : 0);
+          for (const word of hard.split(' ')) {
+            const ww = textW(word, FS_CODE);
+            if (ww > limit()) {
+              // 超长 token(整条 URL 一类):先吐已积累,再逐字符硬切
+              if (cur !== '') { emitCode(cur, cont); cont = true; cur = ''; w = 0; }
+              let piece = '';
+              let pw = 0;
+              for (const ch of word) {
+                const c = textW(ch, FS_CODE);
+                if (pw + c > limit() && piece !== '') {
+                  emitCode(piece, cont);
+                  cont = true;
+                  piece = ch;
+                  pw = c;
+                } else {
+                  piece += ch;
+                  pw += c;
+                }
+              }
+              cur = piece;
+              w = pw;
+              continue;
+            }
+            const sp = cur === '' ? 0 : textW(' ', FS_CODE);
+            if (w + sp + ww > limit() && cur !== '') {
+              emitCode(cur, cont);
+              cont = true;
+              cur = word;
+              w = ww;
             } else {
-              cur += ch;
-              w += cw;
+              cur += (cur === '' ? '' : ' ') + word;
+              w += sp + ww;
             }
           }
-          if (cur !== '') {
-            push(`<text x="${MX + 8}" y="${(y + FS_CODE).toFixed(0)}" font-family="${F_MONO}" font-size="${FS_CODE}" fill="${C_BULLET}">${esc(cur)}</text>`);
-            y += P_CODE;
-          }
+          if (cur !== '') emitCode(cur, cont);
         }
         y += 60;
       } else {
