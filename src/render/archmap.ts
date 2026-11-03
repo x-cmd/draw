@@ -373,7 +373,7 @@ function drawEdgeLabels(routed: Routed[], avoid: Box[], interactive = false): st
     const attrs = place.horiz
       ? `x="${r2(place.p[0])}" y="${r2(place.p[1] + (place.mirror ? 14 : -6))}" text-anchor="middle"`
       : `x="${r2(place.p[0] + (place.mirror ? -6 : 6))}" y="${r2(place.p[1] + 3.5)}" text-anchor="${place.mirror ? 'end' : 'start'}"`;
-    out.push(`<text${ia} ${attrs} font-size="11" fill="var(--d-text)" paint-order="stroke" stroke="var(--d-card)" stroke-width="4">${esc(text)}</text>`);
+    out.push(`<text${ia} ${attrs} font-size="11" fill="var(--d-text)">${esc(text)}</text>`);
   }
   return out.join('');
 }
@@ -472,7 +472,7 @@ function drawBoundaries(placed: Placed[], boundaries: ArchBoundary[], corners: C
     return (
       `<g${ia}>` +
       `<rect x="${r2(box.x)}" y="${r2(box.y)}" width="${r2(box.w)}" height="${r2(box.h)}" rx="10" fill="none" stroke="var(--d-border)" stroke-width="1.2"/>` +
-      `<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)" paint-order="stroke" stroke="var(--d-card)" stroke-width="4">${esc(bd.label.toUpperCase())}</text>` +
+      `<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)">${esc(bd.label.toUpperCase())}</text>` +
       `</g>`
     );
   }).join('');

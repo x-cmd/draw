@@ -145,8 +145,8 @@ export function marksLayer(pts: readonly { x: number; y: number; text: string }[
     const rightFits = p.x + 15 + textW(p.text, 13) <= width - 8;
     parts.push(
       rightFits
-        ? `<text x="${r2(p.x + 15)}" y="${r2(p.y - 9)}" font-size="13" font-weight="600" fill="var(--d-mark)" stroke="var(--d-card)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${esc(p.text)}</text>`
-        : `<text x="${r2(p.x - 15)}" y="${r2(p.y - 9)}" text-anchor="end" font-size="13" font-weight="600" fill="var(--d-mark)" stroke="var(--d-card)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${esc(p.text)}</text>`,
+        ? `<text x="${r2(p.x + 15)}" y="${r2(p.y - 9)}" font-size="13" font-weight="600" fill="var(--d-mark)">${esc(p.text)}</text>`
+        : `<text x="${r2(p.x - 15)}" y="${r2(p.y - 9)}" text-anchor="end" font-size="13" font-weight="600" fill="var(--d-mark)">${esc(p.text)}</text>`,
     );
   }
   parts.push('</g>');
@@ -201,9 +201,9 @@ export function skinStyle(skin: Skin): string {
     return `:root{color-scheme:${side};${items.join(';')}}`;
   };
   if (skin.scheme === 'auto') {
-    return `<style>${INTER_FACE_CSS}${varsOf('light')}@media (prefers-color-scheme: dark){${varsOf('dark')}}</style>`;
+    return `<style>${varsOf('light')}@media (prefers-color-scheme: dark){${varsOf('dark')}}</style>`;
   }
-  return `<style>${INTER_FACE_CSS}${varsOf(skin.scheme)}</style>`;
+  return `<style>${varsOf(skin.scheme)}</style>`;
 }
 
 // 统一 SVG 文档包装:外壳 + 皮肤变量 + metadata(渲染器不再各自拼 <svg>)
@@ -397,7 +397,7 @@ export function onColor(hex: string): string {
 }
 
 // 标签白描边属性(压在任意底色上都可读;仅 pushLineLabel 内部使用)
-const HALO = 'paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round"';
+const HALO = ''; // 描边已按 2026-11-03 决定移除
 
 // 标签碰撞检测:重叠即舍弃,保证任何情况下数字不重叠
 export class LabelPlacer {
@@ -515,9 +515,8 @@ export function pushBarLabelsAllOrNothing(
           const bx = cx - tw / 2 - 1;
           if (segments.some(([sx1, sy1, sx2, sy2]) => segRectIntersect(sx1, sy1, sx2, sy2, bx - 1, ty - fs - 1, tw + 2, fs + 2))) continue;
           if (!placer.fits(bx, ty - fs, tw + 2, fs + 2)) continue;
-          const halo = l.haloColor ? `paint-order="stroke" stroke="${l.haloColor}" stroke-width="3" stroke-linejoin="round" ` : '';
           out.push(
-            `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${r2(fs)}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fill}" ${halo}style="${TAB}"${ds(l.series)}>${l.text}</text>`,
+            `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${r2(fs)}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fill}" style="${TAB}"${ds(l.series)}>${l.text}</text>`,
           );
           placed = true;
           break;
@@ -554,7 +553,7 @@ export function pushBarLabelsAllOrNothing(
       const bx = cx - fTw / 2 - 1;
       if (!placer.fits(bx, ty - l.fs, fTw + 2, l.fs + 2)) return false;
       out.push(
-        `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${l.fs}" ${l.peak ? 'font-weight="600" ' : ''}fill="var(--d-ink)" paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round" style="${TAB}"${ds(l.series)}>${l.text}</text>`,
+        `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${l.fs}" ${l.peak ? 'font-weight="600" ' : ''}fill="var(--d-ink)" style="${TAB}"${ds(l.series)}>${l.text}</text>`,
       );
     }
   }

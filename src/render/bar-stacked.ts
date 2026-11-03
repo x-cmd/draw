@@ -140,7 +140,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     // 百分比模式:柱顶标该组总量(补回绝对量)
     if (pctMode) {
       parts.push(
-        `<text x="${r2(x + barW / 2)}" y="${r2(contentTop - 8)}" text-anchor="middle" font-size="11" font-weight="500" fill="var(--d-ink)" paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round" style="${TAB}">${fmtNum(totals[pi])}</text>`,
+        `<text x="${r2(x + barW / 2)}" y="${r2(contentTop - 8)}" text-anchor="middle" font-size="11" font-weight="500" fill="var(--d-ink)" style="${TAB}">${fmtNum(totals[pi])}</text>`,
       );
     }
   });

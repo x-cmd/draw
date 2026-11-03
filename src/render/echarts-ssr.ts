@@ -73,6 +73,12 @@ function withDrawDefaults(user: Obj, skin: Skin): EChartsOption {
       if (isObj(axis)) fillDefaults(axis, AXIS_NEUTRALS);
     }
   }
+  // ECharts 6 label 内置默认 = 2px 白描边 + #333 字色(为白底设计):
+  // 暗色皮肤上黑字黑底且描边违反"无描边文字"约定 → 系列级缺省一次拨正,
+  // 数据项级 label 继承系列级,天然覆盖(用户显式写的不动)
+  for (const s of seriesArr) {
+    if (isObj(s)) fillDefaults(s, { label: { textBorderWidth: 0, color: 'var(--d-text)' } });
+  }
   return option as EChartsOption;
 }
 
@@ -82,6 +88,13 @@ function ariaOf(option: Obj): string {
   const first = Array.isArray(t) ? t[0] : t;
   const text = isObj(first) && typeof first.text === 'string' ? first.text : '';
   return clip(text, 80) || 'echarts chart';
+}
+
+// ECharts 6 的 label 内置 2px 白描边(textBorder),与"清晰无描边文字"约定冲突;
+// 主题覆盖按图型细分太碎,直接从输出里剥掉 text 上的描边属性最可靠
+function stripTextStrokes(svg: string): string {
+  return svg.replace(/<text\b[^>]*>/g, (tag) =>
+    tag.replace(/ (stroke|stroke-width|stroke-opacity|stroke-linejoin|stroke-dasharray|stroke-miterlimit|paint-order)="[^"]*"/g, ''));
 }
 
 // 后处理:根 svg 补 role/aria/font-family,内嵌皮肤变量(含 Inter 子集)+ metadata;
@@ -100,7 +113,7 @@ function decorate(svg: string, skin: Skin, version: number, option: unknown): st
   const tagHref = `https://x-cmd.com/draw/explore/echarts?d=${encodeURIComponent(JSON.stringify(option))}`;
   const tag = `<a href="${esc(tagHref)}" target="_blank" rel="noopener"><text x="${w - 8}" y="54" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text></a>`;
   // 标签必须在 </svg> 之前(之后的 XML 非法,img 严格解析失败)
-  const body = svg.slice(m[0].length).replace(/<\/svg>\s*$/, '');
+  const body = stripTextStrokes(svg.slice(m[0].length)).replace(/<\/svg>\s*$/, '');
   return root + skinStyle(skin) + metaTag('echarts', version, option) + body + tag + '</svg>';
 }
 

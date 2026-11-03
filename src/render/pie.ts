@@ -110,7 +110,7 @@ export function segPath(cx: number, cy: number, R: number, r: number, a0: number
   );
 }
 
-const HALO_ATTRS = 'paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round"';
+const HALO_ATTRS = ''; // 描边已按 2026-11-03 决定移除
 
 /**
  * Donut chart (solid pie with `o.donut = false`); label placement follows the skin.

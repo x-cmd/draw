@@ -78,7 +78,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
       if (placer.fits(ex + 7, ey - 9, w, 13)) {
         parts.push(
           `<text x="${r2(ex + 7)}" y="${r2(ey + 4)}" text-anchor="start" font-size="11" font-weight="600" fill="${colors[si]}" ` +
-          `paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round">${esc(name)}</text>`,
+          `${esc(name)}</text>`,
         );
       }
     }

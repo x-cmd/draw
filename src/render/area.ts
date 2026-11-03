@@ -157,7 +157,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<line x1="${left}" y1="${r2(my)}" x2="${right}" y2="${r2(my)}" stroke="${sVar(2)}" stroke-width="1" stroke-dasharray="4 3"/>`);
     parts.push(
       `<text x="${r2(right)}" y="${r2(my - 6)}" text-anchor="end" font-size="11" fill="${sVar(2)}" ` +
-      `paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round">Avg: ${fmtNum(mean)}</text>`,
+      `>Avg: ${fmtNum(mean)}</text>`,
     );
   }
   if (rules.endValue) {
@@ -165,7 +165,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<circle cx="${r2(ex)}" cy="${r2(ey)}" r="4" fill="var(--d-halo)" stroke="var(--d-faint)" stroke-width="1.5"/>`);
     parts.push(
       `<text x="${r2(ex - 8)}" y="${r2(ey + 20)}" text-anchor="end" font-size="11" font-weight="500" fill="var(--d-ink)" ` +
-      `paint-order="stroke" stroke="var(--d-halo)" stroke-width="3" stroke-linejoin="round" style="${TAB}">${fmtFull(spec.data[n - 1].value)}</text>`,
+      `style="${TAB}">${fmtFull(spec.data[n - 1].value)}</text>`,
     );
   }
   if (spec.source) {
