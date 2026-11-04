@@ -40,6 +40,11 @@ export function injectSatoriWasm(mod: WebAssembly.Module): void {
 
 async function satoriEngine(): Promise<typeof import('satori/standalone')> {
   engineP ??= (async () => {
+    // emscripten 探测 wasm 路径:typeof __filename<'u' ? __filename : self.location.href
+    // —— Workers 里 WorkerGlobalScope 存在但 location 不存在,且该行不在 try/catch
+    // → 先垫一个假 location(仅用于拼 script 目录,值无所谓)
+    const g = globalThis as { location?: { href: string } };
+    g.location ??= { href: 'https://draw.invalid/' };
     let mod = injectedWasm;
     if (mod === undefined) {
       // 打包器(Workers/wrangler)把 '.wasm' 导入编译成 WebAssembly.Module;
