@@ -30,49 +30,46 @@ const FS_BODY = 36, LH = 1.75;
 const fontBytes = (b64: string): Uint8Array => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 
 // ── wasm 双源(同 png.ts 的 resvg 模式) ──────────────────────────────────────
-let injectedWasm: WebAssembly.Module | undefined;
+let injectedWasm: WebAssembly.Module | undefined;  // satori/layout.wasm(Workers 注入)
+let injectedHb: WebAssembly.Module | undefined;    // harfbuzzjs/hb.wasm(Workers 注入)
+// harfbuzzjs@0.10 hb.wasm = 381964B(与 satori 内嵌副本 sha 实测同源;
+// 升级 harfbuzzjs/satori 需同步更新此尺寸)
+const HB_WASM_SIZE = 381964;
 let engineP: Promise<typeof import('satori/standalone')> | undefined;
 
-/** Workers 入口专用:打包期静态 import 的 layout.wasm 注入(见 src/index.ts)。 */
-export function injectSatoriWasm(mod: WebAssembly.Module): void {
-  injectedWasm = mod;
-}
+/** Workers 入口专用:打包期静态 import 的两份 wasm 注入(见 src/index.ts)。 */
+export function injectSatoriWasm(mod: WebAssembly.Module): void { injectedWasm = mod; }
+export function injectHarfbuzzWasm(mod: WebAssembly.Module): void { injectedHb = mod; }
 
-// harfbuzz(satori 内嵌副本)的 wasm 在运行时以 bytes instantiate —— Workers 禁止
-// 运行时编译。静态 import 同一份 hb.wasm(harfbuzzjs@0.10,381964B,sha 实测同源),
-// 拦下等尺寸的 bytes 编译换成已编译 Module(仅 Workers 注入后生效;Node 原生可用)
-let injectedHb: WebAssembly.Module | undefined;
-const HB_WASM_SIZE = 381964;
-
-/** Workers 入口专用:harfbuzzjs/hb.wasm 注入(见 src/index.ts)。 */
-export function injectHarfbuzzWasm(mod: WebAssembly.Module): void {
-  injectedHb = mod;
-}
-
+// Workers 禁运行时 wasm 编译,而 satori 的懒加载(以及内嵌 harfbuzz)都以 bytes
+// instantiate → 拦下等尺寸的 bytes 编译,换成静态 import 的已编译 Module。
+// 不调 satori 的 init():它 fire-and-forget 不返回 promise,await 不住必有竞态;
+// 让 satori 自己的懒加载流程跑完,instantiate 被本拦截喂成 Module 即可。
 function patchWasmCompileForWorkers(): void {
   // tsconfig 无 DOM lib 时 WebAssembly 只是 namespace(不能当 value 用)→ 经 globalThis 取宿主对象
   interface WAHost {
     instantiate: (src: unknown, imports?: unknown) => Promise<unknown>;
     compile?: (src: unknown) => Promise<unknown>;
-    __drawHbPatched?: boolean;
+    __drawWasmPatched?: boolean;
   }
   const WA = (globalThis as unknown as { WebAssembly: WAHost }).WebAssembly;
-  if (WA.__drawHbPatched) return;
-  WA.__drawHbPatched = true;
+  if (WA.__drawWasmPatched) return;
+  WA.__drawWasmPatched = true;
   const isBytes = (x: unknown): x is { byteLength: number } =>
-    typeof x === 'object' && x !== null && 'byteLength' in x && (x as { byteLength: number }).byteLength > 0
-      && !(x instanceof (globalThis as unknown as { WebAssembly: { Module: abstract new () => object } }).WebAssembly.Module);
+    typeof x === 'object' && x !== null && 'byteLength' in x;
+  const swap = (len: number): WebAssembly.Module | undefined =>
+    injectedHb !== undefined && len === HB_WASM_SIZE ? injectedHb : undefined;
   const origInst = WA.instantiate;
   const origCompile = WA.compile;
   WA.instantiate = async (src: unknown, imports?: unknown): Promise<unknown> => {
-    if (injectedHb !== undefined && isBytes(src) && src.byteLength === HB_WASM_SIZE) {
-      return await origInst(injectedHb, imports);
-    }
+    const mod = isBytes(src) ? swap(src.byteLength) : undefined;
+    if (mod !== undefined) return await origInst(mod, imports);
     return await origInst(src, imports);
   };
   if (origCompile !== undefined) {
     WA.compile = async (src: unknown): Promise<unknown> => {
-      if (injectedHb !== undefined && isBytes(src) && src.byteLength === HB_WASM_SIZE) return injectedHb;
+      const mod = isBytes(src) ? swap(src.byteLength) : undefined;
+      if (mod !== undefined) return mod;
       return await origCompile(src);
     };
   }
@@ -82,39 +79,29 @@ async function satoriEngine(): Promise<typeof import('satori/standalone')> {
   engineP ??= (async () => {
     // emscripten 探测 wasm 路径:typeof __filename<'u' ? __filename : self.location.href
     // —— Workers 里 WorkerGlobalScope 存在但 location 不存在,且该行不在 try/catch
-    // → 先垫一个假 location(仅用于拼 script 目录,值无所谓)
+    // → 垫一个假 location(仅用于拼 script 目录,值无所谓;Node 下无害)
     const g = globalThis as { location?: { href: string } };
     g.location ??= { href: 'https://draw.invalid/' };
     if (injectedHb !== undefined) patchWasmCompileForWorkers();
-    let mod = injectedWasm;
-    if (mod === undefined) {
-      // 打包器(Workers/wrangler)把 '.wasm' 导入编译成 WebAssembly.Module;
-      // Node/vitest 解不了这种导入 → 落到 node_modules 读文件同步编译
-      try {
-        const wm = ((await import('satori/layout.wasm')) as unknown as { default?: unknown }).default;
-        // 打包器产物的判别:Module 实例带 exports(tsconfig 无 DOM lib 时
-        // WebAssembly 只是 namespace,不能当 value 用 instanceof)
-        if (wm !== null && typeof wm === 'object' && typeof (wm as { exports?: unknown }).exports === 'object') {
-          mod = wm as WebAssembly.Module;
-        }
-      } catch { /* 走文件路径 */ }
-      if (mod === undefined) {
-        const { createRequire } = await import('node:module');
-        const { readFileSync } = await import('node:fs');
-        const req = createRequire(import.meta.url);
-        // DOM lib 把 WebAssembly.Module 声明为 abstract,Node 运行时可直接构造;
-        // 无 DOM lib 的 tsconfig 下 WebAssembly 仅是 namespace → 从 globalThis 取值
-        const WA = (globalThis as unknown as { WebAssembly: { Module: new (b: Buffer) => WebAssembly.Module } }).WebAssembly;
-        mod = new WA.Module(readFileSync(req.resolve('satori/layout.wasm')));
-      }
-    }
-    if (mod === undefined) throw new ApiError(500, 'satori layout.wasm unavailable');
     const m = await import('satori/standalone');
-    await m.init(mod);
+    // init 是 fire-and-forget(不返回 promise,不能 await);standalone 的 ready
+    // promise 只有 init 被调用后才会 resolve,satori() 内部会等它 —— 所以这里
+    // 只需"调一次",Node 端喂文件 bytes,Workers 端喂静态 Module(免运行时编译)
+    let input: WebAssembly.Module | Buffer;
+    if (injectedWasm !== undefined) {
+      input = injectedWasm;
+    } else {
+      const { createRequire } = await import('node:module');
+      const { readFileSync } = await import('node:fs');
+      const req = createRequire(import.meta.url);
+      input = readFileSync(req.resolve('satori/layout.wasm')) as Buffer;
+    }
+    void m.init(input as never);
     return m;
   })();
   return engineP;
 }
+
 let satoriFonts: { name: string; data: Uint8Array; weight: 400 | 700; style: 'normal' }[] | undefined;
 function fonts() {
   satoriFonts ??= [
