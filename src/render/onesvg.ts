@@ -29,78 +29,30 @@ const FS_BODY = 36, LH = 1.75;
 // satori 字体(主列表;CJK 必须在此,回调路径丢字形 —— 见文件头)
 const fontBytes = (b64: string): Uint8Array => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 
-// ── wasm 双源(同 png.ts 的 resvg 模式) ──────────────────────────────────────
-let injectedWasm: WebAssembly.Module | undefined;  // satori/layout.wasm(Workers 注入)
-let injectedHb: WebAssembly.Module | undefined;    // harfbuzzjs/hb.wasm(Workers 注入)
-// harfbuzzjs@0.10 hb.wasm = 381964B(与 satori 内嵌副本 sha 实测同源;
-// 升级 harfbuzzjs/satori 需同步更新此尺寸)
-const HB_WASM_SIZE = 381964;
+// ── wasm:standalone 构建 + 显式注入(同 png.ts 的 resvg 模式) ──────────────────
+// satori 固定 0.32.0:0.38+ 引入 harfbuzzjs,其 wasm 在运行时以 bytes 编译 ——
+// Workers 禁运行时编译,拦不胜拦(实测三坑:emscripten 读 self.location.href、
+// init fire-and-forget、instantiate(Module) 返回裸 Instance 而 emscripten 读
+// .instance)。0.32 的文本引擎无 harfbuzz,yoga.wasm 静态注入即可全通;折的是
+// 复杂文字 shaping(中英混排本引擎自折行,不受影响)。
+let injectedWasm: WebAssembly.Module | undefined;
 let engineP: Promise<typeof import('satori/standalone')> | undefined;
 
-/** Workers 入口专用:打包期静态 import 的两份 wasm 注入(见 src/index.ts)。 */
+/** Workers 入口专用:打包期静态 import 的 yoga.wasm 注入(见 src/index.ts)。 */
 export function injectSatoriWasm(mod: WebAssembly.Module): void { injectedWasm = mod; }
-export function injectHarfbuzzWasm(mod: WebAssembly.Module): void { injectedHb = mod; }
-
-// Workers 禁运行时 wasm 编译,而 satori 的懒加载(以及内嵌 harfbuzz)都以 bytes
-// instantiate → 拦下等尺寸的 bytes 编译,换成静态 import 的已编译 Module。
-// 不调 satori 的 init():它 fire-and-forget 不返回 promise,await 不住必有竞态;
-// 让 satori 自己的懒加载流程跑完,instantiate 被本拦截喂成 Module 即可。
-function patchWasmCompileForWorkers(): void {
-  // tsconfig 无 DOM lib 时 WebAssembly 只是 namespace(不能当 value 用)→ 经 globalThis 取宿主对象
-  interface WAHost {
-    instantiate: (src: unknown, imports?: unknown) => Promise<unknown>;
-    compile?: (src: unknown) => Promise<unknown>;
-    __drawWasmPatched?: boolean;
-  }
-  const WA = (globalThis as unknown as { WebAssembly: WAHost }).WebAssembly;
-  if (WA.__drawWasmPatched) return;
-  WA.__drawWasmPatched = true;
-  const isBytes = (x: unknown): x is { byteLength: number } =>
-    typeof x === 'object' && x !== null && 'byteLength' in x;
-  const swap = (len: number): WebAssembly.Module | undefined =>
-    injectedHb !== undefined && len === HB_WASM_SIZE ? injectedHb : undefined;
-  const origInst = WA.instantiate;
-  const origCompile = WA.compile;
-  (globalThis as unknown as { __wasmTrace?: unknown[] }).__wasmTrace ??= [];
-  const trace = (globalThis as unknown as { __wasmTrace: unknown[] }).__wasmTrace;
-  WA.instantiate = async (src: unknown, imports?: unknown): Promise<unknown> => {
-    const mod = isBytes(src) ? swap(src.byteLength) : undefined;
-    trace.push({ op: 'inst', len: isBytes(src) ? src.byteLength : -1, kind: src instanceof Object ? (src as { constructor?: { name } }).constructor?.name : typeof src, swapped: mod !== undefined, hbSet: injectedHb !== undefined });
-    try {
-      if (mod === undefined) return await origInst(src, imports);
-      const r = await origInst(mod, imports);
-      // spec:instantiate(Module, imports) 返回 Instance 本身;而 bytes 调用方
-      // (emscripten)期待 {module, instance} —— 换行时补归一化(harfbuzz 的加载器
-      // 没做这步,satori 的 layout 加载器自己做了,所以只有 hb 炸)
-      if (r !== null && typeof r === 'object' && 'exports' in r && !('instance' in r)) {
-        return { module: mod, instance: r };
-      }
-      return r;
-    } catch (err) {
-      throw err;
-    }
-  };
-  if (origCompile !== undefined) {
-    WA.compile = async (src: unknown): Promise<unknown> => {
-      const mod = isBytes(src) ? swap(src.byteLength) : undefined;
-      if (mod !== undefined) return mod;
-      return await origCompile(src);
-    };
-  }
-}
 
 async function satoriEngine(): Promise<typeof import('satori/standalone')> {
   engineP ??= (async () => {
     // emscripten 探测 wasm 路径:typeof __filename<'u' ? __filename : self.location.href
     // —— Workers 里 WorkerGlobalScope 存在但 location 不存在,且该行不在 try/catch
-    // → 垫一个假 location(仅用于拼 script 目录,值无所谓;Node 下无害)
+    // → 垫一个假 location(仅用于拼 script 目录;Node 下无害)
     const g = globalThis as { location?: { href: string } };
     g.location ??= { href: 'https://draw.invalid/' };
-    if (injectedHb !== undefined) patchWasmCompileForWorkers();
     const m = await import('satori/standalone');
     // init 是 fire-and-forget(不返回 promise,不能 await);standalone 的 ready
-    // promise 只有 init 被调用后才会 resolve,satori() 内部会等它 —— 所以这里
-    // 只需"调一次",Node 端喂文件 bytes,Workers 端喂静态 Module(免运行时编译)
+    // promise 只有 init 被调用后才 resolve,satori() 内部会等它 —— 调一次即可。
+    // Workers 喂静态 Module(instantiate(Module) 返回裸 Instance,0.32 加载器
+    // 自己有 instanceof 归一化,无需帮它);Node 喂文件 bytes。
     let input: WebAssembly.Module | Buffer;
     if (injectedWasm !== undefined) {
       input = injectedWasm;
@@ -108,7 +60,7 @@ async function satoriEngine(): Promise<typeof import('satori/standalone')> {
       const { createRequire } = await import('node:module');
       const { readFileSync } = await import('node:fs');
       const req = createRequire(import.meta.url);
-      input = readFileSync(req.resolve('satori/layout.wasm')) as Buffer;
+      input = readFileSync(req.resolve('satori/yoga.wasm')) as Buffer;
     }
     void m.init(input as never);
     return m;
@@ -188,7 +140,15 @@ function runsOf(text: string): Run[] {
 
 // ── 元素构造(satori 只吃 {type:'div', props:{style, children}} 树) ───────────
 type El = Record<string, unknown>;
-const el = (style: Record<string, unknown>, children: unknown): El => ({ type: 'div', props: { style, children } });
+// satori 0.32:多子节点必须显式 display —— 且它会把中英混排的单一字符串切成
+// 多个子节点,所以所有 div 默认 flex row(文本行内联流);纵向容器各自显式 column
+const el = (style: Record<string, unknown>, children: unknown): El => ({
+  type: 'div',
+  props: {
+    style: { display: 'flex', flexDirection: 'row', ...style },
+    children,
+  },
+});
 
 const INK = '#111827';
 const BODY_C = '#4b5563';
@@ -308,7 +268,7 @@ export async function renderOnesvg(md: string, url: URL): Promise<DrawResult> {
     const { default: satori } = await satoriEngine();
     svg = await satori(buildTree(doc) as never, { width: W, fonts: fonts() } as never);
   } catch (e) {
-    throw new ApiError(500, `DBG3 ${e instanceof Error ? e.stack ?? e.message : String(e)}\nTRACE ${JSON.stringify((globalThis as unknown as { __wasmTrace?: unknown[] }).__wasmTrace ?? [])}`);
+    throw new ApiError(500, `onesvg layout failed: ${e instanceof Error ? e.message : String(e)}`);
   }
   const h = Number(/height="([\d.]+)"/.exec(svg)?.[1] ?? 0);
   if (!(h > 100)) throw new ApiError(500, 'onesvg produced an empty page');
