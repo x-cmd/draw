@@ -77,8 +77,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
       const w = textW(name, 11);
       if (placer.fits(ex + 7, ey - 9, w, 13)) {
         parts.push(
-          `<text x="${r2(ex + 7)}" y="${r2(ey + 4)}" text-anchor="start" font-size="11" font-weight="600" fill="${colors[si]}" ` +
-          `${esc(name)}</text>`,
+          `<text x="${r2(ex + 7)}" y="${r2(ey + 4)}" text-anchor="start" font-size="11" font-weight="600" fill="${colors[si]}">${esc(name)}</text>`,
         );
       }
     }
