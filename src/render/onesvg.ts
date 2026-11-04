@@ -61,10 +61,24 @@ function patchWasmCompileForWorkers(): void {
     injectedHb !== undefined && len === HB_WASM_SIZE ? injectedHb : undefined;
   const origInst = WA.instantiate;
   const origCompile = WA.compile;
+  (globalThis as unknown as { __wasmTrace?: unknown[] }).__wasmTrace ??= [];
+  const trace = (globalThis as unknown as { __wasmTrace: unknown[] }).__wasmTrace;
   WA.instantiate = async (src: unknown, imports?: unknown): Promise<unknown> => {
     const mod = isBytes(src) ? swap(src.byteLength) : undefined;
-    if (mod !== undefined) return await origInst(mod, imports);
-    return await origInst(src, imports);
+    trace.push({ op: 'inst', len: isBytes(src) ? src.byteLength : -1, kind: src instanceof Object ? (src as { constructor?: { name } }).constructor?.name : typeof src, swapped: mod !== undefined, hbSet: injectedHb !== undefined });
+    try {
+      if (mod === undefined) return await origInst(src, imports);
+      const r = await origInst(mod, imports);
+      // spec:instantiate(Module, imports) 返回 Instance 本身;而 bytes 调用方
+      // (emscripten)期待 {module, instance} —— 换行时补归一化(harfbuzz 的加载器
+      // 没做这步,satori 的 layout 加载器自己做了,所以只有 hb 炸)
+      if (r !== null && typeof r === 'object' && 'exports' in r && !('instance' in r)) {
+        return { module: mod, instance: r };
+      }
+      return r;
+    } catch (err) {
+      throw err;
+    }
   };
   if (origCompile !== undefined) {
     WA.compile = async (src: unknown): Promise<unknown> => {
@@ -294,7 +308,7 @@ export async function renderOnesvg(md: string, url: URL): Promise<DrawResult> {
     const { default: satori } = await satoriEngine();
     svg = await satori(buildTree(doc) as never, { width: W, fonts: fonts() } as never);
   } catch (e) {
-    throw new ApiError(500, `onesvg layout failed: ${e instanceof Error ? e.message : String(e)}`);
+    throw new ApiError(500, `DBG3 ${e instanceof Error ? e.stack ?? e.message : String(e)}\nTRACE ${JSON.stringify((globalThis as unknown as { __wasmTrace?: unknown[] }).__wasmTrace ?? [])}`);
   }
   const h = Number(/height="([\d.]+)"/.exec(svg)?.[1] ?? 0);
   if (!(h > 100)) throw new ApiError(500, 'onesvg produced an empty page');
