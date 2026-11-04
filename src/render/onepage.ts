@@ -111,7 +111,7 @@ function wrapMixed(text: string, fs: number, maxW: number): string[] {
 
 // ── markdown 子集解析(yfm + 页头 + 节 + 段落/粗体小节/列表/代码块) ─────────────
 
-interface Doc {
+export interface Doc {
   meta: Record<string, string>;
   title: string;
   subtitle: string;
@@ -119,6 +119,11 @@ interface Doc {
   sections: { name: string; major: boolean; blocks: Block[] }[];
 }
 type Block = { k: 'p'; text: string } | { k: 'li'; items: string[] } | { k: 'code'; lines: string[] };
+
+/** markdown 子集 → Doc(yfm/节/块)。onesvg(Satori 内核)同用此解析。 */
+export function parseOnepageDoc(md: string): Doc {
+  return parse(md);
+}
 
 function parse(md: string): Doc {
   const meta: Record<string, string> = {};
@@ -424,6 +429,11 @@ export function toRawGithub(src: string): string {
 
 /** GET ?src=<http url>:服务端取 markdown(≤64KB,文本类)再渲染 —— 长文放 GitHub,链接进 one。 */
 export async function renderOnepageFromSrc(src: string, url: URL): Promise<DrawResult> {
+  return render(await fetchSrcDoc(src), url);
+}
+
+/** ?src= 的取文部分(onepage 与 onesvg 共用):github blob 自动转 raw,校验类型与大小。 */
+export async function fetchSrcDoc(src: string): Promise<string> {
   const target = toRawGithub(src);
   let res: Response;
   try {
@@ -445,5 +455,5 @@ export async function renderOnepageFromSrc(src: string, url: URL): Promise<DrawR
   if (body.length > SRC_MAX) {
     throw new ApiError(400, `src doc is ${body.length} chars (max ${SRC_MAX}); POST the markdown instead`);
   }
-  return render(body, url);
+  return body;
 }

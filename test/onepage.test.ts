@@ -126,3 +126,19 @@ describe('handleRequest · /draw/x-cmd/onepage', () => {
     expect(post.status).toBe(405);
   });
 });
+
+describe('handleRequest · /draw/x-cmd/onesvg (satori engine, #30)', () => {
+  it('renders the same markdown contract: GET ?d= / POST / ?src= marker', async () => {
+    const d = encodeURIComponent('---\ntitle: onesvg 测试\n---\n## 简介\n正文一段,**加粗**行内。\n\n- 要点一\n');
+    const r = await handleRequest(new Request(`${BASE}/x-cmd/onesvg?d=${d}`), {}, {});
+    expect(r.status).toBe(200);
+    expect(r.headers.get('content-type')).toContain('image/svg+xml');
+    const svg = await r.text();
+    expect(svg).toMatch(/^<svg/);
+    expect(svg).toContain('aria-label="onesvg 测试"');   // satori 输出字形 path,内容靠 aria 验
+    const post = await handleRequest(new Request(`${BASE}/x-cmd/onesvg`, { method: 'POST', body: '---\ntitle: T\n---\n正文。' }), {}, {});
+    expect(post.status).toBe(200);
+    const bare = await handleRequest(new Request(`${BASE}/x-cmd/onesvg`), {}, {});
+    expect(bare.status).toBe(400);
+  }, 30000);
+});

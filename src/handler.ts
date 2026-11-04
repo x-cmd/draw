@@ -15,7 +15,8 @@ import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
-import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub } from './render/onepage.js';
+import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub, fetchSrcDoc } from './render/onepage.js';
+import { renderOnesvg } from './render/onesvg.js';
 import { resolveSkin, VARIANTS } from './styles/index.js';
 import { indexHandler } from './demo.js';
 import {
@@ -320,6 +321,21 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
         'x-draw-src': raw,
       },
     });
+  }
+  // /draw/x-cmd/onesvg(#30):Satori 内核版,与 /onepage 并排对比;输入契约一致
+  // (?d= / ?src= / POST)。浏览器地址栏打开同样走阅读页壳。
+  if (sub === '/x-cmd/onesvg') {
+    const src = url.searchParams.get('src');
+    const md = src !== null && src !== ''
+      ? await fetchSrcDoc(src)
+      : request.method === 'POST'
+        ? await readBody(request)
+        : url.searchParams.get('d');
+    if (md === null || md === undefined || md === '') {
+      return textResponse(400, '"d" (urlencoded markdown) or "src" (http url) is required, or POST the markdown body');
+    }
+    if (md.length > 65536) throw new ApiError(400, `doc is ${md.length} chars (max 65536)`);
+    return onepageDocResponse(request, url, await renderOnesvg(md, url));
   }
   // /draw/banner 旧别名(已发布链接用):同逻辑,参数不变
   if (sub === '/banner') {
