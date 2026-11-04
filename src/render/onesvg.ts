@@ -38,6 +38,46 @@ export function injectSatoriWasm(mod: WebAssembly.Module): void {
   injectedWasm = mod;
 }
 
+// harfbuzz(satori 内嵌副本)的 wasm 在运行时以 bytes instantiate —— Workers 禁止
+// 运行时编译。静态 import 同一份 hb.wasm(harfbuzzjs@0.10,381964B,sha 实测同源),
+// 拦下等尺寸的 bytes 编译换成已编译 Module(仅 Workers 注入后生效;Node 原生可用)
+let injectedHb: WebAssembly.Module | undefined;
+const HB_WASM_SIZE = 381964;
+
+/** Workers 入口专用:harfbuzzjs/hb.wasm 注入(见 src/index.ts)。 */
+export function injectHarfbuzzWasm(mod: WebAssembly.Module): void {
+  injectedHb = mod;
+}
+
+function patchWasmCompileForWorkers(): void {
+  // tsconfig 无 DOM lib 时 WebAssembly 只是 namespace(不能当 value 用)→ 经 globalThis 取宿主对象
+  interface WAHost {
+    instantiate: (src: unknown, imports?: unknown) => Promise<unknown>;
+    compile?: (src: unknown) => Promise<unknown>;
+    __drawHbPatched?: boolean;
+  }
+  const WA = (globalThis as unknown as { WebAssembly: WAHost }).WebAssembly;
+  if (WA.__drawHbPatched) return;
+  WA.__drawHbPatched = true;
+  const isBytes = (x: unknown): x is { byteLength: number } =>
+    typeof x === 'object' && x !== null && 'byteLength' in x && (x as { byteLength: number }).byteLength > 0
+      && !(x instanceof (globalThis as unknown as { WebAssembly: { Module: abstract new () => object } }).WebAssembly.Module);
+  const origInst = WA.instantiate;
+  const origCompile = WA.compile;
+  WA.instantiate = async (src: unknown, imports?: unknown): Promise<unknown> => {
+    if (injectedHb !== undefined && isBytes(src) && src.byteLength === HB_WASM_SIZE) {
+      return await origInst(injectedHb, imports);
+    }
+    return await origInst(src, imports);
+  };
+  if (origCompile !== undefined) {
+    WA.compile = async (src: unknown): Promise<unknown> => {
+      if (injectedHb !== undefined && isBytes(src) && src.byteLength === HB_WASM_SIZE) return injectedHb;
+      return await origCompile(src);
+    };
+  }
+}
+
 async function satoriEngine(): Promise<typeof import('satori/standalone')> {
   engineP ??= (async () => {
     // emscripten 探测 wasm 路径:typeof __filename<'u' ? __filename : self.location.href
@@ -45,6 +85,7 @@ async function satoriEngine(): Promise<typeof import('satori/standalone')> {
     // → 先垫一个假 location(仅用于拼 script 目录,值无所谓)
     const g = globalThis as { location?: { href: string } };
     g.location ??= { href: 'https://draw.invalid/' };
+    if (injectedHb !== undefined) patchWasmCompileForWorkers();
     let mod = injectedWasm;
     if (mod === undefined) {
       // 打包器(Workers/wrangler)把 '.wasm' 导入编译成 WebAssembly.Module;
