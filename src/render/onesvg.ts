@@ -42,16 +42,27 @@ async function satoriEngine(): Promise<typeof import('satori/standalone')> {
   engineP ??= (async () => {
     let mod = injectedWasm;
     if (mod === undefined) {
+      // 打包器(Workers/wrangler)把 '.wasm' 导入编译成 WebAssembly.Module;
+      // Node/vitest 解不了这种导入 → 落到 node_modules 读文件同步编译
       try {
-        mod = ((await import('satori/layout.wasm')) as unknown as { default: WebAssembly.Module }).default;
-      } catch {
-        // Node/Deno:从 node_modules 读文件同步编译(tsx/vitest 解不了 .wasm 导入)
+        const wm = ((await import('satori/layout.wasm')) as unknown as { default?: unknown }).default;
+        // 打包器产物的判别:Module 实例带 exports(tsconfig 无 DOM lib 时
+        // WebAssembly 只是 namespace,不能当 value 用 instanceof)
+        if (wm !== null && typeof wm === 'object' && typeof (wm as { exports?: unknown }).exports === 'object') {
+          mod = wm as WebAssembly.Module;
+        }
+      } catch { /* 走文件路径 */ }
+      if (mod === undefined) {
         const { createRequire } = await import('node:module');
         const { readFileSync } = await import('node:fs');
         const req = createRequire(import.meta.url);
-        mod = WebAssembly.Module(readFileSync(req.resolve('satori/layout.wasm')));
+        // DOM lib 把 WebAssembly.Module 声明为 abstract,Node 运行时可直接构造;
+        // 无 DOM lib 的 tsconfig 下 WebAssembly 仅是 namespace → 从 globalThis 取值
+        const WA = (globalThis as unknown as { WebAssembly: { Module: new (b: Buffer) => WebAssembly.Module } }).WebAssembly;
+        mod = new WA.Module(readFileSync(req.resolve('satori/layout.wasm')));
       }
     }
+    if (mod === undefined) throw new ApiError(500, 'satori layout.wasm unavailable');
     const m = await import('satori/standalone');
     await m.init(mod);
     return m;
