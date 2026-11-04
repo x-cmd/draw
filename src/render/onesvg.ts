@@ -8,7 +8,9 @@
 //      (onepage 的 SVG 依赖系统字体,两端字体不同必有偏差;onesvg 无此问题)
 //   4. width-only 传参 → 高度随内容自动生长,无需裁剪 hack
 // 输入契约与 /onepage 完全一致:?d= / ?src=(github blob 自动转 raw)/ POST body。
-import satori from 'satori';
+// standalone 构建 + 显式注入 wasm:默认构建的 emscripten 加载器在 Workers 里读
+// 不存在的 location.href 直接崩;standalone 由调用方喂 WebAssembly.Module
+// (Workers 入口静态 import 注入,Node/Deno 走 node_modules 文件读取 —— 同 resvg)
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';
 import { esc, textW } from './svg.js';
@@ -26,6 +28,36 @@ const FS_BODY = 36, LH = 1.75;
 
 // satori 字体(主列表;CJK 必须在此,回调路径丢字形 —— 见文件头)
 const fontBytes = (b64: string): Uint8Array => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+
+// ── wasm 双源(同 png.ts 的 resvg 模式) ──────────────────────────────────────
+let injectedWasm: WebAssembly.Module | undefined;
+let engineP: Promise<typeof import('satori/standalone')> | undefined;
+
+/** Workers 入口专用:打包期静态 import 的 layout.wasm 注入(见 src/index.ts)。 */
+export function injectSatoriWasm(mod: WebAssembly.Module): void {
+  injectedWasm = mod;
+}
+
+async function satoriEngine(): Promise<typeof import('satori/standalone')> {
+  engineP ??= (async () => {
+    let mod = injectedWasm;
+    if (mod === undefined) {
+      try {
+        mod = ((await import('satori/layout.wasm')) as unknown as { default: WebAssembly.Module }).default;
+      } catch {
+        // Node/Deno:从 node_modules 读文件同步编译(tsx/vitest 解不了 .wasm 导入)
+        const { createRequire } = await import('node:module');
+        const { readFileSync } = await import('node:fs');
+        const req = createRequire(import.meta.url);
+        mod = WebAssembly.Module(readFileSync(req.resolve('satori/layout.wasm')));
+      }
+    }
+    const m = await import('satori/standalone');
+    await m.init(mod);
+    return m;
+  })();
+  return engineP;
+}
 let satoriFonts: { name: string; data: Uint8Array; weight: 400 | 700; style: 'normal' }[] | undefined;
 function fonts() {
   satoriFonts ??= [
@@ -215,6 +247,7 @@ export async function renderOnesvg(md: string, url: URL): Promise<DrawResult> {
   const doc = parseOnepageDoc(md);
   let svg: string;
   try {
+    const { default: satori } = await satoriEngine();
     svg = await satori(buildTree(doc) as never, { width: W, fonts: fonts() } as never);
   } catch (e) {
     throw new ApiError(500, `onesvg layout failed: ${e instanceof Error ? e.message : String(e)}`);

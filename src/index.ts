@@ -15,6 +15,11 @@ import type { Platform } from './types.js';
 import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 import { injectResvgWasm } from './render/png.js';
 injectResvgWasm(resvgWasm);
+// satori(onesvg 内核)同法:打包期静态 import 拿 Module 注入,绕开 emscripten
+// 加载器在 Workers 读 location.href 的崩溃路径
+import satoriWasm from 'satori/layout.wasm';
+import { injectSatoriWasm } from './render/onesvg.js';
+injectSatoriWasm(satoriWasm);
 
 // 边缘缓存读:GET 图表/演示页响应按 URL 命中 Cache API(每 CF 节点独立)。
 // POST、错误、no-store 不进缓存;?v= 与短链的 TTL 语义由 Cache-Control 承载。
