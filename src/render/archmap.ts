@@ -10,8 +10,8 @@
 // 类型枚举 → 语义色:fe/be/db/cloud/sec/bus/svc 映射系列色板,ext 中性虚线框。
 // 渲染管线:路由先算 → 边界标签四角择优(远离走线) → 边标签多候选避让(节点盒∪边界标签区)。
 import { ApiError } from '../specs/index.js';
-import { resolveVersion } from '../version.js';
-import { resolveSkin } from '../styles/index.js';
+import { resolveVersion, type VersionInfo } from '../version.js';
+import { resolveSkin, type Skin } from '../styles/index.js';
 import { esc, r2, sVar, segRectIntersect, svgDoc, textW } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 
@@ -35,16 +35,18 @@ const MIN_CELL_H = 40;
 const N_EXAMPLE = 'n=api;be;API Gateway;auth;r1c0w2';
 
 interface Box { x: number; y: number; w: number; h: number }
-interface ArchNode {
+export interface ArchNode {
   id: string;
   type: NodeType;
   label: string;
   sub?: string;
+  /** mermaid 源形状:方/菱(判定)/圆柱(存储)/圆角胶囊;缺省 rect */
+  shape?: 'rect' | 'diamond' | 'cylinder' | 'round';
   grid?: { row: number; col: number; w: number; h: number };
   px?: { x: number; y: number; w?: number; h?: number };
 }
-interface ArchEdge { from: string; to: string; label?: string; variant: EdgeVariant }
-interface ArchBoundary { label: string; ids: string[] }
+export interface ArchEdge { from: string; to: string; label?: string; variant: EdgeVariant }
+export interface ArchBoundary { label: string; ids: string[] }
 interface ArchSpec {
   type: 'archmap';
   title?: string;
@@ -118,7 +120,7 @@ function parseBoundaries(raw: string[], ids: Set<string>): ArchBoundary[] {
 }
 
 // 自然尺寸:label 13px 加左右内边距;副标 11px;盒高 40(带副标 56)
-function naturalSize(n: ArchNode): { w: number; h: number } {
+export function naturalSize(n: ArchNode): { w: number; h: number } {
   const w = Math.max(MIN_CELL_W, textW(n.label, 13) + 34, n.sub ? textW(n.sub, 11) + 34 : 0);
   const h = n.sub ? 56 : 40;
   return { w: Math.min(w, 360), h };
@@ -277,6 +279,49 @@ interface Routed {
 }
 
 // 出/入面由中心差主轴决定(网格布局下单调,天然不回折);同面多边按出现序扩散
+
+// 直角肘形路由(mermaid 语法糖):直线优先——同层对齐即纯直线;有落差在
+// 中点垂直折一次(水平→垂直→水平);反向边从下方 U 形直角绕回。
+// 线只为节点与方向折,永不因文字折(标签就近放置,不影响线形)。
+function straightRoutes(placed: Placed[], edges: ArchEdge[], dir: 'TB' | 'LR'): Routed[] {
+  const byId = new Map(placed.map(p => [p.id, p]));
+  const lr = dir === 'LR';
+  return edges.map(e => {
+    const a = byId.get(e.from)!.box;
+    const b = byId.get(e.to)!.box;
+    let pts: [number, number][];
+    const back = lr ? boxCx(b) < boxCx(a) : boxCy(b) < boxCy(a);
+    if (back) {
+      // 反向边:出底/右缘,外圈 U 形直角绕回
+      if (lr) {
+        const loopY = Math.max(a.y + a.h, b.y + b.h) + 36;
+        pts = [[boxCx(a), a.y + a.h], [boxCx(a), loopY], [boxCx(b), loopY], [boxCx(b), b.y + b.h]];
+      } else {
+        const loopX = Math.max(a.x + a.w, b.x + b.w) + 36;
+        pts = [[a.x + a.w, boxCy(a)], [loopX, boxCy(a)], [loopX, boxCy(b)], [b.x + b.w, boxCy(b)]];
+      }
+    } else if (lr) {
+      const x0 = a.x + a.w, y0 = boxCy(a), x1 = b.x, y1 = boxCy(b);
+      pts = Math.abs(y0 - y1) <= 14
+        ? [[x0, y0], [x1, y1]]
+        : [[x0, y0], [Math.round((x0 + x1) / 2), y0], [Math.round((x0 + x1) / 2), y1], [x1, y1]];
+    } else {
+      const x0 = boxCx(a), y0 = a.y + a.h, x1 = boxCx(b), y1 = b.y;
+      pts = Math.abs(x0 - x1) <= 14
+        ? [[x0, y0], [x1, y1]]
+        : [[x0, y0], [x0, Math.round((y0 + y1) / 2)], [x1, Math.round((y0 + y1) / 2)], [x1, y1]];
+    }
+    return {
+      e,
+      pts,
+      stroke: 'var(--d-muted)',
+      width: 1.8,
+      dash: e.variant === 'dash' ? ' stroke-dasharray="5 4"' : '',
+      marker: 'am-p',
+    };
+  });
+}
+
 function computeRoutes(placed: Placed[], edges: ArchEdge[]): Routed[] {
   const byId = new Map(placed.map(p => [p.id, p]));
   const boxes = placed.map(p => p.box);
@@ -383,18 +428,31 @@ function drawEdgeLabels(routed: Routed[], avoid: Box[], interactive = false): st
 export type ArchStyle = 'base' | 'mono' | 'soft';
 export const ARCH_STYLES: ArchStyle[] = ['base', 'mono', 'soft'];
 
+// 形状帧:rect(默认)/diamond(判定)/cylinder(存储)/round(胶囊)。
+// soft 用同色淡填充;mono 墨线;base 用中性卡+角色色条(菱形/圆柱不吃色条)
+function nodeFrame(b: Box, shape: NonNullable<ArchNode['shape']>, style: ArchStyle, color: number, dash: string, tint: string | null): string {
+  const stroke = tint ?? (style === 'mono' ? 'var(--d-ink)' : 'var(--d-border)');
+  const fill = tint ? `${tint}" fill-opacity="0.13` : 'var(--d-card)';
+  const sw = style === 'mono' || tint ? 1.2 : 1;
+  if (shape === 'diamond') {
+    const pts = `${r2(boxCx(b))},${r2(b.y + 3)} ${r2(b.x + b.w - 3)},${r2(boxCy(b))} ${r2(boxCx(b))},${r2(b.y + b.h - 3)} ${r2(b.x + 3)},${r2(boxCy(b))}`;
+    return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${dash}/>`;
+  }
+  if (shape === 'cylinder') {
+    const ry = 7;
+    return `<path d="M${r2(b.x)} ${r2(b.y + ry)}A${r2(b.w / 2)} ${ry} 0 0 1 ${r2(b.x + b.w)} ${r2(b.y + ry)}V${r2(b.y + b.h - ry)}A${r2(b.w / 2)} ${ry} 0 0 1 ${r2(b.x)} ${r2(b.y + b.h - ry)}Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${dash}/>` +
+      `<ellipse cx="${r2(boxCx(b))}" cy="${r2(b.y + ry)}" rx="${r2(b.w / 2)}" ry="${ry}" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`;
+  }
+  const rx = shape === 'round' ? r2(b.h / 2) : style === 'mono' ? 2 : style === 'soft' ? 14 : 8;
+  return `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${dash}/>`;
+}
+
 function drawNode(n: Placed, interactive = false, degree = 0, style: ArchStyle = 'base'): string {
   const { box: b, color } = n;
   const dash = n.type === 'ext' ? ' stroke-dasharray="5 3"' : '';
-  let frame: string;
-  if (style === 'mono') {
-    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="2" fill="var(--d-card)" stroke="var(--d-ink)" stroke-width="1.2"${dash}/>`;
-  } else if (style === 'soft' && color >= 0) {
-    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="14" fill="${sVar(color)}" fill-opacity="0.13" stroke="${sVar(color)}" stroke-width="1.2"${dash}/>`;
-  } else {
-    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="8" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"${dash}/>`;
-  }
-  const accent = style === 'base' && color >= 0 && n.type !== 'ext'
+  const tint = style === 'soft' && color >= 0 ? sVar(color) : null;
+  const frame = nodeFrame(b, n.shape ?? 'rect', style, color, dash, tint);
+  const accent = style === 'base' && color >= 0 && n.type !== 'ext' && !(n.shape === 'diamond' || n.shape === 'cylinder')
     ? `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="3.5" height="${r2(b.h)}" rx="1.5" fill="${sVar(color)}"/>`
     : '';
   const labelY = n.sub ? boxCy(b) - 3 : boxCy(b) + 4.5;
@@ -513,36 +571,59 @@ export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult 
   const style: ArchStyle = tParam === 'mono' || tParam === 'soft' ? tParam : 'base';
   const skin = resolveSkin('sankey', style === 'base' ? tParam : null, schemeParam(params));
 
-  const { placed, W, H } = packGrid(nodes, gridCols);
-  const titleH = title ? 40 : 0;
+  return renderArchmapCore({ nodes, edges, boundaries, title, style, interactive, gridCols, v, skin,
+    minW: clampInt(params, 'w', 0, 200, 2000), minH: clampInt(params, 'h', 0, 140, 2000) });
+}
+
+// spec 级入口:节点/边/边界 + 版本与皮肤由调用方备好(mermaid 语法糖复用此层)
+export interface ArchmapCoreOpts {
+  nodes: ArchNode[];
+  edges: ArchEdge[];
+  boundaries: ArchBoundary[];
+  title?: string;
+  style: ArchStyle;
+  interactive: boolean;
+  gridCols: number;
+  minW?: number;
+  minH?: number;
+  v: VersionInfo;
+  skin: Skin;
+  aria?: string;
+  /** 正交折线(默认,格位架构图)或直连线(mermaid 流程图:迎面边直连,零弯折) */
+  edgeMode?: 'ortho' | 'straight';
+  straightDir?: 'TB' | 'LR';
+}
+export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
+  const { placed, W, H } = packGrid(o.nodes, o.gridCols);
+  const titleH = o.title ? 40 : 0;
   let width = Math.max(W, 320);
   let bodyH = H;
   for (const p of placed) { // 像素节点可能超出轨道画布
     width = Math.max(width, p.box.x + p.box.w + PAD);
     bodyH = Math.max(bodyH, p.box.y + p.box.h + PAD);
   }
-  width = Math.max(width, clampInt(params, 'w', 0, 200, 2000));
-  const height = Math.max(bodyH + titleH, clampInt(params, 'h', 0, 140, 2000));
+  width = Math.max(width, o.minW ?? 0);
+  const height = Math.max(bodyH + titleH, o.minH ?? 0);
   // 管线:路由 → 边界标签选角(避开走线) → 边标签避让(节点盒 ∪ 边界标签区)
-  const routed = computeRoutes(placed, edges);
+  const routed = o.edgeMode === 'straight' ? straightRoutes(placed, o.edges, o.straightDir ?? 'TB') : computeRoutes(placed, o.edges);
   const byId = new Map(placed.map(p => [p.id, p]));
   const boxes = placed.map(p => p.box);
-  const corners = boundaries.map(bd => boundaryLabelCorner(boundaryBox(byId, bd), bd.label.toUpperCase(), routed, boxes));
+  const corners = o.boundaries.map(bd => boundaryLabelCorner(boundaryBox(byId, bd), bd.label.toUpperCase(), routed, boxes));
   const cornerRect = (bd: ArchBoundary, c: Corner): Box => {
     const w = textW(bd.label.toUpperCase(), 10) + bd.label.length * 1.2;
     return { x: c.anchor === 'start' ? c.x - 6 : c.x - w - 6, y: c.y - 13, w: w + 12, h: 26 };
   };
   const avoid: Box[] = [
     ...boxes.map(b => ({ x: b.x - 2, y: b.y - 2, w: b.w + 4, h: b.h + 4 })),
-    ...boundaries.map((bd, i) => cornerRect(bd, corners[i])),
+    ...o.boundaries.map((bd, i) => cornerRect(bd, corners[i])),
   ];
-  const titleSvg = title
-    ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`
+  const titleSvg = o.title
+    ? `<text x="${PAD}" y="${PAD + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
     : '';
   // interactive 悬停强调 + 点击高亮(1-hop 连通)样式;客户端脚本在 explore 落地页。
   // Figma/Miro 式:悬停 = 提亮,选中 = 提亮 + 未选中淡化;无描边/无换色/无 transform
   // (transform 会被入场动画 draw-rise 的 fill-both 终态锁死,勿用)
-  const iStyle = interactive
+  const iStyle = o.interactive
     ? `<style>#am g[data-node]{cursor:pointer;transition:filter .12s ease,opacity .15s ease}` +
       `#am g[data-node]:focus{outline:none}` +
       `#am g[data-node]:hover,#am g[data-node]:focus-visible{filter:brightness(1.3)}` +
@@ -553,19 +634,21 @@ export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult 
       `#am.hl text[data-edge-label]{opacity:.3}#am.hl text[data-edge-label].on{opacity:1}</style>`
     : '';
   const degree = new Map<string, number>();
-  if (interactive) for (const e of edges) {
+  if (o.interactive) for (const e of o.edges) {
     degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
     degree.set(e.to, (degree.get(e.to) ?? 0) + 1);
   }
   const body = iStyle + DEFS
-    + drawBoundaries(placed, boundaries, corners, interactive)
-    + drawRoutes(routed, interactive, style, byId)
-    + drawEdgeLabels(routed, avoid, interactive)
-    + placed.map(p => drawNode(p, interactive, degree.get(p.id) ?? 0, style)).join('');
+    + drawBoundaries(placed, o.boundaries, corners, o.interactive)
+    + drawRoutes(routed, o.interactive, o.style, byId)
+    + drawEdgeLabels(routed, avoid, o.interactive)
+    + placed.map(p => drawNode(p, o.interactive, degree.get(p.id) ?? 0, o.style)).join('');
   // 标题占位下移 + h 垫高的剩余空间上下均分(内容垂直居中,标题仍在顶部)
   const dy = titleH + (height - titleH - bodyH) / 2;
   const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">` + body + `</g>`;
-  const spec: ArchSpec = { type: 'archmap', ...(title ? { title } : {}), nodes, edges, boundaries };
-  const svg = svgDoc(width, height, 'archmap', v.version, title ?? `architecture map, ${nodes.length} nodes`, spec, skin, children);
-  return { svg, version: v.version, cacheControl: v.cacheControl };
+  const spec: ArchSpec = { type: 'archmap', ...(o.title ? { title: o.title } : {}), nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
+  const svg = svgDoc(width, height, 'archmap', o.v.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children);
+  return { svg, version: o.v.version, cacheControl: o.v.cacheControl };
 }
+
+

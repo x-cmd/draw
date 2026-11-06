@@ -1,3 +1,4 @@
+/// <reference path="./types/dagre.d.ts" />
 // npm 库入口(@x-cmd/draw):
 //   import { draw } from '@x-cmd/draw';
 //   const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2' });
@@ -33,6 +34,8 @@ export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
 export { renderEchartsFromUrl, renderEchartsOption } from './render/echarts-ssr.js';
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
 export { renderArchmapFromUrl } from './render/archmap.js';
+// mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
+export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 // mindmap 树形导图:同步,与 GET /draw/mindmap 同参同输出
 export { renderMindmapFromUrl } from './render/mindmap.js';
 // PNG 导出(x-cmd-hub/draw#24):任意渲染产出的 SVG → 平面化(烘焙) → resvg-wasm 光栅化;
