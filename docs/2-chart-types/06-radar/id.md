@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=85,90,70,80,95&title=Perbandingan%20editor
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=85,90,70,80,95&title=Perbandingan%20editor)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=85,90,70,80,95&title=Perbandingan%20editor)](https://x-cmd.com/draw/explore?type=radar&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=85,90,70,80,95&title=Perbandingan%20editor)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=startup,ekosistem,ekstensibilitas,memor
 https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilita
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=8,6,9,7,5&title=Perbandingan%20editor
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=8,6,9,7,5&title=Perbandingan%20editor)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=8,6,9,7,5&title=Perbandingan%20editor)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&values=8,6,9,7,5&title=Perbandingan%20editor)
 
 ## Parameter
 

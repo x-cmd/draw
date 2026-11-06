@@ -14,7 +14,7 @@ x-json-ld:
 
 # radar 雷达图 —— 多维对比
 
-## 示例（URL 即所得，点击图片放大）
+## 示例（URL 即所得，点击图片进入交互页）
 
 **单对象（默认 base）**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product
 ```
 
-![单对象（默认 base）](https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product)
+[![单对象（默认 base）](https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product)](https://x-cmd.com/draw/explore?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product)
 
 **双对象（t=evil）**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=8
 https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison
 ```
 
-![双对象（t=evil）](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison)
+[![双对象（t=evil）](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison)
 
 **三对象（t=evil）**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&s
 https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark
 ```
 
-![三对象（t=evil）](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark)
+[![三对象（t=evil）](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark)
 
 **像素风（t=xcmd）**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&s
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health
 ```
 
-![像素风（t=xcmd）](https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health)
+[![像素风（t=xcmd）](https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health)
 
 多维对比的标配。**典型用法**：产品 / 候选人 / 方案 在多个维度上的评分。
 
@@ -59,7 +59,7 @@ https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,
 https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin
 ```
 
-![Edge vs 源站](https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin)
+[![Edge vs 源站](https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin)
 
 **六维双系列**
 
@@ -67,7 +67,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&
 https://x-cmd.com/draw?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis
 ```
 
-![六维双系列](https://x-cmd.com/draw?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis)
+[![六维双系列](https://x-cmd.com/draw?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis)
 
 ## 参数
 

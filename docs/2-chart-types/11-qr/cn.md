@@ -14,7 +14,7 @@ x-json-ld:
 
 # qr 二维码 —— URL / WiFi / 联系人
 
-## 示例（URL 即所得，点击图片放大）
+## 示例（URL 即所得，点击图片进入交互页）
 
 **URL（扫码直达）**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
 ```
 
-![URL（扫码直达）](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
+[![URL（扫码直达）](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
 
 **WiFi 配置（手机扫就连）**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
 https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi
 ```
 
-![WiFi 配置（手机扫就连）](https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)
+[![WiFi 配置（手机扫就连）](https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)](https://x-cmd.com/draw/explore?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)
 
 **vCard 联系人**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi
 https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact
 ```
 
-![vCard 联系人](https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)
+[![vCard 联系人](https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)](https://x-cmd.com/draw/explore?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)
 
 **普通文本**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cm
 https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello
 ```
 
-![普通文本](https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello)
+[![普通文本](https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello)](https://x-cmd.com/draw/explore?type=qr&d=Hello%20from%20x-cmd&title=hello)
 
 **配色（fg/bg + 标注）**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello
 https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs
 ```
 
-![配色（fg/bg + 标注）](https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)
+[![配色（fg/bg + 标注）](https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)](https://x-cmd.com/draw/explore?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)
 
 生成任何内容（URL、文本、WiFi 配置、vCard）的二维码。返回的 SVG 可以直接 print / embed。
 

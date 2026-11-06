@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=85,90,70,80,95&title=Confronto%20editor
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=85,90,70,80,95&title=Confronto%20editor)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=85,90,70,80,95&title=Confronto%20editor)](https://x-cmd.com/draw/explore?type=radar&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=85,90,70,80,95&title=Confronto%20editor)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=avvio,ecosistema,estendibilit%C3%A0,mem
 https://x-cmd.com/draw?type=radar&t=evil&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Confronto%20editor
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Confronto%20editor)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Confronto%20editor)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Confronto%20editor)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=avvio,ecosistema,estendibilit%C3
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=8,6,9,7,5&title=Confronto%20editor
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=8,6,9,7,5&title=Confronto%20editor)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=8,6,9,7,5&title=Confronto%20editor)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=avvio,ecosistema,estendibilit%C3%A0,memoria,facilit%C3%A0&values=8,6,9,7,5&title=Confronto%20editor)
 
 ## Parametri
 

@@ -17,7 +17,7 @@ x-keywords: draw, pie, koláč, svg, chart
 https://x-cmd.com/draw?type=pie&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=
 https://x-cmd.com/draw?type=pie&t=evil&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bst
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%
 https://x-cmd.com/draw?type=pie&t=progress&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%
 https://x-cmd.com/draw?type=pie&t=revenue&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
 ## Parametry
 

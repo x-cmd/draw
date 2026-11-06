@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=85,90,70,80,95&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=85,90,70,80,95&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=85,90,70,80,95&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)](https://x-cmd.com/draw/explore?type=radar&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=85,90,70,80,95&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni
 https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosist
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=8,6,9,7,5&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=8,6,9,7,5&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=8,6,9,7,5&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&values=8,6,9,7,5&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
 
 ## Parametreler
 

@@ -17,7 +17,7 @@ x-keywords: draw, hbar, poziomy, svg, chart
 https://x-cmd.com/draw?type=hbar&labels=CLI,rdze%C5%84,dokumentacja,UI&values=42,31,18,9&title=Commity%20po%20obszarach
 ```
 
-![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,rdze%C5%84,dokumentacja,UI&values=42,31,18,9&title=Commity%20po%20obszarach)
+[![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,rdze%C5%84,dokumentacja,UI&values=42,31,18,9&title=Commity%20po%20obszarach)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,rdze%C5%84,dokumentacja,UI&values=42,31,18,9&title=Commity%20po%20obszarach)
 
 **opendata**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=hbar&labels=CLI,rdze%C5%84,dokumentacja,UI&values=42
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,rdze%C5%84,dokumentacja,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commity%20po%20obszarach
 ```
 
-![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,rdze%C5%84,dokumentacja,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commity%20po%20obszarach)
+[![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,rdze%C5%84,dokumentacja,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commity%20po%20obszarach)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=CLI,rdze%C5%84,dokumentacja,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commity%20po%20obszarach)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,rdze%C5%84,dokumentacja,U
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw&values=68,21,11&title=Najwi%C4%99ksze%20miasta
 ```
 
-![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw&values=68,21,11&title=Najwi%C4%99ksze%20miasta)
+[![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw&values=68,21,11&title=Najwi%C4%99ksze%20miasta)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw&values=68,21,11&title=Najwi%C4%99ksze%20miasta)
 
 **xcmd-issue**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,rdze%C5%84,dokumentacja,ci,UI&series=otwarte:12,8,15,4,9&series=zamkni%C4%99te:38,52,20,11,26&title=Issues%20po%20obszarach
 ```
 
-![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,rdze%C5%84,dokumentacja,ci,UI&series=otwarte:12,8,15,4,9&series=zamkni%C4%99te:38,52,20,11,26&title=Issues%20po%20obszarach)
+[![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,rdze%C5%84,dokumentacja,ci,UI&series=otwarte:12,8,15,4,9&series=zamkni%C4%99te:38,52,20,11,26&title=Issues%20po%20obszarach)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,rdze%C5%84,dokumentacja,ci,UI&series=otwarte:12,8,15,4,9&series=zamkni%C4%99te:38,52,20,11,26&title=Issues%20po%20obszarach)
 
 **rank**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,rdze%C5%84,dokumentacja
 https://x-cmd.com/draw?type=hbar&t=rank&labels=Pon,Wt,%C5%9Ar&series=2025:80,95,110&series=2026:110,85,120&title=Tygodniowe%20pobrania
 ```
 
-![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Pon,Wt,%C5%9Ar&series=2025:80,95,110&series=2026:110,85,120&title=Tygodniowe%20pobrania)
+[![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Pon,Wt,%C5%9Ar&series=2025:80,95,110&series=2026:110,85,120&title=Tygodniowe%20pobrania)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Pon,Wt,%C5%9Ar&series=2025:80,95,110&series=2026:110,85,120&title=Tygodniowe%20pobrania)
 
 ## Parametry
 

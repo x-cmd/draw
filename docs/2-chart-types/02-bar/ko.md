@@ -17,7 +17,7 @@ x-keywords: draw, bar, 세로 막대, svg, chart
 https://x-cmd.com/draw?type=bar&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:34,87,51,63,45,78,39&series=%EC%84%B1%EC%9E%A5%EB%A5%A0:18,49,29,39,31,45,23
 ```
 
-![bar evil](https://x-cmd.com/draw?type=bar&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:34,87,51,63,45,78,39&series=%EC%84%B1%EC%9E%A5%EB%A5%A0:18,49,29,39,31,45,23)
+[![bar evil](https://x-cmd.com/draw?type=bar&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:34,87,51,63,45,78,39&series=%EC%84%B1%EC%9E%A5%EB%A5%A0:18,49,29,39,31,45,23)](https://x-cmd.com/draw/explore?type=bar&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:34,87,51,63,45,78,39&series=%EC%84%B1%EC%9E%A5%EB%A5%A0:18,49,29,39,31,45,23)
 
 **base**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=bar&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%
 https://x-cmd.com/draw?type=bar&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6
 ```
 
-![bar base](https://x-cmd.com/draw?type=bar&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6)
+[![bar base](https://x-cmd.com/draw?type=bar&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6)](https://x-cmd.com/draw/explore?type=bar&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6)
 
 **grid**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=bar&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:
 https://x-cmd.com/draw?type=bar&t=grid&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=12,18,9
 ```
 
-![bar grid](https://x-cmd.com/draw?type=bar&t=grid&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=12,18,9)
+[![bar grid](https://x-cmd.com/draw?type=bar&t=grid&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=12,18,9)](https://x-cmd.com/draw/explore?type=bar&t=grid&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=12,18,9)
 
 **evil stack**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=bar&t=grid&labels=%EC%9B%94,%ED%99%94,%EC%88%98&valu
 https://x-cmd.com/draw?type=bar&stack=1&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6
 ```
 
-![bar evil stack](https://x-cmd.com/draw?type=bar&stack=1&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6)
+[![bar evil stack](https://x-cmd.com/draw?type=bar&stack=1&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:12,18,9&series=CI:8,11,6)
 
 ## 파라미터
 

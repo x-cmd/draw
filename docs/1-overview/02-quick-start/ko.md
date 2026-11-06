@@ -15,7 +15,7 @@ AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=...`, 데이�
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## 3가지 사용 방법
 

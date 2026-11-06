@@ -17,7 +17,7 @@ x-keywords: draw, area, 면적, svg, chart
 https://x-cmd.com/draw?type=area&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:30,42,38&series=CI:12,18,9&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:30,42,38&series=CI:12,18,9&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
+[![area evil](https://x-cmd.com/draw?type=area&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:30,42,38&series=CI:12,18,9&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)](https://x-cmd.com/draw/explore?type=area&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev:30,42,38&series=CI:12,18,9&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=dev
 https://x-cmd.com/draw?type=area&t=star&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=3,5,4&title=%EC%84%B1%EC%9E%A5%EB%A5%A0
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=3,5,4&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=3,5,4&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)](https://x-cmd.com/draw/explore?type=area&t=star&labels=%EC%9B%94,%ED%99%94,%EC%88%98&values=3,5,4&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=%EC%9B%94,%ED%99%94,%EC%88%98&val
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=%EC%84%B1%EC%9E%A5%EB%A5%A0&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=%EC%84%B1%EC%9E%A5%EB%A5%A0&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=%EC%84%B1%EC%9E%A5%EB%A5%A0&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=%EC%84%B1%EC%9E%A5%EB%A5%A0&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=%EC%84%B1%EC%9E%A5%EB%A5%A0
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)
 
 ## 파라미터
 

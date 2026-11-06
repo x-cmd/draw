@@ -17,7 +17,7 @@ x-keywords: draw, pie, pie, svg, chart
 https://x-cmd.com/draw?type=pie&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Kota%20terbesar&unit=jt&labels=Jakarta,Sur
 https://x-cmd.com/draw?type=pie&t=evil&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Kota%20terbesar&unit=jt&labels=Jaka
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Kota%20terbesar&unit=jt&labels
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labe
 https://x-cmd.com/draw?type=pie&t=progress&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Kota%20terbesar&unit=jt&labels=
 https://x-cmd.com/draw?type=pie&t=revenue&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
 ## Parameter
 

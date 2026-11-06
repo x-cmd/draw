@@ -17,7 +17,7 @@ x-keywords: draw, hbar, barres horizontales, svg, chart
 https://x-cmd.com/draw?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42,31,18,9&title=Commits%20par%20domaine
 ```
 
-![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42,31,18,9&title=Commits%20par%20domaine)
+[![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42,31,18,9&title=Commits%20par%20domaine)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42,31,18,9&title=Commits%20par%20domaine)
 
 **opendata**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,c%C5%93ur,documentation,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20par%20domaine
 ```
 
-![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,c%C5%93ur,documentation,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20par%20domaine)
+[![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,c%C5%93ur,documentation,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20par%20domaine)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=CLI,c%C5%93ur,documentation,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20par%20domaine)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,c%C5%93ur,documentation,U
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Paris,Marseille,Lyon&values=68,21,11&title=Plus%20grandes%20villes
 ```
 
-![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Paris,Marseille,Lyon&values=68,21,11&title=Plus%20grandes%20villes)
+[![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Paris,Marseille,Lyon&values=68,21,11&title=Plus%20grandes%20villes)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=Paris,Marseille,Lyon&values=68,21,11&title=Plus%20grandes%20villes)
 
 **xcmd-issue**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Paris,Marseille,Lyon&values=68,21
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine
 ```
 
-![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine)
+[![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine)
 
 **rank**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation
 https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=T%C3%A9l%C3%A9chargements%20hebdo
 ```
 
-![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=T%C3%A9l%C3%A9chargements%20hebdo)
+[![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=T%C3%A9l%C3%A9chargements%20hebdo)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=T%C3%A9l%C3%A9chargements%20hebdo)
 
 ## Paramètres
 

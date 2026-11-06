@@ -17,7 +17,7 @@ x-keywords: draw, pie, circular, svg, chart
 https://x-cmd.com/draw?type=pie&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&l
 https://x-cmd.com/draw?type=pie&t=evil&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Cele%20mai%20mari%20ora%C8%99e&unit
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Cele%20mai%20mari%20ora%C8%99e
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%9
 https://x-cmd.com/draw?type=pie&t=progress&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Cele%20mai%20mari%20ora%C8%99e&
 https://x-cmd.com/draw?type=pie&t=revenue&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
 ## Parametri
 

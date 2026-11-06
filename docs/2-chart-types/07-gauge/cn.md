@@ -14,7 +14,7 @@ x-json-ld:
 
 # gauge 仪表盘 —— 单值监控
 
-## 示例（URL 即所得，点击图片放大）
+## 示例（URL 即所得，点击图片进入交互页）
 
 **CPU 使用率**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load
 ```
 
-![CPU 使用率](https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load)
+[![CPU 使用率](https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load)](https://x-cmd.com/draw/explore?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load)
 
 **内存**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20l
 https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage
 ```
 
-![内存](https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)
+[![内存](https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)](https://x-cmd.com/draw/explore?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)
 
 **进度**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memo
 https://x-cmd.com/draw?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint
 ```
 
-![进度](https://x-cmd.com/draw?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint)
+[![进度](https://x-cmd.com/draw?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint)](https://x-cmd.com/draw/explore?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint)
 
 **SLA**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=gauge&value=340&max=500&label=Tickets%20resolved&tit
 https://x-cmd.com/draw?type=gauge&value=99.95&max=100&label=SLA%25&unit=%25
 ```
 
-![SLA](https://x-cmd.com/draw?type=gauge&value=99.95&max=100&label=SLA%25&unit=%25)
+[![SLA](https://x-cmd.com/draw?type=gauge&value=99.95&max=100&label=SLA%25&unit=%25)](https://x-cmd.com/draw/explore?type=gauge&value=99.95&max=100&label=SLA%25&unit=%25)
 
 **多环（labels+values）**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=gauge&value=99.95&max=100&label=SLA%25&unit=%25
 https://x-cmd.com/draw?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health
 ```
 
-![多环（labels+values）](https://x-cmd.com/draw?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health)
+[![多环（labels+values）](https://x-cmd.com/draw?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health)](https://x-cmd.com/draw/explore?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health)
 
 **渐变（t=gradient）**
 
@@ -62,7 +62,7 @@ https://x-cmd.com/draw?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&titl
 https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100
 ```
 
-![渐变（t=gradient）](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100)
+[![渐变（t=gradient）](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100)
 
 单值的"进度仪表"。**典型用法**：CPU / 内存 / SLA / 完成率 / 当前值 vs 目标。
 

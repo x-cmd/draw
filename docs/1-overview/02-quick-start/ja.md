@@ -15,7 +15,7 @@ AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=...`、
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## 3 つの使い方
 

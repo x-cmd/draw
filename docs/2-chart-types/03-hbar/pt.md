@@ -17,7 +17,7 @@ x-keywords: draw, hbar, barras horizontais, svg, chart
 https://x-cmd.com/draw?type=hbar&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=42,31,18,9&title=Commits%20por%20%C3%A1rea
 ```
 
-![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=42,31,18,9&title=Commits%20por%20%C3%A1rea)
+[![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=42,31,18,9&title=Commits%20por%20%C3%A1rea)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=42,31,18,9&title=Commits%20por%20%C3%A1rea)
 
 **opendata**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=hbar&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&va
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20por%20%C3%A1rea
 ```
 
-![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20por%20%C3%A1rea)
+[![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20por%20%C3%A1rea)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commits%20por%20%C3%A1rea)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,n%C3%BAcleo,documentaci%C
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia&values=68,21,11&title=Maiores%20cidades
 ```
 
-![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia&values=68,21,11&title=Maiores%20cidades)
+[![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia&values=68,21,11&title=Maiores%20cidades)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia&values=68,21,11&title=Maiores%20cidades)
 
 **xcmd-issue**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=S%C3%A3o%20Paulo,Rio%20de%20Janei
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,ci,UI&series=abertas:12,8,15,4,9&series=fechadas:38,52,20,11,26&title=Issues%20por%20%C3%A1rea
 ```
 
-![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,ci,UI&series=abertas:12,8,15,4,9&series=fechadas:38,52,20,11,26&title=Issues%20por%20%C3%A1rea)
+[![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,ci,UI&series=abertas:12,8,15,4,9&series=fechadas:38,52,20,11,26&title=Issues%20por%20%C3%A1rea)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,n%C3%BAcleo,documentaci%C3%B3n,ci,UI&series=abertas:12,8,15,4,9&series=fechadas:38,52,20,11,26&title=Issues%20por%20%C3%A1rea)
 
 **rank**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,n%C3%BAcleo,documentaci
 https://x-cmd.com/draw?type=hbar&t=rank&labels=Seg,Ter,Qua&series=2025:80,95,110&series=2026:110,85,120&title=Downloads%20semanais
 ```
 
-![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Seg,Ter,Qua&series=2025:80,95,110&series=2026:110,85,120&title=Downloads%20semanais)
+[![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Seg,Ter,Qua&series=2025:80,95,110&series=2026:110,85,120&title=Downloads%20semanais)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Seg,Ter,Qua&series=2025:80,95,110&series=2026:110,85,120&title=Downloads%20semanais)
 
 ## Parâmetros
 

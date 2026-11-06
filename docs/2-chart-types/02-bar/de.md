@@ -17,7 +17,7 @@ x-keywords: draw, bar, Säulen, svg, chart
 https://x-cmd.com/draw?type=bar&t=evil&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downloads:34,87,51,63,45,78,39&series=Wachstum:18,49,29,39,31,45,23
 ```
 
-![bar evil](https://x-cmd.com/draw?type=bar&t=evil&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downloads:34,87,51,63,45,78,39&series=Wachstum:18,49,29,39,31,45,23)
+[![bar evil](https://x-cmd.com/draw?type=bar&t=evil&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downloads:34,87,51,63,45,78,39&series=Wachstum:18,49,29,39,31,45,23)](https://x-cmd.com/draw/explore?type=bar&t=evil&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downloads:34,87,51,63,45,78,39&series=Wachstum:18,49,29,39,31,45,23)
 
 **base**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=bar&t=evil&labels=Mo,Di,Mi,Do,Fr,Sa,So&series=Downlo
 https://x-cmd.com/draw?type=bar&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6
 ```
 
-![bar base](https://x-cmd.com/draw?type=bar&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6)
+[![bar base](https://x-cmd.com/draw?type=bar&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6)](https://x-cmd.com/draw/explore?type=bar&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6)
 
 **grid**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=bar&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,1
 https://x-cmd.com/draw?type=bar&t=grid&labels=Mo,Di,Mi&values=12,18,9
 ```
 
-![bar grid](https://x-cmd.com/draw?type=bar&t=grid&labels=Mo,Di,Mi&values=12,18,9)
+[![bar grid](https://x-cmd.com/draw?type=bar&t=grid&labels=Mo,Di,Mi&values=12,18,9)](https://x-cmd.com/draw/explore?type=bar&t=grid&labels=Mo,Di,Mi&values=12,18,9)
 
 **evil stack**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=bar&t=grid&labels=Mo,Di,Mi&values=12,18,9
 https://x-cmd.com/draw?type=bar&stack=1&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6
 ```
 
-![bar evil stack](https://x-cmd.com/draw?type=bar&stack=1&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6)
+[![bar evil stack](https://x-cmd.com/draw?type=bar&stack=1&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=Mo,Di,Mi&series=dev:12,18,9&series=CI:8,11,6)
 
 ## Parameter
 

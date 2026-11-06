@@ -17,7 +17,7 @@ x-keywords: draw, line, çizgi, svg, chart
 https://x-cmd.com/draw?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,19,15,25,22,30&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar
 ```
 
-![line shadcn](https://x-cmd.com/draw?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,19,15,25,22,30&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar)
+[![line shadcn](https://x-cmd.com/draw?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,19,15,25,22,30&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar)](https://x-cmd.com/draw/explore?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,19,15,25,22,30&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,1
 https://x-cmd.com/draw?type=line&t=evil&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&series=%C4%B0ndirme:12,19,15,25,22,30&series=CI:8,11,9,14,12,10
 ```
 
-![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&series=%C4%B0ndirme:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
+[![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&series=%C4%B0ndirme:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)](https://x-cmd.com/draw/explore?type=line&t=evil&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&series=%C4%B0ndirme:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
 
 **evil-glow**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=line&t=evil&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&seri
 https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=B%C3%BCy%C3%BCme
 ```
 
-![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=B%C3%BCy%C3%BCme)
+[![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=B%C3%BCy%C3%BCme)](https://x-cmd.com/draw/explore?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=B%C3%BCy%C3%BCme)
 
 **opendata**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3
 https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%C4%B0ndirmeler
 ```
 
-![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%C4%B0ndirmeler)
+[![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%C4%B0ndirmeler)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%C4%B0ndirmeler)
 
 ## Parametreler
 

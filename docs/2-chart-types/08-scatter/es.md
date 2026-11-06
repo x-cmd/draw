@@ -17,7 +17,7 @@ x-keywords: draw, scatter, dispersión, svg, chart
 https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia
 ```
 
-![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia)
+[![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia)
 
 **base neg**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latencia
 https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia
 ```
 
-![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia)
+[![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia)
 
 **base num**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latencia
 https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latencia
 ```
 
-![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latencia)
+[![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latencia)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latencia)
 
 ## Parámetros
 

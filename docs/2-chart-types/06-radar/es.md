@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=85,90,70,80,95&title=Comparaci%C3%B3n%20de%20editores
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=85,90,70,80,95&title=Comparaci%C3%B3n%20de%20editores)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=85,90,70,80,95&title=Comparaci%C3%B3n%20de%20editores)](https://x-cmd.com/draw/explore?type=radar&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=85,90,70,80,95&title=Comparaci%C3%B3n%20de%20editores)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=arranque,ecosistema,extensibilidad,memo
 https://x-cmd.com/draw?type=radar&t=evil&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaci%C3%B3n%20de%20editores
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaci%C3%B3n%20de%20editores)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaci%C3%B3n%20de%20editores)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaci%C3%B3n%20de%20editores)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=arranque,ecosistema,extensibilid
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=8,6,9,7,5&title=Comparaci%C3%B3n%20de%20editores
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=8,6,9,7,5&title=Comparaci%C3%B3n%20de%20editores)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=8,6,9,7,5&title=Comparaci%C3%B3n%20de%20editores)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=arranque,ecosistema,extensibilidad,memoria,facilidad&values=8,6,9,7,5&title=Comparaci%C3%B3n%20de%20editores)
 
 ## Parámetros
 

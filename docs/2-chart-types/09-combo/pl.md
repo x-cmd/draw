@@ -17,7 +17,7 @@ x-keywords: draw, combo, kombinowany, svg, chart
 https://x-cmd.com/draw?type=combo&labels=Pon,Wt,%C5%9Ar,Czw,Pt,Sob,Nd&series=Pobrania:120,180,150,210,240,200,260&line=Wzrost:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Tygodniowe%20pobrania&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=Pon,Wt,%C5%9Ar,Czw,Pt,Sob,Nd&series=Pobrania:120,180,150,210,240,200,260&line=Wzrost:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Tygodniowe%20pobrania&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=Pon,Wt,%C5%9Ar,Czw,Pt,Sob,Nd&series=Pobrania:120,180,150,210,240,200,260&line=Wzrost:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Tygodniowe%20pobrania&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Pon,Wt,%C5%9Ar,Czw,Pt,Sob,Nd&series=Pobrania:120,180,150,210,240,200,260&line=Wzrost:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Tygodniowe%20pobrania&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=Pon,Wt,%C5%9Ar,Czw,Pt,Sob,Nd&series=Pob
 https://x-cmd.com/draw?type=combo&t=evil&labels=Pon,Wt,%C5%9Ar&series=Pobrania:9,12,15&line=Wzrost:1.1,1.4,1.8&title=Tygodniowe%20pobrania
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Pon,Wt,%C5%9Ar&series=Pobrania:9,12,15&line=Wzrost:1.1,1.4,1.8&title=Tygodniowe%20pobrania)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Pon,Wt,%C5%9Ar&series=Pobrania:9,12,15&line=Wzrost:1.1,1.4,1.8&title=Tygodniowe%20pobrania)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=Pon,Wt,%C5%9Ar&series=Pobrania:9,12,15&line=Wzrost:1.1,1.4,1.8&title=Tygodniowe%20pobrania)
 
 ## Parametry
 

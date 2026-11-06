@@ -14,7 +14,7 @@ x-json-ld:
 
 # bar 柱状图 —— 分组柱 / 堆叠柱 / 单系列
 
-## 示例（URL 即所得，点击图片放大）
+## 示例（URL 即所得，点击图片进入交互页）
 
 **单系列**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200
 ```
 
-![单系列](https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)
+[![单系列](https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)](https://x-cmd.com/draw/explore?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)
 
 **evil 默认（12 个月）**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,18
 https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14
 ```
 
-![evil 默认（12 个月）](https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)
+[![evil 默认（12 个月）](https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)](https://x-cmd.com/draw/explore?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)
 
 **分组双系列**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Se
 https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6
 ```
 
-![分组双系列](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)
+[![分组双系列](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)](https://x-cmd.com/draw/explore?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)
 
 **堆叠（stack=1）**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:
 https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9
 ```
 
-![堆叠（stack=1）](https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)
+[![堆叠（stack=1）](https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)
 
 **表格柱（t=grid）**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&seri
 https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210
 ```
 
-![表格柱（t=grid）](https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)
+[![表格柱（t=grid）](https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)](https://x-cmd.com/draw/explore?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)
 
 ---
 

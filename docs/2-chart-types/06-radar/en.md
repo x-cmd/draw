@@ -14,7 +14,7 @@ x-json-ld:
 
 # radar chart — multi-dimension comparison
 
-## Examples (what you see is what the URL gives; click to enlarge)
+## Examples (what you see is what the URL gives; click to explore)
 
 **Single (base)**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product
 ```
 
-![Single (base)](https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product)
+[![Single (base)](https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product)](https://x-cmd.com/draw/explore?type=radar&labels=Speed,Quality,Price,Support,UX&values=85,90,70,80,95&title=Product)
 
 **Two-series (t=evil)**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=radar&labels=Speed,Quality,Price,Support,UX&values=8
 https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison
 ```
 
-![Two-series (t=evil)](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison)
+[![Two-series (t=evil)](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&title=Comparison)
 
 **Three-series (t=evil)**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&s
 https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark
 ```
 
-![Three-series (t=evil)](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark)
+[![Three-series (t=evil)](https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&series=A:85,90,70,80,95&series=B:75,85,90,70,80&series=C:90,80,60,85,75&title=Benchmark)
 
 **Pixel (t=xcmd)**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=Speed,Quality,Price,Support,UX&s
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health
 ```
 
-![Pixel (t=xcmd)](https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health)
+[![Pixel (t=xcmd)](https://x-cmd.com/draw?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=speed,docs,tests,dx,ci&values=8,6,9,7,5&title=Health)
 
 The default for multi-dimension comparison. **Typical use**: products / candidates / plans scored across multiple axes.
 
@@ -59,7 +59,7 @@ The default for multi-dimension comparison. **Typical use**: products / candidat
 https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin
 ```
 
-![Edge vs origin](https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin)
+[![Edge vs origin](https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&series=edge:8,7,9,8,6&series=origin:6,8,7,9,5&title=Edge%20vs%20origin)
 
 **Six-axis two series**
 
@@ -67,7 +67,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=latency,tput,errors,uptime,cost&
 https://x-cmd.com/draw?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis
 ```
 
-![Six-axis two series](https://x-cmd.com/draw?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis)
+[![Six-axis two series](https://x-cmd.com/draw?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=a,b,c,d,e,f&series=x:8,6,9,7,5,8&series=y:5,7,6,8,9,6&title=Six-axis)
 
 ## Parameters
 

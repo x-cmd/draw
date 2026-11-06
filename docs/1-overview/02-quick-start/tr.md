@@ -15,7 +15,7 @@ Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=...`, veriler 
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## Üç kullanım yolu
 

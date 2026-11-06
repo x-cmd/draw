@@ -17,7 +17,7 @@ x-keywords: draw, line, linea, svg, chart
 https://x-cmd.com/draw?type=line&labels=Gen,Feb,Mar,Apr,Mag,Giu&values=12,19,15,25,22,30&title=Stelle%20per%20linguaggio
 ```
 
-![line shadcn](https://x-cmd.com/draw?type=line&labels=Gen,Feb,Mar,Apr,Mag,Giu&values=12,19,15,25,22,30&title=Stelle%20per%20linguaggio)
+[![line shadcn](https://x-cmd.com/draw?type=line&labels=Gen,Feb,Mar,Apr,Mag,Giu&values=12,19,15,25,22,30&title=Stelle%20per%20linguaggio)](https://x-cmd.com/draw/explore?type=line&labels=Gen,Feb,Mar,Apr,Mag,Giu&values=12,19,15,25,22,30&title=Stelle%20per%20linguaggio)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=line&labels=Gen,Feb,Mar,Apr,Mag,Giu&values=12,19,15,
 https://x-cmd.com/draw?type=line&t=evil&labels=Gen,Feb,Mar,Apr,Mag,Giu&series=Download:12,19,15,25,22,30&series=CI:8,11,9,14,12,10
 ```
 
-![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=Gen,Feb,Mar,Apr,Mag,Giu&series=Download:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
+[![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=Gen,Feb,Mar,Apr,Mag,Giu&series=Download:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)](https://x-cmd.com/draw/explore?type=line&t=evil&labels=Gen,Feb,Mar,Apr,Mag,Giu&series=Download:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
 
 **evil-glow**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=line&t=evil&labels=Gen,Feb,Mar,Apr,Mag,Giu&series=Do
 https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Crescita
 ```
 
-![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Crescita)
+[![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Crescita)](https://x-cmd.com/draw/explore?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Crescita)
 
 **opendata**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3
 https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=Download
 ```
 
-![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=Download)
+[![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=Download)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=Download)
 
 ## Parametri
 

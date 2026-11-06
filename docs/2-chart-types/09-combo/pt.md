@@ -17,7 +17,7 @@ x-keywords: draw, combo, combinado, svg, chart
 https://x-cmd.com/draw?type=combo&labels=Seg,Ter,Qua,Qui,Sex,S%C3%A1b,Dom&series=Downloads:120,180,150,210,240,200,260&line=Crescimento:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Downloads%20semanais&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=Seg,Ter,Qua,Qui,Sex,S%C3%A1b,Dom&series=Downloads:120,180,150,210,240,200,260&line=Crescimento:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Downloads%20semanais&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=Seg,Ter,Qua,Qui,Sex,S%C3%A1b,Dom&series=Downloads:120,180,150,210,240,200,260&line=Crescimento:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Downloads%20semanais&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Seg,Ter,Qua,Qui,Sex,S%C3%A1b,Dom&series=Downloads:120,180,150,210,240,200,260&line=Crescimento:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Downloads%20semanais&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=Seg,Ter,Qua,Qui,Sex,S%C3%A1b,Dom&series
 https://x-cmd.com/draw?type=combo&t=evil&labels=Seg,Ter,Qua&series=Downloads:9,12,15&line=Crescimento:1.1,1.4,1.8&title=Downloads%20semanais
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Seg,Ter,Qua&series=Downloads:9,12,15&line=Crescimento:1.1,1.4,1.8&title=Downloads%20semanais)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Seg,Ter,Qua&series=Downloads:9,12,15&line=Crescimento:1.1,1.4,1.8&title=Downloads%20semanais)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=Seg,Ter,Qua&series=Downloads:9,12,15&line=Crescimento:1.1,1.4,1.8&title=Downloads%20semanais)
 
 ## Parâmetros
 

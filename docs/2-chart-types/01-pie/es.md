@@ -17,7 +17,7 @@ x-keywords: draw, pie, pastel, svg, chart
 https://x-cmd.com/draw?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Mayores%20ciudades&unit=mill.&labels=Madri
 https://x-cmd.com/draw?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Mayores%20ciudades&unit=mill.&label
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Mayores%20ciudades&unit=mill.&
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill
 https://x-cmd.com/draw?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Mayores%20ciudades&unit=mill.&l
 https://x-cmd.com/draw?type=pie&t=revenue&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
 ## Parámetros
 

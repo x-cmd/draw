@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=85,90,70,80,95&title=Por%C3%B3wnanie%20edytor%C3%B3w
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=85,90,70,80,95&title=Por%C3%B3wnanie%20edytor%C3%B3w)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=85,90,70,80,95&title=Por%C3%B3wnanie%20edytor%C3%B3w)](https://x-cmd.com/draw/explore?type=radar&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=85,90,70,80,95&title=Por%C3%B3wnanie%20edytor%C3%B3w)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=start,ekosystem,rozszerzalno%C5%9B%C4%8
 https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Por%C3%B3wnanie%20edytor%C3%B3w
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Por%C3%B3wnanie%20edytor%C3%B3w)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Por%C3%B3wnanie%20edytor%C3%B3w)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Por%C3%B3wnanie%20edytor%C3%B3w)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosystem,rozszerzalno%C5%
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=8,6,9,7,5&title=Por%C3%B3wnanie%20edytor%C3%B3w
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=8,6,9,7,5&title=Por%C3%B3wnanie%20edytor%C3%B3w)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=8,6,9,7,5&title=Por%C3%B3wnanie%20edytor%C3%B3w)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=start,ekosystem,rozszerzalno%C5%9B%C4%87,pami%C4%99%C4%87,%C5%82atwo%C5%9B%C4%87&values=8,6,9,7,5&title=Por%C3%B3wnanie%20edytor%C3%B3w)
 
 ## Parametry
 

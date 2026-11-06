@@ -14,7 +14,7 @@ x-json-ld:
 
 # pie chart — 6 styles (opendata / evil / evil-mono / market-mono / progress / revenue)
 
-## Examples (what you see is what the URL gives; click to enlarge)
+## Examples (what you see is what the URL gives; click to explore)
 
 **OpenData (default, labels outside)**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4
 ```
 
-![OpenData (default, labels outside)](https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4)
+[![OpenData (default, labels outside)](https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4)](https://x-cmd.com/draw/explore?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4)
 
 **Evil (rounded sectors, inline values)**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Sa
 https://x-cmd.com/draw?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90
 ```
 
-![Evil (rounded sectors, inline values)](https://x-cmd.com/draw?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)
+[![Evil (rounded sectors, inline values)](https://x-cmd.com/draw?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)
 
 **Evil-mono (leader lines, print)**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safa
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90
 ```
 
-![Evil-mono (leader lines, print)](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)
+[![Evil-mono (leader lines, print)](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)
 
 **Market Mono (grayscale + center total)**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome
 https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12
 ```
 
-![Market Mono (grayscale + center total)](https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
+[![Market Mono (grayscale + center total)](https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
 
 **Progress (dotted ring)**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=Market%20share&labels
 https://x-cmd.com/draw?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67
 ```
 
-![Progress (dotted ring)](https://x-cmd.com/draw?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67)
+[![Progress (dotted ring)](https://x-cmd.com/draw?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67)](https://x-cmd.com/draw/explore?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67)
 
 **Revenue (gradient + right legend)**
 
@@ -62,7 +62,7 @@ https://x-cmd.com/draw?type=pie&t=progress&unit=responses&title=Where%20the%20wo
 https://x-cmd.com/draw?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300
 ```
 
-![Revenue (gradient + right legend)](https://x-cmd.com/draw?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300)
+[![Revenue (gradient + right legend)](https://x-cmd.com/draw?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300)](https://x-cmd.com/draw/explore?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300)
 
 **Solid pie (donut=0)**
 
@@ -70,7 +70,7 @@ https://x-cmd.com/draw?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direc
 https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9
 ```
 
-![Solid pie (donut=0)](https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9)
+[![Solid pie (donut=0)](https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9)](https://x-cmd.com/draw/explore?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9)
 
 ---
 

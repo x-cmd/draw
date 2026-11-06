@@ -17,7 +17,7 @@ x-keywords: draw, area, diện tích, svg, chart
 https://x-cmd.com/draw?type=area&labels=T2,T3,T4&series=dev:30,42,38&series=CI:12,18,9&title=T%E1%BA%A3i%20xu%E1%BB%91ng
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=T2,T3,T4&series=dev:30,42,38&series=CI:12,18,9&title=T%E1%BA%A3i%20xu%E1%BB%91ng)
+[![area evil](https://x-cmd.com/draw?type=area&labels=T2,T3,T4&series=dev:30,42,38&series=CI:12,18,9&title=T%E1%BA%A3i%20xu%E1%BB%91ng)](https://x-cmd.com/draw/explore?type=area&labels=T2,T3,T4&series=dev:30,42,38&series=CI:12,18,9&title=T%E1%BA%A3i%20xu%E1%BB%91ng)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=T2,T3,T4&series=dev:30,42,38&series=CI:1
 https://x-cmd.com/draw?type=area&t=star&labels=T2,T3,T4&values=3,5,4&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=T2,T3,T4&values=3,5,4&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=T2,T3,T4&values=3,5,4&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)](https://x-cmd.com/draw/explore?type=area&t=star&labels=T2,T3,T4&values=3,5,4&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=T2,T3,T4&values=3,5,4&title=T%C4%
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)
 
 ## Tham số
 

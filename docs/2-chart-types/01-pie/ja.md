@@ -17,7 +17,7 @@ x-keywords: draw, pie, 円グラフ, svg, chart
 https://x-cmd.com/draw?type=pie&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81
 https://x-cmd.com/draw?type=pie&t=evil&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%8
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5
 https://x-cmd.com/draw?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%
 https://x-cmd.com/draw?type=pie&t=progress&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%
 https://x-cmd.com/draw?type=pie&t=revenue&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
 ## パラメータ
 

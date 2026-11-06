@@ -17,7 +17,7 @@ x-keywords: draw, pie, pizza, svg, chart
 https://x-cmd.com/draw?type=pie&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%
 https://x-cmd.com/draw?type=pie&t=evil&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Maiores%20cidades&unit=mi&labels=S%
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maiores%20cidades&unit=mi&labe
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&la
 https://x-cmd.com/draw?type=pie&t=progress&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Maiores%20cidades&unit=mi&label
 https://x-cmd.com/draw?type=pie&t=revenue&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
 ## Parâmetros
 

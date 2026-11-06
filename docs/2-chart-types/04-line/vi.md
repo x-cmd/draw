@@ -17,7 +17,7 @@ x-keywords: draw, line, đường, svg, chart
 https://x-cmd.com/draw?type=line&labels=T1,T2,T3,T4,T5,T6&values=12,19,15,25,22,30&title=Sao%20theo%20ng%C3%B4n%20ng%E1%BB%AF
 ```
 
-![line shadcn](https://x-cmd.com/draw?type=line&labels=T1,T2,T3,T4,T5,T6&values=12,19,15,25,22,30&title=Sao%20theo%20ng%C3%B4n%20ng%E1%BB%AF)
+[![line shadcn](https://x-cmd.com/draw?type=line&labels=T1,T2,T3,T4,T5,T6&values=12,19,15,25,22,30&title=Sao%20theo%20ng%C3%B4n%20ng%E1%BB%AF)](https://x-cmd.com/draw/explore?type=line&labels=T1,T2,T3,T4,T5,T6&values=12,19,15,25,22,30&title=Sao%20theo%20ng%C3%B4n%20ng%E1%BB%AF)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=line&labels=T1,T2,T3,T4,T5,T6&values=12,19,15,25,22,
 https://x-cmd.com/draw?type=line&t=evil&labels=T1,T2,T3,T4,T5,T6&series=T%E1%BA%A3i%20xu%E1%BB%91ng:12,19,15,25,22,30&series=CI:8,11,9,14,12,10
 ```
 
-![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=T1,T2,T3,T4,T5,T6&series=T%E1%BA%A3i%20xu%E1%BB%91ng:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
+[![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=T1,T2,T3,T4,T5,T6&series=T%E1%BA%A3i%20xu%E1%BB%91ng:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)](https://x-cmd.com/draw/explore?type=line&t=evil&labels=T1,T2,T3,T4,T5,T6&series=T%E1%BA%A3i%20xu%E1%BB%91ng:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
 
 **evil-glow**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=line&t=evil&labels=T1,T2,T3,T4,T5,T6&series=T%E1%BA%
 https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng
 ```
 
-![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)
+[![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)](https://x-cmd.com/draw/explore?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=T%C4%83ng%20tr%C6%B0%E1%BB%9Fng)
 
 **opendata**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3
 https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=T%E1%BA%A3i%20xu%E1%BB%91ng
 ```
 
-![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=T%E1%BA%A3i%20xu%E1%BB%91ng)
+[![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=T%E1%BA%A3i%20xu%E1%BB%91ng)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=T%E1%BA%A3i%20xu%E1%BB%91ng)
 
 ## Tham số
 

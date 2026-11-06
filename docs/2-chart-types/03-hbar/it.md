@@ -17,7 +17,7 @@ x-keywords: draw, hbar, barre orizzontali, svg, chart
 https://x-cmd.com/draw?type=hbar&labels=CLI,core,documentazione,UI&values=42,31,18,9&title=Commit%20per%20area
 ```
 
-![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,core,documentazione,UI&values=42,31,18,9&title=Commit%20per%20area)
+[![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,core,documentazione,UI&values=42,31,18,9&title=Commit%20per%20area)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,core,documentazione,UI&values=42,31,18,9&title=Commit%20per%20area)
 
 **opendata**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=hbar&labels=CLI,core,documentazione,UI&values=42,31,
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,core,documentazione,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit%20per%20area
 ```
 
-![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,core,documentazione,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit%20per%20area)
+[![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,core,documentazione,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit%20per%20area)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=CLI,core,documentazione,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit%20per%20area)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,core,documentazione,UI&va
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Roma,Milano,Napoli&values=68,21,11&title=Maggiori%20citt%C3%A0
 ```
 
-![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Roma,Milano,Napoli&values=68,21,11&title=Maggiori%20citt%C3%A0)
+[![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Roma,Milano,Napoli&values=68,21,11&title=Maggiori%20citt%C3%A0)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=Roma,Milano,Napoli&values=68,21,11&title=Maggiori%20citt%C3%A0)
 
 **xcmd-issue**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Roma,Milano,Napoli&values=68,21,1
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,core,documentazione,ci,UI&series=aperte:12,8,15,4,9&series=chiuse:38,52,20,11,26&title=Issue%20per%20area
 ```
 
-![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,core,documentazione,ci,UI&series=aperte:12,8,15,4,9&series=chiuse:38,52,20,11,26&title=Issue%20per%20area)
+[![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,core,documentazione,ci,UI&series=aperte:12,8,15,4,9&series=chiuse:38,52,20,11,26&title=Issue%20per%20area)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,core,documentazione,ci,UI&series=aperte:12,8,15,4,9&series=chiuse:38,52,20,11,26&title=Issue%20per%20area)
 
 **rank**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,core,documentazione,ci,
 https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=Download%20settimanali
 ```
 
-![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=Download%20settimanali)
+[![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=Download%20settimanali)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Lun,Mar,Mer&series=2025:80,95,110&series=2026:110,85,120&title=Download%20settimanali)
 
 ## Parametri
 

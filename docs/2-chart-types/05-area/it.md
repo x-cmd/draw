@@ -17,7 +17,7 @@ x-keywords: draw, area, area, svg, chart
 https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mer&series=dev:30,42,38&series=CI:12,18,9&title=Download
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mer&series=dev:30,42,38&series=CI:12,18,9&title=Download)
+[![area evil](https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mer&series=dev:30,42,38&series=CI:12,18,9&title=Download)](https://x-cmd.com/draw/explore?type=area&labels=Lun,Mar,Mer&series=dev:30,42,38&series=CI:12,18,9&title=Download)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mer&series=dev:30,42,38&series=C
 https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mer&values=3,5,4&title=Crescita
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mer&values=3,5,4&title=Crescita)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mer&values=3,5,4&title=Crescita)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Lun,Mar,Mer&values=3,5,4&title=Crescita)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mer&values=3,5,4&title=Cr
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Crescita&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Crescita&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Crescita&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Crescita&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Crescita
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Crescita)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Crescita)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Crescita)
 
 ## Parametri
 

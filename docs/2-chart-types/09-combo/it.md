@@ -17,7 +17,7 @@ x-keywords: draw, combo, combinato, svg, chart
 https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Gio,Ven,Sab,Dom&series=Download:120,180,150,210,240,200,260&line=Crescita:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Download%20settimanali&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Gio,Ven,Sab,Dom&series=Download:120,180,150,210,240,200,260&line=Crescita:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Download%20settimanali&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Gio,Ven,Sab,Dom&series=Download:120,180,150,210,240,200,260&line=Crescita:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Download%20settimanali&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Lun,Mar,Mer,Gio,Ven,Sab,Dom&series=Download:120,180,150,210,240,200,260&line=Crescita:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Download%20settimanali&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Gio,Ven,Sab,Dom&series=Down
 https://x-cmd.com/draw?type=combo&t=evil&labels=Lun,Mar,Mer&series=Download:9,12,15&line=Crescita:1.1,1.4,1.8&title=Download%20settimanali
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Lun,Mar,Mer&series=Download:9,12,15&line=Crescita:1.1,1.4,1.8&title=Download%20settimanali)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Lun,Mar,Mer&series=Download:9,12,15&line=Crescita:1.1,1.4,1.8&title=Download%20settimanali)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=Lun,Mar,Mer&series=Download:9,12,15&line=Crescita:1.1,1.4,1.8&title=Download%20settimanali)
 
 ## Parametri
 

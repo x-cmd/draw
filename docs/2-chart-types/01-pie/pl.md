@@ -17,7 +17,7 @@ x-keywords: draw, pie, kołowy, svg, chart
 https://x-cmd.com/draw?type=pie&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=W
 https://x-cmd.com/draw?type=pie&t=evil&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Najwi%C4%99ksze%20miasta&unit=mln&l
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Najwi%C4%99ksze%20miasta&unit=
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&uni
 https://x-cmd.com/draw?type=pie&t=progress&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Najwi%C4%99ksze%20miasta&unit=m
 https://x-cmd.com/draw?type=pie&t=revenue&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
 ## Parametry
 

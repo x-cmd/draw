@@ -17,7 +17,7 @@ x-keywords: draw, scatter, กระจาย, svg, chart
 https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87
 ```
 
-![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)
+[![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)
 
 **base neg**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E0%B8%84%E0%B
 https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87
 ```
 
-![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)
+[![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)
 
 **base num**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E0%B8%84%
 https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87
 ```
 
-![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)
+[![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%A7%E0%B8%87)
 
 ## พารามิเตอร์
 

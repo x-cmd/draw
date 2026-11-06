@@ -17,7 +17,7 @@ x-keywords: draw, scatter, sebaran, svg, chart
 https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi
 ```
 
-![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi)
+[![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi)
 
 **base neg**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi
 https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latensi
 ```
 
-![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latensi)
+[![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latensi)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latensi)
 
 **base num**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Latensi
 https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latensi
 ```
 
-![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latensi)
+[![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latensi)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Latensi)
 
 ## Parameter
 

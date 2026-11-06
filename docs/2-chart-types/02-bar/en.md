@@ -14,7 +14,7 @@ x-json-ld:
 
 # bar chart — grouped / stacked / single series
 
-## Examples (what you see is what the URL gives; click to enlarge)
+## Examples (what you see is what the URL gives; click to explore)
 
 **Single series**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200
 ```
 
-![Single series](https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)
+[![Single series](https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)](https://x-cmd.com/draw/explore?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)
 
 **evil default (12 months)**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,18
 https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14
 ```
 
-![evil default (12 months)](https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)
+[![evil default (12 months)](https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)](https://x-cmd.com/draw/explore?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)
 
 **Grouped two series**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Se
 https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6
 ```
 
-![Grouped two series](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)
+[![Grouped two series](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)](https://x-cmd.com/draw/explore?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)
 
 **Stacked (stack=1)**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:
 https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9
 ```
 
-![Stacked (stack=1)](https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)
+[![Stacked (stack=1)](https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)
 
 **Table bars (t=grid)**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&seri
 https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210
 ```
 
-![Table bars (t=grid)](https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)
+[![Table bars (t=grid)](https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)](https://x-cmd.com/draw/explore?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)
 
 ---
 

@@ -14,7 +14,7 @@ x-json-ld:
 
 # area 面积图 —— 折线 + 填充
 
-## 示例（URL 即所得，点击图片放大）
+## 示例（URL 即所得，点击图片进入交互页）
 
 **双系列面积（默认 evil）**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=area&labels=Mon,Tue,Wed,Thu&series=web:30,42,38,50&series=cli:12,18,9,14&title=Signups
 ```
 
-![双系列面积（默认 evil）](https://x-cmd.com/draw?type=area&labels=Mon,Tue,Wed,Thu&series=web:30,42,38,50&series=cli:12,18,9,14&title=Signups)
+[![双系列面积（默认 evil）](https://x-cmd.com/draw?type=area&labels=Mon,Tue,Wed,Thu&series=web:30,42,38,50&series=cli:12,18,9,14&title=Signups)](https://x-cmd.com/draw/explore?type=area&labels=Mon,Tue,Wed,Thu&series=web:30,42,38,50&series=cli:12,18,9,14&title=Signups)
 
 **单系列面积**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=area&labels=Mon,Tue,Wed,Thu&series=web:30,42,38,50&s
 https://x-cmd.com/draw?type=area&labels=Jan,Feb,Mar,Apr,May,Jun&values=10,30,25,50,40,70&title=Cumulative
 ```
 
-![单系列面积](https://x-cmd.com/draw?type=area&labels=Jan,Feb,Mar,Apr,May,Jun&values=10,30,25,50,40,70&title=Cumulative)
+[![单系列面积](https://x-cmd.com/draw?type=area&labels=Jan,Feb,Mar,Apr,May,Jun&values=10,30,25,50,40,70&title=Cumulative)](https://x-cmd.com/draw/explore?type=area&labels=Jan,Feb,Mar,Apr,May,Jun&values=10,30,25,50,40,70&title=Cumulative)
 
 **手绘风（t=star）**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=area&labels=Jan,Feb,Mar,Apr,May,Jun&values=10,30,25,
 https://x-cmd.com/draw?type=area&t=star&labels=Mon,Tue,Wed,Thu&values=3,5,4,6&title=Mood
 ```
 
-![手绘风（t=star）](https://x-cmd.com/draw?type=area&t=star&labels=Mon,Tue,Wed,Thu&values=3,5,4,6&title=Mood)
+[![手绘风（t=star）](https://x-cmd.com/draw?type=area&t=star&labels=Mon,Tue,Wed,Thu&values=3,5,4,6&title=Mood)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Mon,Tue,Wed,Thu&values=3,5,4,6&title=Mood)
 
 **编辑式（t=opendata, source=）**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=Mon,Tue,Wed,Thu&values=3,5,4,6&ti
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022,2023,2024&values=1.2,2.8,6.4,14.1,28.6,51.0&title=AI%20adoption&source=internal%20survey
 ```
 
-![编辑式（t=opendata, source=）](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022,2023,2024&values=1.2,2.8,6.4,14.1,28.6,51.0&title=AI%20adoption&source=internal%20survey)
+[![编辑式（t=opendata, source=）](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022,2023,2024&values=1.2,2.8,6.4,14.1,28.6,51.0&title=AI%20adoption&source=internal%20survey)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022,2023,2024&values=1.2,2.8,6.4,14.1,28.6,51.0&title=AI%20adoption&source=internal%20survey)
 
 **像素（t=pixel）**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022,2023,2024
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d,e&values=2,4,3,5,4&title=Load
 ```
 
-![像素（t=pixel）](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d,e&values=2,4,3,5,4&title=Load)
+[![像素（t=pixel）](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d,e&values=2,4,3,5,4&title=Load)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d,e&values=2,4,3,5,4&title=Load)
 
 ---
 

@@ -17,7 +17,7 @@ x-keywords: draw, combo, combiné, svg, chart
 https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3
 https://x-cmd.com/draw?type=combo&t=evil&labels=Lun,Mar,Mer&series=T%C3%A9l%C3%A9chargements:9,12,15&line=Croissance:1.1,1.4,1.8&title=T%C3%A9l%C3%A9chargements%20hebdo
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Lun,Mar,Mer&series=T%C3%A9l%C3%A9chargements:9,12,15&line=Croissance:1.1,1.4,1.8&title=T%C3%A9l%C3%A9chargements%20hebdo)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Lun,Mar,Mer&series=T%C3%A9l%C3%A9chargements:9,12,15&line=Croissance:1.1,1.4,1.8&title=T%C3%A9l%C3%A9chargements%20hebdo)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=Lun,Mar,Mer&series=T%C3%A9l%C3%A9chargements:9,12,15&line=Croissance:1.1,1.4,1.8&title=T%C3%A9l%C3%A9chargements%20hebdo)
 
 ## Paramètres
 

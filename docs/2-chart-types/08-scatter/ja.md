@@ -17,7 +17,7 @@ x-keywords: draw, scatter, 散布, svg, chart
 https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7
 ```
 
-![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)
+[![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)
 
 **base neg**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E3%83%AC%E3%8
 https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7
 ```
 
-![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)
+[![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)
 
 **base num**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E3%83%AC%
 https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7
 ```
 
-![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)
+[![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E3%83%AC%E3%82%A4%E3%83%86%E3%83%B3%E3%82%B7)
 
 ## パラメータ
 

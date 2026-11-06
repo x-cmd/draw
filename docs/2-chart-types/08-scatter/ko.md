@@ -17,7 +17,7 @@ x-keywords: draw, scatter, 산점, svg, chart
 https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84
 ```
 
-![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)
+[![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)
 
 **base neg**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%EC%A7%80%EC%9
 https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84
 ```
 
-![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)
+[![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)
 
 **base num**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%EC%A7%80%
 https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84
 ```
 
-![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)
+[![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%EC%A7%80%EC%97%B0%20%EC%8B%9C%EA%B0%84)
 
 ## 파라미터
 

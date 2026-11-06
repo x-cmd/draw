@@ -17,7 +17,7 @@ x-keywords: draw, gauge, đồng hồ, svg, chart
 https://x-cmd.com/draw?type=gauge&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100
 ```
 
-![gauge base](https://x-cmd.com/draw?type=gauge&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100)
+[![gauge base](https://x-cmd.com/draw?type=gauge&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100)
 
 **gradient**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=gauge&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&ma
 https://x-cmd.com/draw?type=gauge&t=gradient&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100
 ```
 
-![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100)
+[![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=87&max=100)
 
 **reliability**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=gauge&t=gradient&title=T%E1%BB%B7%20l%E1%BB%87%20CI&
 https://x-cmd.com/draw?type=gauge&t=reliability&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=99.9&max=100
 ```
 
-![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=99.9&max=100)
+[![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=99.9&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=T%E1%BB%B7%20l%E1%BB%87%20CI&value=99.9&max=100)
 
 ## Tham số
 

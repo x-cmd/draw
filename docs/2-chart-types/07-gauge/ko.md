@@ -17,7 +17,7 @@ x-keywords: draw, gauge, 게이지, svg, chart
 https://x-cmd.com/draw?type=gauge&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100
 ```
 
-![gauge base](https://x-cmd.com/draw?type=gauge&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100)
+[![gauge base](https://x-cmd.com/draw?type=gauge&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100)
 
 **gradient**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=gauge&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=8
 https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100
 ```
 
-![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100)
+[![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=87&max=100)
 
 **reliability**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C
 https://x-cmd.com/draw?type=gauge&t=reliability&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=99.9&max=100
 ```
 
-![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=99.9&max=100)
+[![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=99.9&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=CI%20%ED%86%B5%EA%B3%BC%EC%9C%A8&value=99.9&max=100)
 
 ## 파라미터
 

@@ -17,7 +17,7 @@ x-keywords: draw, radar, ra đa, svg, chart
 https://x-cmd.com/draw?type=radar&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=85,90,70,80,95&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=85,90,70,80,95&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=85,90,70,80,95&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)](https://x-cmd.com/draw/explore?type=radar&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=85,90,70,80,95&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%B
 https://x-cmd.com/draw?type=radar&t=evil&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=8,6,9,7,5&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=8,6,9,7,5&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=8,6,9,7,5&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=kh%E1%BB%9Fi%20%C4%91%E1%BB%99ng,h%E1%BB%87%20sinh%20th%C3%A1i,m%E1%BB%9F%20r%E1%BB%99ng,b%E1%BB%99%20nh%E1%BB%9B,d%E1%BB%85%20d%C3%B9ng&values=8,6,9,7,5&title=So%20s%C3%A1nh%20tr%C3%ACnh%20so%E1%BA%A1n%20th%E1%BA%A3o)
 
 ## Tham số
 

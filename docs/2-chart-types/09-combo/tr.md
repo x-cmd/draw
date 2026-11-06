@@ -17,7 +17,7 @@ x-keywords: draw, combo, kombine, svg, chart
 https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series
 https://x-cmd.com/draw?type=combo&t=evil&labels=Pzt,Sal,%C3%87ar&series=%C4%B0ndirme:9,12,15&line=B%C3%BCy%C3%BCme:1.1,1.4,1.8&title=Haftal%C4%B1k%20indirmeler
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Pzt,Sal,%C3%87ar&series=%C4%B0ndirme:9,12,15&line=B%C3%BCy%C3%BCme:1.1,1.4,1.8&title=Haftal%C4%B1k%20indirmeler)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Pzt,Sal,%C3%87ar&series=%C4%B0ndirme:9,12,15&line=B%C3%BCy%C3%BCme:1.1,1.4,1.8&title=Haftal%C4%B1k%20indirmeler)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=Pzt,Sal,%C3%87ar&series=%C4%B0ndirme:9,12,15&line=B%C3%BCy%C3%BCme:1.1,1.4,1.8&title=Haftal%C4%B1k%20indirmeler)
 
 ## Parametreler
 

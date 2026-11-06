@@ -17,7 +17,7 @@ x-keywords: draw, gauge, indicatore, svg, chart
 https://x-cmd.com/draw?type=gauge&title=Tasso%20di%20CI&value=87&max=100
 ```
 
-![gauge base](https://x-cmd.com/draw?type=gauge&title=Tasso%20di%20CI&value=87&max=100)
+[![gauge base](https://x-cmd.com/draw?type=gauge&title=Tasso%20di%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&title=Tasso%20di%20CI&value=87&max=100)
 
 **gradient**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=gauge&title=Tasso%20di%20CI&value=87&max=100
 https://x-cmd.com/draw?type=gauge&t=gradient&title=Tasso%20di%20CI&value=87&max=100
 ```
 
-![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=Tasso%20di%20CI&value=87&max=100)
+[![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=Tasso%20di%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=Tasso%20di%20CI&value=87&max=100)
 
 **reliability**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=gauge&t=gradient&title=Tasso%20di%20CI&value=87&max=
 https://x-cmd.com/draw?type=gauge&t=reliability&title=Tasso%20di%20CI&value=99.9&max=100
 ```
 
-![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=Tasso%20di%20CI&value=99.9&max=100)
+[![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=Tasso%20di%20CI&value=99.9&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=Tasso%20di%20CI&value=99.9&max=100)
 
 ## Parametri
 

@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=85,90,70,80,95&title=Comparare%20editoare
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=85,90,70,80,95&title=Comparare%20editoare)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=85,90,70,80,95&title=Comparare%20editoare)](https://x-cmd.com/draw/explore?type=radar&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=85,90,70,80,95&title=Comparare%20editoare)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=pornire,ecosistem,extensibilitate,memor
 https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitat
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=8,6,9,7,5&title=Comparare%20editoare
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=8,6,9,7,5&title=Comparare%20editoare)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=8,6,9,7,5&title=Comparare%20editoare)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&values=8,6,9,7,5&title=Comparare%20editoare)
 
 ## Parametri
 

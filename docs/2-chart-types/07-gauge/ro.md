@@ -17,7 +17,7 @@ x-keywords: draw, gauge, indicator, svg, chart
 https://x-cmd.com/draw?type=gauge&title=Rat%C4%83%20CI&value=87&max=100
 ```
 
-![gauge base](https://x-cmd.com/draw?type=gauge&title=Rat%C4%83%20CI&value=87&max=100)
+[![gauge base](https://x-cmd.com/draw?type=gauge&title=Rat%C4%83%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&title=Rat%C4%83%20CI&value=87&max=100)
 
 **gradient**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=gauge&title=Rat%C4%83%20CI&value=87&max=100
 https://x-cmd.com/draw?type=gauge&t=gradient&title=Rat%C4%83%20CI&value=87&max=100
 ```
 
-![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=Rat%C4%83%20CI&value=87&max=100)
+[![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=Rat%C4%83%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=Rat%C4%83%20CI&value=87&max=100)
 
 **reliability**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=gauge&t=gradient&title=Rat%C4%83%20CI&value=87&max=1
 https://x-cmd.com/draw?type=gauge&t=reliability&title=Rat%C4%83%20CI&value=99.9&max=100
 ```
 
-![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=Rat%C4%83%20CI&value=99.9&max=100)
+[![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=Rat%C4%83%20CI&value=99.9&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=Rat%C4%83%20CI&value=99.9&max=100)
 
 ## Parametri
 

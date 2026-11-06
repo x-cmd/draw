@@ -17,7 +17,7 @@ x-keywords: draw, pie, pasta, svg, chart
 https://x-cmd.com/draw?type=pie&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=
 https://x-cmd.com/draw?type=pie&t=evil&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirle
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fe
 https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9
 https://x-cmd.com/draw?type=pie&t=progress&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=En%20b%C3%BCy%C3%BCk%20%C5%9Feh
 https://x-cmd.com/draw?type=pie&t=revenue&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
 ## Parametreler
 

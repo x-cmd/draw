@@ -15,7 +15,7 @@ Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=...`, 
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## Trois façons de l’utiliser
 

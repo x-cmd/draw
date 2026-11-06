@@ -17,7 +17,7 @@ x-keywords: draw, hbar, 수평 막대, svg, chart
 https://x-cmd.com/draw?type=hbar&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=42,31,18,9&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B
 ```
 
-![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=42,31,18,9&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B)
+[![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=42,31,18,9&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=42,31,18,9&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B)
 
 **opendata**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=hbar&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B
 ```
 
-![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B)
+[![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%BB%A4%EB%B0%8B)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%82%B0,%EC%9D%B8%EC%B2%9C&values=68,21,11&title=%EC%B5%9C%EB%8C%80%20%EB%8F%84%EC%8B%9C%20%EC%9D%B8%EA%B5%AC
 ```
 
-![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%82%B0,%EC%9D%B8%EC%B2%9C&values=68,21,11&title=%EC%B5%9C%EB%8C%80%20%EB%8F%84%EC%8B%9C%20%EC%9D%B8%EA%B5%AC)
+[![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%82%B0,%EC%9D%B8%EC%B2%9C&values=68,21,11&title=%EC%B5%9C%EB%8C%80%20%EB%8F%84%EC%8B%9C%20%EC%9D%B8%EA%B5%AC)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%82%B0,%EC%9D%B8%EC%B2%9C&values=68,21,11&title=%EC%B5%9C%EB%8C%80%20%EB%8F%84%EC%8B%9C%20%EC%9D%B8%EA%B5%AC)
 
 **xcmd-issue**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%8
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,ci,UI&series=%EC%97%B4%EB%A6%BC:12,8,15,4,9&series=%EB%8B%AB%ED%9E%98:38,52,20,11,26&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%9D%B4%EC%8A%88
 ```
 
-![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,ci,UI&series=%EC%97%B4%EB%A6%BC:12,8,15,4,9&series=%EB%8B%AB%ED%9E%98:38,52,20,11,26&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%9D%B4%EC%8A%88)
+[![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,ci,UI&series=%EC%97%B4%EB%A6%BC:12,8,15,4,9&series=%EB%8B%AB%ED%9E%98:38,52,20,11,26&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%9D%B4%EC%8A%88)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,%EC%BD%94%EC%96%B4,%EB%AC%B8%EC%84%9C,ci,UI&series=%EC%97%B4%EB%A6%BC:12,8,15,4,9&series=%EB%8B%AB%ED%9E%98:38,52,20,11,26&title=%EC%98%81%EC%97%AD%EB%B3%84%20%EC%9D%B4%EC%8A%88)
 
 **rank**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,%EC%BD%94%EC%96%B4,%EB%
 https://x-cmd.com/draw?type=hbar&t=rank&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=2025:80,95,110&series=2026:110,85,120&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C
 ```
 
-![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=2025:80,95,110&series=2026:110,85,120&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
+[![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=2025:80,95,110&series=2026:110,85,120&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=2025:80,95,110&series=2026:110,85,120&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
 
 ## 파라미터
 

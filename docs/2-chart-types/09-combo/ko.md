@@ -17,7 +17,7 @@ x-keywords: draw, combo, 복합, svg, chart
 https://x-cmd.com/draw?type=combo&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:120,180,150,210,240,200,260&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:120,180,150,210,240,200,260&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:120,180,150,210,240,200,260&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9,%EA%B8%88,%ED%86%A0,%EC%9D%BC&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:120,180,150,210,240,200,260&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=%EC%9B%94,%ED%99%94,%EC%88%98,%EB%AA%A9
 https://x-cmd.com/draw?type=combo&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:9,12,15&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:1.1,1.4,1.8&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:9,12,15&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:1.1,1.4,1.8&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:9,12,15&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:1.1,1.4,1.8&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=%EC%9B%94,%ED%99%94,%EC%88%98&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:9,12,15&line=%EC%84%B1%EC%9E%A5%EB%A5%A0:1.1,1.4,1.8&title=%EC%A3%BC%EA%B0%84%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
 
 ## 파라미터
 

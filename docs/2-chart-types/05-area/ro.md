@@ -17,7 +17,7 @@ x-keywords: draw, area, arie, svg, chart
 https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mie&series=dev:30,42,38&series=CI:12,18,9&title=Desc%C4%83rc%C4%83ri
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mie&series=dev:30,42,38&series=CI:12,18,9&title=Desc%C4%83rc%C4%83ri)
+[![area evil](https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mie&series=dev:30,42,38&series=CI:12,18,9&title=Desc%C4%83rc%C4%83ri)](https://x-cmd.com/draw/explore?type=area&labels=Lun,Mar,Mie&series=dev:30,42,38&series=CI:12,18,9&title=Desc%C4%83rc%C4%83ri)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=Lun,Mar,Mie&series=dev:30,42,38&series=C
 https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mie&values=3,5,4&title=Cre%C8%99tere
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mie&values=3,5,4&title=Cre%C8%99tere)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mie&values=3,5,4&title=Cre%C8%99tere)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Lun,Mar,Mie&values=3,5,4&title=Cre%C8%99tere)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=Lun,Mar,Mie&values=3,5,4&title=Cr
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Cre%C8%99tere&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Cre%C8%99tere&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Cre%C8%99tere&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Cre%C8%99tere&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Cre%C8%99tere
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Cre%C8%99tere)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Cre%C8%99tere)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Cre%C8%99tere)
 
 ## Parametri
 

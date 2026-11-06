@@ -17,7 +17,7 @@ x-keywords: draw, gauge, індикатор, svg, chart
 https://x-cmd.com/draw?type=gauge&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100
 ```
 
-![gauge base](https://x-cmd.com/draw?type=gauge&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100)
+[![gauge base](https://x-cmd.com/draw?type=gauge&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100)
 
 **gradient**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=gauge&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20C
 https://x-cmd.com/draw?type=gauge&t=gradient&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100
 ```
 
-![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100)
+[![gauge gradient](https://x-cmd.com/draw?type=gauge&t=gradient&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=87&max=100)
 
 **reliability**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=gauge&t=gradient&title=%D0%A7%D0%B0%D1%81%D1%82%D0%B
 https://x-cmd.com/draw?type=gauge&t=reliability&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=99.9&max=100
 ```
 
-![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=99.9&max=100)
+[![gauge reliability](https://x-cmd.com/draw?type=gauge&t=reliability&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=99.9&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=%D0%A7%D0%B0%D1%81%D1%82%D0%BA%D0%B0%20CI&value=99.9&max=100)
 
 ## Параметри
 

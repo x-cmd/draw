@@ -15,7 +15,7 @@ Grafik SVG untuk era AI: satu endpoint `/draw?type=...`, data di URL, dan `<meta
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## Tiga cara pakai
 

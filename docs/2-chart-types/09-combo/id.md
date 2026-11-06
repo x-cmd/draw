@@ -17,7 +17,7 @@ x-keywords: draw, combo, kombo, svg, chart
 https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl
 ```
 
-![combo base](https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl)
+[![combo base](https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Undu
 https://x-cmd.com/draw?type=combo&t=evil&labels=Sen,Sel,Rab&series=Unduhan:9,12,15&line=Pertumbuhan:1.1,1.4,1.8&title=Unduhan%20mingguan
 ```
 
-![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Sen,Sel,Rab&series=Unduhan:9,12,15&line=Pertumbuhan:1.1,1.4,1.8&title=Unduhan%20mingguan)
+[![combo evil](https://x-cmd.com/draw?type=combo&t=evil&labels=Sen,Sel,Rab&series=Unduhan:9,12,15&line=Pertumbuhan:1.1,1.4,1.8&title=Unduhan%20mingguan)](https://x-cmd.com/draw/explore?type=combo&t=evil&labels=Sen,Sel,Rab&series=Unduhan:9,12,15&line=Pertumbuhan:1.1,1.4,1.8&title=Unduhan%20mingguan)
 
 ## Parameter
 

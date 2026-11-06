@@ -17,7 +17,7 @@ x-keywords: draw, line, 선, svg, chart
 https://x-cmd.com/draw?type=line&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&values=12,19,15,25,22,30&title=%EC%96%B8%EC%96%B4%EB%B3%84%20%EC%8A%A4%ED%83%80
 ```
 
-![line shadcn](https://x-cmd.com/draw?type=line&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&values=12,19,15,25,22,30&title=%EC%96%B8%EC%96%B4%EB%B3%84%20%EC%8A%A4%ED%83%80)
+[![line shadcn](https://x-cmd.com/draw?type=line&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&values=12,19,15,25,22,30&title=%EC%96%B8%EC%96%B4%EB%B3%84%20%EC%8A%A4%ED%83%80)](https://x-cmd.com/draw/explore?type=line&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&values=12,19,15,25,22,30&title=%EC%96%B8%EC%96%B4%EB%B3%84%20%EC%8A%A4%ED%83%80)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=line&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B
 https://x-cmd.com/draw?type=line&t=evil&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:12,19,15,25,22,30&series=CI:8,11,9,14,12,10
 ```
 
-![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
+[![line evil](https://x-cmd.com/draw?type=line&t=evil&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)](https://x-cmd.com/draw/explore?type=line&t=evil&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,4%EC%9B%94,5%EC%9B%94,6%EC%9B%94&series=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C:12,19,15,25,22,30&series=CI:8,11,9,14,12,10)
 
 **evil-glow**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=line&t=evil&labels=1%EC%9B%94,2%EC%9B%94,3%EC%9B%94,
 https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=%EC%84%B1%EC%9E%A5%EB%A5%A0
 ```
 
-![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)
+[![line evil-glow](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)](https://x-cmd.com/draw/explore?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=%EC%84%B1%EC%9E%A5%EB%A5%A0)
 
 **opendata**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3
 https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C
 ```
 
-![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
+[![line opendata](https://x-cmd.com/draw?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=v1,v2,v3&values=120,240,410&title=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C)
 
 ## 파라미터
 

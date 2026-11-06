@@ -15,7 +15,7 @@ Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=...`, dữ li�
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## Ba cách sử dụng
 

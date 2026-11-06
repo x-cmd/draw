@@ -15,7 +15,7 @@ SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=...`, Daten in der
 https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2
 ```
 
-![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
+[![pie](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)](https://x-cmd.com/draw/explore?type=pie&labels=A,B&values=3,2)
 
 ## Drei Wege der Nutzung
 

@@ -17,7 +17,7 @@ x-keywords: draw, radar, Radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=85,90,70,80,95&title=Editor-Vergleich
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=85,90,70,80,95&title=Editor-Vergleich)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=85,90,70,80,95&title=Editor-Vergleich)](https://x-cmd.com/draw/explore?type=radar&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=85,90,70,80,95&title=Editor-Vergleich)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=Start,%C3%96kosystem,Erweiterbarkeit,Sp
 https://x-cmd.com/draw?type=radar&t=evil&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor-Vergleich
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor-Vergleich)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor-Vergleich)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Editor-Vergleich)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=Start,%C3%96kosystem,Erweiterbar
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=8,6,9,7,5&title=Editor-Vergleich
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=8,6,9,7,5&title=Editor-Vergleich)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=8,6,9,7,5&title=Editor-Vergleich)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=Start,%C3%96kosystem,Erweiterbarkeit,Speicher,Einfachheit&values=8,6,9,7,5&title=Editor-Vergleich)
 
 ## Parameter
 

@@ -17,7 +17,7 @@ x-keywords: draw, area, Fläche, svg, chart
 https://x-cmd.com/draw?type=area&labels=Mo,Di,Mi&series=dev:30,42,38&series=CI:12,18,9&title=Downloads
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=Mo,Di,Mi&series=dev:30,42,38&series=CI:12,18,9&title=Downloads)
+[![area evil](https://x-cmd.com/draw?type=area&labels=Mo,Di,Mi&series=dev:30,42,38&series=CI:12,18,9&title=Downloads)](https://x-cmd.com/draw/explore?type=area&labels=Mo,Di,Mi&series=dev:30,42,38&series=CI:12,18,9&title=Downloads)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=Mo,Di,Mi&series=dev:30,42,38&series=CI:1
 https://x-cmd.com/draw?type=area&t=star&labels=Mo,Di,Mi&values=3,5,4&title=Wachstum
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=Mo,Di,Mi&values=3,5,4&title=Wachstum)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=Mo,Di,Mi&values=3,5,4&title=Wachstum)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Mo,Di,Mi&values=3,5,4&title=Wachstum)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=Mo,Di,Mi&values=3,5,4&title=Wachs
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wachstum&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wachstum&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wachstum&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wachstum&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wachstum
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wachstum)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wachstum)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wachstum)
 
 ## Parameter
 

@@ -17,7 +17,7 @@ x-keywords: draw, area, powierzchniowy, svg, chart
 https://x-cmd.com/draw?type=area&labels=Pon,Wt,%C5%9Ar&series=dev:30,42,38&series=CI:12,18,9&title=Pobrania
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=Pon,Wt,%C5%9Ar&series=dev:30,42,38&series=CI:12,18,9&title=Pobrania)
+[![area evil](https://x-cmd.com/draw?type=area&labels=Pon,Wt,%C5%9Ar&series=dev:30,42,38&series=CI:12,18,9&title=Pobrania)](https://x-cmd.com/draw/explore?type=area&labels=Pon,Wt,%C5%9Ar&series=dev:30,42,38&series=CI:12,18,9&title=Pobrania)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=Pon,Wt,%C5%9Ar&series=dev:30,42,38&serie
 https://x-cmd.com/draw?type=area&t=star&labels=Pon,Wt,%C5%9Ar&values=3,5,4&title=Wzrost
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=Pon,Wt,%C5%9Ar&values=3,5,4&title=Wzrost)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=Pon,Wt,%C5%9Ar&values=3,5,4&title=Wzrost)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Pon,Wt,%C5%9Ar&values=3,5,4&title=Wzrost)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=Pon,Wt,%C5%9Ar&values=3,5,4&title
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wzrost&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wzrost&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wzrost&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=Wzrost&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wzrost
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wzrost)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wzrost)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=Wzrost)
 
 ## Parametry
 

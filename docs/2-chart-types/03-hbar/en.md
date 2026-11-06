@@ -14,7 +14,7 @@ x-json-ld:
 
 # hbar — horizontal bar chart, friendly to long labels
 
-## Examples (what you see is what the URL gives; click to enlarge)
+## Examples (what you see is what the URL gives; click to explore)
 
 **Ranking (base)**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area
 ```
 
-![Ranking (base)](https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area)
+[![Ranking (base)](https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area)](https://x-cmd.com/draw/explore?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area)
 
 **Long labels**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title
 https://x-cmd.com/draw?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews
 ```
 
-![Long labels](https://x-cmd.com/draw?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews)
+[![Long labels](https://x-cmd.com/draw?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews)](https://x-cmd.com/draw/explore?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews)
 
 **Pixel bars (t=xcmd, %)**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=12
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages
 ```
 
-![Pixel bars (t=xcmd, %)](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages)
+[![Pixel bars (t=xcmd, %)](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages)
 
 **Butterfly (t=xcmd-issue)**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
 ```
 
-![Butterfly (t=xcmd-issue)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
+[![Butterfly (t=xcmd-issue)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
 
 **Two-series rank (t=rank)**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=
 https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly
 ```
 
-![Two-series rank (t=rank)](https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly)
+[![Two-series rank (t=rank)](https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly)
 
 **Reference line (t=opendata)**
 
@@ -62,7 +62,7 @@ https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&se
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points
 ```
 
-![Reference line (t=opendata)](https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points)
+[![Reference line (t=opendata)](https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points)
 
 Horizontal bar chart. **Ideal for long labels** (names, project names, long categories).
 

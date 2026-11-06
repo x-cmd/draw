@@ -17,7 +17,7 @@ x-keywords: draw, area, alan, svg, chart
 https://x-cmd.com/draw?type=area&labels=Pzt,Sal,%C3%87ar&series=dev:30,42,38&series=CI:12,18,9&title=%C4%B0ndirmeler
 ```
 
-![area evil](https://x-cmd.com/draw?type=area&labels=Pzt,Sal,%C3%87ar&series=dev:30,42,38&series=CI:12,18,9&title=%C4%B0ndirmeler)
+[![area evil](https://x-cmd.com/draw?type=area&labels=Pzt,Sal,%C3%87ar&series=dev:30,42,38&series=CI:12,18,9&title=%C4%B0ndirmeler)](https://x-cmd.com/draw/explore?type=area&labels=Pzt,Sal,%C3%87ar&series=dev:30,42,38&series=CI:12,18,9&title=%C4%B0ndirmeler)
 
 **star**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=area&labels=Pzt,Sal,%C3%87ar&series=dev:30,42,38&ser
 https://x-cmd.com/draw?type=area&t=star&labels=Pzt,Sal,%C3%87ar&values=3,5,4&title=B%C3%BCy%C3%BCme
 ```
 
-![area star](https://x-cmd.com/draw?type=area&t=star&labels=Pzt,Sal,%C3%87ar&values=3,5,4&title=B%C3%BCy%C3%BCme)
+[![area star](https://x-cmd.com/draw?type=area&t=star&labels=Pzt,Sal,%C3%87ar&values=3,5,4&title=B%C3%BCy%C3%BCme)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Pzt,Sal,%C3%87ar&values=3,5,4&title=B%C3%BCy%C3%BCme)
 
 **opendata**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=area&t=star&labels=Pzt,Sal,%C3%87ar&values=3,5,4&tit
 https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=B%C3%BCy%C3%BCme&source=x-cmd.com%2Fdraw
 ```
 
-![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=B%C3%BCy%C3%BCme&source=x-cmd.com%2Fdraw)
+[![area opendata](https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=B%C3%BCy%C3%BCme&source=x-cmd.com%2Fdraw)](https://x-cmd.com/draw/explore?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.2,2.8,6.4,14.1&title=B%C3%BCy%C3%BCme&source=x-cmd.com%2Fdraw)
 
 **pixel**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=area&t=opendata&labels=2019,2020,2021,2022&values=1.
 https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=B%C3%BCy%C3%BCme
 ```
 
-![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=B%C3%BCy%C3%BCme)
+[![area pixel](https://x-cmd.com/draw?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=B%C3%BCy%C3%BCme)](https://x-cmd.com/draw/explore?type=area&t=pixel&labels=a,b,c,d&values=2,4,3,5&title=B%C3%BCy%C3%BCme)
 
 ## Parametreler
 

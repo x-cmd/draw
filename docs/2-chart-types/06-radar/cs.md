@@ -17,7 +17,7 @@ x-keywords: draw, radar, radar, svg, chart
 https://x-cmd.com/draw?type=radar&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=85,90,70,80,95&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF
 ```
 
-![radar base](https://x-cmd.com/draw?type=radar&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=85,90,70,80,95&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
+[![radar base](https://x-cmd.com/draw?type=radar&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=85,90,70,80,95&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)](https://x-cmd.com/draw/explore?type=radar&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=85,90,70,80,95&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=radar&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99it
 https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF
 ```
 
-![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
+[![radar evil](https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%
 https://x-cmd.com/draw?type=radar&t=xcmd&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=8,6,9,7,5&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF
 ```
 
-![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=8,6,9,7,5&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
+[![radar xcmd](https://x-cmd.com/draw?type=radar&t=xcmd&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=8,6,9,7,5&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)](https://x-cmd.com/draw/explore?type=radar&t=xcmd&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&values=8,6,9,7,5&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
 
 ## Parametry
 

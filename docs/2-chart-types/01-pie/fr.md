@@ -17,7 +17,7 @@ x-keywords: draw, pie, anneau, svg, chart
 https://x-cmd.com/draw?type=pie&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Plus%20grandes%20villes&unit=M%20hab.&labe
 https://x-cmd.com/draw?type=pie&t=evil&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Plus%20grandes%20villes&unit=M%20ha
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Plus%20grandes%20villes&unit=M
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit
 https://x-cmd.com/draw?type=pie&t=progress&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Plus%20grandes%20villes&unit=M%
 https://x-cmd.com/draw?type=pie&t=revenue&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
 
 ## Paramètres
 

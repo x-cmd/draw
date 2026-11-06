@@ -14,7 +14,7 @@ x-json-ld:
 
 # line 折线图 —— 时间序列标配
 
-## 示例（URL 即所得，点击图片放大）
+## 示例（URL 即所得，点击图片进入交互页）
 
 **单折线（默认 shadcn）**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,25,22,30&title=Stars
 ```
 
-![单折线（默认 shadcn）](https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,25,22,30&title=Stars)
+[![单折线（默认 shadcn）](https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,25,22,30&title=Stars)](https://x-cmd.com/draw/explore?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,25,22,30&title=Stars)
 
 **多折线（series=）**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,May,Jun&values=12,19,15,
 https://x-cmd.com/draw?type=line&labels=Mon,Tue,Wed,Thu&series=day:12,18,9,14&series=night:8,7,9,8&title=Traffic
 ```
 
-![多折线（series=）](https://x-cmd.com/draw?type=line&labels=Mon,Tue,Wed,Thu&series=day:12,18,9,14&series=night:8,7,9,8&title=Traffic)
+[![多折线（series=）](https://x-cmd.com/draw?type=line&labels=Mon,Tue,Wed,Thu&series=day:12,18,9,14&series=night:8,7,9,8&title=Traffic)](https://x-cmd.com/draw/explore?type=line&labels=Mon,Tue,Wed,Thu&series=day:12,18,9,14&series=night:8,7,9,8&title=Traffic)
 
 **发光（t=evil-glow）**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=line&labels=Mon,Tue,Wed,Thu&series=day:12,18,9,14&se
 https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Growth
 ```
 
-![发光（t=evil-glow）](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Growth)
+[![发光（t=evil-glow）](https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Growth)](https://x-cmd.com/draw/explore?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3.2,3.8&title=Growth)
 
 **线端标签（t=opendata）**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=line&t=evil-glow&labels=Q1,Q2,Q3,Q4&values=3.1,3.4,3
 https://x-cmd.com/draw?type=line&t=opendata&labels=v0.1,v0.2,v0.3&values=120,240,410&title=Downloads
 ```
 
-![线端标签（t=opendata）](https://x-cmd.com/draw?type=line&t=opendata&labels=v0.1,v0.2,v0.3&values=120,240,410&title=Downloads)
+[![线端标签（t=opendata）](https://x-cmd.com/draw?type=line&t=opendata&labels=v0.1,v0.2,v0.3&values=120,240,410&title=Downloads)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=v0.1,v0.2,v0.3&values=120,240,410&title=Downloads)
 
 **黑白（t=evil-mono）**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=line&t=opendata&labels=v0.1,v0.2,v0.3&values=120,240
 https://x-cmd.com/draw?type=line&t=evil-mono&labels=Mon,Tue,Wed,Thu,Fri&values=42,38,50,46,58&title=Builds
 ```
 
-![黑白（t=evil-mono）](https://x-cmd.com/draw?type=line&t=evil-mono&labels=Mon,Tue,Wed,Thu,Fri&values=42,38,50,46,58&title=Builds)
+[![黑白（t=evil-mono）](https://x-cmd.com/draw?type=line&t=evil-mono&labels=Mon,Tue,Wed,Thu,Fri&values=42,38,50,46,58&title=Builds)](https://x-cmd.com/draw/explore?type=line&t=evil-mono&labels=Mon,Tue,Wed,Thu,Fri&values=42,38,50,46,58&title=Builds)
 
 ---
 

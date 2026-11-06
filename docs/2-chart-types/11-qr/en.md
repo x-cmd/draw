@@ -14,7 +14,7 @@ x-json-ld:
 
 # QR code — URL / WiFi / contact card
 
-## Examples (what you see is what the URL gives; click to enlarge)
+## Examples (what you see is what the URL gives; click to explore)
 
 **URL**
 
@@ -22,7 +22,7 @@ x-json-ld:
 https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
 ```
 
-![URL](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
+[![URL](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
 
 **WiFi config**
 
@@ -30,7 +30,7 @@ https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
 https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi
 ```
 
-![WiFi config](https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)
+[![WiFi config](https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)](https://x-cmd.com/draw/explore?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)
 
 **vCard contact**
 
@@ -38,7 +38,7 @@ https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi
 https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact
 ```
 
-![vCard contact](https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)
+[![vCard contact](https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)](https://x-cmd.com/draw/explore?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)
 
 **Plain text**
 
@@ -46,7 +46,7 @@ https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cm
 https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello
 ```
 
-![Plain text](https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello)
+[![Plain text](https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello)](https://x-cmd.com/draw/explore?type=qr&d=Hello%20from%20x-cmd&title=hello)
 
 **Colors (fg/bg + captions)**
 
@@ -54,7 +54,7 @@ https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello
 https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs
 ```
 
-![Colors (fg/bg + captions)](https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)
+[![Colors (fg/bg + captions)](https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)](https://x-cmd.com/draw/explore?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)
 
 Generate QR codes for any content (URL, text, WiFi config, vCard). Returned SVG is print/embed-ready.
 

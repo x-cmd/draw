@@ -17,7 +17,7 @@ x-keywords: draw, pie, torta, svg, chart
 https://x-cmd.com/draw?type=pie&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9
 ```
 
-![pie opendata](https://x-cmd.com/draw?type=pie&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
+[![pie opendata](https://x-cmd.com/draw?type=pie&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
 **evil**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=pie&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma
 https://x-cmd.com/draw?type=pie&t=evil&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9
 ```
 
-![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
+[![pie evil](https://x-cmd.com/draw?type=pie&t=evil&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
 **evil-mono**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=pie&t=evil&title=Maggiori%20citt%C3%A0&unit=mln&labe
 https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9
 ```
 
-![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
+[![pie evil-mono](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
 **market-mono**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=pie&t=evil-mono&title=Maggiori%20citt%C3%A0&unit=mln
 https://x-cmd.com/draw?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9
 ```
 
-![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
+[![pie market-mono](https://x-cmd.com/draw?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
 **progress**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=m
 https://x-cmd.com/draw?type=pie&t=progress&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9
 ```
 
-![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
+[![pie progress](https://x-cmd.com/draw?type=pie&t=progress&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&t=progress&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
 **revenue**
 
@@ -57,7 +57,7 @@ https://x-cmd.com/draw?type=pie&t=progress&title=Maggiori%20citt%C3%A0&unit=mln&
 https://x-cmd.com/draw?type=pie&t=revenue&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9
 ```
 
-![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
+[![pie revenue](https://x-cmd.com/draw?type=pie&t=revenue&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&t=revenue&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
 ## Parametri
 

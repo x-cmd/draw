@@ -17,7 +17,7 @@ x-keywords: draw, hbar, bare orizontale, svg, chart
 https://x-cmd.com/draw?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=42,31,18,9&title=Commit-uri%20pe%20zone
 ```
 
-![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=42,31,18,9&title=Commit-uri%20pe%20zone)
+[![hbar base](https://x-cmd.com/draw?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=42,31,18,9&title=Commit-uri%20pe%20zone)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=42,31,18,9&title=Commit-uri%20pe%20zone)
 
 **opendata**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=4
 https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit-uri%20pe%20zone
 ```
 
-![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit-uri%20pe%20zone)
+[![hbar opendata](https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit-uri%20pe%20zone)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=8,6,9,4&ref=7&reflabel=SLA&title=Commit-uri%20pe%20zone)
 
 **xcmd**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=hbar&t=opendata&labels=CLI,nucleu,documenta%C8%9Bie,
 https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara&values=68,21,11&title=Cele%20mai%20mari%20ora%C8%99e
 ```
 
-![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara&values=68,21,11&title=Cele%20mai%20mari%20ora%C8%99e)
+[![hbar xcmd](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara&values=68,21,11&title=Cele%20mai%20mari%20ora%C8%99e)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara&values=68,21,11&title=Cele%20mai%20mari%20ora%C8%99e)
 
 **xcmd-issue**
 
@@ -41,7 +41,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C
 https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone
 ```
 
-![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone)
+[![hbar xcmd-issue](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone)
 
 **rank**
 
@@ -49,7 +49,7 @@ https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bi
 https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mie&series=2025:80,95,110&series=2026:110,85,120&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale
 ```
 
-![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mie&series=2025:80,95,110&series=2026:110,85,120&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale)
+[![hbar rank](https://x-cmd.com/draw?type=hbar&t=rank&labels=Lun,Mar,Mie&series=2025:80,95,110&series=2026:110,85,120&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Lun,Mar,Mie&series=2025:80,95,110&series=2026:110,85,120&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale)
 
 ## Parametri
 

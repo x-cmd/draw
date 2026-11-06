@@ -17,7 +17,7 @@ x-keywords: draw, scatter, phân tán, svg, chart
 https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%C4%90%E1%BB%99%20tr%E1%BB%85
 ```
 
-![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%C4%90%E1%BB%99%20tr%E1%BB%85)
+[![scatter base](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%C4%90%E1%BB%99%20tr%E1%BB%85)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%C4%90%E1%BB%99%20tr%E1%BB%85)
 
 **base neg**
 
@@ -25,7 +25,7 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%C4%90%E1%BB%9
 https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%C4%90%E1%BB%99%20tr%E1%BB%85
 ```
 
-![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%C4%90%E1%BB%99%20tr%E1%BB%85)
+[![scatter base neg](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%C4%90%E1%BB%99%20tr%E1%BB%85)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%C4%90%E1%BB%99%20tr%E1%BB%85)
 
 **base num**
 
@@ -33,7 +33,7 @@ https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%C4%90%E1%
 https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%C4%90%E1%BB%99%20tr%E1%BB%85
 ```
 
-![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%C4%90%E1%BB%99%20tr%E1%BB%85)
+[![scatter base num](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%C4%90%E1%BB%99%20tr%E1%BB%85)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%C4%90%E1%BB%99%20tr%E1%BB%85)
 
 ## Tham số
 
