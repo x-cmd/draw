@@ -1,16 +1,19 @@
 // /draw/x-cmd/onepage 一页纸模式(x-cmd-hub/draw#28/#30):markdown(+yfm)进,
 // 一张手机分享条状长图出 —— 1800 宽、高度随内容生长。
 //
-// ── 排版模型(2026-11 重写:清晰的 md 排版引擎,替代像素对位的散常数) ────────
+// ── 排版模型 v2.1(墨迹空隙记账) ───────────────────────────────────────────
 //
-// 1. 行盒(line box):每行占「字号 × 行高」的高度;字形在行盒内垂直居中
-//    (half-leading 模型),基线 = 行盒顶 + 行高/2 + 0.34em。
-// 2. 字号阶梯:全部是基准字号 BODY 的倍数;BODY = 画布宽/25(1800 画布 → 72px,
-//    阅读页 420px 下 ≈ 16.8px,恰为手机正文标准)。
-// 3. 块间距:全部以「正文行高 UNIT = BODY × LINE」为单位(before/after,支持 0.5)。
-//    引擎里没有任何与内容或原图相关的魔法数 —— 想改节奏只动 STYLE 表。
-// 4. 折行:atom(拉丁词/CJK 单字)+ 避头尾禁则;行宽按内容宽实测。
-// 5. 颜色/字体族集中在 THEME 表(取色源自原图 RGB 实测,仅作主题,不作版式依据)。
+// 1. 韵律唯一:所有字号是 BODY(画布/25)的倍数,所有空隙以 UNIT(一行正文)
+//    计量 —— 全页只有一个尺度来源。
+// 2. 墨迹记账:块间空隙指「墨迹到墨迹」的视觉距离 —— 引擎自动扣掉行盒
+//    half-leading,STYLE 表里的数字就是设计师心智里的数字,不随字号漂移。
+// 3. 接近性分组(格式塔):标题 before >> after(≈2.4:1),标题永远归属下文;
+//    组内(副标题/列表项)紧,组间(节)松 —— 空隙即结构。
+// 4. 对比即层次:字号阶梯 ≥1.25 才可感知(1.5/1.28/1.12/1.0),粗细与颜色
+//    只作辅助,不承担层级。
+// 5. 折叠不叠加:相邻块空隙取 max(CSS margin-collapse 语义),节奏可预测。
+// 6. 行盒:每行占「字号 × 行高」,字形以 1em 居中,基线 = 行盒顶 + 行高/2 + 0.34em;
+//    折行 atom(拉丁词/CJK 单字)+ 避头尾禁则,行宽按内容宽实测。
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';
 import { esc, textW } from './svg.js';
@@ -26,8 +29,8 @@ const W = 1800;                        // 画布宽(手机 2x)
 const MARGIN = W * 0.12;               // 页边 = 画布 12%(216)
 const CONTENT = W - MARGIN * 2;        // 版心 1368
 const H_MAX = 40000;
-const PAD_TOP = 96;
-const PAD_BOTTOM = 280;
+const PAD_TOP = 120;                   // 顶部留白(大标题需呼吸;略小于底部)
+const PAD_BOTTOM = 280;                // 底部留白 > 顶部(页面是容器,下缘更松)
 
 // ── 主题(取色源自原图 RGB 实测;只定义"用什么颜色",不定义版式) ────────────────
 const THEME = {
@@ -48,10 +51,12 @@ const F_BOLD = "'DrawInterBold','DrawCJKBold',Inter,'PingFang SC','Hiragino Sans
 const F_MONO = "'DrawMono',ui-monospace,Menlo,Consolas,monospace";
 
 // ── 字号阶梯与样式表 ────────────────────────────────────────────────────────
-// BODY 是唯一基准:字号 = BODY × r;行高 = 字号 × lineH;间距 = UNIT × n
+// BODY 是唯一基准:字号 = BODY × r;行高 = 字号 × lineH。
+// 间距 = 视觉空隙(墨迹到墨迹,UNIT 倍数)—— 引擎扣掉 half-leading 后落位,
+// 表里的数字即设计稿,不随字号/行高漂移。块间空隙 = max(prev.after, this.before)。
 const BODY = W / 25;                  // 72px @1800
 const LINE = 1.5;                     // 正文行高(微信文章标准节奏)
-const UNIT = BODY * LINE;             // 行距单位 108 —— 所有块间距以此计量
+const UNIT = BODY * LINE;             // 韵律单位:一行正文(108)—— 所有空隙以此计量
 
 interface Style {
   size: number;                       // 字号(px,已含倍率)
@@ -59,27 +64,32 @@ interface Style {
   weight: 400 | 700;
   family: string;
   color: string;
-  before?: number;                    // 块上间距(UNIT 倍数)
-  after?: number;                     // 块下间距(UNIT 倍数)
+  before?: number;                    // 与上一块墨迹的视觉空隙(UNIT 倍数)
+  after?: number;                     // 留给下一块的空隙愿望(UNIT 倍数)
   bar?: boolean;                      // 顶级节左缘装饰条
 }
 
 const S: Record<string, Style> = {
-  title:    { size: BODY * 1.4,  lineH: 1.3, weight: 700, family: F_TITLE, color: THEME.accent, after: 0.5 },
-  subtitle: { size: BODY * 0.95, lineH: 1.6, weight: 400, family: F_REG,   color: '#7aa3f7', before: 0.25, after: 0.4 },  // accent 的浅一档,与标题分层
-  meta:     { size: BODY * 0.92, lineH: 1.85, weight: 400, family: F_REG,  color: '#8894a8' },             // 页头要点:比正文再安静一档
-  h2:       { size: BODY * 1.12, lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.6, after: 0.5, bar: true },
-  h3:       { size: BODY * 1.0,  lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.15, after: 0.4 },
-  h4:       { size: BODY * 0.95, lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.meta, before: 0.9, after: 0.4 },
-  quote:    { size: BODY * 0.95, lineH: 1.7,  weight: 400, family: F_REG,  color: THEME.meta, before: 0.4, after: 0.6 },
-  figcap:   { size: BODY * 0.5,  lineH: 1.5,  weight: 400, family: F_REG,  color: THEME.note, before: 0.25 },
-  body:     { size: BODY,        lineH: LINE, weight: 400, family: F_REG,  color: THEME.body, after: 0.5 },
-  li:       { size: BODY,        lineH: LINE, weight: 400, family: F_REG,  color: THEME.body, after: 0.2 },
-  code:     { size: BODY * 0.75, lineH: 1.55, weight: 400, family: F_MONO, color: THEME.code, before: 0.4, after: 0.6 },
-  footHead: { size: BODY * 1.0,  lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.6, after: 0.6, bar: true },
-  contact:  { size: BODY,        lineH: LINE, weight: 700, family: F_BOLD, color: THEME.ink, after: 0.3 },
-  contactSub: { size: BODY * 0.95, lineH: LINE, weight: 400, family: F_REG, color: THEME.body, after: 0.2 },
-  caption:  { size: BODY * 0.45, lineH: 1.5, weight: 400, family: F_REG,  color: THEME.note },
+  // ── 页头组:title/subtitle/要点/灰带是一个视觉组(组内紧,组间松) ──
+  title:      { size: BODY * 1.5,  lineH: 1.25, weight: 700, family: F_TITLE, color: THEME.accent, after: 1.1 },            // 大字下至少留一整行
+  subtitle:   { size: BODY * 0.95, lineH: 1.55, weight: 400, family: F_REG,   color: '#7aa3f7', before: 0.4, after: 0.6 },  // 紧跟标题(结组)
+  meta:       { size: BODY * 0.92, lineH: 1.85, weight: 400, family: F_REG,   color: '#8894a8', before: 0.6 },  // 要点连排:项间 0.6 UNIT ≈ 2 倍行距节奏
+  // ── 节头:before >> after(≈2.4:1)—— 接近性:标题永远归属下文 ──
+  h2:         { size: BODY * 1.28, lineH: 1.3,  weight: 700, family: F_BOLD,  color: THEME.ink, before: 2.2, after: 1.0, bar: true },
+  h3:         { size: BODY * 1.12, lineH: 1.35, weight: 700, family: F_BOLD,  color: THEME.ink, before: 1.6, after: 0.8 },
+  h4:         { size: BODY,        lineH: 1.35, weight: 700, family: F_BOLD,  color: THEME.meta, before: 1.2, after: 0.6 },
+  // ── 流体块:段间 ≈ 2× 行间;列表项间略大于行间(结组) ──
+  body:       { size: BODY,        lineH: LINE, weight: 400, family: F_REG,   color: THEME.body, after: 0.7 },   // 段间空隙在 after 侧(不声明 before:标题 after 才能精确绑定下文)
+  li:         { size: BODY,        lineH: 1.45, weight: 400, family: F_REG,   color: THEME.body, before: 0.4 },
+  quote:      { size: BODY * 0.95, lineH: 1.7,  weight: 400, family: F_REG,   color: THEME.meta, before: 0.55, after: 0.7 },
+  code:       { size: BODY * 0.78, lineH: 1.55, weight: 400, family: F_MONO,  color: THEME.code, before: 0.55, after: 0.7 },
+  boldHead:   { size: BODY,        lineH: 1.4,  weight: 700, family: F_BOLD,  color: THEME.ink,  before: 1.1, after: 0.55 },  // 独立粗体行 = 小节头(上松 2:1 紧)
+  figcap:     { size: BODY * 0.5,  lineH: 1.5,  weight: 400, family: F_REG,   color: THEME.note, before: 0.3 },
+  // ── 页脚组 ──
+  footHead:   { size: BODY,        lineH: 1.35, weight: 700, family: F_BOLD,  color: THEME.ink, before: 2.2, after: 0.7, bar: true },
+  contact:    { size: BODY,        lineH: LINE, weight: 700, family: F_BOLD,  color: THEME.ink, before: 0.35 },
+  contactSub: { size: BODY * 0.95, lineH: LINE, weight: 400, family: F_REG,   color: THEME.body, before: 0.25 },
+  caption:    { size: BODY * 0.45, lineH: 1.5,  weight: 400, family: F_REG,   color: THEME.note, before: 0.35 },
 };
 
 // ── 文档模型与 markdown 子集解析(yfm/节/块;onesvg 同用) ──────────────────────
@@ -295,14 +305,20 @@ function wrapCode(lines: string[], fs: number, maxW: number): string[] {
   return out;
 }
 
-// ── 布局器:行盒 → 基线(half-leading),间距全由 STYLE 表推导 ─────────────────
+// ── 布局器:墨迹记账 + 空隙折叠 ─────────────────────────────────────────────
+// 游标 ink 记「上一块墨迹底」(文本以 1em 计,盒块以盒边计);块间空隙
+//   gap = max(prev.after, this.before) × UNIT
+// 是纯视觉距离(墨迹到墨迹)—— STYLE 表的数字即设计稿,不随字号漂移。
+
+/** 行盒顶/底到墨迹边缘的 half-leading(字形以 1em 居中于行盒)。 */
+const hl = (st: Style): number => st.size * (st.lineH - 1) / 2;
 
 /** 行盒顶 → 该行基线:字形在行盒内垂直居中,基线在 em 中心下方 0.34em。 */
 const baseline = (top: number, st: Style): number => top + st.size * st.lineH / 2 + st.size * 0.34;
 
 interface Item { s: string }
 
-/** 居中单行(页脚联系区专用)。 */
+/** 居中单行(页脚联系区/图题注专用)。 */
 function centerLine(text: string, st: Style, y: number): string {
   return `<text x="${W / 2}" y="${baseline(y, st).toFixed(0)}" text-anchor="middle" font-family="${st.family}" font-size="${st.size.toFixed(0)}"${st.weight === 700 ? ' font-weight="700"' : ''} fill="${st.color}">${esc(text)}</text>`;
 }
@@ -311,17 +327,26 @@ interface ImgInfo { w: number; h: number; data?: string }
 function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { items: Item[]; total: number } {
   const items: Item[] = [];
   const push = (s: string): void => { items.push({ s }); };
-  let y = PAD_TOP;
-  // 块间距折叠:相邻块的 after/before 取 max(不叠死相加;CSS margin-collapse 同义)
-  let pend = 0;                                   // 上一块留下的 after(UNIT 倍数)
-  const gap = (before: number): void => {
-    y += Math.max(pend, before) * UNIT;
-    pend = 0;
-  };
-  const after = (n: number): void => { pend = n; };
+  let ink = PAD_TOP;                     // 上一块墨迹底
+  let post = 0;                          // 上一块留下的 after 愿望(UNIT 倍数)
 
-  // 文本块通用:runs → 行 → 逐行 <text>(基线由行盒推导)
-  const emitRuns = (rs: Run[], st: Style, maxW = CONTENT, x = MARGIN): void => {
+  // 开文本块:视觉空隙 → 首行行盒顶(扣本块 half-leading)
+  const openText = (st: Style, before?: number): number => {
+    const g = Math.max(post, before ?? st.before ?? 0);
+    post = 0;
+    return ink + g * UNIT - hl(st);
+  };
+  const closeText = (st: Style, boxBottom: number): void => { ink = boxBottom - hl(st); };
+  // 开盒块(代码框/图/线):墨迹即盒边,无需扣 leading
+  const openBox = (before: number): number => {
+    const g = Math.max(post, before);
+    post = 0;
+    return ink + g * UNIT;
+  };
+  const leave = (n: number): void => { post = n; };
+
+  // 行链:逐行 <text>(基线由行盒推导);返回末行行盒底
+  const emitRuns = (rs: Run[], st: Style, top: number, maxW = CONTENT, x = MARGIN): number => {
     for (const lineRuns of wrapRuns(rs, st.size, maxW)) {
       const body = lineRuns
         .map((r) => {
@@ -330,94 +355,99 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
           return esc(r.t);
         })
         .join('');
-      push(`<text x="${x}" y="${baseline(y, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" font-weight="${st.weight}" fill="${st.color}">${body}</text>`);
-      y += st.size * st.lineH;
+      push(`<text x="${x}" y="${baseline(top, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" font-weight="${st.weight}" fill="${st.color}">${body}</text>`);
+      top += st.size * st.lineH;
     }
+    return top;
   };
-  const emitPlain = (text: string, st: Style, maxW = CONTENT, x = MARGIN): void =>
-    emitRuns(runs(text), st, maxW, x);
+  // 文本块一步到位(段落/标题/要点)
+  const textBlock = (rs: Run[], st: Style, maxW = CONTENT, x = MARGIN): void => {
+    closeText(st, emitRuns(rs, st, openText(st), maxW, x));
+    leave(st.after ?? 0);
+  };
+  const plainBlock = (text: string, st: Style, maxW = CONTENT, x = MARGIN): void =>
+    textBlock(runs(text), st, maxW, x);
 
   // 左缘装饰条:与节头首行行盒同高,左缘出血(主题元素)
   const bar = (top: number, st: Style): void => {
     push(`<rect x="0" y="${(top + st.size * st.lineH * 0.06).toFixed(0)}" width="${W * 0.045}" height="${(st.size * st.lineH * 0.88).toFixed(0)}" fill="${THEME.accent}"/>`);
   };
 
-  // 页头:标题 → 副标题 → 要点 → 分隔带
-  const ts = S.title;
-  emitPlain(doc.title, ts);
-  after(ts.after ?? 0);
-  if (doc.subtitle !== '') {
-    gap(S.subtitle.before ?? 0);
-    emitPlain(doc.subtitle, S.subtitle);
-    after(S.subtitle.after ?? 0);
-  }
+  // ── 页头组:标题 → 副标题 → 要点 → 灰带收边 ──
+  plainBlock(doc.title, S.title);
+  if (doc.subtitle !== '') plainBlock(doc.subtitle, S.subtitle);
   if (doc.bullets.length > 0) {
-    for (const b of doc.bullets) emitPlain(b, S.meta);
-    gap(0.25);
-    push(`<rect x="0" y="${y.toFixed(0)}" width="${W}" height="${(0.5 * UNIT).toFixed(0)}" fill="${THEME.rule}"/>`);
-    y += 0.5 * UNIT;
-    after(0.6);
+    for (const b of doc.bullets) plainBlock(b, S.meta);
+    const ry = openBox(0.5);
+    push(`<rect x="0" y="${ry.toFixed(0)}" width="${W}" height="${(0.5 * UNIT).toFixed(0)}" fill="${THEME.rule}"/>`);
+    ink = ry + 0.5 * UNIT;
+    leave(0.8);
   }
 
-  // 正文节
+  // ── 正文节 ──
   for (const sec of doc.sections) {
     if (sec.name !== '') {
       const st = sec.minor4 === true ? S.h4 : sec.major ? S.h2 : S.h3;
-      gap(st.before ?? 0);
-      if (st.bar === true) bar(y, st);
-      emitPlain(sec.name, st);
-      after(st.after ?? 0);
+      const top = openText(st);
+      if (st.bar === true) bar(top, st);
+      closeText(st, emitRuns(runs(sec.name), st, top));
+      leave(st.after ?? 0);
     }
     for (const blk of sec.blocks) {
       if (blk.k === 'li') {
+        const st = S.li;
         for (const it of blk.items) {
           const numbered = /^\d+[.、)]/.test(it);
           const text = numbered ? it.slice(it.indexOf('.') + 1).trim() : it.replace(/^[-*]\s+/, '');
           const markerW = 0.75 * BODY;
-          const lines = wrapRuns(runs(text), S.li.size, CONTENT - markerW);
-          lines.forEach((lineRuns, i) => {
-            const mk = i === 0
-              ? `<text x="${MARGIN}" y="${baseline(y, S.li).toFixed(0)}" font-family="${S.li.family}" font-size="${S.li.size.toFixed(0)}" font-weight="700" fill="${THEME.accent}">${numbered ? it.slice(0, it.indexOf('.')) + '.' : '•'}</text>`
-              : '';
+          let top = openText(st);
+          const mk = `<text x="${MARGIN}" y="${baseline(top, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" font-weight="700" fill="${THEME.accent}">${numbered ? it.slice(0, it.indexOf('.')) + '.' : '•'}</text>`;
+          wrapRuns(runs(text), st.size, CONTENT - markerW).forEach((lineRuns, i) => {
             const body = lineRuns
               .map((r) => (r.b ? `<tspan font-family="${F_BOLD}" fill="${THEME.ink}">${esc(r.t)}</tspan>` : esc(r.t)))
               .join('');
-            push(`${mk}<text x="${MARGIN + markerW}" y="${baseline(y, S.li).toFixed(0)}" font-family="${S.li.family}" font-size="${S.li.size.toFixed(0)}" font-weight="${S.li.weight}" fill="${S.li.color}">${body}</text>`);
-            y += S.li.size * S.li.lineH;
+            push(`${i === 0 ? mk : ''}<text x="${MARGIN + markerW}" y="${baseline(top, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" font-weight="${st.weight}" fill="${st.color}">${body}</text>`);
+            top += st.size * st.lineH;
           });
-          after(S.li.after ?? 0);
+          closeText(st, top);
+          leave(0);                         // 项间空隙由下一项的 before(0.4)承担
         }
+        leave(S.body.after ?? 0.7);         // 列表块尾:与段落块同级的分离空隙
       } else if (blk.k === 'code') {
         const st = S.code;
-        gap(st.before ?? 0);
+        const y = openBox(st.before ?? 0);
         const pad = 0.35 * UNIT;
-        const lines = wrapCode(blk.lines, st.size, CONTENT - pad * 2);
-        const boxH = pad * 2 + lines.length * st.size * st.lineH;
+        const clines = wrapCode(blk.lines, st.size, CONTENT - pad * 2);
+        const boxH = pad * 2 + clines.length * st.size * st.lineH;
         push(`<rect x="${MARGIN}" y="${y.toFixed(0)}" width="${CONTENT}" height="${boxH.toFixed(0)}" rx="${(0.2 * UNIT).toFixed(0)}" fill="${THEME.codeBg}"/>`);
-        for (const l of lines) {
-          push(`<text x="${(MARGIN + pad).toFixed(0)}" y="${baseline(y + pad, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" fill="${st.color}">${esc(l)}</text>`);
-          y += st.size * st.lineH;
+        let ty = y + pad;
+        for (const l of clines) {
+          push(`<text x="${(MARGIN + pad).toFixed(0)}" y="${baseline(ty, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" fill="${st.color}">${esc(l)}</text>`);
+          ty += st.size * st.lineH;
         }
-        y += pad * 2;
-        after(st.after ?? 0);
+        ink = y + boxH;
+        leave(st.after ?? 0);
       } else if (blk.k === 'quote') {
         const st = S.quote;
-        gap(st.before ?? 0);
+        const top = openText(st);
         const indent = 0.5 * UNIT;
-        const lines = wrapRuns(runs(blk.text), st.size, CONTENT - indent - 0.4 * UNIT);
-        const boxH = lines.length * st.size * st.lineH;
-        push(`<rect x="${MARGIN + indent * 0.35}" y="${y.toFixed(0)}" width="6" height="${boxH.toFixed(0)}" fill="${THEME.accent}"/>`);
-        for (const lineRuns of lines) {
+        const lineList = wrapRuns(runs(blk.text), st.size, CONTENT - indent - 0.4 * UNIT);
+        let ty = top;
+        for (const lineRuns of lineList) {
           const body = lineRuns.map((r) => esc(r.t)).join('');
-          push(`<text x="${MARGIN + indent}" y="${baseline(y, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" fill="${st.color}">${body}</text>`);
-          y += st.size * st.lineH;
+          push(`<text x="${MARGIN + indent}" y="${baseline(ty, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" fill="${st.color}">${body}</text>`);
+          ty += st.size * st.lineH;
         }
-        after(st.after ?? 0);
+        // 竖线:墨迹链两端各延伸 0.1 UNIT(光学 padding,消除贴边感)
+        const qy = top + hl(st) - 0.1 * UNIT;
+        push(`<rect x="${MARGIN + indent * 0.35}" y="${qy.toFixed(0)}" width="6" height="${(ty - hl(st) + 0.2 * UNIT - qy).toFixed(0)}" fill="${THEME.accent}"/>`);
+        closeText(st, ty);
+        leave(st.after ?? 0);
       } else if (blk.k === 'hr') {
-        gap(0.5);
+        const y = openBox(0.5);
         push(`<rect x="${MARGIN}" y="${y.toFixed(0)}" width="${CONTENT}" height="2" fill="#e5e7eb"/>`);
-        y += 2;
-        after(0.6);
+        ink = y + 2;
+        leave(0.8);
       } else if (blk.k === 'img') {
         // 图表:居中图块(图表居中规则)。imgMap 提供尺寸与 data-URI;缺省占位
         const info = imgMap[blk.url];
@@ -425,8 +455,7 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
         let iw = blk.w ?? info?.w ?? maxW * 0.7;
         let ih = blk.h ?? info?.h ?? iw * 0.62;
         if (iw > maxW) { ih = ih * maxW / iw; iw = maxW; }
-        const fs = S.figcap;
-        gap(0.5);
+        const y = openBox(0.6);
         const ix = MARGIN + (CONTENT - iw) / 2;
         if (info !== undefined && info.data !== undefined) {
           push(`<image href="${info.data}" x="${ix.toFixed(0)}" y="${y.toFixed(0)}" width="${iw.toFixed(0)}" height="${ih.toFixed(0)}"/>`);
@@ -434,52 +463,59 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
           push(`<rect x="${ix.toFixed(0)}" y="${y.toFixed(0)}" width="${iw.toFixed(0)}" height="${ih.toFixed(0)}" rx="8" fill="${THEME.codeBg}"/>`);
           push(`<text x="${(ix + iw / 2).toFixed(0)}" y="${(y + ih / 2).toFixed(0)}" text-anchor="middle" font-family="${F_REG}" font-size="${(BODY * 0.5).toFixed(0)}" fill="${THEME.note}">${esc(blk.alt || 'figure')}</text>`);
         }
-        y += ih;
+        ink = y + ih;
         if (blk.alt !== '') {
-          y += (fs.before ?? 0) * UNIT;
-          push(centerLine(blk.alt, fs, y));
-          y += fs.size * fs.lineH;
+          const st = S.figcap;
+          const top = openText(st);       // figcap.before 0.3:题注与图结组
+          push(centerLine(blk.alt, st, top));
+          closeText(st, top + st.size * st.lineH);
+          leave(0.5);
+        } else {
+          leave(0.6);
         }
-        after(0.5);
       } else if (blk.k === 'table') {
         // 表格轻量呈现:表头粗 + 行内 " · " 连接;表头下划线 + 行间发丝线
         const st = S.body;
-        gap((st.before ?? 0) * 0.5);
-        emitRuns(runs(blk.head.map((h) => `**${h}**`).join('  ·  ')), st);
-        push(`<rect x="${MARGIN}" y="${(y + 0.08 * UNIT).toFixed(0)}" width="${CONTENT}" height="3" fill="#d8dce4"/>`);
-        y += 0.25 * UNIT;
+        let top = openText(st, 0.55);
+        top = emitRuns(runs(blk.head.map((h) => `**${h}**`).join('  ·  ')), st, top);
+        push(`<rect x="${MARGIN}" y="${(top + 0.06 * UNIT).toFixed(0)}" width="${CONTENT}" height="3" fill="#d8dce4"/>`);
+        top += 0.22 * UNIT;
         for (const row of blk.rows) {
-          emitRuns(runs(row.join('  ·  ')), st);
-          push(`<rect x="${MARGIN}" y="${(y + 0.04 * UNIT).toFixed(0)}" width="${CONTENT}" height="1" fill="#eef0f4"/>`);
-          y += 0.12 * UNIT;
+          top = emitRuns(runs(row.join('  ·  ')), st, top);
+          push(`<rect x="${MARGIN}" y="${(top + 0.03 * UNIT).toFixed(0)}" width="${CONTENT}" height="1" fill="#eef0f4"/>`);
+          top += 0.10 * UNIT;
         }
-        after(st.after ?? 0);
+        closeText(st, top);
+        leave(0.65);
       } else if (blk.k === 'p') {
-        emitRuns(runs(blk.text), S.body);
-        after(S.body.after ?? 0);
+        // 独立粗体行(**小节**)按小节头排版:获得「上松下紧」的分组语义
+        const st = /^\*\*[^*]+\*\*$/.test(blk.text.trim()) ? S.boldHead : S.body;
+        textBlock(runs(blk.text), st);
       }
     }
   }
 
-  // 页脚:联系方式(带条)→ 居中联系行 → 居中 QR → 小字说明
+  // ── 页脚组:联系方式(带条)→ 居中联系行 → 居中 QR → 小字说明 ──
   const contact = doc.meta.contact;
   const subLines = [doc.meta.location, doc.meta.website].filter((s): s is string => typeof s === 'string' && s !== '');
   const qrUrl = doc.meta.qr;
   if (contact !== undefined || subLines.length > 0 || qrUrl !== undefined) {
-    gap(S.footHead.before ?? 0);
-    bar(y, S.footHead);
-    emitPlain(doc.meta['contact-title'] ?? '联系方式', S.footHead);
-    y += (S.footHead.after ?? 0) * UNIT + 0.4 * UNIT;
-    if (contact !== undefined) {
-      push(centerLine(contact, S.contact, y));
-      y += S.contact.size * S.contact.lineH + (S.contact.after ?? 0) * UNIT;
-    }
-    for (const sl of subLines) {
-      push(centerLine(sl, S.contactSub, y));
-      y += S.contactSub.size * S.contactSub.lineH + (S.contactSub.after ?? 0) * UNIT;
+    const fst = S.footHead;
+    const ftop = openText(fst);
+    bar(ftop, fst);
+    closeText(fst, emitRuns(runs(doc.meta['contact-title'] ?? '联系方式'), fst, ftop));
+    leave(fst.after ?? 0);
+    for (const [st, text] of [
+      ...(contact !== undefined ? [[S.contact, contact] as const] : []),
+      ...subLines.map((sl) => [S.contactSub, sl] as const),
+    ]) {
+      const cy = openText(st);
+      push(centerLine(text, st, cy));
+      closeText(st, cy + st.size * st.lineH);
+      leave(st.after ?? 0);
     }
     if (qrUrl !== undefined) {
-      y += 0.5 * UNIT;
+      const qy = openBox(0.5);
       const q = 0.36 * W;                 // QR 边长 = 画布 36%(≈650,扫码距离友好)
       const qx = (W - q) / 2;
       const qr = renderQR(qrUrl.slice(0, 500), '#000000', '#ffffff', q, q, v, resolveSkin('qr', null, 'light'), undefined, undefined)
@@ -487,13 +523,14 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
         .replace(/<style[\s\S]*?<\/style>/g, '')
         .replace(/<metadata>[\s\S]*?<\/metadata>/g, '')
         .replace(/<a href=[^>]*><text[^>]*>Edit @X-CMD<\/text><\/a>/g, '');
-      push(`<g transform="translate(${qx.toFixed(0)}, ${y.toFixed(0)})">${qr}</g>`);
-      y += q + 0.4 * UNIT;
-      push(centerLine(doc.meta['qr-note'] ?? '扫码了解更多', S.caption, y));
-      y += S.caption.size * S.caption.lineH;
+      push(`<g transform="translate(${qx.toFixed(0)}, ${qy.toFixed(0)})">${qr}</g>`);
+      ink = qy + q;
+      const capY = openText(S.caption);
+      push(centerLine(doc.meta['qr-note'] ?? '扫码了解更多', S.caption, capY));
+      closeText(S.caption, capY + S.caption.size * S.caption.lineH);
     }
   }
-  return { items, total: y + PAD_BOTTOM };
+  return { items, total: ink + PAD_BOTTOM };
 }
 
 // ── 渲染入口 ───────────────────────────────────────────────────────────────
@@ -509,7 +546,7 @@ function render(md: string, url: URL, imgMap: Record<string, ImgInfo> = {}): Dra
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${HT}" viewBox="0 0 ${W} ${HT}" font-family="${FONT}" role="img" aria-label="${esc(doc.title)}">` +
     `<style>${INTER_FACE_CSS}${BANNER_FACE_CSS}</style>` +
-    `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'onepage', namespace: 'x-cmd', theme: 'md-engine-v2', version: v.version, title: doc.title }))}</metadata>` +
+    `<metadata>${esc(JSON.stringify({ generator: 'draw', template: 'onepage', namespace: 'x-cmd', theme: 'md-engine-v2.1', version: v.version, title: doc.title }))}</metadata>` +
     `<rect width="${W}" height="${HT}" fill="${THEME.bg}"/>` +
     lay.items.map((it) => it.s).join('') +
     `</svg>`;
