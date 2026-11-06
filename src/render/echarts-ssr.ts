@@ -13,6 +13,7 @@ import type { Skin } from '../styles/index.js';
 import { FONT } from '../theme.js';
 import { esc, metaTag, skinStyle } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
+import { registerMaps } from './maps.js';
 import type { EChartsOption } from 'echarts';
 
 // ?d= 上限:再大就撞各端 URL 长度红线(Workers/代理 ~16KB);超限直接拒绝,
@@ -47,6 +48,9 @@ const AXES = ['xAxis', 'yAxis', 'radiusAxis', 'angleAxis', 'singleAxis'] as cons
 // 需要笛卡尔坐标系的系列:这些系列的裸 option 在 SSR 下不会自动建轴(见 withDrawDefaults)
 const CARTESIAN = new Set(['bar', 'line', 'scatter', 'effectScatter', 'boxplot', 'candlestick', 'heatmap', 'pictorialBar', 'custom']);
 
+// 地图系列的布局缺省:铺满画布 + 略微放大(缩放系数与画布无关,同比缩放)
+const MAP_LAYOUT: Obj = { layoutSize: '100%', layoutCenter: ['52%', '54%'], zoom: 1.1 };
+
 function withDrawDefaults(user: Obj, skin: Skin): EChartsOption {
   const option: Obj = {
     animation: false, // 静态 SVG:开动画只会输出第 0 帧
@@ -78,6 +82,9 @@ function withDrawDefaults(user: Obj, skin: Skin): EChartsOption {
   // 数据项级 label 继承系列级,天然覆盖(用户显式写的不动)
   for (const s of seriesArr) {
     if (isObj(s)) fillDefaults(s, { label: { textBorderWidth: 0, color: 'var(--d-text)' } });
+    // 地图系列:echarts 默认按 aspectScale=0.75 把地图缩在画布中央,右侧空一大片。
+    // 未写布局时补一份铺满画布的(用户写了不动)—— 与「缺省才补」同一条规矩。
+    if (isObj(s) && s.type === 'map') fillDefaults(s, MAP_LAYOUT);
   }
   return option as EChartsOption;
 }
@@ -138,6 +145,8 @@ export async function renderEchartsOption(user: Obj, params: URLSearchParams): P
 
   // 动态加载:核心 /draw 路径(含 Worker 冷启动)不为 echarts 付 ~1MB 的加载成本
   const echarts = await import('echarts');
+  // 地图数据(US 各州 GeoJSON)同样按需载入:option 没用 map/geo 就不碰它
+  await registerMaps(echarts, option);
   const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width, height });
   // echarts 对 var() 调色板会打 "illegal color" 警告(派生色 parseColor 不认 CSS 变量),
   // 但直写路径(fill/stroke)原样透传、输出正确——渲染成功时这些警告纯属噪音,吞掉;

@@ -9,3 +9,5 @@ import { mkdirSync, cpSync } from 'node:fs';
 mkdirSync('dist/render/vendor', { recursive: true });
 cpSync('src/render/vendor/mermaid-flow-parser.js', 'dist/render/vendor/mermaid-flow-parser.js');
 cpSync('src/render/vendor/mermaid-gantt-parser.js', 'dist/render/vendor/mermaid-gantt-parser.js');
+// vendored 地图数据(ECharts 不带地图数据,US 各州 GeoJSON 随包分发)
+cpSync('src/render/vendor/us-states.js', 'dist/render/vendor/us-states.js');

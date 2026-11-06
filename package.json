@@ -34,6 +34,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "setup": "bash scripts/setup.sh",
+    "vendor:us-states": "node scripts/vendor-us-states.mjs",
     "test": "vitest run",
     "prepublishOnly": "npm run build"
   },
@@ -53,6 +54,8 @@
     "@types/d3-sankey": "^0.12.5",
     "@types/node": "^22.10.0",
     "cf": "^0.15.0",
+    "topojson-client": "^3.1.0",
+    "topojson-simplify": "^3.0.3",
     "tsx": "^4.19.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
