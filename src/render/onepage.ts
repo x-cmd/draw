@@ -47,26 +47,48 @@ const P_BULLET = 135;
 const FS_CODE = 48, P_CODE = 66;  // 代码块比正文小一档(58 太大,长 URL 折行碎)
 const GAP_MAJOR = 290;              // 顶级节(带装饰条)上方 extra(原图 300-400;短文档取下限免稀疏)
 
+// 避头尾禁则:行首不可出现这些字符,行末不可出现这些(行首禁则触发时,
+// 把上一行行末最后一字带下,标点不孤悬)
+const NO_START = new Set([...'。，、；：？！,.:;?)）]】」』”’…%‰']);
+const NO_END = new Set([...'([（[【「『“‘$#']);
+
 // ── 文本测量与折行(中西混排:CJK 逐字断,拉丁按词断) ─────────────────────────
 
 function wrap(text: string, fs: number, maxW: number): string[] {
   const atoms: string[] = [];
   for (const m of text.matchAll(/[A-Za-z0-9'’\-@.:/#%&+]+|\s+|[^\s]/gu)) atoms.push(m[0]);
   const lines: string[] = [];
-  let cur = '';
-  let curW = 0;
+  let line: string[] = [];
+  let w = 0;
   for (const a of atoms) {
-    const w = textW(a, fs);
-    if (curW + w > maxW && cur.trim() !== '') {
-      lines.push(cur.trimEnd());
-      cur = a.trim() === '' ? '' : a;
-      curW = a.trim() === '' ? 0 : w;
-    } else if (!(a.trim() === '' && cur === '')) {
-      cur += a;
-      curW += w;
+    const aw = textW(a, fs);
+    if (w + aw > maxW && line.some((x) => x.trim() !== '')) {
+      let take = line;
+      // 避头尾:下行行首是禁则字符 → 当前行末字随下,标点不孤悬行首
+      if (a.trim() !== '' && NO_START.has(a[0]) && line.length > 1) {
+        const lastAtom = line[line.length - 1];
+        take = line.slice(0, -1);
+        line = [lastAtom];
+        w = textW(lastAtom, fs);
+        // 行末禁则:被带下的末字若以禁则字符收尾(引号/括号开),再带一个
+        if (NO_END.has(lastAtom[lastAtom.length - 1]) && take.length > 1) {
+          line.unshift(take[take.length - 1]);
+          w += textW(take[take.length - 1], fs);
+          take = take.slice(0, -1);
+        }
+      } else {
+        line = [];
+        w = 0;
+      }
+      lines.push(take.join('').trimEnd());
+    }
+    if (a.trim() !== '' || line.some((x) => x.trim() !== '')) {
+      line.push(a);
+      w += aw;
     }
   }
-  if (cur.trim() !== '') lines.push(cur.trimEnd());
+  const rest = line.join('').trim();
+  if (rest !== '') lines.push(rest);
   return lines;
 }
 
@@ -80,7 +102,59 @@ function runs(text: string): { t: string; b: boolean }[] {
   return out;
 }
 
-// 行内混排折行(带粗体标记):先剥标记折行,再按行重织 tspan
+// 行内混排折行(带粗体标记):atom 携带粗体位,禁则与 wrap() 同源。
+// (旧实现"先折行再按字符数重织"在行首/行尾空白处计数错位,会破坏避头尾)
+interface Run { t: string; b: boolean }
+function wrapRunsPara(rs: Run[], fs: number, maxW: number): Run[][] {
+  type A = { a: string; b: boolean; w: number };
+  const atoms: A[] = [];
+  for (const r of rs) {
+    for (const m of r.t.matchAll(/[A-Za-z0-9'’\-@.:/#%&+]+|\s+|[^\s]/gu)) {
+      atoms.push({ a: m[0], b: r.b, w: textW(m[0], fs) });
+    }
+  }
+  const lines: A[][] = [];
+  let line: A[] = [];
+  let w = 0;
+  for (const at of atoms) {
+    if (w + at.w > maxW && line.some((x) => x.a.trim() !== '')) {
+      let take = line;
+      if (at.a.trim() !== '' && NO_START.has(at.a[0]) && line.length > 1) {
+        const last = line[line.length - 1];
+        take = line.slice(0, -1);
+        line = [last];
+        w = last.w;
+        if (NO_END.has(last.a[last.a.length - 1]) && take.length > 1) {
+          const prev = take[take.length - 1];
+          line.unshift(prev);
+          w += prev.w;
+          take = take.slice(0, -1);
+        }
+      } else {
+        line = [];
+        w = 0;
+      }
+      lines.push(take);
+    }
+    if (at.a.trim() !== '' || line.some((x) => x.a.trim() !== '')) {
+      line.push(at);
+      w += at.w;
+    }
+  }
+  if (line.some((x) => x.a.trim() !== '')) lines.push(line);
+  // 行内相邻同标记 atom 合并
+  return lines.map((ls) => {
+    const out: Run[] = [];
+    for (const x of ls) {
+      const lastR = out[out.length - 1];
+      if (lastR !== undefined && lastR.b === x.b) lastR.t += x.a;
+      else out.push({ t: x.a, b: x.b });
+    }
+    return out;
+  });
+}
+
+// 兼容旧签名(行 → 已织好的 tspan svg 串)
 function wrapMixed(text: string, fs: number, maxW: number): string[] {
   const plain = text.replace(/\*\*/g, '');
   const lines = wrap(plain, fs, maxW);
@@ -195,12 +269,20 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
   const barAt = (bandTop: number): void => {
     push(`<rect x="3" y="${(bandTop - 30).toFixed(0)}" width="80" height="110" fill="${C_ACCENT}"/>`); // 原图:条顶高出字面 ~30-37,底至基线
   };
-  const titleText = doc.title.replace(/[–—]/g, '-');  // 原图用短横(en/em dash 在该字号太宽)
-  for (const l of wrap(titleText, FS_TITLE, CW)) {
+  // 原图 wordmark 逐字形实测:比 Inter Bold 宽 ~1.24×(X76/C79/M89/D73 @ cap73),
+  // dash 为 en-dash 宽 —— 拉丁短题用 textLength+spacingAndGlyphs 拉到同宽;
+  // CJK/长题自然排版,不拉
+  const titleText = doc.title;
+  const latinWordmark = /^[-–—A-Za-z0-9 .]{2,12}$/.test(titleText) && !/[A-Za-z0-9].*[一-鿿]/.test(titleText);
+  const tls = wrap(titleText, FS_TITLE, CW);
+  tls.forEach((l, i) => {
     barAt(y);
-    push(`<text x="${MX}" y="${(y + FS_TITLE * 0.87).toFixed(0)}" font-family="${F_TITLE}" font-size="${FS_TITLE}" fill="${C_ACCENT}">${esc(l)}</text>`);
+    const stretch = latinWordmark && tls.length === 1
+      ? ` textLength="${(textW(l, FS_TITLE) * 1.24).toFixed(0)}" lengthAdjust="spacingAndGlyphs"`
+      : '';
+    push(`<text x="${MX}" y="${(y + FS_TITLE * 0.87).toFixed(0)}" font-family="${F_TITLE}" font-size="${FS_TITLE}" fill="${C_ACCENT}"${stretch}>${esc(l)}</text>`);
     y += P_TITLE;
-  }
+  });
   y += 30;
   if (doc.subtitle) {
     for (const l of wrap(doc.subtitle, FS_SUB, CW)) {
@@ -212,13 +294,17 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
   // 页头要点列表:浅灰圆点 + #686868 文本(原图:点 ~13px 紧贴文本左)
   if (doc.bullets.length > 0) {
     for (const b of doc.bullets) {
-      const ls = wrap(b, FS_BODY, CW);
-      ls.forEach((l, i) => {
-        const dot = i === 0 ? `<circle cx="${MX - 19}" cy="${(y + FS_BODY * 0.5).toFixed(0)}" r="7" fill="${C_DOT}"/>` : '';
-        push(`${dot}<text x="${MX}" y="${(y + FS_BODY * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_BODY}" fill="${C_BULLET}">${esc(l)}</text>`);
-        y += i === ls.length - 1 ? P_BULLET : P_BODY;
-      });
+      // 原图页头要点无可见圆点(实测 ≥250 灰),纯信息行
+      for (const l of wrap(b, FS_BODY, CW)) {
+        push(`<text x="${MX}" y="${(y + FS_BODY * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_BODY}" fill="${C_BULLET}">${esc(l)}</text>`);
+        y += P_BODY;
+      }
+      y += P_BULLET - P_BODY;
     }
+    // 原图 y1268-1317:#f5f5f5 全宽浅灰带(页头与首个顶级节之间唯一的分隔元素)
+    y += 55;
+    push(`<rect x="0" y="${y.toFixed(0)}" width="${W}" height="50" fill="#f5f5f5"/>`);
+    y += 50;
   }
 
   // 节:## = 顶级(左缘装饰条 + 粗体),###/整段粗体 = 次级(仅粗体);节头与正文
@@ -312,8 +398,11 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
           }
           y += X_PARA;
         } else {
-          for (const l of wrapMixed(blk.text, FS_BODY, CW)) {
-            push(`<text x="${MX}" y="${(y + FS_BODY * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_BODY}" fill="${C_BODY}">${l}</text>`);
+          for (const lineRuns of wrapRunsPara(runs(blk.text), FS_BODY, CW)) {
+            const body = lineRuns
+              .map((r) => (r.b ? `<tspan font-family="${F_BOLD}" fill="${C_HEAD}">${esc(r.t)}</tspan>` : esc(r.t)))
+              .join('');
+            push(`<text x="${MX}" y="${(y + FS_BODY * 0.87).toFixed(0)}" font-family="${F_REG}" font-size="${FS_BODY}" fill="${C_BODY}">${body}</text>`);
             y += P_BODY;
           }
           y += X_PARA;
@@ -337,7 +426,9 @@ function layout(doc: Doc, v: number): { items: Item[]; total: number } {
       y += P_BODY + 20;
     }
     for (const s of subLines) {
-      push(`<text x="${W / 2}" y="${(y + FS_BODY * 0.87).toFixed(0)}" text-anchor="middle" font-family="${F_REG}" font-size="${FS_BODY}" fill="${C_BODY}">${esc(s)}</text>`);
+      // 原图:location 黑;website 是本模板扩展行,用正文灰
+      const isSite = /^https?:\/\//.test(s);
+      push(`<text x="${W / 2}" y="${(y + FS_BODY * 0.87).toFixed(0)}" text-anchor="middle" font-family="${F_REG}" font-size="${FS_BODY}" fill="${isSite ? C_BODY : '#000000'}">${esc(s)}</text>`);
       y += P_BODY + 20;
     }
     if (qrUrl !== undefined) {
