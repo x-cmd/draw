@@ -27,41 +27,63 @@ const MD = [
   '- 项目二',
 ].join('\n');
 
-describe('renderOnepageFromMarkdown · strip-v3 (mobile long-image, measured from reference)', () => {
-  it('renders a 1800-wide strip whose height grows with content', () => {
-    const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
+describe('renderOnepageFromMarkdown · md-engine-v2(行盒模型,常量由 STYLE 表推导)', () => {
+  it('renders a 1800-wide strip whose height grows with content', async () => {
+    const { svg } = await renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
     expect(svg).toMatch(/^<svg/);
     expect(svg).toContain('width="1800"');
     const h = Number(/height="(\d+)"/.exec(svg)?.[1]);
     expect(h).toBeGreaterThan(2500);            // 条状:高度随内容生长
     expect(svg).toContain('测试一页纸');
-    expect(svg).not.toContain('一、简介');         // 原图无中文序号
     expect(svg).toContain('页头要点一');
     expect(svg).toContain('项目一');
   });
 
-  it('matches the reference rhythm: body 73px gray, bold heads dark, gutter bars on major sections', () => {
-    const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
-    expect(svg).toContain('font-size="73" fill="#808fa5"');        // 正文灰
-    expect(svg).toMatch(/rect x="3"[^>]*fill="#3f78f6"/);         // 左缘装饰条(标题+顶级节)
-    expect((svg.match(/rect x="3"/g) ?? []).length).toBe(4);      // 标题 + 简介 + 数据 + 联系方式
-    expect(svg).toMatch(/font-size="73" fill="#000000"/);         // 节头:同字号,粗且深
-    expect(svg).not.toContain('#16161e');                          // 原图页脚是白底,无深色块
-    expect(svg).toContain('扫码了解更多');                          // QR 说明
-    expect(svg).toContain('text-anchor="middle"');                 // 页脚联系行居中
+  it('markdown 语义:节头/正文/列表/页头要点各按 STYLE 呈现,无中文序号', async () => {
+    const { svg } = await renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
+    expect(svg).toContain('fill="#808fa5"');                         // 正文蓝灰
+    expect(svg).toMatch(/rect x="0"[^>]*fill="#3f78f6"/);           // 顶级节左缘装饰条(出血)
+    expect(svg).toContain('font-weight="700" fill="#000000"');      // 节头黑粗
+    expect(svg).not.toContain('一、简介');                            // 不臆造序号
+    expect(svg).not.toContain('#16161e');                            // 页脚白底
+    expect(svg).toContain('扫码了解更多');                            // QR 说明
+    expect(svg).toContain('text-anchor="middle"');                   // 页脚联系行居中
+    expect(svg).toContain('md-engine-v2');                            // 引擎标记(metadata 内已转义)
   });
 
-  it('bold-lead renders as a bold 73px head and inline bold as tspans', () => {
-    const { svg } = renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
-    expect(svg).toContain('<tspan font-family');   // 行内粗体
-    expect(svg).toContain('>独立粗体小节<');        // 整段粗体 → 次级节头
+  it('避头尾:全文无行首标点、无行尾开引号/开括号', async () => {
+    const { svg } = await renderOnepageFromMarkdown(MD, new URL(`${BASE}/x-cmd/onepage`));
+    const lines = [...svg.matchAll(/<text[^>]*>(?:<tspan[^>]*>)?([^<]+)/g)].map((m) => m[1]);
+    const badStart = lines.filter((l) => /^[。，、；：？！,.:;?)）\]】」』…%]/.test(l));
+    const badEnd = lines.filter((l) => /[（(\[【「『$#]$/.test(l));
+    expect(badStart).toEqual([]);
+    expect(badEnd).toEqual([]);
   });
 
-  it('caps absurd length; missing title 400s; bare paragraphs legal', () => {
-    const huge = `---\ntitle: T\n---\n${Array.from({ length: 400 }, (_, i) => `## 节${i}\n内容内容内容内容内容内容内容内容内容内容。`).join('\n\n')}`;
-    expect(() => renderOnepageFromMarkdown(huge, new URL(`${BASE}/x-cmd/onepage`))).toThrowError(/tall/);
-    expect(() => renderOnepageFromMarkdown('只有正文没有标题', new URL(`${BASE}/x-cmd/onepage`))).toThrowError(/title/);
-    const ok = renderOnepageFromMarkdown('---\ntitle: T\n---\n无节正文,标题加散段即合法条状页。', new URL(`${BASE}/x-cmd/onepage`));
+  it('markdown 块语义:图表居中、引用块、hr、表格兜底、行内 code 等宽', async () => {
+    const md = [
+      '---', 'title: 块语义', '---', '',
+      '![架构图](https://example.com/a.png =600x400)', '',
+      '> 引用块一行', '',
+      '---', '',
+      '行内 `code` 与 **粗体**。', '',
+      '| a | b |', '|---|---|', '| 1 | 2 |',
+    ].join('\n');
+    const { svg } = await renderOnepageFromMarkdown(md, new URL(`${BASE}/x-cmd/onepage`));
+    const img = /<rect x="(\d+)"[^>]*rx="8"[^>]*fill="#f5f7fa"/.exec(svg) ?? /<image[^>]*x="(\d+)"/.exec(svg);
+    expect(img).toBeTruthy();                                        // 图块(占位或实图)
+    if (img !== null) expect(Number(img[1])).toBeGreaterThan(216);   // 居中:起点 > 左边距
+    expect(svg).toContain('引用块一行');
+    expect(svg).toMatch(/<rect [^>]*height="2" fill="#e5e7eb"/);     // hr
+    expect(svg).toContain('1  ·  2');                                  // 表格行呈现(表头走粗体 tspan)
+    expect(svg).toMatch(/<tspan font-family="'DrawMono'/);            // 行内 code 等宽
+  });
+
+  it('caps absurd length; missing title 400s; bare paragraphs legal', async () => {
+    const huge = `---\ntitle: T\n---\n${Array.from({ length: 500 }, (_, i) => `## 节${i}\n内容内容内容内容内容内容内容内容内容内容。`).join('\n\n')}`;
+    await expect(renderOnepageFromMarkdown(huge, new URL(`${BASE}/x-cmd/onepage`))).rejects.toThrowError(/tall/);
+    await expect(renderOnepageFromMarkdown('只有正文没有标题', new URL(`${BASE}/x-cmd/onepage`))).rejects.toThrowError(/title/);
+    const ok = await renderOnepageFromMarkdown('---\ntitle: T\n---\n无节正文,标题加散段即合法条状页。', new URL(`${BASE}/x-cmd/onepage`));
     expect(ok.svg).toContain('无节正文');
   });
 });

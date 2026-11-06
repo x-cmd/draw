@@ -229,8 +229,8 @@ function buildTree(doc: Doc): El {
           { marginTop: 24, backgroundColor: CODE_BG, borderRadius: 16, padding: '24px 28px', display: 'flex', flexDirection: 'column' },
           codeLines(blk.lines).map((l) => el({ fontFamily: 'DrawMono, Inter', fontSize: 27, color: '#374151', lineHeight: 1.6 }, l === '' ? ' ' : l)),
         ));
-      } else {
-        const rs = runsOf(blk.text);
+      } else if (blk.k === 'quote' || blk.k === 'p') {
+        const rs = runsOf(blk.k === 'p' ? blk.text : blk.text);
         const onlyBold = rs.length === 1 && rs[0].b;
         if (onlyBold) {
           kids.push(el({ marginTop: 48, fontSize: 38, fontWeight: 700, color: '#1f2937', lineHeight: 1.4 }, rs[0].t));

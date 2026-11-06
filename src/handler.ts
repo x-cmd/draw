@@ -270,7 +270,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
   if (sub === '/x-cmd/onepage' || sub === '/x-cmd/one') {
     if (method === 'POST') {
       const body = await readBody(request);
-      return onepageDocResponse(request, url, renderOnepageFromMarkdown(body, url));
+      return onepageDocResponse(request, url, await renderOnepageFromMarkdown(body, url));
     }
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<markdown> or ?src=<url>, or POST the markdown body`, { allow: 'GET, POST' });
@@ -280,7 +280,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (src !== null && src !== '') {
       return onepageDocResponse(request, url, await renderOnepageFromSrc(src, url));
     }
-    return onepageDocResponse(request, url, renderOnepageFromUrl(url));
+    return onepageDocResponse(request, url, await renderOnepageFromUrl(url));
   }
   // /draw/nocors?url=<(github blob|raw|任意 http)>(#28,参考 x-cmd/ppt):小型代取服务,
   // 给浏览器端用 —— raw.githubusercontent 自带 ACAO:* 可直取;其它域跨域取不到时走这里。
