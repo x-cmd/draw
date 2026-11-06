@@ -90,13 +90,21 @@ function onepageDocResponse(request: Request, url: URL, result: DrawResult): Pro
   if (!isDoc) return chartResponse(url, result);
   const inline = result.svg.replace(/^<svg([^>]*?) width="\d+" height="\d+"/, '<svg$1');
   const title = /aria-label="([^"]*)"/.exec(result.svg)?.[1] ?? 'draw onepage';
+  // 右上角导出:SVG 直接序列化内联节点;PNG 走 canvas 光栅化(客户端完成,
+  // 不吃 Workers 光栅 CPU 配额;SVG 内只有 data: 资源,canvas 不受污染)
   const html =
     '<!doctype html><html><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
     `<title>${title}</title>` +
     '<style>body{margin:0;background:#ededed}' +
-    'svg{display:block;width:min(100%,420px);height:auto;margin:0 auto;background:#fff}</style>' +
-    '</head><body>' + inline + '</body></html>';
+    'svg{display:block;width:min(100%,420px);height:auto;margin:0 auto;background:#fff}' +
+    '.x{position:fixed;top:12px;right:12px;display:flex;gap:8px;z-index:9;font:13px/1 -apple-system,sans-serif}' +
+    '.x button{padding:8px 14px;border:1px solid #d5d9e0;border-radius:16px;background:rgba(255,255,255,.92);color:#3f78f6;box-shadow:0 1px 4px rgba(0,0,0,.08)}</style>' +
+    '</head><body>' +
+    `<div class="x"><button onclick="exp('svg')">SVG</button><button onclick="exp('png')">PNG</button></div>` +
+    inline +
+    `<script>function sv(){const s=document.querySelector('svg');const c=s.cloneNode(true);const m=s.getAttribute('viewBox').split(' ');c.setAttribute('width',m[2]);c.setAttribute('height',m[3]);return new XMLSerializer().serializeToString(c)}function dl(u,n){const a=document.createElement('a');a.href=u;a.download=n;a.click()}function exp(k){const n=(document.title||'onepage').replace(/[^\w\u4e00-\u9fff-]+/g,'-');if(k==='svg'){dl(URL.createObjectURL(new Blob([sv()],{type:'image/svg+xml'})),n+'.svg');return}const m=document.querySelector('svg').getAttribute('viewBox').split(' ');const img=new Image();img.onload=()=>{const cv=document.createElement('canvas');cv.width=m[2];cv.height=m[3];cv.getContext('2d').drawImage(img,0,0,m[2],m[3]);cv.toBlob(b=>dl(URL.createObjectURL(b),n+'.png'))};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(sv())}</script>` +
+    '</body></html>';
   return Promise.resolve(new Response(html, {
     headers: {
       'content-type': 'text/html; charset=utf-8',

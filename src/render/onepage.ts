@@ -66,17 +66,17 @@ interface Style {
 
 const S: Record<string, Style> = {
   title:    { size: BODY * 1.4,  lineH: 1.3, weight: 700, family: F_TITLE, color: THEME.accent, after: 0.5 },
-  subtitle: { size: BODY * 0.95, lineH: 1.6, weight: 400, family: F_REG,   color: THEME.accent, before: 0.25, after: 0.4 },
-  meta:     { size: BODY * 0.92, lineH: 1.85, weight: 400, family: F_REG,  color: THEME.meta },             // 页头要点:行距即分隔
-  h2:       { size: BODY * 1.05, lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.4, after: 0.5, bar: true },
-  h3:       { size: BODY * 1.0,  lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.0, after: 0.4 },
+  subtitle: { size: BODY * 0.95, lineH: 1.6, weight: 400, family: F_REG,   color: '#7aa3f7', before: 0.25, after: 0.4 },  // accent 的浅一档,与标题分层
+  meta:     { size: BODY * 0.92, lineH: 1.85, weight: 400, family: F_REG,  color: '#8894a8' },             // 页头要点:比正文再安静一档
+  h2:       { size: BODY * 1.12, lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.6, after: 0.5, bar: true },
+  h3:       { size: BODY * 1.0,  lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.15, after: 0.4 },
   h4:       { size: BODY * 0.95, lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.meta, before: 0.9, after: 0.4 },
   quote:    { size: BODY * 0.95, lineH: 1.7,  weight: 400, family: F_REG,  color: THEME.meta, before: 0.4, after: 0.6 },
   figcap:   { size: BODY * 0.5,  lineH: 1.5,  weight: 400, family: F_REG,  color: THEME.note, before: 0.25 },
   body:     { size: BODY,        lineH: LINE, weight: 400, family: F_REG,  color: THEME.body, after: 0.5 },
   li:       { size: BODY,        lineH: LINE, weight: 400, family: F_REG,  color: THEME.body, after: 0.2 },
-  code:     { size: BODY * 0.7,  lineH: 1.55, weight: 400, family: F_MONO, color: THEME.code, before: 0.4, after: 0.6 },
-  footHead: { size: BODY * 1.0,  lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.4, after: 0.6, bar: true },
+  code:     { size: BODY * 0.75, lineH: 1.55, weight: 400, family: F_MONO, color: THEME.code, before: 0.4, after: 0.6 },
+  footHead: { size: BODY * 1.0,  lineH: 1.35, weight: 700, family: F_BOLD, color: THEME.ink, before: 1.6, after: 0.6, bar: true },
   contact:  { size: BODY,        lineH: LINE, weight: 700, family: F_BOLD, color: THEME.ink, after: 0.3 },
   contactSub: { size: BODY * 0.95, lineH: LINE, weight: 400, family: F_REG, color: THEME.body, after: 0.2 },
   caption:  { size: BODY * 0.45, lineH: 1.5, weight: 400, family: F_REG,  color: THEME.note },
@@ -191,12 +191,21 @@ const ATOM_RE = /[A-Za-z0-9'’\-@.:/#%&+]+|\s+|[^\s]/gu;
 
 interface Run { t: string; b: boolean; m?: boolean }  // b=粗体 m=行内代码(等宽)
 
+// 盘古之白:汉字与拉丁/数字之间自动加一个空格(中文排版惯例;mdnice 等微信
+// 排版器同款)。行内 code run 不动(命令必须逐字)。
+const HAN = '\u4e00-\u9fff';
+function hanSpace(t: string): string {
+  return t
+    .replace(new RegExp(`([${HAN}])([A-Za-z0-9])`, 'gu'), '$1 $2')
+    .replace(new RegExp(`([A-Za-z0-9])([${HAN}])`, 'gu'), '$1 $2');
+}
+
 function runs(text: string): Run[] {
   const out: Run[] = [];
   for (const m of text.matchAll(/\*\*([^*]+)\*\*|`([^`]+)`|([^*`]+)/g)) {
-    if (m[1] !== undefined) out.push({ t: m[1], b: true });
+    if (m[1] !== undefined) out.push({ t: hanSpace(m[1]), b: true });
     else if (m[2] !== undefined) out.push({ t: m[2], b: false, m: true });
-    else if (m[3] !== undefined && m[3] !== '') out.push({ t: m[3], b: false });
+    else if (m[3] !== undefined && m[3] !== '') out.push({ t: hanSpace(m[3]), b: false });
   }
   return out;
 }
@@ -303,6 +312,13 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
   const items: Item[] = [];
   const push = (s: string): void => { items.push({ s }); };
   let y = PAD_TOP;
+  // 块间距折叠:相邻块的 after/before 取 max(不叠死相加;CSS margin-collapse 同义)
+  let pend = 0;                                   // 上一块留下的 after(UNIT 倍数)
+  const gap = (before: number): void => {
+    y += Math.max(pend, before) * UNIT;
+    pend = 0;
+  };
+  const after = (n: number): void => { pend = n; };
 
   // 文本块通用:runs → 行 → 逐行 <text>(基线由行盒推导)
   const emitRuns = (rs: Run[], st: Style, maxW = CONTENT, x = MARGIN): void => {
@@ -329,27 +345,28 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
   // 页头:标题 → 副标题 → 要点 → 分隔带
   const ts = S.title;
   emitPlain(doc.title, ts);
-  y += (ts.after ?? 0) * UNIT;
+  after(ts.after ?? 0);
   if (doc.subtitle !== '') {
-    y += (S.subtitle.before ?? 0) * UNIT;
+    gap(S.subtitle.before ?? 0);
     emitPlain(doc.subtitle, S.subtitle);
-    y += (S.subtitle.after ?? 0) * UNIT;
+    after(S.subtitle.after ?? 0);
   }
   if (doc.bullets.length > 0) {
     for (const b of doc.bullets) emitPlain(b, S.meta);
-    y += 0.25 * UNIT;
+    gap(0.25);
     push(`<rect x="0" y="${y.toFixed(0)}" width="${W}" height="${(0.5 * UNIT).toFixed(0)}" fill="${THEME.rule}"/>`);
-    y += 0.5 * UNIT + 0.6 * UNIT;
+    y += 0.5 * UNIT;
+    after(0.6);
   }
 
   // 正文节
   for (const sec of doc.sections) {
     if (sec.name !== '') {
       const st = sec.minor4 === true ? S.h4 : sec.major ? S.h2 : S.h3;
-      y += (st.before ?? 0) * UNIT;
+      gap(st.before ?? 0);
       if (st.bar === true) bar(y, st);
       emitPlain(sec.name, st);
-      y += (st.after ?? 0) * UNIT;
+      after(st.after ?? 0);
     }
     for (const blk of sec.blocks) {
       if (blk.k === 'li') {
@@ -368,11 +385,11 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
             push(`${mk}<text x="${MARGIN + markerW}" y="${baseline(y, S.li).toFixed(0)}" font-family="${S.li.family}" font-size="${S.li.size.toFixed(0)}" font-weight="${S.li.weight}" fill="${S.li.color}">${body}</text>`);
             y += S.li.size * S.li.lineH;
           });
-          y += (S.li.after ?? 0) * UNIT;
+          after(S.li.after ?? 0);
         }
       } else if (blk.k === 'code') {
         const st = S.code;
-        y += (st.before ?? 0) * UNIT;
+        gap(st.before ?? 0);
         const pad = 0.35 * UNIT;
         const lines = wrapCode(blk.lines, st.size, CONTENT - pad * 2);
         const boxH = pad * 2 + lines.length * st.size * st.lineH;
@@ -382,10 +399,10 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
           y += st.size * st.lineH;
         }
         y += pad * 2;
-        y += (st.after ?? 0) * UNIT;
+        after(st.after ?? 0);
       } else if (blk.k === 'quote') {
         const st = S.quote;
-        y += (st.before ?? 0) * UNIT;
+        gap(st.before ?? 0);
         const indent = 0.5 * UNIT;
         const lines = wrapRuns(runs(blk.text), st.size, CONTENT - indent - 0.4 * UNIT);
         const boxH = lines.length * st.size * st.lineH;
@@ -395,11 +412,12 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
           push(`<text x="${MARGIN + indent}" y="${baseline(y, st).toFixed(0)}" font-family="${st.family}" font-size="${st.size.toFixed(0)}" fill="${st.color}">${body}</text>`);
           y += st.size * st.lineH;
         }
-        y += (st.after ?? 0) * UNIT;
+        after(st.after ?? 0);
       } else if (blk.k === 'hr') {
-        y += 0.5 * UNIT;
+        gap(0.5);
         push(`<rect x="${MARGIN}" y="${y.toFixed(0)}" width="${CONTENT}" height="2" fill="#e5e7eb"/>`);
-        y += 2 + 0.6 * UNIT;
+        y += 2;
+        after(0.6);
       } else if (blk.k === 'img') {
         // 图表:居中图块(图表居中规则)。imgMap 提供尺寸与 data-URI;缺省占位
         const info = imgMap[blk.url];
@@ -408,7 +426,7 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
         let ih = blk.h ?? info?.h ?? iw * 0.62;
         if (iw > maxW) { ih = ih * maxW / iw; iw = maxW; }
         const fs = S.figcap;
-        y += (0.5 * UNIT);
+        gap(0.5);
         const ix = MARGIN + (CONTENT - iw) / 2;
         if (info !== undefined && info.data !== undefined) {
           push(`<image href="${info.data}" x="${ix.toFixed(0)}" y="${y.toFixed(0)}" width="${iw.toFixed(0)}" height="${ih.toFixed(0)}"/>`);
@@ -422,19 +440,23 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
           push(centerLine(blk.alt, fs, y));
           y += fs.size * fs.lineH;
         }
-        y += 0.5 * UNIT;
+        after(0.5);
       } else if (blk.k === 'table') {
-        // 表格轻量呈现:表头粗 + 行内 " · " 连接(真网格排版在路线图)
+        // 表格轻量呈现:表头粗 + 行内 " · " 连接;表头下划线 + 行间发丝线
         const st = S.body;
-        y += (st.before ?? 0) * 0.5 * UNIT;
+        gap((st.before ?? 0) * 0.5);
         emitRuns(runs(blk.head.map((h) => `**${h}**`).join('  ·  ')), st);
+        push(`<rect x="${MARGIN}" y="${(y + 0.08 * UNIT).toFixed(0)}" width="${CONTENT}" height="3" fill="#d8dce4"/>`);
+        y += 0.25 * UNIT;
         for (const row of blk.rows) {
           emitRuns(runs(row.join('  ·  ')), st);
+          push(`<rect x="${MARGIN}" y="${(y + 0.04 * UNIT).toFixed(0)}" width="${CONTENT}" height="1" fill="#eef0f4"/>`);
+          y += 0.12 * UNIT;
         }
-        y += (st.after ?? 0) * UNIT;
+        after(st.after ?? 0);
       } else if (blk.k === 'p') {
         emitRuns(runs(blk.text), S.body);
-        y += (S.body.after ?? 0) * UNIT;
+        after(S.body.after ?? 0);
       }
     }
   }
@@ -444,7 +466,7 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
   const subLines = [doc.meta.location, doc.meta.website].filter((s): s is string => typeof s === 'string' && s !== '');
   const qrUrl = doc.meta.qr;
   if (contact !== undefined || subLines.length > 0 || qrUrl !== undefined) {
-    y += (S.footHead.before ?? 0) * UNIT;
+    gap(S.footHead.before ?? 0);
     bar(y, S.footHead);
     emitPlain(doc.meta['contact-title'] ?? '联系方式', S.footHead);
     y += (S.footHead.after ?? 0) * UNIT + 0.4 * UNIT;
