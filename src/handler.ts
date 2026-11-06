@@ -14,6 +14,7 @@ import { renderEchartsFromUrl } from './render/echarts-ssr.js';
 import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
+import { renderGanttFromUrl } from './render/gantt.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
 import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub, fetchSrcDoc } from './render/onepage.js';
 import { renderOnesvg } from './render/onesvg.js';
@@ -265,6 +266,14 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<root/branch/leaf> paths`, { allow: 'GET' });
     }
     return chartResponse(url, renderMindmapFromUrl(url));
+  }
+  // /draw/gantt 甘特图(#20 拆分):m=<gantt 源码>(首行 gantt 关键字可省)。
+  // 独立入口——mermaid 只是受支持的输入语法之一,甘特不隶属 mermaid
+  if (sub === '/gantt') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?m=<gantt source>`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderGanttFromUrl(url));
   }
   // /draw/x-cmd/release-banner 命名空间路由(x-cmd 发布封面):title/version/cmd/paper
   if (sub === '/x-cmd/release-banner' || sub === '/x-cmd/release') {

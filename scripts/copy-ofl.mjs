@@ -8,3 +8,4 @@ for (const f of readdirSync('src/styles')) {
 import { mkdirSync, cpSync } from 'node:fs';
 mkdirSync('dist/render/vendor', { recursive: true });
 cpSync('src/render/vendor/mermaid-flow-parser.js', 'dist/render/vendor/mermaid-flow-parser.js');
+cpSync('src/render/vendor/mermaid-gantt-parser.js', 'dist/render/vendor/mermaid-gantt-parser.js');

@@ -8,6 +8,7 @@ import { resolveVersion } from '../version.js';
 import { resolveSkin, type Skin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { mermaidFlowParser } from './vendor/mermaid-flow-parser.js';
+import { renderGanttFromUrl } from './gantt.js';
 import { renderArchmapCore, naturalSize, type ArchNode, type ArchEdge, type ArchBoundary, type ArchmapCoreOpts, type ArchStyle } from './archmap.js';
 
 const M_MAX = 6000;
@@ -208,8 +209,9 @@ export function renderMermaidFromUrl(url: URL, interactive = false): DrawResult 
   if (m === null || m.trim() === '') throw new ApiError(400, `"m" (mermaid source) is required. Example: /draw/mermaid?${N_EXAMPLE}`);
   if (m.length > M_MAX) throw new ApiError(400, `"m" too long: ${m.length} > ${M_MAX}`);
   const head = m.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
+  if (head === 'gantt') return renderGanttFromUrl(url, interactive);
   if (head !== 'graph' && head !== 'flowchart') {
-    throw new ApiError(400, `only "graph/flowchart" is supported in v1, got "${head || '(empty)'}"`);
+    throw new ApiError(400, `only "graph/flowchart" and "gantt" are supported, got "${head || '(empty)'}"`);
   }
 
   const doc = parseFlow(m);
