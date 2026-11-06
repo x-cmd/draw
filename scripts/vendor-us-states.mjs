@@ -4,8 +4,13 @@
 //     (US Census Bureau 边界数据,public domain;https://github.com/topojson/us-atlas)
 // 流程: TopoJSON → GeoJSON(topojson-client feature)
 //       → 抽稀(topojson-simplify presimplify/simplify, tol=1 —— 共享弧保持一致,州界无缝)
+//       → y 取负(见下)
 //       → 坐标四舍五入到 0.1(投影单位 ≈ 1.1km;760px 宽的图上 ≈ 0.08px,肉眼无损)
 // 输出: src/render/vendor/us-states.js(约 68KB,纯数据/无依赖,Workers 可用)
+//
+// y 取负:echarts 把地图坐标按「y 向上(北为正)」解读,自己再翻成画布的 y 向下。
+// us-atlas 的投影产物是 d3 的屏幕约定(y 向下),原样喂进去地图就是上下颠倒的 ——
+// 这里先翻一次,echarts 拿到即正。
 //
 // echarts 6 不再自带地图数据(v4 的 map/ 目录已从 npm 包移除),地图 GeoJSON 随包分发。
 // 用法: npm run vendor:us-states
@@ -18,7 +23,12 @@ const OUT = new URL('../src/render/vendor/us-states.js', import.meta.url).pathna
 const TOL = 1;      // 抽稀容差(投影单位;1 ≈ 1.1km)
 const DECIMALS = 1; // 坐标小数位
 
-const roundAll = (v, d) => (Array.isArray(v) ? v.map((x) => roundAll(x, d)) : Number(v.toFixed(d)));
+// y 取负 + 四舍五入(只翻坐标对的第二个数 —— x 翻了就成了 180° 旋转)
+const flipY = (v, d) => {
+  if (!Array.isArray(v) || v.length === 0) return v;
+  if (typeof v[0] === 'number') return [Number(v[0].toFixed(d)), -Number(v[1].toFixed(d))];
+  return v.map((x) => flipY(x, d));
+};
 
 const res = await fetch(SRC);
 if (!res.ok) throw new Error(`download failed: ${res.status} ${SRC}`);
@@ -33,7 +43,7 @@ const out = {
   features: geo.features.map((f) => ({
     type: 'Feature',
     properties: { name: f.properties.name },
-    geometry: { type: f.geometry.type, coordinates: roundAll(f.geometry.coordinates, DECIMALS) },
+    geometry: { type: f.geometry.type, coordinates: flipY(f.geometry.coordinates, DECIMALS) },
   })),
 };
 
@@ -43,6 +53,7 @@ const header = `/* eslint-disable */
  * 源: us-atlas@3 states-albers-10m.json(US Census Bureau 边界数据,public domain)
  *     https://github.com/topojson/us-atlas
  * 工具链: topojson-client(feature) + topojson-simplify(presimplify/simplify, tol=${TOL})
+ *          → y 取负(GeoJSON y 向上 / ECharts 画布 y 向下,不翻地图是倒的)
  *          → 坐标四舍五入到 ${DECIMALS} 位(投影单位 ≈ 1.1km)
  * 再生成: npm run vendor:us-states(脚本在 scripts/vendor-us-states.mjs)
  * 纯数据/无依赖,Workers 可用。50 州 + DC,Albers USA 投影(阿拉斯加/夏威夷为插图)。

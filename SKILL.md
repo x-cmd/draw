@@ -78,7 +78,7 @@ https://x-cmd.com/draw/echarts?d=%7B%22xAxis%22%3A%7B%22type%22%3A%22category%22
 - 最简 option 即可出图(bar/line/scatter/boxplot 裸 option 自动补轴);`?d=` 之外共用 `w/h/t/scheme/v`
 - 风格自动注入(系列色板/轴中性色/Inter 字体/明暗 auto),option 里显式写的样式恒优先;`?d=` ≤16000 字符
 - 输出同嵌 `<metadata>`(option 原文,可解析还原);离线等价:`draw echarts '<option json>'`(文件/stdin 亦可,无 URL 长度限制)
-- 地图:随包带 US 各州 GeoJSON(50 州 + DC,Albers 投影),option 里 `"type":"map","map":"USA"` 即得 choropleth;`data[].name` 用州全名(California / New York / …),配 `visualMap` 上色;地图布局缺省铺满画布(要改写 `layoutCenter`/`layoutSize`/`zoom`)
+- 地图:随包带 US 各州 GeoJSON(50 州 + DC,Albers 投影),option 里 `"type":"map","map":"USA"` 即得 choropleth;`data[].name` 用州全名(California / New York / …),配 `visualMap` 上色;地图布局缺省铺满画布(要改写 `layoutCenter`/`layoutSize`/`zoom`);州上写数字:`series.label.show` + `series.labelLayout.hideOverlap`,单个州可覆盖 `label.formatter` 与 `label.color`(浅底深字、深底白字)
 
 ## JSON 形态(`?d=`,URL 编码)
 

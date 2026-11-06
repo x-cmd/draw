@@ -44,4 +44,26 @@ describe('map data', () => {
     const bad = encodeURIComponent(JSON.stringify({ series: [{ type: 'map', map: 'MARS', data: [] }] }));
     await expect(renderEchartsFromUrl(url(`d=${bad}`))).rejects.toMatchObject({ status: 400 });
   });
+
+  it('orients the map north-up (coordinates in the y-up convention echarts expects)', async () => {
+    // 回归:echarts 按「y 向上(北为正)」解读地图坐标,自己翻成画布的 y 向下;
+    // us-atlas 的投影产物是 d3 的屏幕约定(y 向下),不翻一次地图就是倒的。
+    const { usStatesGeoJson } = await import('../src/render/vendor/us-states.js');
+    const maxY = (name: string): number => {
+      const f = usStatesGeoJson.features.find((x) => x.properties.name === name);
+      if (!f) throw new Error(`no such state: ${name}`);
+      let m = -Infinity;
+      const walk = (v: unknown): void => {
+        if (Array.isArray(v)) {
+          if (typeof v[0] === 'number') { m = Math.max(m, v[1] as number); return; }
+          v.forEach(walk);
+        }
+      };
+      walk((f.geometry as { coordinates: unknown }).coordinates);
+      return m;
+    };
+    // 北为正 → 南边的州 y 更大?不:北正意味着南边的 y 更小
+    expect(maxY('Florida')).toBeLessThan(maxY('Maine'));
+    expect(maxY('California')).toBeLessThan(maxY('Washington'));
+  });
 });
