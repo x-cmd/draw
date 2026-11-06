@@ -58,8 +58,10 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      # deno publish 解析 package.json 裸依赖(d3/uqr)需要 node_modules
-      - run: npm ci --omit=dev
+      # deno publish 解析 package.json 裸依赖(d3/uqr)需要 node_modules;
+      # 全量安装(含 devDeps):@types/node 是 devDep,deno 的类型检查要它 ——
+      # --omit=dev 装不到,发布直接报 "Could not find @types/node" 而静默跳过
+      - run: npm ci
       - name: Publish to JSR (skip if version already there)
         # 语义:trigger 优先,不陪跑。正常路径上传+处理 <30s 即确认退出;
         # JSR 队列偶发卡住(too many requests)时 2 分钟放弃 —— 发布任务是
