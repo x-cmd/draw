@@ -19,6 +19,8 @@ interface MapRegistrar {
 const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   USA: () => import('./vendor/us-states.js'),
   CN: () => import('./vendor/china.js'),
+  EU: () => import('./vendor/eu.js'),
+  JP: () => import('./vendor/japan.js'),
 };
 
 /** 地图 GeoJSON(按地图名取):浏览器端注册地图要用同一份数据 */
@@ -26,7 +28,7 @@ export async function loadMapGeoJson(name: string): Promise<unknown> {
   const load = MAPS[name];
   if (!load) throw new Error(`unknown map: ${name}`);
   const mod = await load();
-  return mod.usStatesGeoJson ?? mod.chinaGeoJson;
+  return mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson;
 }
 
 /**
@@ -92,7 +94,7 @@ export async function registerMaps(echarts: MapRegistrar, option: unknown): Prom
     const load = MAPS[name];
     if (!load) continue;
     const mod = await load();
-    const geo = mod.usStatesGeoJson ?? mod.chinaGeoJson;
+    const geo = mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson;
     echarts.registerMap(name, geo);
     if (!aspects.has(name)) aspects.set(name, aspectOf(geo));
   }

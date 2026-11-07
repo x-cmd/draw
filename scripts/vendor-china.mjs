@@ -8,8 +8,8 @@
 // 输出: src/render/vendor/china.js(约 240KB,纯数据/无依赖,Workers 可用)
 //
 // 投影方向:d3 的 rotate 取 [-105, 0](不是 +105 —— 取反会把地图左右镜像)。
-// d3 输出的 y 向下(与 SVG 画布一致),所以这里**不需要**再翻 y
-// (us-states 那份 us-atlas 数据是 y 向上的,才要翻)。
+// d3 输出的 y 是北正(向上),echarts 按 SVG 约定 y 向下画 —— 所以**要再翻一次 y**
+// (us-states 那份 us-atlas 同理,也是翻 y 才对)。
 // 用法: npm run vendor:china
 import { writeFileSync } from 'node:fs';
 import { geoConicEqualArea } from 'd3-geo';
@@ -91,7 +91,8 @@ proj.scale(proj.scale() * k);
 proj.translate([(TARGET_H * (bx1 - bx0) / (by1 - by0)) / 2 - bx0 * k, (TARGET_H - (by1 - by0) * k) / 2 - by0 * k]);
 
 function transform(coords) {
-  if (isPair(coords)) { const p = proj([coords[0], coords[1]]); return [Math.round(p[0]), Math.round(p[1])]; }
+  // y 取负:投影输出 y 北正,SVG 画布 y 向下
+  if (isPair(coords)) { const p = proj([coords[0], coords[1]]); return [Math.round(p[0]), -Math.round(p[1])]; }
   if (isRing(coords)) {
     const s = dp(coords.map(([lon, lat]) => proj([lon, lat])), TOL);
     return s.length > 2 ? s.map(([x, y]) => [Math.round(x), Math.round(y)]) : [];
@@ -116,7 +117,7 @@ const header = `/* eslint-disable */
  * 中国各省市 GeoJSON —— ECharts 地图数据(vendored)。
  * 源: DataV.GeoAtlas 100000_full.json(34 个省级行政区 + 南海诸岛插图)
  * 工具链: geoConicEqualArea(标准纬线 25°/47°N,中央经线 105°E)→ Douglas-Peucker 抽稀
- *          → 坐标取整;投影输出 y 向下(与 SVG 画布一致,不需要再翻)
+ *          → 坐标取整;y 取负(投影输出 y 北正,SVG 画布 y 向下)
  * 再生成: npm run vendor:china(脚本在 scripts/vendor-china.mjs)
  * 纯数据/无依赖,Workers 可用。properties.name 是简称(北京/广东/…),
  * properties.full 是全称(北京市/广东省/…)。

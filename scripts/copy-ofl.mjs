@@ -11,3 +11,6 @@ cpSync('src/render/vendor/mermaid-flow-parser.js', 'dist/render/vendor/mermaid-f
 cpSync('src/render/vendor/mermaid-gantt-parser.js', 'dist/render/vendor/mermaid-gantt-parser.js');
 // vendored 地图数据(ECharts 不带地图数据,US 各州 GeoJSON 随包分发)
 cpSync('src/render/vendor/us-states.js', 'dist/render/vendor/us-states.js');
+cpSync('src/render/vendor/china.js', 'dist/render/vendor/china.js');
+cpSync('src/render/vendor/eu.js', 'dist/render/vendor/eu.js');
+cpSync('src/render/vendor/japan.js', 'dist/render/vendor/japan.js');
