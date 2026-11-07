@@ -1,4 +1,3 @@
-/// <reference path="./types/dagre.d.ts" />
 // npm 库入口(@x-cmd/draw):
 //   import { draw } from '@x-cmd/draw';
 //   const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2' });

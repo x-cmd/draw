@@ -2,6 +2,9 @@
 // 解析 = vendored jison 产物(官方 flow.jison 编译);布局 = dagre(纯 JS);
 // 渲染 = renderArchmapCore(三风格/交互/PNG/缓存全继承)。
 // 时序图/甘特等其余图型不在 v1 范围,给出明确 400。
+// dagre 无官方类型:类型来自本仓的最小面(普通模块而非 ambient 声明 ——
+// ambient 属全局类型改动,JSR 不许发布)
+// @ts-types="../types/dagre.d.ts"
 import dagre from 'dagre';
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';

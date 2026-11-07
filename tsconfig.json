@@ -10,7 +10,10 @@
     "noEmit": true,
     "strict": true,
     "skipLibCheck": true,
-    "types": ["./worker-configuration.d.ts"]
+    "types": ["./worker-configuration.d.ts"],
+    // dagre 无官方类型:类型指向本仓的最小面(普通模块,非 ambient ——
+    // ambient 属全局类型改动,JSR 不许发布;Deno 侧另用 // @ts-types=)
+    "paths": { "dagre": ["./src/types/dagre.d.ts"] }
   },
   "include": ["src", "test", "worker-configuration.d.ts"],
   "exclude": ["node_modules", "src/node"]
