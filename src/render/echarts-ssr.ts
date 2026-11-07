@@ -52,11 +52,14 @@ const CARTESIAN = new Set(['bar', 'line', 'scatter', 'effectScatter', 'boxplot',
 //   aspectScale=1 —— echarts 默认 0.75(给经纬度 GeoJSON 用的经验值),会把投影过的
 //     地图横向压扁 25%;地图数据本身已是等距投影的平面坐标,纵横比按数据来(aspect=1)
 //   尺寸按画布算 —— 顶部 62px 留给标题与 Edit @X-CMD 角标;图例横排(orient=horizontal)
-//     时底部再留 56px,竖排(orient=vertical,靠左/靠右)就不占底部,地图能更高
-//   剩下的框里按地图真实纵横比取最大的一份;layoutSize 是相对 min(画布宽高) 的
-//     百分比,所以按画布换算而不是写死。
+//     时底部再留 56px,竖排(orient=vertical,靠左)则左侧留 48px 且地图右移,
+//     不跟图例叠在一起;四周再留 12px 余量给州名标签(边缘的标签会溢出地图框)
+//   layoutSize 是 min(画布宽高) 的百分比:地图比画布宽时它给宽,比画布高时它给高
+//     (echarts 按地图自身纵横比决定),所以两条分支都要算。
 const MAP_TOP = 62;
-const MAP_BOTTOM = 56;
+const MAP_LEGEND_BOTTOM = 56;
+const MAP_LEGEND_SIDE = 48;
+const MAP_MARGIN = 12;
 
 /** 地图布局缺省(服务端与浏览器端同一套规则 —— 见 explore 页的同名实现) */
 export function mapLayout(o: {
@@ -67,16 +70,24 @@ export function mapLayout(o: {
   legendAtBottom: boolean;
 }): Obj {
   const aspect = mapAspect(o.name) ?? 1.7;
-  const top = MAP_TOP;
-  const bottom = o.legendAtBottom ? MAP_BOTTOM : 0;
-  const availH = Math.max(60, o.height - top - bottom);
-  const mapW = Math.min(o.width * 0.98, availH * aspect);
+  const left = o.legendAtBottom ? 0 : MAP_LEGEND_SIDE;
+  const bottom = o.legendAtBottom ? MAP_LEGEND_BOTTOM : 0;
+  const availW = Math.max(40, o.width - left - MAP_MARGIN * 2);
+  const availH = Math.max(40, o.height - MAP_TOP - bottom - MAP_MARGIN * 2);
+  // echarts:layoutSize 给的是「短边」那个方向的尺寸 —— 地图比画布宽时给宽,否则给高
+  const size = aspect >= 1
+    ? Math.min(availW, availH * aspect)
+    : Math.min(availH, availW / aspect);
   const unit = Math.min(o.width, o.height);
-  const centerY = ((top + availH / 2) / o.height) * 100;
+  const centerX = left + MAP_MARGIN + availW / 2;
+  const centerY = MAP_TOP + MAP_MARGIN + availH / 2;
   return {
     aspectScale: 1,
-    layoutSize: `${((mapW / unit) * 100).toFixed(2)}%`,
-    layoutCenter: ['50%', `${centerY.toFixed(2)}%`],
+    layoutSize: `${((size / unit) * 100).toFixed(2)}%`,
+    layoutCenter: [
+      `${((centerX / o.width) * 100).toFixed(2)}%`,
+      `${((centerY / o.height) * 100).toFixed(2)}%`,
+    ],
   };
 }
 
