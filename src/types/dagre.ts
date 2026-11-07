@@ -1,8 +1,8 @@
 // dagre 无官方类型,自绘最小面(我们只消费布局坐标)。
 //
-// 写成普通模块而不是 `declare module 'dagre'`:ambient 模块声明属于全局类型改动,
-// JSR 不允许发布(「modifying global types is not allowed」)。这里改为导出类型,
-// 由引用方用 `// @ts-types=` 指向本文件。
+// 写成普通模块(有 export)而不是 `declare module 'dagre'`:ambient 模块声明属于
+// 全局类型改动,JSR 不允许发布(「modifying global types is not allowed」)。
+// 引用方用 `// @ts-types=` 指向本文件(Deno/JSR 侧),tsc 侧走 dagre-ambient.d.ts。
 export interface GraphLabel {
   rankdir?: string;
   nodesep?: number;
@@ -27,6 +27,11 @@ export interface Graph {
   node(id: string): GraphNode;
   layout(): void;
 }
-export function graphlib(opts?: { compound?: boolean; multigraph?: boolean }): { Graph: new () => Graph };
-declare const dagre: { layout: (g: Graph) => void; graphlib: { Graph: new () => Graph } };
-export default dagre;
+export interface Dagre {
+  layout: (g: Graph) => void;
+  graphlib: { Graph: new () => Graph };
+}
+export declare const graphlib: { Graph: new () => Graph };
+// 默认导出只作类型面的载体(这个模块运行时不会被加载)
+const dagreTypeOnly = undefined as unknown as Dagre;
+export default dagreTypeOnly;

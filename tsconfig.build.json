@@ -15,12 +15,9 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
-    // dagre 无官方类型:类型指向本仓的最小面(普通模块,非 ambient ——
-    // ambient 属全局类型改动,JSR 不许发布;Deno 侧另用 // @ts-types=)
-    "paths": { "dagre": ["./src/types/dagre.d.ts"] },
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src"
   },
-  "files": ["src/lib.ts", "src/node/cli.ts"]
+  "files": ["src/lib.ts", "src/node/cli.ts", "src/types/dagre-ambient.d.ts"]
 }

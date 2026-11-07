@@ -29,15 +29,19 @@ describe('map data', () => {
     expect(svg).not.toContain('Map USA not exists'); // 地图名已注册
   });
 
-  it('fills the canvas for map series unless the user sets the layout', async () => {
-    const { svg } = await renderEchartsFromUrl(url(`d=${MAP_OPT}`));
-    expect(svg).toContain('&quot;zoom&quot;:1.1'); // 布局缺省铺满画布(回写进内嵌 metadata 的 option)
+  it('gives map series a canvas-filling layout unless the user sets one', async () => {
+    const { svg } = await renderEchartsFromUrl(url(`d=${MAP_OPT}&w=760&h=520`));
+    // 纵横比按数据(aspectScale=1,echarts 默认 0.75 会把投影过的地图压扁)
+    expect(svg).toContain('&quot;aspectScale&quot;:1');
+    // 尺寸按画布算:顶部给标题/角标留位,底部给图例留位
+    expect(svg).toContain('&quot;layoutSize&quot;:');
+    expect(svg).toContain('&quot;layoutCenter&quot;:');
     const own = encodeURIComponent(JSON.stringify({
-      series: [{ type: 'map', map: 'USA', zoom: 2, data: [{ name: 'California', value: 1 }] }],
+      series: [{ type: 'map', map: 'USA', aspectScale: 0.5, layoutSize: '50%', data: [{ name: 'California', value: 1 }] }],
     }));
     const { svg: ownSvg } = await renderEchartsFromUrl(url(`d=${own}`));
-    expect(ownSvg).toContain('&quot;zoom&quot;:2'); // 用户写的布局不被覆盖
-    expect(ownSvg).not.toContain('&quot;zoom&quot;:1.1');
+    expect(ownSvg).toContain('&quot;aspectScale&quot;:0.5'); // 用户写的布局不被覆盖
+    expect(ownSvg).toContain('&quot;layoutSize&quot;:&quot;50%&quot;');
   });
 
   it('400s on an unregistered map name', async () => {

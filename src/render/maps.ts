@@ -20,6 +20,35 @@ const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   USA: () => import('./vendor/us-states.js'),
 };
 
+/** 已注册地图的纵横比(投影平面坐标的 bbox 宽高比):布局缺省按它算尺寸 */
+const aspects = new Map<string, number>();
+
+/** GeoJSON 平面坐标的 bbox 纵横比(地图的真实形状比) */
+function aspectOf(geo: unknown): number {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  const walk = (v: unknown): void => {
+    if (!Array.isArray(v)) return;
+    if (typeof v[0] === 'number') {
+      const x = v[0] as number, y = v[1] as number;
+      if (x < x0) x0 = x;
+      if (x > x1) x1 = x;
+      if (y < y0) y0 = y;
+      if (y > y1) y1 = y;
+      return;
+    }
+    v.forEach(walk);
+  };
+  const feats = (geo as { features?: Array<{ geometry?: { coordinates?: unknown } }> }).features ?? [];
+  for (const f of feats) walk(f.geometry?.coordinates);
+  const h = y1 - y0;
+  return h > 0 ? (x1 - x0) / h : 1;
+}
+
+/** 已注册地图的纵横比(未注册返回 undefined) */
+export function mapAspect(name: string): number | undefined {
+  return aspects.get(name);
+}
+
 /** option 里引用到的地图名:series.type=map 的 map 字段 + geo 组件的 map 字段 */
 export function mapNamesOf(option: unknown): string[] {
   const names = new Set<string>();
@@ -45,5 +74,6 @@ export async function registerMaps(echarts: MapRegistrar, option: unknown): Prom
     if (!load) continue;
     const mod = await load();
     echarts.registerMap(name, mod.usStatesGeoJson);
+    if (!aspects.has(name)) aspects.set(name, aspectOf(mod.usStatesGeoJson));
   }
 }

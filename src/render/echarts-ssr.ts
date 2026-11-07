@@ -13,7 +13,7 @@ import type { Skin } from '../styles/index.js';
 import { FONT } from '../theme.js';
 import { esc, metaTag, skinStyle } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
-import { registerMaps } from './maps.js';
+import { mapAspect, registerMaps } from './maps.js';
 import type { EChartsOption } from 'echarts';
 
 // ?d= 上限:再大就撞各端 URL 长度红线(Workers/代理 ~16KB);超限直接拒绝,
@@ -48,10 +48,31 @@ const AXES = ['xAxis', 'yAxis', 'radiusAxis', 'angleAxis', 'singleAxis'] as cons
 // 需要笛卡尔坐标系的系列:这些系列的裸 option 在 SSR 下不会自动建轴(见 withDrawDefaults)
 const CARTESIAN = new Set(['bar', 'line', 'scatter', 'effectScatter', 'boxplot', 'candlestick', 'heatmap', 'pictorialBar', 'custom']);
 
-// 地图系列的布局缺省:铺满画布 + 略微放大(缩放系数与画布无关,同比缩放)
-const MAP_LAYOUT: Obj = { layoutSize: '100%', layoutCenter: ['52%', '54%'], zoom: 1.1 };
+// 地图系列的布局缺省:
+//   aspectScale=1 —— echarts 默认 0.75(给经纬度 GeoJSON 用的经验值),会把投影过的
+//     地图横向压扁 25%;地图数据本身已是等距投影的平面坐标,纵横比按数据来(aspect=1)
+//   尺寸按画布算 —— 顶部 62px 留给标题与 Edit @X-CMD 角标,底部 56px 留给图例
+//     (有 visualMap 时),剩下的框里按地图纵横比取最大的一份
+//   layoutSize 是相对 min(画布宽高) 的百分比,所以按画布换算而不是写死。
+const MAP_TOP = 62;
+const MAP_BOTTOM = 56;
 
-function withDrawDefaults(user: Obj, skin: Skin): EChartsOption {
+function mapLayout(name: string, width: number, height: number, hasLegend: boolean): Obj {
+  const aspect = mapAspect(name) ?? 1.7;
+  const top = MAP_TOP;
+  const bottom = hasLegend ? MAP_BOTTOM : 0;
+  const availH = Math.max(60, height - top - bottom);
+  const mapW = Math.min(width * 0.98, availH * aspect);
+  const unit = Math.min(width, height);
+  const centerY = ((top + availH / 2) / height) * 100;
+  return {
+    aspectScale: 1,
+    layoutSize: `${((mapW / unit) * 100).toFixed(2)}%`,
+    layoutCenter: ['50%', `${centerY.toFixed(2)}%`],
+  };
+}
+
+function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number): EChartsOption {
   const option: Obj = {
     animation: false, // 静态 SVG:开动画只会输出第 0 帧
     color: skin.series.map((_, i) => `var(--d-s${i + 1})`), // 皮肤系列色板(padSeries 已补足 10 色)
@@ -82,9 +103,10 @@ function withDrawDefaults(user: Obj, skin: Skin): EChartsOption {
   // 数据项级 label 继承系列级,天然覆盖(用户显式写的不动)
   for (const s of seriesArr) {
     if (isObj(s)) fillDefaults(s, { label: { textBorderWidth: 0, color: 'var(--d-text)' } });
-    // 地图系列:echarts 默认按 aspectScale=0.75 把地图缩在画布中央,右侧空一大片。
-    // 未写布局时补一份铺满画布的(用户写了不动)—— 与「缺省才补」同一条规矩。
-    if (isObj(s) && s.type === 'map') fillDefaults(s, MAP_LAYOUT);
+    // 地图系列:布局缺省(纵横比按数据 + 尺寸按画布,见 mapLayout)
+    if (isObj(s) && s.type === 'map' && typeof s.map === 'string') {
+      fillDefaults(s, mapLayout(s.map, width, height, user.visualMap !== undefined));
+    }
   }
   return option as EChartsOption;
 }
@@ -141,12 +163,12 @@ export async function renderEchartsOption(user: Obj, params: URLSearchParams): P
   const skin = resolveSkin('line', params.get('t'), schemeParam(params)); // echarts 无专属变体,借用 line 的家族注册表
   const width = clampInt(params, 'w', 560, 200, 1600);
   const height = clampInt(params, 'h', 320, 140, 1200);
-  const option = withDrawDefaults(user, skin);
-
   // 动态加载:核心 /draw 路径(含 Worker 冷启动)不为 echarts 付 ~1MB 的加载成本
   const echarts = await import('echarts');
-  // 地图数据(US 各州 GeoJSON)同样按需载入:option 没用 map/geo 就不碰它
-  await registerMaps(echarts, option);
+  // 地图数据(US 各州 GeoJSON)同样按需载入:option 没用 map/geo 就不碰它;
+  // 先注册再补缺省 —— 布局要按地图的真实纵横比算
+  await registerMaps(echarts, user);
+  const option = withDrawDefaults(user, skin, width, height);
   const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width, height });
   // echarts 对 var() 调色板会打 "illegal color" 警告(派生色 parseColor 不认 CSS 变量),
   // 但直写路径(fill/stroke)原样透传、输出正确——渲染成功时这些警告纯属噪音,吞掉;

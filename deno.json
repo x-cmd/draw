@@ -17,8 +17,17 @@
     "@resvg/resvg-wasm": "npm:@resvg/resvg-wasm@^2.6.2"
   },
   "publish": {
-    "include": ["src/**", "LICENSE", "README.md"],
-    "exclude": ["src/node/**", "src/index.ts", "src/env.d.ts"]
+    "include": [
+      "src/**",
+      "LICENSE",
+      "README.md"
+    ],
+    "exclude": [
+      "src/node/**",
+      "src/index.ts",
+      "src/env.d.ts",
+      "src/types/dagre-ambient.d.ts"
+    ]
   },
   "compilerOptions": {
     "module": "preserve",
