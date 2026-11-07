@@ -20,6 +20,16 @@ const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   USA: () => import('./vendor/us-states.js'),
 };
 
+/**
+ * US 各州的 GeoJSON(Albers USA 投影,50 州 + DC)—— 随包分发,随取随用。
+ * 浏览器端的 echarts 也要注册同一份地图数据,自己那一份没有地图 —— 用这个。
+ * 按需载入(静态 import 会把 68KB 拖进冷启动路径)。
+ */
+export async function loadUsStatesGeoJson(): Promise<unknown> {
+  const mod = await import('./vendor/us-states.js');
+  return mod.usStatesGeoJson;
+}
+
 /** 已注册地图的纵横比(投影平面坐标的 bbox 宽高比):布局缺省按它算尺寸 */
 const aspects = new Map<string, number>();
 
