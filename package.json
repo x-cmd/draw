@@ -54,6 +54,7 @@
     "@types/d3-sankey": "^0.12.5",
     "@types/node": "^22.10.0",
     "cf": "^0.15.0",
+    "d3-geo": "^3.1.2",
     "topojson-client": "^3.1.0",
     "topojson-simplify": "^3.0.3",
     "tsx": "^4.19.2",

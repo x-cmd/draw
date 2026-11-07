@@ -18,7 +18,16 @@ interface MapRegistrar {
 /** 地图名 → GeoJSON 载入器(动态 import:未用到就不下载) */
 const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   USA: () => import('./vendor/us-states.js'),
+  CN: () => import('./vendor/china.js'),
 };
+
+/** 地图 GeoJSON(按地图名取):浏览器端注册地图要用同一份数据 */
+export async function loadMapGeoJson(name: string): Promise<unknown> {
+  const load = MAPS[name];
+  if (!load) throw new Error(`unknown map: ${name}`);
+  const mod = await load();
+  return mod.usStatesGeoJson ?? mod.chinaGeoJson;
+}
 
 /**
  * US 各州的 GeoJSON(Albers USA 投影,50 州 + DC)—— 随包分发,随取随用。
@@ -83,7 +92,8 @@ export async function registerMaps(echarts: MapRegistrar, option: unknown): Prom
     const load = MAPS[name];
     if (!load) continue;
     const mod = await load();
-    echarts.registerMap(name, mod.usStatesGeoJson);
-    if (!aspects.has(name)) aspects.set(name, aspectOf(mod.usStatesGeoJson));
+    const geo = mod.usStatesGeoJson ?? mod.chinaGeoJson;
+    echarts.registerMap(name, geo);
+    if (!aspects.has(name)) aspects.set(name, aspectOf(geo));
   }
 }

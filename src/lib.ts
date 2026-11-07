@@ -25,7 +25,7 @@ export { renderStored } from './render/dispatch.js';
 // Small helpers that page builders (and the x-cmd-hosted worker) reuse:
 export { esc, fmtFull, fmtNum, textW, EDIT_TAG_STRIP_SRC } from './render/svg.js';
 // US 各州 GeoJSON(浏览器端 echarts 注册地图要用:运行时那份不带地图数据)
-export { loadUsStatesGeoJson } from './render/maps.js';
+export { loadMapGeoJson, loadUsStatesGeoJson } from './render/maps.js';
 export { parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 export { assertDims } from './render/radar.js';
 export type { RenderOpts } from './render/svg.js';
