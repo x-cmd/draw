@@ -14,3 +14,4 @@ cpSync('src/render/vendor/us-states.js', 'dist/render/vendor/us-states.js');
 cpSync('src/render/vendor/china.js', 'dist/render/vendor/china.js');
 cpSync('src/render/vendor/eu.js', 'dist/render/vendor/eu.js');
 cpSync('src/render/vendor/japan.js', 'dist/render/vendor/japan.js');
+for (const c of ['br', 'au', 'de', 'kr']) cpSync(`src/render/vendor/${c}.js`, `dist/render/vendor/${c}.js`);

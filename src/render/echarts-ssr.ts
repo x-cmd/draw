@@ -51,20 +51,28 @@ const CARTESIAN = new Set(['bar', 'line', 'scatter', 'effectScatter', 'boxplot',
 // 地图系列的布局缺省:
 //   aspectScale=1 —— echarts 默认 0.75(给经纬度 GeoJSON 用的经验值),会把投影过的
 //     地图横向压扁 25%;地图数据本身已是等距投影的平面坐标,纵横比按数据来(aspect=1)
-//   尺寸按画布算 —— 顶部 62px 留给标题与 Edit @X-CMD 角标,底部 56px 留给图例
-//     (有 visualMap 时),剩下的框里按地图纵横比取最大的一份
-//   layoutSize 是相对 min(画布宽高) 的百分比,所以按画布换算而不是写死。
+//   尺寸按画布算 —— 顶部 62px 留给标题与 Edit @X-CMD 角标;图例横排(orient=horizontal)
+//     时底部再留 56px,竖排(orient=vertical,靠左/靠右)就不占底部,地图能更高
+//   剩下的框里按地图真实纵横比取最大的一份;layoutSize 是相对 min(画布宽高) 的
+//     百分比,所以按画布换算而不是写死。
 const MAP_TOP = 62;
 const MAP_BOTTOM = 56;
 
-function mapLayout(name: string, width: number, height: number, hasLegend: boolean): Obj {
-  const aspect = mapAspect(name) ?? 1.7;
+/** 地图布局缺省(服务端与浏览器端同一套规则 —— 见 explore 页的同名实现) */
+export function mapLayout(o: {
+  name: string;
+  width: number;
+  height: number;
+  /** 图例是否横排在底部(横排才占底部那条带) */
+  legendAtBottom: boolean;
+}): Obj {
+  const aspect = mapAspect(o.name) ?? 1.7;
   const top = MAP_TOP;
-  const bottom = hasLegend ? MAP_BOTTOM : 0;
-  const availH = Math.max(60, height - top - bottom);
-  const mapW = Math.min(width * 0.98, availH * aspect);
-  const unit = Math.min(width, height);
-  const centerY = ((top + availH / 2) / height) * 100;
+  const bottom = o.legendAtBottom ? MAP_BOTTOM : 0;
+  const availH = Math.max(60, o.height - top - bottom);
+  const mapW = Math.min(o.width * 0.98, availH * aspect);
+  const unit = Math.min(o.width, o.height);
+  const centerY = ((top + availH / 2) / o.height) * 100;
   return {
     aspectScale: 1,
     layoutSize: `${((mapW / unit) * 100).toFixed(2)}%`,
@@ -105,7 +113,9 @@ function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number):
     if (isObj(s)) fillDefaults(s, { label: { textBorderWidth: 0, color: 'var(--d-text)' } });
     // 地图系列:布局缺省(纵横比按数据 + 尺寸按画布,见 mapLayout)
     if (isObj(s) && s.type === 'map' && typeof s.map === 'string') {
-      fillDefaults(s, mapLayout(s.map, width, height, user.visualMap !== undefined));
+      const vm = user.visualMap as { orient?: string } | undefined;
+      const legendAtBottom = vm !== undefined && vm.orient !== 'vertical';
+      fillDefaults(s, mapLayout({ name: s.map, width, height, legendAtBottom }));
     }
   }
   return option as EChartsOption;

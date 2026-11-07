@@ -35,6 +35,10 @@
     "deploy": "wrangler deploy",
     "setup": "bash scripts/setup.sh",
     "vendor:us-states": "node scripts/vendor-us-states.mjs",
+    "vendor:china": "node scripts/vendor-china.mjs",
+    "vendor:eu": "node scripts/vendor-eu.mjs",
+    "vendor:japan": "node scripts/vendor-japan.mjs",
+    "vendor:countries": "node scripts/vendor-countries.mjs",
     "test": "vitest run",
     "prepublishOnly": "npm run build"
   },
