@@ -23,12 +23,34 @@ const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   JP: () => import('./vendor/japan.js'),
 };
 
-/** 地图 GeoJSON(按地图名取):浏览器端注册地图要用同一份数据 */
+/**
+ * 投影产物是**屏幕坐标(y 向下)**,echarts 却按「北为正」读地图坐标
+ * (实测:数据里 y=100 的点会画在屏幕上方)。两边差一个翻转 —— 在这里翻一次,
+ * 数据文件保持投影原样(不用在每份数据里写死负号),注册与浏览器端拿到的是同一份。
+ */
+function flipY(geo: unknown): unknown {
+  const walk = (v: unknown): unknown => {
+    if (!Array.isArray(v)) return v;
+    if (typeof v[0] === 'number') return [v[0], -(v[1] as number)];
+    return v.map(walk);
+  };
+  const g = geo as { features?: Array<{ geometry?: { coordinates?: unknown } }> };
+  if (!g || !Array.isArray(g.features)) return geo;
+  return {
+    ...g,
+    features: g.features.map((f) => ({
+      ...f,
+      geometry: { ...f.geometry, coordinates: walk(f.geometry?.coordinates) },
+    })),
+  };
+}
+
+/** 地图 GeoJSON(按地图名取,已翻成 echarts 认的方向):浏览器端注册地图要用同一份 */
 export async function loadMapGeoJson(name: string): Promise<unknown> {
   const load = MAPS[name];
   if (!load) throw new Error(`unknown map: ${name}`);
   const mod = await load();
-  return mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson;
+  return flipY(mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson);
 }
 
 /**
@@ -93,8 +115,7 @@ export async function registerMaps(echarts: MapRegistrar, option: unknown): Prom
   for (const name of mapNamesOf(option)) {
     const load = MAPS[name];
     if (!load) continue;
-    const mod = await load();
-    const geo = mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson;
+    const geo = await loadMapGeoJson(name);
     echarts.registerMap(name, geo);
     if (!aspects.has(name)) aspects.set(name, aspectOf(geo));
   }

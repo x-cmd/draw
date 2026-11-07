@@ -3,7 +3,7 @@
 // 源: codeforgermany/click_that_hood · public/data/japan.geojson
 //     (47 个都道府县,经纬度;町名日文 + name_english)
 // 流程: 经纬度 → Mercator 投影(日本的标准画法)→ Douglas-Peucker 抽稀
-//       → 坐标取整 → y 取负
+//       → 坐标取整(方向不动,翻转在 maps.ts)
 // 输出: src/render/vendor/japan.js
 //
 // 用法: npm run vendor:japan
@@ -33,7 +33,7 @@ const header = `/* eslint-disable */
 /**
  * 日本 47 都道府县 GeoJSON —— ECharts 地图数据(vendored)。
  * 源: codeforgermany/click_that_hood · public/data/japan.geojson
- * 工具链: geoMercator → Douglas-Peucker 抽稀 → 坐标取整;y 取负(投影输出 y 北正,SVG 画布 y 向下)
+ * 工具链: geoMercator → Douglas-Peucker 抽稀 → 坐标取整;坐标方向 = 投影原样(y 向下),翻转在 maps.ts
  * 再生成: npm run vendor:japan(脚本在 scripts/vendor-japan.mjs)
  * 纯数据/无依赖,Workers 可用。properties.name 是英文县名(Hokkaido/…),
  * properties.ja 是日文县名(北海道/…)。

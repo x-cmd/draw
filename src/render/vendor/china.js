@@ -3,7 +3,7 @@
  * 中国各省市 GeoJSON —— ECharts 地图数据(vendored)。
  * 源: DataV.GeoAtlas 100000_full.json(34 个省级行政区 + 南海诸岛插图)
  * 工具链: geoConicEqualArea(标准纬线 25°/47°N,中央经线 105°E)→ Douglas-Peucker 抽稀
- *          → 坐标取整;y 取负(投影输出 y 北正,SVG 画布 y 向下)
+ *          → 坐标取整;坐标方向 = 投影原样(y 向下),翻转在 maps.ts
  * 再生成: npm run vendor:china(脚本在 scripts/vendor-china.mjs)
  * 纯数据/无依赖,Workers 可用。properties.name 是简称(北京/广东/…),
  * properties.full 是全称(北京市/广东省/…)。

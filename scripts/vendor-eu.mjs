@@ -3,7 +3,7 @@
 // 源: world-atlas@2 countries-50m.json(Natural Earth 简化国界,public domain)
 //     —— 取欧盟 27 个成员国,其余国家不要
 // 流程: 经纬度 → 欧洲 Albers 投影(中央经线 10°E,标准纬线 35°/65°N)
-//       → Douglas-Peucker 抽稀 → 坐标取整 → y 取负
+//       → Douglas-Peucker 抽稀 → 坐标取整(方向不动,翻转在 maps.ts)
 // 输出: src/render/vendor/eu.js
 //
 // 用法: npm run vendor:eu
@@ -68,7 +68,7 @@ const header = `/* eslint-disable */
  * 欧盟 27 国 GeoJSON —— ECharts 地图数据(vendored)。
  * 源: world-atlas@2 countries-50m.json(Natural Earth 简化国界,public domain),取欧盟 27 国
  * 工具链: geoConicEqualArea(标准纬线 35°/65°N,中央经线 10°E)→ Douglas-Peucker 抽稀
- *          → 坐标取整;y 取负(投影输出 y 北正,SVG 画布 y 向下)
+ *          → 坐标取整;坐标方向 = 投影原样(y 向下),翻转在 maps.ts
  * 再生成: npm run vendor:eu(脚本在 scripts/vendor-eu.mjs)
  * 纯数据/无依赖,Workers 可用。properties.name 是英文国名(France/Germany/…)。
  */
