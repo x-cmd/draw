@@ -130,9 +130,25 @@ export function topLegend(
 
 // 系列色 / 系列上文字色的 var 引用(渲染器一律使用)
 // Edit @X-CMD 角标宽度预留(#27):右对齐图例向左让出此宽度,标签独占右上角
-export const TAG_RESERVE = 100;
+export const TAG_RESERVE = 150;
 // explore 的 ?d= 直收 spec JSON 的图种(角标链接目标,qr 的 d= 是纯文本另算)
 const EXPLORE_D_KINDS = new Set(['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey']);
+
+export const EDIT_TAG_TEXT = 'Edit @X-CMD';
+/** 剥离角标的正则源(onepage/explore 内联/gantt 前端换图共用;rect 段可选兼容旧纯文本形) */
+export const EDIT_TAG_STRIP_SRC = '<a [^>]*>(?:<rect[^>]*>(?:</rect>)?)?<text[^>]*>Edit @X-CMD<\\/text><\\/a>';
+
+/** Edit @X-CMD 角标:蓝色链接胶囊(描边+淡底+同色文字),一眼可点;色值走 --d-link 明暗自适应。
+ *  baselineY 为文字基线(与标题同基线),胶囊以其光学中心对齐 */
+export function editTag(href: string, width: number, baselineY: number, fs: number): string {
+  const tw = textW(EDIT_TAG_TEXT, fs);
+  const padX = Math.max(6, Math.round(fs * 0.55));
+  const h = Math.round(fs * 1.85);
+  const w = Math.round(tw + padX * 2 + 2);
+  const x = width - 8 - w;
+  const cy = baselineY - Math.round(fs * 0.32);
+  return `<a href="${esc(href)}" target="_blank" rel="noopener"><rect x="${r2(x)}" y="${r2(cy - h / 2)}" width="${w}" height="${h}" rx="${r2(h / 2)}" fill="var(--d-link)" fill-opacity="0.09" stroke="var(--d-link)" stroke-opacity="0.5"/><text x="${r2(x + w / 2)}" y="${baselineY}" text-anchor="middle" font-size="${fs}" font-weight="500" letter-spacing="0.2" fill="var(--d-link)">${EDIT_TAG_TEXT}</text></a>`;
+}
 
 // ---- 标注层(marker layer,10-30 会议"杀手锏")----
 // mark=<锚x>;<锚y>;<文字>:类目轴图锚x=标签、锚y=数值;散点双数值;可重复。
@@ -156,6 +172,8 @@ export const sVar = (i: number): string => `var(--d-s${i + 1})`;
 export const onVar = (i: number): string => `var(--d-on-s${i + 1})`;
 // 标注层用色(强调红,明暗各一):圈+文字同色,固定色不参与皮肤轮换
 const MARK_COLOR: Duo = { light: '#D92D20', dark: '#FF7A6B' };
+// 链接色(Edit @X-CMD 角标等可点元素,明暗各一):blue-600/blue-400
+const LINK_COLOR: Duo = { light: '#2563EB', dark: '#60A5FA' };
 
 /** 类目轴图标注锚点 → 像素:ax 按 labels 找列(找不到抛 400),y 数值映射并夹在绘图区内 */
 export function markPoints(
@@ -197,6 +215,7 @@ export function skinStyle(skin: Skin): string {
       `--d-grid:${n.grid[side]}`, `--d-baseline:${n.baseline[side]}`, `--d-border:${n.border[side]}`,
       `--d-card:${n.card[side]}`, `--d-halo:${n.halo[side]}`,
       `--d-mark:${MARK_COLOR[side]}`,
+      `--d-link:${LINK_COLOR[side]}`,
     );
     return `:root{color-scheme:${side};${items.join(';')}}`;
   };
@@ -217,7 +236,7 @@ export function svgDoc(
   skin: Skin,
   children: string,
 ): string {
-  // Edit @X-CMD 角标(#27):右上角,与标题同一基线(y=38/54,普通 baseline)
+  // Edit @X-CMD 角标(#27):右上角,与标题同一基线(y=38/54,普通 baseline),蓝色链接胶囊
   // 可点击(#13 水印=广告):链到对应 explore 页;图表家族带 ?d= 全量数据,点击即得可编辑副本
   const tagFs = Math.max(10, Math.min(18, Math.round(width / 55)));
   const tagY = skin.rules.title === 'editorial' ? 54 : 38;
@@ -227,7 +246,7 @@ export function svgDoc(
   } else if (template === 'qr') {
     tagHref = `https://x-cmd.com/draw/explore?type=qr&d=${encodeURIComponent(String((spec as { text?: string })?.text ?? ''))}`;
   }
-  const tag = `<a href="${esc(tagHref)}" target="_blank" rel="noopener"><text x="${width - 8}" y="${tagY}" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text></a>`;
+  const tag = editTag(tagHref, width, tagY, tagFs);
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" ` +
     `font-family="${FONT}" role="img" aria-label="${esc(aria)}">` +

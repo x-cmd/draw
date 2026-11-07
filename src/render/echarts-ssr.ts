@@ -11,7 +11,7 @@ import { resolveVersion } from '../version.js';
 import { resolveSkin } from '../styles/index.js';
 import type { Skin } from '../styles/index.js';
 import { FONT } from '../theme.js';
-import { esc, metaTag, skinStyle } from './svg.js';
+import { esc, metaTag, skinStyle, editTag } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { mapAspect, registerMaps } from './maps.js';
 import type { EChartsOption } from 'echarts';
@@ -140,7 +140,7 @@ function decorate(svg: string, skin: Skin, version: number, option: unknown): st
   const opt = option as Obj | undefined;
   // 可点击(#13):链到 echarts explore,?d= 携带完整 option,点击即得可编辑副本
   const tagHref = `https://x-cmd.com/draw/explore/echarts?d=${encodeURIComponent(JSON.stringify(option))}`;
-  const tag = `<a href="${esc(tagHref)}" target="_blank" rel="noopener"><text x="${w - 8}" y="54" text-anchor="end" font-size="${tagFs}" font-weight="500" letter-spacing="0.3" fill="var(--d-muted)" opacity="0.85">Edit @X-CMD</text></a>`;
+  const tag = editTag(tagHref, w, 54, tagFs);
   // 标签必须在 </svg> 之前(之后的 XML 非法,img 严格解析失败)
   const body = stripTextStrokes(svg.slice(m[0].length)).replace(/<\/svg>\s*$/, '');
   return root + skinStyle(skin) + metaTag('echarts', version, option) + body + tag + '</svg>';

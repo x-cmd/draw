@@ -261,7 +261,7 @@ export function renderGantt(doc: GanttDoc, opts: { v: VersionInfo; skin: Skin; i
   for (const tk of ticks) {
     const x = Math.min(xOf(tk.t), x1);
     parts.push(`<line x1="${r2(x)}" y1="${bodyTop}" x2="${r2(x)}" y2="${bodyBottom}" stroke="var(--d-grid)"/>`);
-    if (!doc.title && x > width - 110) continue; // 角标区(约85px),只画线不画字
+    if (!doc.title && x > width - 140) continue; // 角标胶囊区,只画线不画字
     const weekend = daily && (new Date(tk.t).getUTCDay() === 0 || new Date(tk.t).getUTCDay() === 6);
     parts.push(`<text x="${r2(x)}" y="${titleH + upperH + 16}" text-anchor="middle" font-size="${daily ? 10 : 11}" fill="${weekend ? 'var(--d-faint)' : 'var(--d-muted)'}">${esc(tk.label)}</text>`);
   }

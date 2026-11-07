@@ -16,7 +16,7 @@
 //    折行 atom(拉丁词/CJK 单字)+ 避头尾禁则,行宽按内容宽实测。
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';
-import { esc, textW } from './svg.js';
+import { esc, textW, EDIT_TAG_STRIP_SRC } from './svg.js';
 import { renderQR } from './qr.js';
 import { resolveSkin } from '../styles/index.js';
 import { INTER_FACE_CSS } from '../styles/inter.js';
@@ -522,7 +522,7 @@ function layout(doc: Doc, v: number, imgMap: Record<string, ImgInfo> = {}): { it
         .replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')
         .replace(/<style[\s\S]*?<\/style>/g, '')
         .replace(/<metadata>[\s\S]*?<\/metadata>/g, '')
-        .replace(/<a href=[^>]*><text[^>]*>Edit @X-CMD<\/text><\/a>/g, '');
+        .replace(new RegExp(EDIT_TAG_STRIP_SRC, 'g'), '');
       push(`<g transform="translate(${qx.toFixed(0)}, ${qy.toFixed(0)})">${qr}</g>`);
       ink = qy + q;
       const capY = openText(S.caption);

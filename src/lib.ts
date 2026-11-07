@@ -23,7 +23,7 @@ export { renderQR } from './render/qr.js';
 export { renderSankey } from './render/sankey.js';
 export { renderStored } from './render/dispatch.js';
 // Small helpers that page builders (and the x-cmd-hosted worker) reuse:
-export { esc, fmtFull, fmtNum, textW } from './render/svg.js';
+export { esc, fmtFull, fmtNum, textW, EDIT_TAG_STRIP_SRC } from './render/svg.js';
 export { parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 export { assertDims } from './render/radar.js';
 export type { RenderOpts } from './render/svg.js';
