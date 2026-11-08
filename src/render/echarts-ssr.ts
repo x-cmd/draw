@@ -91,6 +91,85 @@ export function mapLayout(o: {
   };
 }
 
+// 标题带 / 图例 / 绘图区 的排布(仓库硬规则:文字不得重叠)。
+//
+// echarts 6 的图例缺省在**底部**(bottom:15),但常见写法是放顶部(legend.top)。
+// 那时若标题也在,两者天然叠着:标题缺省 top=15、标题高 28(15..43);
+// 图例写 top=30 时那一行在 32..52 —— 与标题重叠 11px(用户常见手感:「贴太近」)。
+//
+// 这里按「标题带 → 图例 → 绘图区」往下排一层,只往下推、绝不往上提:
+//   图例顶   = max(用户写的, 标题带底 + titleGap)
+//   绘图区顶 = max(用户写的, 图例底 + legendGap / 标题带底 + legendGap)
+// 浏览器端(explore 页重画)用同一套数 —— 见 HEAD_RULES。
+export const HEAD_RULES = {
+  titleTop: 15,   // echarts 标题缺省 top
+  titleFont: 18,  // 标题缺省字号
+  titlePad: 5,    // 标题缺省 padding(上下各 5)
+  subFont: 12,    // 副标题缺省字号
+  subGap: 10,     // 标题与副标题之间的 itemGap
+  titleGap: 8,    // 标题带底 → 图例顶
+  legendRow: 20,  // 一行图例的可见高度(12px 文字 + 标记 + 余量)
+  legendGap: 8,   // 图例底 / 标题带底 → 绘图区顶
+  gridTop: 60,    // echarts 绘图区缺省 top
+} as const;
+
+/** title/legend/grid 都可能是对象也可能是数组,取第一个 */
+function firstObj(v: unknown): Obj | undefined {
+  const a = Array.isArray(v) ? v[0] : v;
+  return isObj(a) ? a : undefined;
+}
+
+/**
+ * 把标题带、图例、绘图区排开:图例在顶部且会压到标题时往下推,
+ * 绘图区被压到时也往下推。只往下推 —— 用户给的空间永远算数。
+ * 就地改 option(调用方先拷好 title/legend/grid)。
+ */
+export function headLayout(option: Obj): void {
+  const R = HEAD_RULES;
+  const title = firstObj(option.title);
+  const legend = firstObj(option.legend);
+  const grid = firstObj(option.grid);
+
+  // 标题带:标题在底部(bottom)时不占顶部
+  const titleText = title && typeof title.text === 'string' ? title.text.trim() : '';
+  const titleAtBottom = title !== undefined && typeof title.bottom === 'number';
+  const titleTop = title && typeof title.top === 'number' ? title.top : R.titleTop;
+  const fontSize = Number((title?.textStyle as Obj | undefined)?.fontSize ?? R.titleFont);
+  const pad = Number(title?.padding ?? R.titlePad);
+  const subH = title && typeof title.subtext === 'string' && title.subtext.trim() !== ''
+    ? R.subFont + R.subGap : 0;
+  // 标题带高度按 max(实际字号, 18) 算:浏览器端(explore 页重画)的标题字号与
+  // 服务端可能不同(16 vs 18),取下限才能让两端算出同一个图例位置。
+  const bandH = Math.max(fontSize, R.titleFont) + pad * 2;
+  const titleBottom = titleText && !titleAtBottom ? titleTop + bandH + subH : 0;
+
+  // 图例:只在**顶部**时参与这一层(缺省在底部,不与标题冲突)
+  let legendBottom = 0;
+  if (legend && legend.show !== false) {
+    const dataItems = Array.isArray(legend.data) ? legend.data.length : -1;
+    const seriesItems = (Array.isArray(option.series) ? option.series : isObj(option.series) ? [option.series] : [])
+      .filter((s) => isObj(s) && typeof s.name === 'string' && s.name !== '').length;
+    const items = dataItems >= 0 ? dataItems : seriesItems;
+    const topRaw = typeof legend.top === 'number' ? legend.top : legend.top === 'top' ? 0 : undefined;
+    if (items > 0 && topRaw !== undefined) {
+      const top = titleBottom ? Math.max(topRaw, titleBottom + R.titleGap) : topRaw;
+      if (top !== legend.top) legend.top = top;
+      // 竖排图例一列多行,高度按条目数算
+      legendBottom = top + (legend.orient === 'vertical' ? items * R.legendRow : R.legendRow);
+    }
+  }
+
+  // 绘图区:不许被标题带/图例压住
+  const need = Math.max(
+    titleBottom ? titleBottom + R.legendGap : 0,
+    legendBottom ? legendBottom + R.legendGap : 0,
+  );
+  if (grid && need > 0) {
+    const gridTop = typeof grid.top === 'number' ? grid.top : R.gridTop;
+    if (gridTop < need) grid.top = need;
+  }
+}
+
 function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number): EChartsOption {
   const option: Obj = {
     animation: false, // 静态 SVG:开动画只会输出第 0 帧
@@ -98,10 +177,16 @@ function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number):
     textStyle: { fontFamily: FONT, color: 'var(--d-text)' },
     ...user,
   };
+  // 标题/图例/绘图区的位置后面要算,先拷一份 —— 补缺省不该改到用户的对象
+  for (const key of ['title', 'legend', 'grid']) {
+    if (isObj(option[key])) option[key] = { ...option[key] };
+  }
   // spread 会整体覆盖子对象,用户的半成品 textStyle 也要补齐字体/文字色缺省
   if (isObj(option.textStyle)) fillDefaults(option.textStyle, { fontFamily: FONT, color: 'var(--d-text)' });
   if (isObj(option.title)) fillDefaults(option.title, { textStyle: { color: 'var(--d-ink)' }, subtextStyle: { color: 'var(--d-muted)' } });
   if (isObj(option.legend)) fillDefaults(option.legend, { textStyle: { color: 'var(--d-muted)' } });
+  // 标题带/图例/绘图区排开:图例在顶部时不能压住标题(仓库硬规则:文字不得重叠)
+  headLayout(option);
   // SSR 补轴:echarts SSR 不像浏览器那样为笛卡尔系列自动建坐标系,裸 option 会抛
   // 'xAxis "0" not found'。按浏览器对等行为补空轴对象({} = 缺省 x=category/y=value),
   // 仅在用户完全没写该轴时落;写了一根(多轴场景)也不动
