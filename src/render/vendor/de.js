@@ -1,7 +1,7 @@
 /* eslint-disable */
 /**
  * 德国各联邦州 —— ECharts 地图数据(vendored)。
- * 源: codeforgermany/click_that_hood 行政区划
+ * 源: codeforgermany/click_that_hood · germany.geojson
  * 投影: 欧洲 Albers(中央经线 10°E,标准纬线 35°N/65°N)
  * 工具链: Douglas-Peucker 抽稀 → 坐标取整;坐标方向 = 投影原样(y 向下),翻转在 maps.ts
  * 再生成: npm run vendor:countries(脚本在 scripts/vendor-countries.mjs)

@@ -1,7 +1,7 @@
 /* eslint-disable */
 /**
  * 韩国各行政区 —— ECharts 地图数据(vendored)。
- * 源: codeforgermany/click_that_hood 行政区划
+ * 源: codeforgermany/click_that_hood · korea.geojson
  * 投影: Mercator(朝鲜半岛纬度不高,畸变小)
  * 工具链: Douglas-Peucker 抽稀 → 坐标取整;坐标方向 = 投影原样(y 向下),翻转在 maps.ts
  * 再生成: npm run vendor:countries(脚本在 scripts/vendor-countries.mjs)
