@@ -39,14 +39,11 @@ const isPair = (v) => Array.isArray(v) && typeof v[0] === 'number';
 const isRing = (v) => Array.isArray(v) && Array.isArray(v[0]) && typeof v[0][0] === 'number';
 
 /**
- * 把经纬度 GeoJSON 投成平面坐标的 GeoJSON:
- * 投影 → 按 targetH 定尺居中 → 抽稀 → 取整(方向不动,翻转在 maps.ts)。
- * @param proj d3 投影实例(会被改 scale/translate)
- * @param geo FeatureCollection(经纬度)
- * @param targetH 目标高度(投影单位)
- * @param tol 抽稀容差(投影单位)
+ * 按目标高度给投影定尺并居中(d3 默认 scale 是给世界地图的,国家/区域图要自己换算)。
+ * 两遍:先量 bbox(平移清零),再按目标高缩放并把 bbox 摆到画面中央。
+ * 返回同一个 proj(就地改了 scale/translate)。
  */
-export function projectGeoJson(proj, geo, targetH, tol) {
+export function fitProjection(proj, geo, targetH) {
   proj.translate([0, 0]); // 量 bbox 时清零平移,免得把默认平移算进去
   const bboxOf = (coords) => {
     let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
@@ -73,6 +70,19 @@ export function projectGeoJson(proj, geo, targetH, tol) {
   const k = targetH / (by1 - by0);
   proj.scale(proj.scale() * k);
   proj.translate([(targetH * (bx1 - bx0) / (by1 - by0)) / 2 - bx0 * k, (targetH - (by1 - by0) * k) / 2 - by0 * k]);
+  return proj;
+}
+
+/**
+ * 把经纬度 GeoJSON 投成平面坐标的 GeoJSON:
+ * 投影 → 按 targetH 定尺居中 → 抽稀 → 取整(方向不动,翻转在 maps.ts)。
+ * @param proj d3 投影实例(会被改 scale/translate)
+ * @param geo FeatureCollection(经纬度)
+ * @param targetH 目标高度(投影单位)
+ * @param tol 抽稀容差(投影单位)
+ */
+export function projectGeoJson(proj, geo, targetH, tol) {
+  fitProjection(proj, geo, targetH);
 
   const transform = (coords) => {
     if (isPair(coords)) {
