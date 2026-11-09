@@ -1,8 +1,8 @@
 ---
 x-title: Quadrant chart — 2×2 decision matrix
-x-desc: 'x-cmd/draw `type=quadrant` quick reference. A 2×2 matrix for decision charts: Eisenhower, BCG, the Atlassian 4Ls retro. Params: `quadrants=` four cell names (top-left, top-right, bottom-left, bottom-right), `quaddescs=` four notes, `xlabel=`/`ylabel=` axis titles, `xlow=`/`xhigh=`/`ylow=`/`yhigh=` axis ends, `items=` points (`name@x,y`, 0..1).'
+x-desc: 'x-cmd/draw `type=quadrant` quick reference. A family of decision diagrams: the 2×2 matrix (Eisenhower, BCG, value-net) and the two-axis cross (attention gap, UX change). Params: `quadrants=` four cell names, `quaddescs=` four notes, `quadlabels=` extra labels per cell, `frame=box|cross`, `xlabel=`/`ylabel=` axis titles, `xlow=`/`xhigh=`/`ylow=`/`yhigh=` axis ends, `items=` points (`name@x,y`, 0..1).'
 x-sidebar: draw quadrant chart
-x-keywords: quadrant chart, 四象限图, draw, svg, eisenhower matrix, bcg matrix, decision matrix, 2x2 matrix
+x-keywords: quadrant chart, 四象限图, draw, svg, eisenhower matrix, bcg matrix, decision matrix, 2x2 matrix, cross axes
 x-json-ld:
   '@context': https://schema.org
   '@graph':
@@ -14,19 +14,26 @@ x-json-ld:
 
 # Quadrant chart — 2×2 decision matrix
 
-## Examples (what you see is what the URL gives; click to explore)
+Two frames, one chart type.
 
-**Four cells with notes and points**
+**Matrix frame** (`frame=box`, the default when the cells are given) — a 2×2
+box, four labelled cells, two arrowed axes.
 
 ```text
-https://x-cmd.com/draw?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%E7%AD%96&quadrants=%E5%BF%AB%E8%B5%A2%2C%E6%88%98%E7%95%A5%2C%E5%A1%AB%E5%9D%91%2C%E6%94%BE%E5%BC%83&quaddescs=%E5%BF%AB%E9%80%9F%E5%BD%93%E4%B8%8B%2C%E9%95%BF%E6%9C%9F%E6%8A%95%E5%85%A5%2C%E8%A1%A5%E5%8D%95%2C%E6%97%A0%E5%90%88%E8%A1%8C&xlabel=%E6%8A%95%E5%85%A5&ylabel=%E5%9B%9E%E6%8A%A5&items=%E6%96%B0%E4%B8%9A%E5%8A%A1%400.82%2C0.86%3BAI+%E8%B0%83%E6%9F%A5%400.74%2C0.68%3B%E6%97%A7%E7%B3%BB%E7%BB%9F%400.22%2C0.28%3B%E5%85%AC%E5%8F%B8%E6%94%BF%E7%AD%96%400.18%2C0.74
+https://x-cmd.com/draw?type=quadrant&title=%E4%BB%B7%E5%80%BC%E7%BD%91%E7%9F%A9%E9%98%B5%E6%A0%BC%E5%9B%BE&quadrants=Q3.%E6%96%B0%E5%B8%82%E5%9C%BA%E5%88%9B%E6%96%B0%2CQ4.%E8%A7%84%E6%A8%A1%E5%BC%8F%E5%88%9B%E6%96%B0%2CQ2.%E9%80%89%E6%8B%A9%E6%80%A7%E6%8A%80%E6%9C%AF%2CQ1.%E7%AA%81%E7%A0%B4%E6%80%A7%E6%8A%80%E6%9C%AF&xlabel=%E6%8A%80%E6%9C%AF%2F%E4%BA%A7%E5%93%81&ylabel=%E5%B8%82%E5%9C%BA%2F%E5%AE%A2%E6%88%B7&xlow=%E6%88%90%E7%86%9F%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&xhigh=%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&ylow=%E4%B8%BB%E6%B5%81%E5%B8%82%E5%9C%BA&yhigh=%E6%96%B0%E5%85%B4%E5%B8%82%E5%9C%BA
 ```
 
-[![Quadrant chart](https://x-cmd.com/draw?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%E7%AD%96&quadrants=%E5%BF%AB%E8%B5%A2%2C%E6%88%98%E7%95%A5%2C%E5%A1%AB%E5%9D%91%2C%E6%94%BE%E5%BC%83&quaddescs=%E5%BF%AB%E9%80%9F%E5%BD%93%E4%B8%8B%2C%E9%95%BF%E6%9C%9F%E6%8A%95%E5%85%A5%2C%E8%A1%A5%E5%8D%95%2C%E6%97%A0%E5%90%88%E8%A1%8C&xlabel=%E6%8A%95%E5%85%A5&ylabel=%E5%9B%9E%E6%8A%A5&items=%E6%96%B0%E4%B8%9A%E5%8A%A1%400.82%2C0.86%3BAI+%E8%B0%83%E6%9F%A5%400.74%2C0.68%3B%E6%97%A7%E7%B3%BB%E7%BB%9F%400.22%2C0.28%3B%E5%85%AC%E5%8F%B8%E6%94%BF%E7%AD%96%400.18%2C0.74)](https://x-cmd.com/draw/explore?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%E7%AD%96&quadrants=%E5%BF%AB%E8%B5%A2%2C%E6%88%98%E7%95%A5%2C%E5%A1%AB%E5%9D%91%2C%E6%94%BE%E5%BC%83&quaddescs=%E5%BF%AB%E9%80%9F%E5%BD%93%E4%B8%8B%2C%E9%95%BF%E6%9C%9F%E6%8A%95%E5%85%A5%2C%E8%A1%A5%E5%8D%95%2C%E6%97%A0%E5%90%88%E8%A1%8C&xlabel=%E6%8A%95%E5%85%A5&ylabel=%E5%9B%9E%E6%8A%A5&items=%E6%96%B0%E4%B8%9A%E5%8A%A1%400.82%2C0.86%3BAI+%E8%B0%83%E6%9F%A5%400.74%2C0.68%3B%E6%97%A7%E7%B3%BB%E7%BB%9F%400.22%2C0.28%3B%E5%85%AC%E5%8F%B8%E6%94%BF%E7%AD%96%400.18%2C0.74)
+[![Quadrant matrix](https://x-cmd.com/draw?type=quadrant&title=%E4%BB%B7%E5%80%BC%E7%BD%91%E7%9F%A9%E9%98%B5%E6%A0%BC%E5%9B%BE&quadrants=Q3.%E6%96%B0%E5%B8%82%E5%9C%BA%E5%88%9B%E6%96%B0%2CQ4.%E8%A7%84%E6%A8%A1%E5%BC%8F%E5%88%9B%E6%96%B0%2CQ2.%E9%80%89%E6%8B%A9%E6%80%A7%E6%8A%80%E6%9C%AF%2CQ1.%E7%AA%81%E7%A0%B4%E6%80%A7%E6%8A%80%E6%9C%AF&xlabel=%E6%8A%80%E6%9C%AF%2F%E4%BA%A7%E5%93%81&ylabel=%E5%B8%82%E5%9C%BA%2F%E5%AE%A2%E6%88%B7&xlow=%E6%88%90%E7%86%9F%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&xhigh=%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&ylow=%E4%B8%BB%E6%B5%81%E5%B8%82%E5%9C%BA&yhigh=%E6%96%B0%E5%85%B4%E5%B8%82%E5%9C%BA)](https://x-cmd.com/draw/explore?type=quadrant&title=%E4%BB%B7%E5%80%BC%E7%BD%91%E7%9F%A9%E9%98%B5%E6%A0%BC%E5%9B%BE&quadrants=Q3.%E6%96%B0%E5%B8%82%E5%9C%BA%E5%88%9B%E6%96%B0%2CQ4.%E8%A7%84%E6%A8%A1%E5%BC%8F%E5%88%9B%E6%96%B0%2CQ2.%E9%80%89%E6%8B%A9%E6%80%A7%E6%8A%80%E6%9C%AF%2CQ1.%E7%AA%81%E7%A0%B4%E6%80%A7%E6%8A%80%E6%9C%AF&xlabel=%E6%8A%80%E6%9C%AF%2F%E4%BA%A7%E5%93%81&ylabel=%E5%B8%82%E5%9C%BA%2F%E5%AE%A2%E6%88%B7&xlow=%E6%88%90%E7%86%9F%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&xhigh=%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&ylow=%E4%B8%BB%E6%B5%81%E5%B8%82%E5%9C%BA&yhigh=%E6%96%B0%E5%85%B4%E5%B8%82%E5%9C%BA)
 
-A 2×2 matrix: two axes split into low/high, four cells named (and optionally
-annotated), points placed by their coordinates. The classic home of the
-Eisenhower matrix, the BCG matrix and the Atlassian 4Ls retrospective.
+**Cross frame** (`frame=cross`) — just the two arrowed axes crossing at the
+centre, labels on the four ends. Use it when there are no cells, only axes
+and side labels.
+
+```text
+https://x-cmd.com/draw?type=quadrant&frame=cross&title=%E5%AE%A1%E7%BE%8E%E9%B8%BF%E6%B2%9F%E6%A8%A1%E5%9E%8B&ylabel=%E6%B3%A8%E6%84%8F%E5%8A%9B&xlabel=%E7%86%9F%E6%82%89%E5%BA%A6&ylow=%E4%B8%8D%E5%85%B3%E6%B3%A8&yhigh=%E5%85%B3%E6%B3%A8&xlow=%E9%99%8C%E7%94%9F&xhigh=%E7%86%9F%E6%82%89
+```
+
+[![Axis cross](https://x-cmd.com/draw?type=quadrant&frame=cross&title=%E5%AE%A1%E7%BE%8E%E9%B8%BF%E6%B2%9F%E6%A8%A1%E5%9E%8B&ylabel=%E6%B3%A8%E6%84%8F%E5%8A%9B&xlabel=%E7%86%9F%E6%82%89%E5%BA%A6&ylow=%E4%B8%8D%E5%85%B3%E6%B3%A8&yhigh=%E5%85%B3%E6%B3%A8&xlow=%E9%99%8C%E7%94%9F&xhigh=%E7%86%9F%E6%82%89)](https://x-cmd.com/draw/explore?type=quadrant&frame=cross&title=%E5%AE%A1%E7%BE%8E%E9%B8%BF%E6%B2%9F%E6%A8%A1%E5%9E%8B&ylabel=%E6%B3%A8%E6%84%8F%E5%8A%9B&xlabel=%E7%86%9F%E6%82%89%E5%BA%A6&ylow=%E4%B8%8D%E5%85%B3%E6%B3%A8&yhigh=%E5%85%B3%E6%B3%A8&xlow=%E9%99%8C%E7%94%9F&xhigh=%E7%86%9F%E6%82%89)
 
 ---
 
@@ -34,31 +41,43 @@ Eisenhower matrix, the BCG matrix and the Atlassian 4Ls retrospective.
 
 | param | meaning | default |
 | --- | --- | --- |
-| `quadrants=` | four cell names, comma separated — **top-left, top-right, bottom-left, bottom-right** (required) | — |
+| `quadrants=` | four cell names, comma separated — **top-left, top-right, bottom-left, bottom-right** | — |
 | `quaddescs=` | four cell notes, comma separated (same order) | — |
-| `xlabel=` / `ylabel=` | axis titles | — |
+| `quadlabels=` | extra labels per cell: four groups separated by `;`, labels inside a group by `\|` | — |
+| `frame=` | `box` (matrix) or `cross` (axes only) | `box` when cells are given, else `cross` |
+| `xlabel=` / `ylabel=` | axis titles, drawn beside the positive end | — |
 | `xlow=` / `xhigh=` | horizontal axis end labels | `低` / `高` |
 | `ylow=` / `yhigh=` | vertical axis end labels | `低` / `高` |
 | `items=` | points: `name@x,y`, semicolon separated; `x`/`y` are 0..1 | — |
 | `d=` | the whole spec as JSON | — |
 | `title=` | chart title | — |
 
+Cells are **optional**: a chart with only axis labels draws the cross frame,
+and one with only `items=` draws axes plus points.
+
 ## The `d=` form
 
 ```json
 {
-  "title": "四象限决策",
-  "xlabel": "投入",
-  "ylabel": "回报",
-  "xlow": "低", "xhigh": "高", "ylow": "低", "yhigh": "高",
-  "quadrants": [
-    { "name": "快赢", "desc": "快速当下" },
-    { "name": "战略", "desc": "长期投入" },
-    { "name": "填坑", "desc": "补单" },
-    { "name": "放弃", "desc": "无合行" }
+  "title": "价值网矩阵格图",
+  "frame": "box",
+  "xlabel": "技术/产品", "ylabel": "市场/客户",
+  "xlow": "成熟技术产品", "xhigh": "新技术产品",
+  "ylow": "主流市场", "yhigh": "新兴市场",
+  "groups": [
+    { "name": "Q3.新市场创新" },
+    { "name": "Q4.规模式创新" },
+    { "name": "Q2.选择性技术" },
+    { "name": "Q1.突破性技术" }
   ],
   "items": [{ "name": "新业务", "x": 0.82, "y": 0.86 }]
 }
+```
+
+A cell may carry a name, a note and extra side labels:
+
+```json
+{ "name": "Q3.新市场创新", "note": "新兴市场", "labels": ["新兴市场", "早期采用者"] }
 ```
 
 ---
@@ -67,7 +86,8 @@ Eisenhower matrix, the BCG matrix and the Atlassian 4Ls retrospective.
 
 - **Cell order is fixed**: top-left, top-right, bottom-left, bottom-right — the
   order you read them in. A wrong order is not an error, just a different chart.
-- **Exactly four cells**: fewer or more is a 400, not a silent truncation.
+- **Exactly four cells when you give cells**: fewer or more is a 400. With no
+  cells at all you get the cross frame (axes only).
 - **Point coordinates are 0..1** (0 = low end of the axis, 1 = high end);
   out-of-range values are clamped, not rejected.
 - **Axis end labels default to 低/高** — set `xlow`/`xhigh`/`ylow`/`yhigh` for a

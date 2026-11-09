@@ -1,8 +1,8 @@
 ---
 x-title: 四象限图 —— 2×2 决策矩阵
-x-desc: x-cmd/draw `type=quadrant` 用法速查。2×2 矩阵决策图：艾森豪威尔矩阵 / BCG 矩阵 / Atlassian 4Ls 回顾。参数：`quadrants=` 四个象限名（左上、右上、左下、右下），`quaddescs=` 四条说明，`xlabel=`/`ylabel=` 轴标题，`xlow=`/`xhigh=`/`ylow=`/`yhigh=` 轴两端，`items=` 散点（`名称@x,y`，0..1）。
+x-desc: x-cmd/draw `type=quadrant` 用法速查。一族决策图：矩阵式(2×2,艾森豪威尔 / BCG / 价值网)与十字式(只有两条轴,审美鸿沟 / 用户体验变革)。参数：`quadrants=` 四个象限名,`quaddescs=` 四条说明,`quadlabels=` 每格并列的小标签,`frame=box|cross`,`xlabel=`/`ylabel=` 轴标题,`xlow=`/`xhigh=`/`ylow=`/`yhigh=` 轴两端,`items=` 散点(`名称@x,y`,0..1)。
 x-sidebar: draw 四象限图
-x-keywords: 四象限图, quadrant chart, draw, svg, 艾森豪威尔矩阵, BCG 矩阵, 决策矩阵, 2x2
+x-keywords: 四象限图, quadrant chart, draw, svg, 艾森豪威尔矩阵, BCG 矩阵, 决策矩阵, 2x2, 十字轴
 x-json-ld:
   '@context': https://schema.org
   '@graph':
@@ -14,18 +14,24 @@ x-json-ld:
 
 # 四象限图 —— 2×2 决策矩阵
 
-## 示例（URL 即所得，点击图片进入交互页）
+一个图种,两种框。
 
-**四格 + 说明 + 散点**
+**矩阵式**(`frame=box`,给了格子时的缺省)—— 2×2 的框、四格各一个标签、两条带箭头的轴。
 
 ```text
-https://x-cmd.com/draw?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%E7%AD%96&quadrants=%E5%BF%AB%E8%B5%A2%2C%E6%88%98%E7%95%A5%2C%E5%A1%AB%E5%9D%91%2C%E6%94%BE%E5%BC%83&quaddescs=%E5%BF%AB%E9%80%9F%E5%BD%93%E4%B8%8B%2C%E9%95%BF%E6%9C%9F%E6%8A%95%E5%85%A5%2C%E8%A1%A5%E5%8D%95%2C%E6%97%A0%E5%90%88%E8%A1%8C&xlabel=%E6%8A%95%E5%85%A5&ylabel=%E5%9B%9E%E6%8A%A5&items=%E6%96%B0%E4%B8%9A%E5%8A%A1%400.82%2C0.86%3BAI+%E8%B0%83%E6%9F%A5%400.74%2C0.68%3B%E6%97%A7%E7%B3%BB%E7%BB%9F%400.22%2C0.28%3B%E5%85%AC%E5%8F%B8%E6%94%BF%E7%AD%96%400.18%2C0.74
+https://x-cmd.com/draw?type=quadrant&title=%E4%BB%B7%E5%80%BC%E7%BD%91%E7%9F%A9%E9%98%B5%E6%A0%BC%E5%9B%BE&quadrants=Q3.%E6%96%B0%E5%B8%82%E5%9C%BA%E5%88%9B%E6%96%B0%2CQ4.%E8%A7%84%E6%A8%A1%E5%BC%8F%E5%88%9B%E6%96%B0%2CQ2.%E9%80%89%E6%8B%A9%E6%80%A7%E6%8A%80%E6%9C%AF%2CQ1.%E7%AA%81%E7%A0%B4%E6%80%A7%E6%8A%80%E6%9C%AF&xlabel=%E6%8A%80%E6%9C%AF%2F%E4%BA%A7%E5%93%81&ylabel=%E5%B8%82%E5%9C%BA%2F%E5%AE%A2%E6%88%B7&xlow=%E6%88%90%E7%86%9F%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&xhigh=%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&ylow=%E4%B8%BB%E6%B5%81%E5%B8%82%E5%9C%BA&yhigh=%E6%96%B0%E5%85%B4%E5%B8%82%E5%9C%BA
 ```
 
-[![四象限图](https://x-cmd.com/draw?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%E7%AD%96&quadrants=%E5%BF%AB%E8%B5%A2%2C%E6%88%98%E7%95%A5%2C%E5%A1%AB%E5%9D%91%2C%E6%94%BE%E5%BC%83&quaddescs=%E5%BF%AB%E9%80%9F%E5%BD%93%E4%B8%8B%2C%E9%95%BF%E6%9C%9F%E6%8A%95%E5%85%A5%2C%E8%A1%A5%E5%8D%95%2C%E6%97%A0%E5%90%88%E8%A1%8C&xlabel=%E6%8A%95%E5%85%A5&ylabel=%E5%9B%9E%E6%8A%A5&items=%E6%96%B0%E4%B8%9A%E5%8A%A1%400.82%2C0.86%3BAI+%E8%B0%83%E6%9F%A5%400.74%2C0.68%3B%E6%97%A7%E7%B3%BB%E7%BB%9F%400.22%2C0.28%3B%E5%85%AC%E5%8F%B8%E6%94%BF%E7%AD%96%400.18%2C0.74)](https://x-cmd.com/draw/explore?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%E7%AD%96&quadrants=%E5%BF%AB%E8%B5%A2%2C%E6%88%98%E7%95%A5%2C%E5%A1%AB%E5%9D%91%2C%E6%94%BE%E5%BC%83&quaddescs=%E5%BF%AB%E9%80%9F%E5%BD%93%E4%B8%8B%2C%E9%95%BF%E6%9C%9F%E6%8A%95%E5%85%A5%2C%E8%A1%A5%E5%8D%95%2C%E6%97%A0%E5%90%88%E8%A1%8C&xlabel=%E6%8A%95%E5%85%A5&ylabel=%E5%9B%9E%E6%8A%A5&items=%E6%96%B0%E4%B8%9A%E5%8A%A1%400.82%2C0.86%3BAI+%E8%B0%83%E6%9F%A5%400.74%2C0.68%3B%E6%97%A7%E7%B3%BB%E7%BB%9F%400.22%2C0.28%3B%E5%85%AC%E5%8F%B8%E6%94%BF%E7%AD%96%400.18%2C0.74)
+[![四象限矩阵](https://x-cmd.com/draw?type=quadrant&title=%E4%BB%B7%E5%80%BC%E7%BD%91%E7%9F%A9%E9%98%B5%E6%A0%BC%E5%9B%BE&quadrants=Q3.%E6%96%B0%E5%B8%82%E5%9C%BA%E5%88%9B%E6%96%B0%2CQ4.%E8%A7%84%E6%A8%A1%E5%BC%8F%E5%88%9B%E6%96%B0%2CQ2.%E9%80%89%E6%8B%A9%E6%80%A7%E6%8A%80%E6%9C%AF%2CQ1.%E7%AA%81%E7%A0%B4%E6%80%A7%E6%8A%80%E6%9C%AF&xlabel=%E6%8A%80%E6%9C%AF%2F%E4%BA%A7%E5%93%81&ylabel=%E5%B8%82%E5%9C%BA%2F%E5%AE%A2%E6%88%B7&xlow=%E6%88%90%E7%86%9F%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&xhigh=%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&ylow=%E4%B8%BB%E6%B5%81%E5%B8%82%E5%9C%BA&yhigh=%E6%96%B0%E5%85%B4%E5%B8%82%E5%9C%BA)](https://x-cmd.com/draw/explore?type=quadrant&title=%E4%BB%B7%E5%80%BC%E7%BD%91%E7%9F%A9%E9%98%B5%E6%A0%BC%E5%9B%BE&quadrants=Q3.%E6%96%B0%E5%B8%82%E5%9C%BA%E5%88%9B%E6%96%B0%2CQ4.%E8%A7%84%E6%A8%A1%E5%BC%8F%E5%88%9B%E6%96%B0%2CQ2.%E9%80%89%E6%8B%A9%E6%80%A7%E6%8A%80%E6%9C%AF%2CQ1.%E7%AA%81%E7%A0%B4%E6%80%A7%E6%8A%80%E6%9C%AF&xlabel=%E6%8A%80%E6%9C%AF%2F%E4%BA%A7%E5%93%81&ylabel=%E5%B8%82%E5%9C%BA%2F%E5%AE%A2%E6%88%B7&xlow=%E6%88%90%E7%86%9F%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&xhigh=%E6%96%B0%E6%8A%80%E6%9C%AF%E4%BA%A7%E5%93%81&ylow=%E4%B8%BB%E6%B5%81%E5%B8%82%E5%9C%BA&yhigh=%E6%96%B0%E5%85%B4%E5%B8%82%E5%9C%BA)
 
-两轴各分高低、四格各一个名称（可带说明）、点按坐标落在格内 ——
-艾森豪威尔矩阵、BCG 矩阵、Atlassian 4Ls 回顾都长这样。
+**十字式**(`frame=cross`)—— 只有两条带箭头的轴在正中交叉,四个端点挂标签。
+没有格子、只有轴与旁注时用这个。
+
+```text
+https://x-cmd.com/draw?type=quadrant&frame=cross&title=%E5%AE%A1%E7%BE%8E%E9%B8%BF%E6%B2%9F%E6%A8%A1%E5%9E%8B&ylabel=%E6%B3%A8%E6%84%8F%E5%8A%9B&xlabel=%E7%86%9F%E6%82%89%E5%BA%A6&ylow=%E4%B8%8D%E5%85%B3%E6%B3%A8&yhigh=%E5%85%B3%E6%B3%A8&xlow=%E9%99%8C%E7%94%9F&xhigh=%E7%86%9F%E6%82%89
+```
+
+[![十字轴](https://x-cmd.com/draw?type=quadrant&frame=cross&title=%E5%AE%A1%E7%BE%8E%E9%B8%BF%E6%B2%9F%E6%A8%A1%E5%9E%8B&ylabel=%E6%B3%A8%E6%84%8F%E5%8A%9B&xlabel=%E7%86%9F%E6%82%89%E5%BA%A6&ylow=%E4%B8%8D%E5%85%B3%E6%B3%A8&yhigh=%E5%85%B3%E6%B3%A8&xlow=%E9%99%8C%E7%94%9F&xhigh=%E7%86%9F%E6%82%89)](https://x-cmd.com/draw/explore?type=quadrant&frame=cross&title=%E5%AE%A1%E7%BE%8E%E9%B8%BF%E6%B2%9F%E6%A8%A1%E5%9E%8B&ylabel=%E6%B3%A8%E6%84%8F%E5%8A%9B&xlabel=%E7%86%9F%E6%82%89%E5%BA%A6&ylow=%E4%B8%8D%E5%85%B3%E6%B3%A8&yhigh=%E5%85%B3%E6%B3%A8&xlow=%E9%99%8C%E7%94%9F&xhigh=%E7%86%9F%E6%82%89)
 
 ---
 
@@ -33,38 +39,49 @@ https://x-cmd.com/draw?type=quadrant&title=%E5%9B%9B%E8%B1%A1%E9%99%90%E5%86%B3%
 
 | 参数 | 含义 | 缺省 |
 | --- | --- | --- |
-| `quadrants=` | 四个象限名，逗号分隔 —— **左上、右上、左下、右下**（必填） | — |
-| `quaddescs=` | 四条象限说明，逗号分隔（同序） | — |
-| `xlabel=` / `ylabel=` | 轴标题 | — |
+| `quadrants=` | 四个象限名,逗号分隔 —— **左上、右上、左下、右下** | — |
+| `quaddescs=` | 四条象限说明,逗号分隔(同序) | — |
+| `quadlabels=` | 每格的并列小标签:四组用 `;` 分,组内用 `\|` 分 | — |
+| `frame=` | `box`(矩阵)或 `cross`(只有轴) | 给了格子是 `box`,否则 `cross` |
+| `xlabel=` / `ylabel=` | 轴标题,横排贴在正端旁 | — |
 | `xlow=` / `xhigh=` | 横轴两端标签 | `低` / `高` |
 | `ylow=` / `yhigh=` | 纵轴两端标签 | `低` / `高` |
-| `items=` | 散点：`名称@x,y`，分号分隔；`x`/`y` 取 0..1 | — |
+| `items=` | 散点:`名称@x,y`,分号分隔;`x`/`y` 取 0..1 | — |
 | `d=` | 完整 spec 的 JSON | — |
 | `title=` | 图标题 | — |
+
+格子是**可选**的:只给轴的两端标签 → 画十字式;只给 `items=` → 画轴加点。
 
 ## `d=` 形式
 
 ```json
 {
-  "title": "四象限决策",
-  "xlabel": "投入",
-  "ylabel": "回报",
-  "xlow": "低", "xhigh": "高", "ylow": "低", "yhigh": "高",
-  "quadrants": [
-    { "name": "快赢", "desc": "快速当下" },
-    { "name": "战略", "desc": "长期投入" },
-    { "name": "填坑", "desc": "补单" },
-    { "name": "放弃", "desc": "无合行" }
+  "title": "价值网矩阵格图",
+  "frame": "box",
+  "xlabel": "技术/产品", "ylabel": "市场/客户",
+  "xlow": "成熟技术产品", "xhigh": "新技术产品",
+  "ylow": "主流市场", "yhigh": "新兴市场",
+  "groups": [
+    { "name": "Q3.新市场创新" },
+    { "name": "Q4.规模式创新" },
+    { "name": "Q2.选择性技术" },
+    { "name": "Q1.突破性技术" }
   ],
   "items": [{ "name": "新业务", "x": 0.82, "y": 0.86 }]
 }
+```
+
+一格可以有主标签、副说明和并列的小标签:
+
+```json
+{ "name": "Q3.新市场创新", "note": "新兴市场", "labels": ["新兴市场", "早期采用者"] }
 ```
 
 ---
 
 ## 坑
 
-- **象限顺序是固定的**：左上、右上、左下、右下（读图顺序）。写错不报错，只是另一张图。
-- **必须正好四格**：多一个少一个都 400，不做静默截断。
-- **散点坐标取 0..1**（0 = 轴的低端，1 = 高端）；出界会夹住，不报错。
-- **轴两端默认「低/高」**：给英文读者看要自己设 `xlow`/`xhigh`/`ylow`/`yhigh`。
+- **象限顺序是固定的**:左上、右上、左下、右下(读图顺序)。写错不报错,只是另一张图。
+- **给了格子就必须正好四格**:多一个少一个都 400;一个都不给就画十字式(只有轴)。
+- **散点坐标取 0..1**(0 = 轴的低端,1 = 高端);出界的值会被夹住,不会报错。
+- **轴两端默认「低/高」**:给英文读者看要自己设 `xlow`/`xhigh`/`ylow`/`yhigh`。

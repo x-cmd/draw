@@ -31,6 +31,7 @@ Việt Nam) and carries its own `faq.yml` with the questions that page raises.
 | [10 sankey](2-chart-types/10-sankey/en.md) | flow | where things go |
 | [11 qr](2-chart-types/11-qr/en.md) | QR code | links, WiFi, contact cards |
 | [12 quadrant](2-chart-types/12-quadrant/en.md) | 2×2 decision matrix | prioritisation, retro, portfolio |
+| [13 compass](2-chart-types/13-compass/en.md) | four-arrow compass | directions radiating from a centre |
 
 ## 3 · Styles
 

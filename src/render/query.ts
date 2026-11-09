@@ -4,7 +4,7 @@
 import {
   ApiError, parseInput, parseGaugeSpec, gaugeSpecFromParams,
   parseScatterSpec, scatterSpecFromParams, parseComboSpec, comboSpecFromParams,
-  parseQuadrantSpec, quadrantSpecFromParams,
+  parseQuadrantSpec, quadrantSpecFromParams, parseCompassSpec, compassSpecFromParams,
   clip, type ChartInput,
 } from '../specs/index.js';
 import { resolveVersion, CURRENT_VERSION, type VersionInfo } from '../version.js';
@@ -25,6 +25,7 @@ import { renderCombo } from './combo.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './qr.js';
 import { renderSankey } from './sankey.js';
 import { renderQuadrant } from './quadrant.js';
+import { renderCompass } from './compass.js';
 import { parseSankeySpec, sankeySpecFromParams } from '../specs/sankey.js';
 import { renderStored } from './dispatch.js';
 import { renderArchmapFromUrl } from './archmap.js';
@@ -56,6 +57,7 @@ const SIZE: Record<ChartTemplate, [number, number]> = {
   sankey: [720, 420],
   qr: [240, 240],
   quadrant: [760, 520],
+  compass: [560, 460],
 };
 
 function svgResult(svg: string, v: VersionInfo): DrawResult {
@@ -174,6 +176,15 @@ export function renderFromUrl(url: URL): DrawResult {
     const width = clampInt(url.searchParams, 'w', qw2, 200, 1600);
     const height = clampInt(url.searchParams, 'h', qh2, 140, 1200);
     return svgResult(renderQuadrant(spec, { width, height, version: v.version, skin }), v);
+  }
+  if (kind === 'compass') {
+    const spec = parseCompassSpec(compassSpecFromParams(url.searchParams));
+    const v = resolveVersion(url.searchParams.get('v'));
+    const skin = resolveSkin('compass', url.searchParams.get('t'), schemeParam(url.searchParams));
+    const [cw, ch] = skin.size ?? SIZE.compass;
+    const width = clampInt(url.searchParams, 'w', cw, 200, 1600);
+    const height = clampInt(url.searchParams, 'h', ch, 140, 1200);
+    return svgResult(renderCompass(spec, { width, height, version: v.version, skin }), v);
   }
   if (kind === 'gauge') {
     const spec = parseGaugeSpec(gaugeSpecFromParams(url.searchParams));

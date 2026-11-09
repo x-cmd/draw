@@ -8,3 +8,4 @@ export * from './csv.js';
 export * from './input.js';
 export * from './sankey.js';
 export * from './quadrant.js';
+export * from './compass.js';

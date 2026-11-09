@@ -15,6 +15,7 @@ import { SCATTER_VARIANTS } from './scatter.js';
 import { COMBO_VARIANTS } from './combo.js';
 import { QR_VARIANTS } from './qr.js';
 import { QUADRANT_VARIANTS } from './quadrant.js';
+import { COMPASS_VARIANTS } from './compass.js';
 
 /**
  * Style registry: available variants per chart type (index 0 = default family).
@@ -32,6 +33,7 @@ export const VARIANTS: Record<ChartTemplate, Variant[]> = {
   combo: COMBO_VARIANTS,
   qr: QR_VARIANTS,
   quadrant: QUADRANT_VARIANTS,
+  compass: COMPASS_VARIANTS,
 };
 
 /** 全部有效风格家族(错误提示/演示页用) */
