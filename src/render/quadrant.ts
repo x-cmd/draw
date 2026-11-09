@@ -127,8 +127,8 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
   if (boxMode) {
     pill(xLow, mx, myFinal + mh + 24, 'start');
     pill(xHigh, mx + mw, myFinal + mh + 24, 'end');
-    pill(yLow, mx - 10, myFinal + mh + 6, 'end');
-    pill(yHigh, mx - 10, myFinal + 8, 'end');
+    pill(yLow, mx - 12, myFinal + mh - 2, 'end');
+    pill(yHigh, mx - 12, myFinal + 8, 'end');
   } else {
     pill(xLow, axX0 - 8, axMidY + 6, 'end');
     pill(xHigh, axX1 + 8, axMidY + 6, 'start');
