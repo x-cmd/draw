@@ -36,7 +36,7 @@ describe('quadrant chart', () => {
 
   it('keeps the cell notes and the extra labels', () => {
     const raw = quadrantSpecFromParams(new URLSearchParams(
-      'quadrants=A,B,C,D&quaddescs=甲,乙,丙,丁&quadlabels=甲1|甲2;乙1;丙1;丁1&xlabel=投入&ylabel=回报&xlow=少&xhigh=多',
+      'quadrants=A,B,C,D&quaddescs=甲;乙;丙;丁&quadlabels=甲1|甲2;乙1;丙1;丁1&xlabel=投入&ylabel=回报&xlow=少&xhigh=多',
     ));
     const spec = parseQuadrantSpec(raw);
     expect(spec.groups?.map((g) => g?.note)).toEqual(['甲', '乙', '丙', '丁']);
@@ -77,7 +77,8 @@ describe('quadrant chart', () => {
     }
     // 矩阵式:两支带箭头的轴 + 一条竖分隔线(框是 path,横分隔线就是横轴)
     expect((svg.match(/<line/g) ?? []).length).toBe(3);
-    expect((svg.match(/<circle/g) ?? []).length).toBe(1);
+    // 四个格各一个色点 + 散点一个
+    expect((svg.match(/<circle/g) ?? []).length).toBe(5);
   });
 
   it('draws only the axes in the cross frame', async () => {
@@ -118,10 +119,9 @@ describe('compass chart', () => {
     for (const t of ['自己', '他人', '组织', '环境', '我']) {
       expect(svg).toContain(t);
     }
-    // 四支箭头 = 四个箭头三角 + 四条线身 + 中心点
+    // 四支箭头 = 四条锥形箭身;标签胶囊是 rect,四个标签各一个色点 + 中心盘两点
     expect((svg.match(/<path/g) ?? []).length).toBe(4);
-    expect((svg.match(/<line/g) ?? []).length).toBe(4);
-    expect((svg.match(/<circle/g) ?? []).length).toBe(1);
+    expect((svg.match(/<circle/g) ?? []).length).toBe(6);
   });
 
   it('draws only the directions that have content', async () => {

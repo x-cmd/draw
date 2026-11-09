@@ -76,10 +76,11 @@ export function quadrantSpecFromParams(params: URLSearchParams): string | null {
   const obj: Record<string, unknown> = {};
   if (q !== null && q !== '') {
     const names = split4(q, 'quadrants');
+    // 说明用**分号**分隔(说明里常有逗号,逗号留给象限名)
     const descs = params.get('quaddescs');
-    const descParts = descs !== null && descs !== '' ? descs.split(',').map((s) => s.trim()) : [];
+    const descParts = descs !== null && descs !== '' ? descs.split(';').map((s) => s.trim()) : [];
     if (descParts.length && descParts.length !== 4) {
-      throw new ApiError(400, `"quaddescs" needs exactly 4 comma-separated values, got: ${JSON.stringify(descs)}`);
+      throw new ApiError(400, `"quaddescs" needs exactly 4 semicolon-separated values, got: ${JSON.stringify(descs)}`);
     }
     const extra = params.get('quadlabels');
     const extraParts = extra !== null && extra !== '' ? extra.split(';').map((s) => s.trim()) : [];

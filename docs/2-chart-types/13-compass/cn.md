@@ -1,8 +1,8 @@
 ---
 x-title: 四向箭头 —— 从中心射出的四个方向
-x-desc: x-cmd/draw `type=compass` 用法速查。中心一点,上右下左四个方向各一支箭头(与四象限同族的另一种决策图)。参数:`up=`、`right=`、`down=`、`left=`(各写 `标签` 或 `标签:说明`),`center=` 中心的字,`title=` 图标题。
+x-desc: x-cmd/draw `type=compass` 用法速查。中心一点,上右下左四个方向各一支箭头(与四象限同族的另一种商业图)。参数:`up=`、`right=`、`down=`、`left=`(各写 `标签` 或 `标签:说明`),`center=` 中心的字,`title=` 图标题。
 x-sidebar: draw 四向箭头图
-x-keywords: 四向箭头, compass chart, draw, svg, four arrows, 决策图
+x-keywords: 四向箭头, compass chart, draw, svg, four arrows, 商业决策
 x-json-ld:
   '@context': https://schema.org
   '@graph':
@@ -15,13 +15,16 @@ x-json-ld:
 # 四向箭头 —— 从中心射出的四个方向
 
 ```text
-https://x-cmd.com/draw?type=compass&title=%E5%91%98%E5%B7%A5%E5%9F%B9%E5%85%BB%E6%A8%A1%E5%9E%8B&center=%E6%88%91&up=%E8%87%AA%E5%B7%B1%3A%E8%87%AA%E5%B1%B1%E4%BA%BA&right=%E6%88%91%E5%81%9A%3A%E5%AE%A3%E8%AE%B2%E7%9B%AE%E6%A0%87&down=%E4%BD%A0%E8%AF%B4%3A%E5%90%AC%E5%A2%99%E5%A3%81&left=%E7%8E%AF%E5%A2%83%3A%E5%A4%96%E9%83%A8%E5%BD%B1%E5%93%8D
+https://x-cmd.com/draw?type=compass&title=%E4%B8%9A%E5%8A%A1%E5%8D%95%E5%85%83%E7%9A%84%E5%9B%9B%E4%B8%AA%E9%80%89%E9%A1%B9&center=%E6%A0%B8%E5%BF%83%E4%B8%9A%E5%8A%A1&up=%E5%8A%A0%E5%A4%A7%E6%8A%95%E5%85%A5%3A%E6%8A%A2%E4%BB%BD%E9%A2%9D&right=%E7%BB%B4%E6%8C%81%E7%8E%B0%E7%8A%B6%3A%E5%AE%88%E7%8E%B0%E9%87%91%E6%B5%81&down=%E6%94%B6%E7%BC%A9%E8%A7%84%E6%A8%A1%3A%E9%99%8D%E6%88%90%E6%9C%AC&left=%E9%80%80%E5%87%BA%E5%B8%82%E5%9C%BA%3A%E8%85%BE%E8%B5%84%E6%BA%90
 ```
 
-[![四向箭头图](https://x-cmd.com/draw?type=compass&title=%E5%91%98%E5%B7%A5%E5%9F%B9%E5%85%BB%E6%A8%A1%E5%9E%8B&center=%E6%88%91&up=%E8%87%AA%E5%B7%B1%3A%E8%87%AA%E5%B1%B1%E4%BA%BA&right=%E6%88%91%E5%81%9A%3A%E5%AE%A3%E8%AE%B2%E7%9B%AE%E6%A0%87&down=%E4%BD%A0%E8%AF%B4%3A%E5%90%AC%E5%A2%99%E5%A3%81&left=%E7%8E%AF%E5%A2%83%3A%E5%A4%96%E9%83%A8%E5%BD%B1%E5%93%8D)](https://x-cmd.com/draw/explore?type=compass&title=%E5%91%98%E5%B7%A5%E5%9F%B9%E5%85%BB%E6%A8%A1%E5%9E%8B&center=%E6%88%91&up=%E8%87%AA%E5%B7%B1%3A%E8%87%AA%E5%B1%B1%E4%BA%BA&right=%E6%88%91%E5%81%9A%3A%E5%AE%A3%E8%AE%B2%E7%9B%AE%E6%A0%87&down=%E4%BD%A0%E8%AF%B4%3A%E5%90%AC%E5%A2%99%E5%A3%81&left=%E7%8E%AF%E5%A2%83%3A%E5%A4%96%E9%83%A8%E5%BD%B1%E5%93%8D)
+[![四向箭头图](https://x-cmd.com/draw?type=compass&title=%E4%B8%9A%E5%8A%A1%E5%8D%95%E5%85%83%E7%9A%84%E5%9B%9B%E4%B8%AA%E9%80%89%E9%A1%B9&center=%E6%A0%B8%E5%BF%83%E4%B8%9A%E5%8A%A1&up=%E5%8A%A0%E5%A4%A7%E6%8A%95%E5%85%A5%3A%E6%8A%A2%E4%BB%BD%E9%A2%9D&right=%E7%BB%B4%E6%8C%81%E7%8E%B0%E7%8A%B6%3A%E5%AE%88%E7%8E%B0%E9%87%91%E6%B5%81&down=%E6%94%B6%E7%BC%A9%E8%A7%84%E6%A8%A1%3A%E9%99%8D%E6%88%90%E6%9C%AC&left=%E9%80%80%E5%87%BA%E5%B8%82%E5%9C%BA%3A%E8%85%BE%E8%B5%84%E6%BA%90)](https://x-cmd.com/draw/explore?type=compass&title=%E4%B8%9A%E5%8A%A1%E5%8D%95%E5%85%83%E7%9A%84%E5%9B%9B%E4%B8%AA%E9%80%89%E9%A1%B9&center=%E6%A0%B8%E5%BF%83%E4%B8%9A%E5%8A%A1&up=%E5%8A%A0%E5%A4%A7%E6%8A%95%E5%85%A5%3A%E6%8A%A2%E4%BB%BD%E9%A2%9D&right=%E7%BB%B4%E6%8C%81%E7%8E%B0%E7%8A%B6%3A%E5%AE%88%E7%8E%B0%E9%87%91%E6%B5%81&down=%E6%94%B6%E7%BC%A9%E8%A7%84%E6%A8%A1%3A%E9%99%8D%E6%88%90%E6%9C%AC&left=%E9%80%80%E5%87%BA%E5%B8%82%E5%9C%BA%3A%E8%85%BE%E8%B5%84%E6%BA%90)
 
 中心一个点,上右下左四个方向各射出一支箭头,箭头端点带标签。四象限是用两条轴
 把平面切成四块,这里是四条箭头从中心往外 —— 同一族,不同形状。
+
+商业上的用法:一个业务单元的四个选项(加大投入 / 维持 / 收缩 / 退出),
+中间那个就是业务单元本身。
 
 ---
 
@@ -40,12 +43,12 @@ https://x-cmd.com/draw?type=compass&title=%E5%91%98%E5%B7%A5%E5%9F%B9%E5%85%BB%E
 
 ```json
 {
-  "title": "员工培养模型",
-  "center": "我",
-  "up": { "label": "自己", "note": "自山人" },
-  "right": { "label": "我做", "note": "宣讲目标" },
-  "down": { "label": "你说", "note": "听墙壁" },
-  "left": { "label": "环境", "note": "外部影响" }
+  "title": "业务单元的四个选项",
+  "center": "核心业务",
+  "up": { "label": "加大投入", "note": "抢份额" },
+  "right": { "label": "维持现状", "note": "守现金流" },
+  "down": { "label": "收缩规模", "note": "降成本" },
+  "left": { "label": "退出市场", "note": "腾资源" }
 }
 ```
 
@@ -54,5 +57,5 @@ https://x-cmd.com/draw?type=compass&title=%E5%91%98%E5%B7%A5%E5%9F%B9%E5%85%BB%E
 ## 坑
 
 - **至少要有一个方向**:一个方向都没有是 400。
-- **`up=自己:自山人`** —— 冒号分隔标签与说明,所以标签里不能再有冒号。
+- **`up=自己:自内而外`** —— 冒号分隔标签与说明,所以标签里不能再有冒号。
 - **和四象限不是一回事**:四象限用两条轴把平面切四块,四向箭头是四条箭头从中心射出。

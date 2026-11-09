@@ -1,13 +1,14 @@
 // 四向箭头(compass):中心一个点,上右下左四个方向各一支箭头,箭头端点带标签。
 // 与四象限(quadrant)的分别:那边是两条轴切出四个区域,这边是四个方向各出一支箭头。
 //
-// 画法:中心一个小圆点;四支箭头从中心射出(正方向带箭头),标签写在箭头端点外侧,
-// 副说明写在标签下面;某个方向没有内容就不画那支箭头。
+// 画法(商业图的样子):中心一个圆盘;四支箭头用不同系列色(四个方向一眼可分),
+// 箭身为渐窄的锥形(不是一根细线),端点的标签做成胶囊(带同色小圆点)。
 import type { CompassArm, CompassSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { esc, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg.js';
 
-const ARROW = 10;
+const ARROW = 12;  // 箭头长度
+const BASE = 5.5;  // 箭身根部半宽
 
 /**
  * Compass chart: four labelled arrows radiating from a center point.
@@ -19,8 +20,8 @@ export function renderCompass(spec: CompassSpec, o: RenderOpts): string {
   const titleH = spec.title ? 44 : 12;
   const cx = width / 2;
   const cy = titleH + (height - titleH) / 2;
-  // 箭头长度:留出标签的位置(标签写在端点外,再留一行副说明)
-  const arm = Math.max(60, Math.min(width, height) * 0.3);
+  // 箭头长度:留出端点标签的位置(标签在端点外,再留一行副说明)
+  const arm = Math.max(64, Math.min(width, height) * 0.28);
 
   const arms: { dir: 'up' | 'right' | 'down' | 'left'; a: CompassArm; ux: number; uy: number }[] = [
     { dir: 'up', a: spec.up ?? {}, ux: 0, uy: -1 },
@@ -29,43 +30,50 @@ export function renderCompass(spec: CompassSpec, o: RenderOpts): string {
     { dir: 'left', a: spec.left ?? {}, ux: -1, uy: 0 },
   ];
 
-  for (const { dir, a, ux, uy } of arms) {
+  let idx = 0;
+  for (const { a, ux, uy } of arms) {
     if (!a.label && !a.note) continue;
+    const color = sVar(idx % skin.series.length);
+    idx++;
     const x2 = cx + ux * arm;
     const y2 = cy + uy * arm;
-    // 线身:从中心到箭头根部
-    const bx = x2 - ux * ARROW;
-    const by = y2 - uy * ARROW;
-    parts.push(`<line x1="${r2(cx)}" y1="${r2(cy)}" x2="${r2(bx)}" y2="${r2(by)}" stroke="var(--d-baseline)" stroke-width="1.4"/>`);
     const px = -uy;
     const py = ux;
-    parts.push(`<path d="M${r2(x2)} ${r2(y2)}L${r2(bx + px * 4)} ${r2(by + py * 4)}L${r2(bx - px * 4)} ${r2(by - py * 4)}Z" fill="var(--d-baseline)"/>`);
-    // 标签:写在端点外侧(上下方向居中,左右方向靠端点、纵向排布)
-    if (a.label) {
-      const label = trunc(a.label, 8);
-      if (ux === 0) {
-        parts.push(`<text x="${r2(cx)}" y="${r2(y2 + (uy < 0 ? -14 : 24))}" font-size="14" font-weight="600" text-anchor="middle" fill="var(--d-ink)">${esc(label)}</text>`);
-        if (a.note) {
-          parts.push(`<text x="${r2(cx)}" y="${r2(y2 + (uy < 0 ? -30 : 40))}" font-size="11" text-anchor="middle" fill="var(--d-muted)">${esc(trunc(a.note, 14))}</text>`);
-        }
-      } else {
-        const tx = x2 + ux * 12;
-        parts.push(`<text x="${r2(tx)}" y="${r2(cy + (a.note ? -2 : 5))}" font-size="14" font-weight="600" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-ink)">${esc(label)}</text>`);
-        if (a.note) {
-          parts.push(`<text x="${r2(tx)}" y="${r2(cy + 14)}" font-size="11" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-muted)">${esc(trunc(a.note, 14))}</text>`);
-        }
+    // 箭身:根部宽、末端收成尖(锥形),比一根细线有分量
+    const bx = cx + ux * (arm - ARROW);
+    const by = cy + uy * (arm - ARROW);
+    parts.push(`<path d="M${r2(cx + px * BASE)} ${r2(cy + py * BASE)}L${r2(bx + px * BASE)} ${r2(by + py * BASE)}L${r2(x2)} ${r2(y2)}L${r2(bx - px * BASE)} ${r2(by - py * BASE)}L${r2(cx - px * BASE)} ${r2(cy - py * BASE)}Z" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/>`);
+    // 端点标签:胶囊(同色小圆点 + 文字),上下方向居中、左右方向顺排
+    const label = a.label ? trunc(a.label, 8) : '';
+    const note = a.note ? trunc(a.note, 14) : '';
+    const tw = Math.max(textW(label, 13), textW(note, 11));
+    const pillW = tw + 30;
+    const pillH = a.note ? 34 : 22;
+    if (ux === 0) {
+      const py2 = y2 + (uy < 0 ? -pillH - 12 : 12);
+      parts.push(`<rect x="${r2(cx - pillW / 2)}" y="${r2(py2)}" width="${r2(pillW)}" height="${pillH}" rx="${pillH / 2}" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`);
+      parts.push(`<circle cx="${r2(cx - pillW / 2 + 13)}" cy="${r2(py2 + (a.note ? 12 : 11))}" r="4" fill="${color}"/>`);
+      parts.push(`<text x="${r2(cx - pillW / 2 + 22)}" y="${r2(py2 + (a.note ? 15 : 14))}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(label)}</text>`);
+      if (a.note) {
+        parts.push(`<text x="${r2(cx)}" y="${r2(py2 + 28)}" font-size="11" text-anchor="middle" fill="var(--d-muted)">${esc(note)}</text>`);
+      }
+    } else {
+      const px2 = x2 + ux * 14;
+      parts.push(`<rect x="${r2(ux > 0 ? px2 : px2 - pillW)}" y="${r2(cy - pillH / 2)}" width="${r2(pillW)}" height="${pillH}" rx="${pillH / 2}" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`);
+      const lx = ux > 0 ? px2 + 8 : px2 - 8;
+      parts.push(`<circle cx="${r2(lx + (ux > 0 ? 4 : -4))}" cy="${r2(cy - (a.note ? 5 : 0))}" r="4" fill="${color}"/>`);
+      parts.push(`<text x="${r2(lx + (ux > 0 ? 13 : -13))}" y="${r2(cy - (a.note ? 1 : 4))}" font-size="13" font-weight="600" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-ink)">${esc(label)}</text>`);
+      if (a.note) {
+        parts.push(`<text x="${r2(lx + (ux > 0 ? 13 : -13))}" y="${r2(cy + 13)}" font-size="11" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-muted)">${esc(note)}</text>`);
       }
     }
   }
 
-  // 中心点 + 中心的字
-  parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="5" fill="var(--d-ink)"/>`);
+  // 中心盘:外圈浅色 + 内点深色,中心的字放在盘的右上(不压盘)
+  parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="13" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1.5"/>`);
+  parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="4.5" fill="var(--d-ink)"/>`);
   if (spec.center) {
-    const t = trunc(spec.center, 8);
-    const tw = textW(t, 13);
-    // 中心有字就把它推到点的旁边(免得盖住点)
-    parts.push(`<text x="${r2(cx + 12)}" y="${r2(cy - 10)}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(t)}</text>`);
-    void tw;
+    parts.push(`<text x="${r2(cx + 17)}" y="${r2(cy - 17)}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(trunc(spec.center, 8))}</text>`);
   }
 
   return svgDoc(width, height, 'compass', version, spec.title ?? 'compass chart', spec, skin, titleBlock(spec.title) + parts.join(''));
