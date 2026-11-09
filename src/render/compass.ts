@@ -51,9 +51,12 @@ export function renderCompass(spec: CompassSpec, o: RenderOpts): string {
     const pillH = a.note ? 34 : 22;
     if (ux === 0) {
       const py2 = y2 + (uy < 0 ? -pillH - 12 : 12);
+      // 圆点 + 文字作为一组居中(圆点占位,不然文字看着偏)
+      const tw2 = textW(label, 13);
+      const dotX = cx - (tw2 + 14) / 2;
       parts.push(`<rect x="${r2(cx - pillW / 2)}" y="${r2(py2)}" width="${r2(pillW)}" height="${pillH}" rx="${pillH / 2}" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`);
-      parts.push(`<circle cx="${r2(cx - pillW / 2 + 13)}" cy="${r2(py2 + (a.note ? 12 : 11))}" r="4" fill="${color}"/>`);
-      parts.push(`<text x="${r2(cx - pillW / 2 + 22)}" y="${r2(py2 + (a.note ? 15 : 14))}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(label)}</text>`);
+      parts.push(`<circle cx="${r2(dotX)}" cy="${r2(py2 + (a.note ? 12 : 11))}" r="4" fill="${color}"/>`);
+      parts.push(`<text x="${r2(dotX + 9)}" y="${r2(py2 + (a.note ? 15 : 14))}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(label)}</text>`);
       if (a.note) {
         parts.push(`<text x="${r2(cx)}" y="${r2(py2 + 28)}" font-size="11" text-anchor="middle" fill="var(--d-muted)">${esc(note)}</text>`);
       }
@@ -73,7 +76,7 @@ export function renderCompass(spec: CompassSpec, o: RenderOpts): string {
   parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="13" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1.5"/>`);
   parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="4.5" fill="var(--d-ink)"/>`);
   if (spec.center) {
-    parts.push(`<text x="${r2(cx + 17)}" y="${r2(cy - 17)}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(trunc(spec.center, 8))}</text>`);
+    parts.push(`<text x="${r2(cx + 20)}" y="${r2(cy - 21)}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(trunc(spec.center, 8))}</text>`);
   }
 
   return svgDoc(width, height, 'compass', version, spec.title ?? 'compass chart', spec, skin, titleBlock(spec.title) + parts.join(''));
