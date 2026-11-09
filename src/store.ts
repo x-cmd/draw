@@ -7,7 +7,7 @@ import type { DrawEnv } from './types.js';
 /**
  * All supported chart template ids — the valid `?type=` values.
  */
-export const CHART_TEMPLATES = ['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey', 'qr'] as const;
+export const CHART_TEMPLATES = ['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey', 'qr', 'quadrant'] as const;
 /**
  * A chart template id; one of {@link CHART_TEMPLATES}.
  */

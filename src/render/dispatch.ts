@@ -16,7 +16,9 @@ import { renderScatter } from './scatter.js';
 import { renderCombo } from './combo.js';
 import { renderQR, requireQRText, parseColor, QR_DEFAULTS } from './qr.js';
 import { renderSankey } from './sankey.js';
+import { renderQuadrant } from './quadrant.js';
 import { parseSankeySpec } from '../specs/sankey.js';
+import { parseQuadrantSpec } from '../specs/quadrant.js';
 import type { RenderOpts } from './svg.js';
 import type { ChartTemplate, StoredChart } from '../store.js';
 
@@ -63,6 +65,7 @@ export function renderStored(doc: StoredChart, o: RenderOpts): string {
   if (doc.template === 'scatter') return renderScatter(parseScatterSpec(specJson), o);
   if (doc.template === 'combo') return renderCombo(parseComboSpec(specJson), o);
   if (doc.template === 'sankey') return renderSankey(parseSankeySpec(specJson), o);
+  if (doc.template === 'quadrant') return renderQuadrant(parseQuadrantSpec(specJson), o);
   const input: ChartInput = looksMultiSeries(specJson)
     ? { multi: true, spec: parseSeriesSpec(specJson, doc.template === 'line' || doc.template === 'area' ? 'line' : 'bar') }
     : { multi: false, spec: parseChartSpec(specJson, doc.template) };

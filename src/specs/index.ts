@@ -7,3 +7,4 @@ export * from './combo.js';
 export * from './csv.js';
 export * from './input.js';
 export * from './sankey.js';
+export * from './quadrant.js';

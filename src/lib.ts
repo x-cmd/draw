@@ -21,6 +21,7 @@ export { renderScatter } from './render/scatter.js';
 export { renderCombo } from './render/combo.js';
 export { renderQR } from './render/qr.js';
 export { renderSankey } from './render/sankey.js';
+export { renderQuadrant } from './render/quadrant.js';
 export { renderStored } from './render/dispatch.js';
 // Small helpers that page builders (and the x-cmd-hosted worker) reuse:
 export { esc, fmtFull, fmtNum, textW, EDIT_TAG_STRIP_SRC } from './render/svg.js';
