@@ -13,7 +13,14 @@ import { card } from '../theme.js';
 import { esc, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg.js';
 
 const ARROW = 12;   // 箭头长度
-const PAD = 16;     // 格内边距
+const PAD = 18;     // 格内边距
+// 字号偏大:看这图的人年长,字要看得清
+const FS_TITLE = 18;   // 格内主标签
+const FS_NOTE = 14;    // 格内说明
+const FS_LABEL = 13;   // 并列小标签
+const FS_AXIS = 15;    // 轴名
+const FS_END = 13;     // 轴端胶囊
+const FS_POINT = 14;   // 散点名字
 const RADIUS = 14;  // 面板圆角
 const NO_BREAK = '，。、；：!?,.;:)]}」』】》';  // 这些不能出现在行首
 
@@ -32,7 +39,7 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
   const titleH = spec.title ? 44 : 12;
   const top = titleH + (spec.title ? 26 : 10);   // 有标题时面板往下让开(左上角是标题)
   const left = 66;
-  const right = spec.xlabel ? 30 + Math.ceil(textW(spec.xlabel, 13)) : 30;
+  const right = spec.xlabel ? 34 + Math.ceil(textW(spec.xlabel, FS_AXIS)) : 34;
   const bottom = 60;
   const mw = Math.max(120, width - left - right);
   const mh = Math.max(120, height - top - bottom);
@@ -88,13 +95,13 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
     const blocks = groups.map((g) => {
       const rows: Row[] = [];
       if (!g) return rows;
-      if (g.name) rows.push({ text: trunc(g.name, 14), fs: 16, fill: 'var(--d-ink)', weight: '600' });
+      if (g.name) rows.push({ text: trunc(g.name, 14), fs: FS_TITLE, fill: 'var(--d-ink)', weight: '600' });
       if (g.note) {
-        for (const ln of wrap(g.note, mw / 2 - PAD * 2, 12)) {
-          rows.push({ text: ln, fs: 12, fill: 'var(--d-muted)', weight: '400' });
+        for (const ln of wrap(g.note, mw / 2 - PAD * 2, FS_NOTE).slice(0, 3)) {
+          rows.push({ text: ln, fs: FS_NOTE, fill: 'var(--d-muted)', weight: '400' });
         }
       }
-      for (const l of g.labels ?? []) rows.push({ text: trunc(l, 12), fs: 11, fill: 'var(--d-faint)', weight: '400' });
+      for (const l of g.labels ?? []) rows.push({ text: trunc(l, 12), fs: FS_LABEL, fill: 'var(--d-faint)', weight: '400' });
       return rows;
     });
     const GAP = 6;
@@ -109,9 +116,9 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
       // 标题基线 = 格心 - 最高块的一半 + 标题高
       let y = cy + (cellH - maxH) / 2 + rows[0].fs * 0.95;
       rows.forEach((r, ri) => {
-        const x = cx + PAD + (ri === 0 && r.fs >= 16 ? 13 : 0);
-        if (ri === 0 && r.fs >= 16) {
-          parts.push(`<circle cx="${r2(cx + PAD + 4)}" cy="${r2(y - r.fs * 0.32)}" r="4" fill="${sVar(i % skin.series.length)}"/>`);
+        const x = cx + PAD + (ri === 0 && r.fs >= FS_TITLE ? 15 : 0);
+        if (ri === 0 && r.fs >= FS_TITLE) {
+          parts.push(`<circle cx="${r2(cx + PAD + 5)}" cy="${r2(y - r.fs * 0.32)}" r="5" fill="${sVar(i % skin.series.length)}"/>`);
         }
         parts.push(`<text x="${r2(x)}" y="${r2(y)}" font-size="${r.fs}" font-weight="${r.weight}"${r.fs >= 16 ? ' letter-spacing="-0.01em"' : ''} fill="${r.fill}">${esc(r.text)}</text>`);
         y += r.fs * 1.35 + GAP;
@@ -121,12 +128,12 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
 
   // 轴端标签:小胶囊(细描边 + 淡底)
   const pill = (text: string, x: number, y: number, anchor: 'start' | 'middle' | 'end'): void => {
-    const w = textW(text, 11) + 14;
-    const h = 18;
+    const w = textW(text, FS_END) + 16;
+    const h = FS_END + 7;
     const l = anchor === 'end' ? x - w : anchor === 'middle' ? x - w / 2 : x;
     parts.push(`<rect x="${r2(l)}" y="${r2(y - h + 4)}" width="${r2(w)}" height="${h}" rx="9" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`);
     const tx = anchor === 'end' ? x - 7 : anchor === 'middle' ? x : x + 7;
-    parts.push(`<text x="${r2(tx)}" y="${r2(y - h + 4 + 12.5)}" font-size="11" text-anchor="${anchor === 'end' ? 'end' : anchor === 'middle' ? 'middle' : 'start'}" fill="var(--d-muted)">${esc(text)}</text>`);
+    parts.push(`<text x="${r2(tx)}" y="${r2(y - h + 4 + FS_END + 1.5)}" font-size="${FS_END}" text-anchor="${anchor === 'end' ? 'end' : anchor === 'middle' ? 'middle' : 'start'}" fill="var(--d-muted)">${esc(text)}</text>`);
   };
 
   const xLow = spec.xlow ?? '低';
@@ -148,19 +155,15 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
   // 轴名:贴在各自箭头的外侧,不与端点胶囊同行
   if (spec.xlabel) {
     if (boxMode) {
-      parts.push(`<text x="${r2(axX1 + 8)}" y="${r2(axMidY + 4)}" font-size="13" fill="var(--d-text)">${esc(spec.xlabel)}</text>`);
+      parts.push(`<text x="${r2(axX1 + 14)}" y="${r2(axMidY + 5)}" font-size="${FS_AXIS}" fill="var(--d-text)">${esc(spec.xlabel)}</text>`);
     } else {
-      parts.push(`<text x="${r2(axX1)}" y="${r2(axMidY + 30)}" font-size="13" text-anchor="end" fill="var(--d-text)">${esc(spec.xlabel)}</text>`);
+      parts.push(`<text x="${r2(axX1)}" y="${r2(axMidY + 30)}" font-size="${FS_AXIS}" text-anchor="end" fill="var(--d-text)">${esc(spec.xlabel)}</text>`);
     }
   }
   if (spec.ylabel) {
-    if (boxMode) {
-      // 纵轴名:放在箭头右侧、面板上方(左上角是标题,不能占那)
-      parts.push(`<text x="${r2(axX + 14)}" y="${r2(myFinal - 12)}" font-size="13" fill="var(--d-text)">${esc(spec.ylabel)}</text>`);
-    } else {
-      const yx = Math.max(16, axX - 34);
-      parts.push(`<text x="${r2(yx)}" y="${r2(midY)}" font-size="13" text-anchor="middle" fill="var(--d-text)" transform="rotate(-90 ${r2(yx)} ${r2(midY)})">${esc(spec.ylabel)}</text>`);
-    }
+    // 纵轴名竖排贴在纵轴左边(参考图「解决度」的写法):横排会跟左上角的标题打架
+    const yx = boxMode ? Math.max(16, mx - 32) : Math.max(16, axX - 34);
+    parts.push(`<text x="${r2(yx)}" y="${r2(midY)}" font-size="${FS_AXIS}" text-anchor="middle" fill="var(--d-text)" transform="rotate(-90 ${r2(yx)} ${r2(midY)})">${esc(spec.ylabel)}</text>`);
   }
 
   // 散点:系列色圆点 + 白圈,名字放在**远离纵轴**的一侧(不横穿轴线)
@@ -170,11 +173,11 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
     const color = sVar(i % skin.series.length);
     parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="6.5" fill="${color}" stroke="var(--d-halo)" stroke-width="2"/>`);
     const label = trunc(it.name, 10);
-    const tw = textW(label, 12);
+    const tw = textW(label, FS_POINT);
     const leftSide = cx < axX;                       // 默认往远离纵轴的一侧放
     const fits = leftSide ? cx - 13 - tw > mx : cx + 13 + tw < mx + mw;
     const useLeft = leftSide ? fits : !fits;
-    parts.push(`<text x="${r2(useLeft ? cx - 13 : cx + 13)}" y="${r2(cy + 4)}" font-size="12" text-anchor="${useLeft ? 'end' : 'start'}" fill="var(--d-text)">${esc(label)}</text>`);
+    parts.push(`<text x="${r2(useLeft ? cx - 13 : cx + 13)}" y="${r2(cy + 5)}" font-size="${FS_POINT}" text-anchor="${useLeft ? 'end' : 'start'}" fill="var(--d-text)">${esc(label)}</text>`);
   });
 
   return svgDoc(width, height, 'quadrant', version, spec.title ?? 'quadrant chart', spec, skin, titleBlock(spec.title) + parts.join(''));

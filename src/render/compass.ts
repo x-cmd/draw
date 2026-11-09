@@ -9,6 +9,9 @@ import { esc, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from
 
 const ARROW = 12;  // 箭头长度
 const BASE = 5.5;  // 箭身根部半宽
+// 字号偏大:看这图的人年长,字要看得清
+const FS_LABEL = 15;  // 方向标签
+const FS_NOTE = 13;   // 副说明
 
 /**
  * Compass chart: four labelled arrows radiating from a center point.
@@ -46,28 +49,30 @@ export function renderCompass(spec: CompassSpec, o: RenderOpts): string {
     // 端点标签:胶囊(同色小圆点 + 文字),上下方向居中、左右方向顺排
     const label = a.label ? trunc(a.label, 8) : '';
     const note = a.note ? trunc(a.note, 14) : '';
-    const tw = Math.max(textW(label, 13), textW(note, 11));
-    const pillW = tw + 30;
-    const pillH = a.note ? 34 : 22;
+    const tw = Math.max(textW(label, FS_LABEL), textW(note, FS_NOTE));
+    const pillW = tw + 34;
+    const pillH = a.note ? 41 : 26;
     if (ux === 0) {
       const py2 = y2 + (uy < 0 ? -pillH - 12 : 12);
       // 圆点 + 文字作为一组居中(圆点占位,不然文字看着偏)
-      const tw2 = textW(label, 13);
+      const tw2 = textW(label, FS_LABEL);
       const dotX = cx - (tw2 + 14) / 2;
       parts.push(`<rect x="${r2(cx - pillW / 2)}" y="${r2(py2)}" width="${r2(pillW)}" height="${pillH}" rx="${pillH / 2}" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`);
-      parts.push(`<circle cx="${r2(dotX)}" cy="${r2(py2 + (a.note ? 12 : 11))}" r="4" fill="${color}"/>`);
-      parts.push(`<text x="${r2(dotX + 9)}" y="${r2(py2 + (a.note ? 15 : 14))}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(label)}</text>`);
+      parts.push(`<circle cx="${r2(dotX)}" cy="${r2(py2 + (a.note ? 12 : 11))}" r="5" fill="${color}"/>`);
+      parts.push(`<text x="${r2(dotX + 10)}" y="${r2(py2 + (a.note ? 17 : 16))}" font-size="${FS_LABEL}" font-weight="600" fill="var(--d-ink)">${esc(label)}</text>`);
       if (a.note) {
-        parts.push(`<text x="${r2(cx)}" y="${r2(py2 + 28)}" font-size="11" text-anchor="middle" fill="var(--d-muted)">${esc(note)}</text>`);
+        parts.push(`<text x="${r2(cx)}" y="${r2(py2 + 34)}" font-size="${FS_NOTE}" text-anchor="middle" fill="var(--d-muted)">${esc(note)}</text>`);
       }
     } else {
       const px2 = x2 + ux * 14;
       parts.push(`<rect x="${r2(ux > 0 ? px2 : px2 - pillW)}" y="${r2(cy - pillH / 2)}" width="${r2(pillW)}" height="${pillH}" rx="${pillH / 2}" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`);
       const lx = ux > 0 ? px2 + 8 : px2 - 8;
-      parts.push(`<circle cx="${r2(lx + (ux > 0 ? 4 : -4))}" cy="${r2(cy - (a.note ? 5 : 0))}" r="4" fill="${color}"/>`);
-      parts.push(`<text x="${r2(lx + (ux > 0 ? 13 : -13))}" y="${r2(cy - (a.note ? 1 : 4))}" font-size="13" font-weight="600" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-ink)">${esc(label)}</text>`);
+      parts.push(`<circle cx="${r2(lx + (ux > 0 ? 4 : -4))}" cy="${r2(cy - (a.note ? 5 : 0))}" r="5" fill="${color}"/>`);
+      parts.push(`<text x="${r2(lx + (ux > 0 ? 13 : -13))}" y="${r2(cy - (a.note ? 2 : 5))}" font-size="${FS_LABEL}" font-weight="600" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-ink)">${esc(label)}</text>`);
       if (a.note) {
-        parts.push(`<text x="${r2(lx + (ux > 0 ? 13 : -13))}" y="${r2(cy + 13)}" font-size="11" text-anchor="${ux > 0 ? 'start' : 'end'}" fill="var(--d-muted)">${esc(note)}</text>`);
+        // 说明对齐到**标签文字**的中线(不是整个胶囊)—— 圆点占了位,不然看着歪
+        const nc = ux > 0 ? lx + 13 + textW(label, FS_LABEL) / 2 : lx - 13 - textW(label, FS_LABEL) / 2;
+        parts.push(`<text x="${r2(nc)}" y="${r2(cy + 15)}" font-size="${FS_NOTE}" text-anchor="middle" fill="var(--d-muted)">${esc(note)}</text>`);
       }
     }
   }
@@ -76,7 +81,7 @@ export function renderCompass(spec: CompassSpec, o: RenderOpts): string {
   parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="13" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1.5"/>`);
   parts.push(`<circle cx="${r2(cx)}" cy="${r2(cy)}" r="4.5" fill="var(--d-ink)"/>`);
   if (spec.center) {
-    parts.push(`<text x="${r2(cx + 20)}" y="${r2(cy - 21)}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(trunc(spec.center, 8))}</text>`);
+    parts.push(`<text x="${r2(cx + 20)}" y="${r2(cy - 21)}" font-size="${FS_LABEL}" font-weight="600" fill="var(--d-ink)">${esc(trunc(spec.center, 8))}</text>`);
   }
 
   return svgDoc(width, height, 'compass', version, spec.title ?? 'compass chart', spec, skin, titleBlock(spec.title) + parts.join(''));
