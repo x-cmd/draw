@@ -30,6 +30,7 @@ Việt Nam) and carries its own `faq.yml` with the questions that page raises.
 | [09 combo](2-chart-types/09-combo/en.md) | bars + line | two measures at once |
 | [10 sankey](2-chart-types/10-sankey/en.md) | flow | where things go |
 | [11 qr](2-chart-types/11-qr/en.md) | QR code | links, WiFi, contact cards |
+| [12 quadrant](2-chart-types/12-quadrant/en.md) | 2×2 decision matrix | prioritisation, retro, portfolio |
 
 ## 3 · Styles
 

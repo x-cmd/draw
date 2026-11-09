@@ -29,7 +29,7 @@ async function emit(svg: string, out: string | undefined, sp: URLSearchParams): 
 // 长 flag → 查询参数名(单字母直写也依然有效,经透传)
 const ALIASES: Record<string, string> = { theme: 't', width: 'w', height: 'h' };
 
-const HELP = `usage: draw --type <pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr|archmap> [params] [--out <file.svg>]
+const HELP = `usage: draw --type <pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr|quadrant|archmap> [params] [--out <file.svg>]
        draw echarts '<option json>' [params] [--out <file.svg>]        # ECharts coverage layer
 
 params are the same as GET /draw query params:
