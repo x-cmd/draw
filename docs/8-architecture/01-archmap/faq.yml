@@ -1,0 +1,20 @@
+id: x-draw-8-architecture-01-archmap
+
+data:
+  - name:
+      en: Architecture diagram
+      cn: 架构图
+    qa:
+      - id: how-to-place
+        question:
+          en: "Do I have to draw the boxes and the lines myself?"
+          cn: "方块和线要自己画吗?"
+        answer:
+          en: >
+            No. You name the nodes and say which one points at which; the engine sizes the boxes, places them on the grid you gave and routes the edges around them.
+          cn: >
+            不用。你只写节点、写谁指向谁,引擎负责量盒子、放到你给的格子上,并把线绕开走。
+        confidence: 9
+        reference:
+          - docs/8-architecture/01-archmap/en.md
+          - docs/8-architecture/01-archmap/cn.md

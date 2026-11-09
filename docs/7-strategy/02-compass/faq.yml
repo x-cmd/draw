@@ -1,0 +1,51 @@
+id: x-draw-7-strategy-02-compass
+
+data:
+  - name:
+      en: Four-arrow compass
+      cn: 四向箭头
+    qa:
+      - id: vs-quadrant
+        question:
+          en: "How is this different from the quadrant chart?"
+          cn: "和四象限图有什么不同?"
+        answer:
+          en: >
+            The quadrant cuts a plane into four regions along two axes; the compass sends four
+            arrows out of a centre, one per direction. Pick the quadrant when you place things
+            into regions, the compass when the four answers radiate from one middle.
+          cn: >
+            四象限用两条轴把平面切成四块;四向箭头是四条箭头从中心射出,一个方向一支。
+            要往区域里放东西就用四象限,四个答案从一个中心往外就用四向箭头。
+        confidence: 9
+        reference:
+          - docs/7-strategy/02-compass/en.md
+          - docs/7-strategy/02-compass/cn.md
+      - id: note
+        question:
+          en: "How do I add a second line to a direction?"
+          cn: "一个方向怎么写两行?"
+        answer:
+          en: >
+            Write label:note — for example up=Self:from within. The colon separates the two,
+            so a label cannot contain a colon.
+          cn: >
+            写 标签:说明,比如 up=自己:自内而外。冒号用来分隔,所以标签里不能有冒号。
+        confidence: 9
+        reference:
+          - docs/7-strategy/02-compass/en.md
+          - docs/7-strategy/02-compass/cn.md
+      - id: empty
+        question:
+          en: "Can I leave a direction out?"
+          cn: "某个方向可以不写吗?"
+        answer:
+          en: >
+            Yes — a direction with no label is simply not drawn. But at least one direction
+            is required, otherwise it is a 400.
+          cn: >
+            可以 —— 没有标签的方向就不画那支箭头。但至少要有一个方向,一个都没有是 400。
+        confidence: 9
+        reference:
+          - docs/7-strategy/02-compass/en.md
+          - docs/7-strategy/02-compass/cn.md
