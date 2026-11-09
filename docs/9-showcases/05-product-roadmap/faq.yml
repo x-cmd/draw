@@ -1,0 +1,20 @@
+id: x-draw-9-showcases-05-product-roadmap
+
+data:
+  - name:
+      en: Product showcase
+      cn: 产品场景
+    qa:
+      - id: which-chart
+        question:
+          en: "Mind map or Gantt for a launch plan?"
+          cn: "上线计划用导图还是甘特图?"
+        answer:
+          en: >
+            The mind map for what has to happen and who owns it; the Gantt for when it happens and what blocks what. The launch checklist above is the first, the sprint plan the second.
+          cn: >
+            导图讲「要做什么、谁负责」,甘特图讲「什么时候做、卡在哪」。上面的上线检查清单是前者,迭代计划是后者。
+        confidence: 9
+        reference:
+          - docs/9-showcases/05-product-roadmap/en.md
+          - docs/9-showcases/05-product-roadmap/cn.md

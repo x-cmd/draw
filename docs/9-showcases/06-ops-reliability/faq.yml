@@ -1,0 +1,20 @@
+id: x-draw-9-showcases-06-ops-reliability
+
+data:
+  - name:
+      en: Ops showcase
+      cn: 运维场景
+    qa:
+      - id: which-chart
+        question:
+          en: "Uptime as a gauge — does 99.95 read as almost 100?"
+          cn: "可用率用仪表盘,99.95 看起来会不会像 100?"
+        answer:
+          en: >
+            Not with the reliability style: the ring is segmented and carries a scale, so the last 0.05% is visible instead of rounding away. A plain gauge without a scale would hide it.
+          cn: >
+            用 reliability 风格就不会:环是分段的、还带刻度,最后那 0.05% 看得见,不会四舍五入掉。没有刻度的普通仪表盘就会把它藏起来。
+        confidence: 9
+        reference:
+          - docs/9-showcases/06-ops-reliability/en.md
+          - docs/9-showcases/06-ops-reliability/cn.md

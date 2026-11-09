@@ -1,0 +1,50 @@
+id: x-draw-4-strategy-01-quadrant
+
+data:
+  - name:
+      en: Quadrant chart
+      cn: 四象限图
+    qa:
+      - id: order
+        question:
+          en: "In which order do the four quadrants go?"
+          cn: "四个象限的顺序是怎么定的?"
+        answer:
+          en: >
+            Top-left, top-right, bottom-left, bottom-right — the order you read them in.
+            Put them in quadrants= as four comma-separated names, and the same order in quaddescs= for the notes.
+          cn: >
+            左上、右上、左下、右下 —— 读图顺序。quadrants= 里按这个顺序写四个名字，
+            quaddescs= 的说明也按同序。
+        confidence: 9
+        reference:
+          - docs/4-strategy/01-quadrant/en.md
+          - docs/4-strategy/01-quadrant/cn.md
+      - id: coords
+        question:
+          en: "How are the points placed?"
+          cn: "散点怎么定位?"
+        answer:
+          en: >
+            items= takes name@x,y where x and y are 0..1: 0 is the low end of that axis, 1 the high end.
+            Values outside the range are clamped, not rejected.
+          cn: >
+            items= 写 名称@x,y,x/y 取 0..1:0 是该轴的低端,1 是高端。
+            出界的值会被夹住,不会报错。
+        confidence: 9
+        reference:
+          - docs/4-strategy/01-quadrant/en.md
+          - docs/4-strategy/01-quadrant/cn.md
+      - id: count
+        question:
+          en: "Can I use three cells?"
+          cn: "能只画三个格吗?"
+        answer:
+          en: >
+            No — exactly four. Fewer or more is a 400 with a corrective example, never a silent truncation.
+          cn: >
+            不行 —— 必须正好四个。少一个多一个都 400 并给出正确写法,不会静默截断。
+        confidence: 9
+        reference:
+          - docs/4-strategy/01-quadrant/en.md
+          - docs/4-strategy/01-quadrant/cn.md

@@ -229,7 +229,7 @@ Common parameters:
 
 ## Styles (`?t=`)
 
-Per-type reference: [pie](docs/5-data-charts/01-pie/en.md) · [bar](docs/5-data-charts/02-bar/en.md) · [hbar](docs/5-data-charts/03-hbar/en.md) · [line](docs/5-data-charts/04-line/en.md) · [area](docs/5-data-charts/05-area/en.md) · [radar](docs/5-data-charts/06-radar/en.md) · [gauge](docs/5-data-charts/07-gauge/en.md) · [scatter](docs/5-data-charts/08-scatter/en.md) · [combo](docs/5-data-charts/09-combo/en.md) · [sankey](docs/6-relations/01-sankey/en.md) · [qr](docs/10-infographics/01-qr/en.md) · [quadrant](docs/7-strategy/01-quadrant/en.md) · [compass](docs/7-strategy/02-compass/en.md) — each page has the parameters, the style families, the pitfalls and its own `faq.yml`.
+Per-type reference: [pie](docs/2-data-charts/01-pie/en.md) · [bar](docs/2-data-charts/02-bar/en.md) · [hbar](docs/2-data-charts/03-hbar/en.md) · [line](docs/2-data-charts/04-line/en.md) · [area](docs/2-data-charts/05-area/en.md) · [radar](docs/2-data-charts/06-radar/en.md) · [gauge](docs/2-data-charts/07-gauge/en.md) · [scatter](docs/2-data-charts/08-scatter/en.md) · [combo](docs/2-data-charts/09-combo/en.md) · [sankey](docs/3-relations/01-sankey/en.md) · [qr](docs/7-infographics/01-qr/en.md) · [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) — each page has the parameters, the style families, the pitfalls and its own `faq.yml`.
 
 
 Per chart type, with automatic light/dark palettes:
@@ -248,7 +248,7 @@ Per chart type, with automatic light/dark palettes:
 
 ## Two ways to pass data
 
-Full catalogue with one row per type: [styles quick reference](docs/1-styles/01-style-families/en.md).
+Full catalogue with one row per type: [styles quick reference](docs/1-overview/03-styles/en.md).
 
 
 **Flat params** (URL stays readable — recommended):
@@ -306,7 +306,7 @@ Pick the label colour by the fill it lands on — dark text on the pale end of t
 
 ## Short links (data stored in a GitHub repo; content-addressed, never expires)
 
-Per-type JSON schemas: [data formats](docs/2-data-and-api/01-data-formats/en.md).
+Per-type JSON schemas: [data formats](docs/1-overview/04-data-and-api/en.md).
 
 
 ```
@@ -351,7 +351,7 @@ The script: clones the repo → browser login for wrangler → deploys → smoke
 
 ## Development
 
-Full deployment guide (Workers, local Node, npm library, short links): [deploy it yourself](docs/3-self-hosting/01-deploy/en.md).
+Full deployment guide (Workers, local Node, npm library, short links): [deploy it yourself](docs/1-overview/05-self-hosting/en.md).
 
 
 ```sh
@@ -369,21 +369,18 @@ Code is [Apache-2.0](LICENSE). Bundled fonts keep their own licenses: Inter (OFL
 
 ## Documentation
 
-Reference pages live in [`docs/`](docs/README.md), grouped the same way this README is: styles, data formats and self-hosting, then the endpoint itself, then one section per chart family, then ready-made scenarios. Every page exists in 19 languages and ships its own `faq.yml` with the questions that page raises.
+Reference pages live in [`docs/`](docs/README.md), grouped the same way this README is: the endpoint itself plus the styles, data-format and self-hosting chapters, then one section per chart family, then ready-made scenarios. Every page exists in 19 languages and ships its own `faq.yml` with the questions that page raises.
 
 | section | pages |
 |---|---|
-| 1 · Styles | [Style families](docs/1-styles/01-style-families/en.md) |
-| 2 · Data and API | [Data formats](docs/2-data-and-api/01-data-formats/en.md) |
-| 3 · Self-hosting | [Deploy it yourself](docs/3-self-hosting/01-deploy/en.md) |
-| 4 · Overview | [What is draw](docs/4-overview/01-what-is-draw/en.md) · [Quick start](docs/4-overview/02-quick-start/en.md) |
-| 5 · Data charts | [pie](docs/5-data-charts/01-pie/en.md) · [bar](docs/5-data-charts/02-bar/en.md) · [hbar](docs/5-data-charts/03-hbar/en.md) · [line](docs/5-data-charts/04-line/en.md) · [area](docs/5-data-charts/05-area/en.md) · [radar](docs/5-data-charts/06-radar/en.md) · [gauge](docs/5-data-charts/07-gauge/en.md) · [scatter](docs/5-data-charts/08-scatter/en.md) · [combo](docs/5-data-charts/09-combo/en.md) |
-| 6 · Relations | [sankey](docs/6-relations/01-sankey/en.md) |
-| 7 · Strategy and decision | [quadrant](docs/7-strategy/01-quadrant/en.md) · [compass](docs/7-strategy/02-compass/en.md) |
-| 8 · Architecture | [archmap](docs/8-architecture/01-archmap/en.md) · [mindmap](docs/8-architecture/02-mindmap/en.md) · [mermaid](docs/8-architecture/03-mermaid/en.md) |
-| 9 · Schedule | [gantt](docs/9-schedule/01-gantt/en.md) |
-| 10 · Infographics | [qr](docs/10-infographics/01-qr/en.md) |
-| 11 · Maps | [maps](docs/11-maps/01-maps/en.md) |
-| 12 · Showcases | [github](docs/12-showcases/01-github/en.md) · [analysis report](docs/12-showcases/02-analysis-report/en.md) · [macro economics](docs/12-showcases/03-macro-economics/en.md) · [marketing](docs/12-showcases/04-marketing/en.md) · [product roadmap](docs/12-showcases/05-product-roadmap/en.md) · [ops and reliability](docs/12-showcases/06-ops-reliability/en.md) |
+| 1 · Overview | [What is draw](docs/1-overview/01-what-is-draw/en.md) · [Quick start](docs/1-overview/02-quick-start/en.md) · [Style families](docs/1-overview/03-styles/en.md) · [Data formats](docs/1-overview/04-data-and-api/en.md) · [Deploy it yourself](docs/1-overview/05-self-hosting/en.md) |
+| 2 · Data charts | [pie](docs/2-data-charts/01-pie/en.md) · [bar](docs/2-data-charts/02-bar/en.md) · [hbar](docs/2-data-charts/03-hbar/en.md) · [line](docs/2-data-charts/04-line/en.md) · [area](docs/2-data-charts/05-area/en.md) · [radar](docs/2-data-charts/06-radar/en.md) · [gauge](docs/2-data-charts/07-gauge/en.md) · [scatter](docs/2-data-charts/08-scatter/en.md) · [combo](docs/2-data-charts/09-combo/en.md) |
+| 3 · Relations | [sankey](docs/3-relations/01-sankey/en.md) |
+| 4 · Strategy and decision | [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) |
+| 5 · Architecture | [archmap](docs/5-architecture/01-archmap/en.md) · [mindmap](docs/5-architecture/02-mindmap/en.md) · [mermaid](docs/5-architecture/03-mermaid/en.md) |
+| 6 · Schedule | [gantt](docs/6-schedule/01-gantt/en.md) |
+| 7 · Infographics | [qr](docs/7-infographics/01-qr/en.md) |
+| 8 · Maps | [maps](docs/8-maps/01-maps/en.md) |
+| 9 · Showcases | [github](docs/9-showcases/01-github/en.md) · [analysis report](docs/9-showcases/02-analysis-report/en.md) · [macro economics](docs/9-showcases/03-macro-economics/en.md) · [marketing](docs/9-showcases/04-marketing/en.md) · [product roadmap](docs/9-showcases/05-product-roadmap/en.md) · [ops and reliability](docs/9-showcases/06-ops-reliability/en.md) |
 
-Start with [quick start](docs/4-overview/02-quick-start/en.md) for a first chart, or the per-type page when you already know which chart you want.
+Start with [quick start](docs/1-overview/02-quick-start/en.md) for a first chart, or the per-type page when you already know which chart you want.
