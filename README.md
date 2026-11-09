@@ -229,7 +229,7 @@ Common parameters:
 
 ## Styles (`?t=`)
 
-Per-type reference: [pie](docs/2-chart-types/01-pie/en.md) · [bar](docs/2-chart-types/02-bar/en.md) · [hbar](docs/2-chart-types/03-hbar/en.md) · [line](docs/2-chart-types/04-line/en.md) · [area](docs/2-chart-types/05-area/en.md) · [radar](docs/2-chart-types/06-radar/en.md) · [gauge](docs/2-chart-types/07-gauge/en.md) · [scatter](docs/2-chart-types/08-scatter/en.md) · [combo](docs/2-chart-types/09-combo/en.md) · [sankey](docs/2-chart-types/10-sankey/en.md) · [qr](docs/2-chart-types/11-qr/en.md) · [quadrant](docs/2-chart-types/12-quadrant/en.md) · [compass](docs/2-chart-types/13-compass/en.md) — each page has the parameters, the style families, the pitfalls and its own `faq.yml`.
+Per-type reference: [pie](docs/2-chart-types/01-data-charts/01-pie/en.md) · [bar](docs/2-chart-types/01-data-charts/02-bar/en.md) · [hbar](docs/2-chart-types/01-data-charts/03-hbar/en.md) · [line](docs/2-chart-types/01-data-charts/04-line/en.md) · [area](docs/2-chart-types/01-data-charts/05-area/en.md) · [radar](docs/2-chart-types/01-data-charts/06-radar/en.md) · [gauge](docs/2-chart-types/01-data-charts/07-gauge/en.md) · [scatter](docs/2-chart-types/01-data-charts/08-scatter/en.md) · [combo](docs/2-chart-types/01-data-charts/09-combo/en.md) · [sankey](docs/2-chart-types/02-relations/01-sankey/en.md) · [qr](docs/2-chart-types/06-infographics/01-qr/en.md) · [quadrant](docs/2-chart-types/03-strategy/01-quadrant/en.md) · [compass](docs/2-chart-types/03-strategy/02-compass/en.md) — each page has the parameters, the style families, the pitfalls and its own `faq.yml`.
 
 
 Per chart type, with automatic light/dark palettes:
@@ -369,14 +369,15 @@ Code is [Apache-2.0](LICENSE). Bundled fonts keep their own licenses: Inter (OFL
 
 ## Documentation
 
-Reference pages live in [`docs/`](docs/README.md), grouped the same way this README is: what the endpoint is, then one page per chart type, then styles, data formats and self-hosting. Every page exists in 19 languages and ships its own `faq.yml` with the questions that page raises.
+Reference pages live in [`docs/`](docs/README.md), grouped the same way this README is: what the endpoint is, then one page per chart type, then styles, data formats and self-hosting, then ready-made scenarios. Every page exists in 19 languages and ships its own `faq.yml` with the questions that page raises.
 
 | section | pages |
 |---|---|
 | 1 · Overview | [What is draw](docs/1-overview/01-what-is-draw/en.md) · [Quick start](docs/1-overview/02-quick-start/en.md) |
-| 2 · Chart types | [pie](docs/2-chart-types/01-pie/en.md) · [bar](docs/2-chart-types/02-bar/en.md) · [hbar](docs/2-chart-types/03-hbar/en.md) · [line](docs/2-chart-types/04-line/en.md) · [area](docs/2-chart-types/05-area/en.md) · [radar](docs/2-chart-types/06-radar/en.md) · [gauge](docs/2-chart-types/07-gauge/en.md) · [scatter](docs/2-chart-types/08-scatter/en.md) · [combo](docs/2-chart-types/09-combo/en.md) · [sankey](docs/2-chart-types/10-sankey/en.md) · [qr](docs/2-chart-types/11-qr/en.md) |
+| 2 · Chart types | **Data** [pie](docs/2-chart-types/01-data-charts/01-pie/en.md) · [bar](docs/2-chart-types/01-data-charts/02-bar/en.md) · [hbar](docs/2-chart-types/01-data-charts/03-hbar/en.md) · [line](docs/2-chart-types/01-data-charts/04-line/en.md) · [area](docs/2-chart-types/01-data-charts/05-area/en.md) · [radar](docs/2-chart-types/01-data-charts/06-radar/en.md) · [gauge](docs/2-chart-types/01-data-charts/07-gauge/en.md) · [scatter](docs/2-chart-types/01-data-charts/08-scatter/en.md) · [combo](docs/2-chart-types/01-data-charts/09-combo/en.md) — **Relations** [sankey](docs/2-chart-types/02-relations/01-sankey/en.md) — **Strategy** [quadrant](docs/2-chart-types/03-strategy/01-quadrant/en.md) · [compass](docs/2-chart-types/03-strategy/02-compass/en.md) — **Architecture** [archmap](docs/2-chart-types/04-architecture/01-archmap/en.md) · [mindmap](docs/2-chart-types/04-architecture/02-mindmap/en.md) · [mermaid](docs/2-chart-types/04-architecture/03-mermaid/en.md) — **Schedule** [gantt](docs/2-chart-types/05-schedule/01-gantt/en.md) — **Infographics** [qr](docs/2-chart-types/06-infographics/01-qr/en.md) — **Maps** [maps](docs/2-chart-types/07-maps/01-maps/en.md) |
 | 3 · Styles | [Style families](docs/3-styles/01-style-families/en.md) |
 | 4 · Data and API | [Data formats](docs/4-data-and-api/01-data-formats/en.md) |
 | 5 · Self-hosting | [Deploy it yourself](docs/5-self-hosting/01-deploy/en.md) |
+| 6 · Showcases | [github](docs/6-showcases/01-github/en.md) · [analysis report](docs/6-showcases/02-analysis-report/en.md) · [macro economics](docs/6-showcases/03-macro-economics/en.md) · [marketing](docs/6-showcases/04-marketing/en.md) · [product roadmap](docs/6-showcases/05-product-roadmap/en.md) · [ops and reliability](docs/6-showcases/06-ops-reliability/en.md) |
 
 Start with [quick start](docs/1-overview/02-quick-start/en.md) for a first chart, or the per-type page when you already know which chart you want.

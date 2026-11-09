@@ -26,17 +26,17 @@ x-json-ld:
 
 | 图表 | 默认 `t=` | 其他可选 | 专门文章 |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [10-pie](../../2-chart-types/01-pie/cn.md) |
-| `bar` | `evil` | — | [11-bar](../../2-chart-types/02-bar/cn.md) |
-| `hbar` | `evil` | — | [12-hbar](../../2-chart-types/03-hbar/cn.md) |
-| `line` | `evil` | — | [13-line](../../2-chart-types/04-line/cn.md) |
-| `area` | `evil` | — | [14-area](../../2-chart-types/05-area/cn.md) |
-| `radar` | `evil` | — | [15-radar](../../2-chart-types/06-radar/cn.md) |
-| `gauge` | 默认带颜色变化 | — | [16-gauge](../../2-chart-types/07-gauge/cn.md) |
-| `scatter` | `evil` | — | [17-scatter](../../2-chart-types/08-scatter/cn.md) |
-| `combo` | `evil` | — | [18-combo](../../2-chart-types/09-combo/cn.md) |
-| `sankey` | `evil` | — | [19-sankey](../../2-chart-types/10-sankey/cn.md) |
-| `qr` | 默认黑底白图案 | `invert=1` 反色 | [20-qr](../../2-chart-types/11-qr/cn.md) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [pie](../../2-chart-types/01-data-charts/01-pie/cn.md) |
+| `bar` | `evil` | — | [bar](../../2-chart-types/01-data-charts/02-bar/cn.md) |
+| `hbar` | `evil` | — | [hbar](../../2-chart-types/01-data-charts/03-hbar/cn.md) |
+| `line` | `evil` | — | [line](../../2-chart-types/01-data-charts/04-line/cn.md) |
+| `area` | `evil` | — | [area](../../2-chart-types/01-data-charts/05-area/cn.md) |
+| `radar` | `evil` | — | [radar](../../2-chart-types/01-data-charts/06-radar/cn.md) |
+| `gauge` | 默认带颜色变化 | — | [gauge](../../2-chart-types/01-data-charts/07-gauge/cn.md) |
+| `scatter` | `evil` | — | [scatter](../../2-chart-types/01-data-charts/08-scatter/cn.md) |
+| `combo` | `evil` | — | [combo](../../2-chart-types/01-data-charts/09-combo/cn.md) |
+| `sankey` | `evil` | — | [sankey](../../2-chart-types/02-relations/01-sankey/cn.md) |
+| `qr` | 默认黑底白图案 | `invert=1` 反色 | [qr](../../2-chart-types/06-infographics/01-qr/cn.md) |
 
 ---
 

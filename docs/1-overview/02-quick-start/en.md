@@ -49,9 +49,9 @@ const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
 
 **PNG output** — any chart URL can rasterize instead: append `&format=png` (`scale=1–3` for retina; `scheme` is baked — omitting it means light; the embedded font subset is latin-only for now). The CLI picks it by extension: `--out chart.png`.
 
-Deeper docs: [2-overview](../01-what-is-draw/en.md), [3-styles-themes](../../3-styles/01-style-families/en.md), [4-self-hosting](../../5-self-hosting/01-deploy/en.md), per-type references from [10-pie](../../2-chart-types/01-pie/en.md).
+Deeper docs: [2-overview](../01-what-is-draw/en.md), [3-styles-themes](../../3-styles/01-style-families/en.md), [4-self-hosting](../../5-self-hosting/01-deploy/en.md), per-type references from [pie](../../2-chart-types/01-data-charts/01-pie/en.md).
 
-## The complete table (11 types)
+## The complete table (13 types)
 
 | type | chart | example |
 |---|---|---|
@@ -66,3 +66,5 @@ Deeper docs: [2-overview](../01-what-is-draw/en.md), [3-styles-themes](../../3-s
 | `combo` | bars (`series=`) + line (`line=`) in one chart; `stack=1` to stack the bars<br><br>**<u>≤30 groups, ≤6 series total</u>** | [![combo example](https://x-cmd.com/draw?type=combo&labels=Mon,Tue,Wed,Thu,Fri&series=dl:120,180,150,210,240&line=growth:3.1,3.4,3.2,3.8,4.1&title=Downloads&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=Mon,Tue,Wed,Thu,Fri&series=dl:120,180,150,210,240&line=growth:3.1,3.4,3.2,3.8,4.1&title=Downloads) |
 | `sankey` | flow diagram with weighted bands<br><br>**<u>`labels=`+`links=A>B:30`, ≤24 nodes/60 links</u>** | [![sankey example](https://x-cmd.com/draw?type=sankey&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Stars>Forks:17;Forks>PRs:9;PRs>Merged:7&title=Contributor%20funnel&w=360)](https://x-cmd.com/draw/explore?type=sankey&labels=Visitors,Stars,Forks,PRs,Merged&links=Visitors>Stars:84;Stars>Forks:17;Forks>PRs:9;PRs>Merged:7&title=Contributor%20funnel) |
 | `qr` | QR code<br><br>**<u>`d`=text (≤1000 chars), `fg`/`bg` colors, `title`/`unit` captions</u>** | [![qr example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me) |
+| `quadrant` | 2×2 matrix, or just two crossed axes; cells `quadrants=`, points `items=name@x,y`<br><br>**<u>exactly 4 cells; point coordinates 0..1</u>** | [![quadrant example](https://x-cmd.com/draw?type=quadrant&frame=cross&title=Prioritisation&ylabel=Value&xlabel=Cost&ylow=Low&yhigh=High&xlow=Low&xhigh=High&items=Platform@0.18,0.82;AI@0.38,0.55;Partners@0.62,0.28;Brand@0.78,0.12&w=360)](https://x-cmd.com/draw/explore?type=quadrant&frame=cross&title=Prioritisation&ylabel=Value&xlabel=Cost&ylow=Low&yhigh=High&xlow=Low&xhigh=High&items=Platform@0.18,0.82;AI@0.38,0.55;Partners@0.62,0.28;Brand@0.78,0.12) |
+| `compass` | four labelled arrows around a centre (`up=` `right=` `down=` `left=`)<br><br>**<u>at least one direction</u>** | [![compass example](https://x-cmd.com/draw?type=compass&title=Four%20options&center=Core&up=Invest:grow%20share&right=Hold:protect%20cash&down=Shrink:cut%20cost&left=Exit:free%20resources&w=360)](https://x-cmd.com/draw/explore?type=compass&title=Four%20options&center=Core&up=Invest:grow%20share&right=Hold:protect%20cash&down=Shrink:cut%20cost&left=Exit:free%20resources) |

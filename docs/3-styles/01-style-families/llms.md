@@ -1,5 +1,5 @@
 ---
-name: 3-styles-themes
+name: docs/3-styles/01-style-families
 description: 'x-cmd/draw styles (`t=`) cross-chart index. Per-chart style support varies: pie has opendata/evil/evil-mono/market-mono/progress/revenue; bar/line/area default to evil. `scheme=dark|light` controls theme for all charts. Same `t=` produces visually different output per chart.'
 type: reference
 ---
@@ -38,7 +38,7 @@ use_cases:
 official:
   endpoint: https://x-cmd.com/draw
 related:
-  overview: docs/2-overview/cn.md
-  pie: docs/10-pie/cn.md
-  bar: docs/11-bar/cn.md
-  formats: docs/5-data-formats/cn.md
+  overview: docs/1-overview/01-what-is-draw/cn.md
+  pie: docs/2-chart-types/01-data-charts/01-pie/cn.md
+  bar: docs/2-chart-types/01-data-charts/02-bar/cn.md
+  formats: docs/4-data-and-api/01-data-formats/cn.md

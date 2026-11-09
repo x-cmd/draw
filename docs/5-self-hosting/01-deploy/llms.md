@@ -1,5 +1,5 @@
 ---
-name: self-hosting
+name: docs/5-self-hosting/01-deploy
 description: Deploy your own x-cmd/draw - one-shot Cloudflare Workers setup.sh, wrangler dev, local Node serve; short-link storage via DATA_REPO/GITHUB_TOKEN; BASE_PATH and custom domains.
 type: reference
 ---

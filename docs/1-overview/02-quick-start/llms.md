@@ -1,5 +1,5 @@
 ---
-name: quick-start
+name: docs/1-overview/02-quick-start
 description: Fastest paths into x-cmd/draw - URL rendering, npm library + CLI, Deno sandbox; ends with the complete 11-type table.
 type: reference
 ---

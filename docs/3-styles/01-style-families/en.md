@@ -26,17 +26,17 @@ Each chart has its own default style and available `t=` list. See dedicated arti
 
 | chart | default `t=` | other available | dedicated article |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [10-pie](../../2-chart-types/01-pie/en.md) |
-| `bar` | `evil` | — | [11-bar](../../2-chart-types/02-bar/en.md) |
-| `hbar` | `evil` | — | [12-hbar](../../2-chart-types/03-hbar/en.md) |
-| `line` | `evil` | — | [13-line](../../2-chart-types/04-line/en.md) |
-| `area` | `evil` | — | [14-area](../../2-chart-types/05-area/en.md) |
-| `radar` | `evil` | — | [15-radar](../../2-chart-types/06-radar/en.md) |
-| `gauge` | default has color change | — | [16-gauge](../../2-chart-types/07-gauge/en.md) |
-| `scatter` | `evil` | — | [17-scatter](../../2-chart-types/08-scatter/en.md) |
-| `combo` | `evil` | — | [18-combo](../../2-chart-types/09-combo/en.md) |
-| `sankey` | `evil` | — | [19-sankey](../../2-chart-types/10-sankey/en.md) |
-| `qr` | default black-on-white | `invert=1` flips | [20-qr](../../2-chart-types/11-qr/en.md) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [pie](../../2-chart-types/01-data-charts/01-pie/en.md) |
+| `bar` | `evil` | — | [bar](../../2-chart-types/01-data-charts/02-bar/en.md) |
+| `hbar` | `evil` | — | [hbar](../../2-chart-types/01-data-charts/03-hbar/en.md) |
+| `line` | `evil` | — | [line](../../2-chart-types/01-data-charts/04-line/en.md) |
+| `area` | `evil` | — | [area](../../2-chart-types/01-data-charts/05-area/en.md) |
+| `radar` | `evil` | — | [radar](../../2-chart-types/01-data-charts/06-radar/en.md) |
+| `gauge` | default has color change | — | [gauge](../../2-chart-types/01-data-charts/07-gauge/en.md) |
+| `scatter` | `evil` | — | [scatter](../../2-chart-types/01-data-charts/08-scatter/en.md) |
+| `combo` | `evil` | — | [combo](../../2-chart-types/01-data-charts/09-combo/en.md) |
+| `sankey` | `evil` | — | [sankey](../../2-chart-types/02-relations/01-sankey/en.md) |
+| `qr` | default black-on-white | `invert=1` flips | [qr](../../2-chart-types/06-infographics/01-qr/en.md) |
 
 ---
 

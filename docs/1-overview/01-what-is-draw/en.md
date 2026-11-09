@@ -1,6 +1,6 @@
 ---
-x-title: draw — SVG chart endpoint quick reference (11 chart types + common params + data formats)
-x-desc: 'x-cmd/draw is a single-endpoint SVG chart service: GET /draw?type=... returns SVG. Supports 11 chart types: pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr. Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON.'
+x-title: draw — SVG chart endpoint quick reference (13 chart types + common params + data formats)
+x-desc: 'x-cmd/draw is a single-endpoint SVG chart service: GET /draw?type=... returns SVG. Supports 13 chart types: pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr / quadrant / compass. Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON.'
 x-sidebar: draw overview
 x-keywords: draw, svg, chart, pie chart, bar chart, line chart, radar chart, gauge, scatter, sankey, qr code, svg endpoint, x-cmd/draw
 x-json-ld:
@@ -12,7 +12,7 @@ x-json-ld:
       about: 'x-cmd/draw endpoint spec and common parameters'
 ---
 
-# draw — SVG chart endpoint quick reference (11 chart types + common params + data formats)
+# draw — SVG chart endpoint quick reference (13 chart types + common params + data formats)
 
 ---
 
@@ -27,21 +27,33 @@ POST /draw?type=<chart-type>&...     # creates permanent short URL
 
 Returned SVG embeds a `<metadata>` node — **pure text, not binary**. Greppable, diffable, version-controllable.
 
-Supports 11 chart types:
+Supports 13 chart types:
 
 | type | chart | detail |
 | --- | --- | --- |
-| `pie` | pie chart | see [10-pie](../../2-chart-types/01-pie/en.md) |
-| `bar` | bar chart | see [11-bar](../../2-chart-types/02-bar/en.md) |
-| `hbar` | horizontal bar | see [12-hbar](../../2-chart-types/03-hbar/en.md) |
-| `line` | line chart | see [13-line](../../2-chart-types/04-line/en.md) |
-| `area` | area chart | see [14-area](../../2-chart-types/05-area/en.md) |
-| `radar` | radar chart | see [15-radar](../../2-chart-types/06-radar/en.md) |
-| `gauge` | gauge dial | see [16-gauge](../../2-chart-types/07-gauge/en.md) |
-| `scatter` | scatter plot | see [17-scatter](../../2-chart-types/08-scatter/en.md) |
-| `combo` | combo (bar + line) | see [18-combo](../../2-chart-types/09-combo/en.md) |
-| `sankey` | sankey diagram | see [19-sankey](../../2-chart-types/10-sankey/en.md) |
-| `qr` | QR code | see [20-qr](../../2-chart-types/11-qr/en.md) |
+| `pie` | pie chart | see [pie](../../2-chart-types/01-data-charts/01-pie/en.md) |
+| `bar` | bar chart | see [bar](../../2-chart-types/01-data-charts/02-bar/en.md) |
+| `hbar` | horizontal bar | see [hbar](../../2-chart-types/01-data-charts/03-hbar/en.md) |
+| `line` | line chart | see [line](../../2-chart-types/01-data-charts/04-line/en.md) |
+| `area` | area chart | see [area](../../2-chart-types/01-data-charts/05-area/en.md) |
+| `radar` | radar chart | see [radar](../../2-chart-types/01-data-charts/06-radar/en.md) |
+| `gauge` | gauge dial | see [gauge](../../2-chart-types/01-data-charts/07-gauge/en.md) |
+| `scatter` | scatter plot | see [scatter](../../2-chart-types/01-data-charts/08-scatter/en.md) |
+| `combo` | combo (bar + line) | see [combo](../../2-chart-types/01-data-charts/09-combo/en.md) |
+| `sankey` | sankey diagram | see [sankey](../../2-chart-types/02-relations/01-sankey/en.md) |
+| `qr` | QR code | see [qr](../../2-chart-types/06-infographics/01-qr/en.md) |
+| `quadrant` | 2×2 decision matrix | see [quadrant](../../2-chart-types/03-strategy/01-quadrant/en.md) |
+| `compass` | four-arrow compass | see [compass](../../2-chart-types/03-strategy/02-compass/en.md) |
+
+Beyond the `type=` charts, the same service draws the diagram kinds — each on its own path:
+
+| path | diagram | detail |
+| --- | --- | --- |
+| `/draw/archmap` | grid architecture diagram | see [archmap](../../2-chart-types/04-architecture/01-archmap/en.md) |
+| `/draw/mindmap` | mind map | see [mindmap](../../2-chart-types/04-architecture/02-mindmap/en.md) |
+| `/draw/mermaid` | flowchart from Mermaid source | see [mermaid](../../2-chart-types/04-architecture/03-mermaid/en.md) |
+| `/draw/gantt` | Gantt chart | see [gantt](../../2-chart-types/05-schedule/01-gantt/en.md) |
+| `/draw/echarts` | any ECharts option — heatmaps, boxplots, maps | see [maps](../../2-chart-types/07-maps/01-maps/en.md) |
 
 ---
 
