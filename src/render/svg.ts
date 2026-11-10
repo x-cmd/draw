@@ -252,6 +252,9 @@ export function svgDoc(
   } else if (tagQuery) {
     const q = new URLSearchParams(tagQuery.replace(/^\?/, ''));
     for (const k of ['w', 'h', 'scheme', 'format']) q.delete(k); // 尺寸/渲染控制参数不带进落地页
+    // type= 是「走 ?type= 透传」的标记;路径已经说明了是什么图,别再带进落地页
+    // (否则 ?type=archmap 透传出来的角标,和 /draw/archmap 直出的角标不是一条链接)
+    if (q.get('type') === (tagKind ?? template)) q.delete('type');
     const qs = q.toString();
     if (qs) tagHref = `https://x-cmd.com/draw/explore/${tagKind ?? template}?${qs}`;
   }
