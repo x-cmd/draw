@@ -31,8 +31,16 @@ const LABEL_FS = 14;     // 节点标题字号
 const SUB_FS = 11.5;     // 节点副标题字号
 const EDGE_FS = 11.5;    // 边标签字号
 
+/** 一套语义类型词汇:类型 → (展示名, 角标字母, 颜色序号);图种换词汇,引擎不变 */
+export interface HouseTypes {
+  meta: Record<string, { name: string; badge: string; color: number }>;
+  order: string[];
+  /** 类型 → 形状(rect / round / cylinder / diamond) */
+  shape?: Record<string, 'rect' | 'round' | 'cylinder' | 'diamond'>;
+}
+
 /** 语义类型 → (展示名, 角标字母) */
-const TYPE_META: Record<string, { name: string; badge: string; color: number }> = {
+export const TYPE_META: Record<string, { name: string; badge: string; color: number }> = {
   fe: { name: 'Frontend', badge: 'F', color: 0 },
   be: { name: 'Backend', badge: 'B', color: 1 },
   db: { name: 'Database', badge: 'D', color: 2 },
@@ -44,22 +52,31 @@ const TYPE_META: Record<string, { name: string; badge: string; color: number }> 
 };
 const TYPE_ORDER = ['fe', 'be', 'db', 'cloud', 'sec', 'bus', 'svc', 'ext'] as const;
 
+/** 架构图这套词汇(别的图种传自己的一套进来) */
+export const ARCH_TYPES: HouseTypes = { meta: TYPE_META, order: [...TYPE_ORDER] };
+
 const sVar = (i: number): string => `var(--d-s${i + 1})`;
 
-/** v2 的节点尺寸:更宽更松,标题 14px */
+/** v2 的节点尺寸:更宽更松,标题 14px;副标题多行时按行数长高 */
 const v2Size = (n: ArchNode): { w: number; h: number } => {
+  const lines = linesOf(n);
   const w = Math.max(
     NODE_MIN_W,
     textW(n.label, LABEL_FS) + 52,
-    n.sub ? textW(n.sub, SUB_FS) + 52 : 0,
+    ...lines.map((l) => textW(l, SUB_FS) + 52),
   );
-  return { w: Math.min(w, 420), h: n.sub ? 62 : 48 };
+  const h = lines.length > 1 ? 34 + lines.length * 17 : n.sub ? 62 : 48;
+  return { w: Math.min(w, 420), h };
 };
 
+/** 节点副标题可以多行(用 \n 分隔)—— ERD 的字段表、class 的成员表靠它 */
+const linesOf = (n: { sub?: string }): string[] =>
+  n.sub ? n.sub.split('\n').filter((l) => l !== '') : [];
+
 /* ---------------------------------------------------------------- 节点 */
-function drawNodeV2(n: Placed, interactive: boolean, degree: number): string {
+function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: HouseTypes): string {
   const b = n.box;
-  const meta = TYPE_META[n.type] ?? { name: n.type, badge: '?', color: -1 };
+  const meta = types.meta[n.type] ?? { name: n.type, badge: '?', color: -1 };
   const neutral = meta.color < 0;
   const color = neutral ? 'var(--d-muted)' : sVar(meta.color);
   const fill = neutral ? 'var(--d-card)' : color;
@@ -78,23 +95,41 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number): string {
   } else if (tx - titleW / 2 < badgeRight + 6 && bx < b.x + b.w / 2) {
     tx = badgeRight + 6 + titleW / 2;
   }
+  const lines = linesOf(n);
   const titleY = n.sub ? b.y + 26 : b.y + b.h / 2 + 5;
-  const subY = b.y + 44;
-  const tip = `${n.label}${n.sub ? ` · ${n.sub}` : ''} · ${meta.name}${degree ? ` · ${degree} link${degree > 1 ? 's' : ''}` : ''}`;
+  const tip = `${n.label}${n.sub ? ` · ${n.sub.replace(/\n/g, ', ')}` : ''} · ${meta.name}${degree ? ` · ${degree} link${degree > 1 ? 's' : ''}` : ''}`;
   const ia = interactive
     ? ` data-node="${esc(n.id)}" data-tip="${esc(tip)}" tabindex="0"`
     : '';
   const badgeFill = neutral ? 'var(--d-muted)' : color;
+  const shape = types.shape?.[n.type] ?? 'rect';
+  const fillAttrs = ` fill="${fill}" fill-opacity="${fillOp}" stroke="${color}" stroke-opacity="${strokeOp}" stroke-width="1.3"${dash}`;
+  let frame: string;
+  if (shape === 'cylinder') {
+    const ry = 9;
+    frame =
+      `<path d="M${r2(b.x)} ${r2(b.y + ry)}A${r2(b.w / 2)} ${ry} 0 0 1 ${r2(b.x + b.w)} ${r2(b.y + ry)}V${r2(b.y + b.h - ry)}A${r2(b.w / 2)} ${ry} 0 0 1 ${r2(b.x)} ${r2(b.y + b.h - ry)}Z"${fillAttrs}/>` +
+      `<ellipse cx="${r2(b.x + b.w / 2)}" cy="${r2(b.y + ry)}" rx="${r2(b.w / 2)}" ry="${ry}" fill="none" stroke="${color}" stroke-opacity="${strokeOp}" stroke-width="1.3"/>`;
+  } else if (shape === 'diamond') {
+    const cx = b.x + b.w / 2;
+    const cy = b.y + b.h / 2;
+    frame = `<polygon points="${r2(cx)},${r2(b.y)} ${r2(b.x + b.w)},${r2(cy)} ${r2(cx)},${r2(b.y + b.h)} ${r2(b.x)},${r2(cy)}"${fillAttrs}/>`;
+  } else if (shape === 'round') {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${r2(b.h / 2)}"${fillAttrs}/>`;
+  } else {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${NODE_R}"${fillAttrs}/>`;
+  }
   return (
     `<g${ia}>` +
-    `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${NODE_R}"` +
-    ` fill="${fill}" fill-opacity="${fillOp}" stroke="${color}" stroke-opacity="${strokeOp}" stroke-width="1.3"${dash}/>` +
+    frame +
     `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
     ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>` +
     `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>` +
     `<text x="${r2(tx)}" y="${r2(titleY)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(n.label)}</text>` +
     (n.sub
-      ? `<text x="${r2(b.x + b.w / 2)}" y="${r2(subY)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(n.sub)}</text>`
+      ? lines.length
+        ? lines.map((l, i) => `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + 44 + i * 17)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(l)}</text>`).join('')
+        : `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + 44)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(n.sub)}</text>`
       : '') +
     `</g>`
   );
@@ -354,16 +389,16 @@ function drawBoundaryLabelsV2(placed: Placed[], boundaries: ArchBoundary[]): str
 }
 
 /* ---------------------------------------------------------------- 图例 */
-function drawLegend(placed: Placed[]): { svg: string; h: number } {
+function drawLegend(placed: Placed[], vocab: HouseTypes): { svg: string; h: number } {
   const counts = new Map<string, number>();
   for (const p of placed) counts.set(p.type, (counts.get(p.type) ?? 0) + 1);
-  const types = TYPE_ORDER.filter((t) => counts.has(t));
+  const types = vocab.order.filter((t) => counts.has(t));
   if (!types.length) return { svg: '', h: 0 };
   let x = PAD;
   let y = 0;
   const parts: string[] = [];
   for (const t of types) {
-    const meta = TYPE_META[t];
+    const meta = vocab.meta[t];
     const neutral = meta.color < 0;
     const color = neutral ? 'var(--d-muted)' : sVar(meta.color);
     const n = counts.get(t) ?? 0;
@@ -391,6 +426,8 @@ export interface ArchOpts {
   nodes: ArchNode[];
   edges: ArchEdge[];
   boundaries: ArchBoundary[];
+  /** 语义类型词汇(默认架构图那套) */
+  types?: HouseTypes;
   title?: string;
   gridCols: number;
   legend: boolean;
@@ -407,6 +444,7 @@ export interface ArchOpts {
  * 渲染 v2 架构图。
  */
 export function renderArchCore(o: ArchOpts): DrawResult {
+  const types = o.types ?? ARCH_TYPES;
   const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
     gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size,
   });
@@ -424,7 +462,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     width = Math.max(width, bb.x + bb.w + PAD);
     bodyH = Math.max(bodyH, bb.y + bb.h + PAD);
   }
-  const legend = o.legend ? drawLegend(placed) : { svg: '', h: 0 };
+  const legend = o.legend ? drawLegend(placed, types) : { svg: '', h: 0 };
   width = Math.max(width, o.minW ?? 0);
   const height = Math.max(bodyH + titleH + legend.h, o.minH ?? 0);
 
@@ -462,7 +500,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     + drawBoundariesV2(placed, o.boundaries, o.interactive)
     + drawRoutesV2(routed, o.interactive)
     + drawEdgeLabelsV2(spots, o.interactive)
-    + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0)).join('')
+    + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
     + drawBoundaryLabelsV2(placed, o.boundaries);
   const legendSvg = legend.svg
     ? `<g transform="translate(0 ${r2(bodyH + 14)})">${legend.svg}</g>`

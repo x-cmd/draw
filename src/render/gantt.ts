@@ -94,10 +94,10 @@ export function parseGantt(text: string): GanttDoc {
   return doc;
 }
 
-interface Span { name: string; start: number; end: number; flags: Set<string>; sectionIdx: number; tip: string }
+export interface Span { name: string; start: number; end: number; flags: Set<string>; sectionIdx: number; tip: string }
 
 /** 展开任务:日期解析、after 链、里程碑零宽 → 统一 Span 列表 */
-function resolveSpans(doc: GanttDoc): Span[] {
+export function resolveSpans(doc: GanttDoc): Span[] {
   const byId = new Map<string, GTask>();
   doc.sections.forEach(s => s.tasks.forEach(t => { if (t.id) byId.set(t.id, t); }));
   const resolved = new Map<string, { start: number; end: number }>();
