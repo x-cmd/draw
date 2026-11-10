@@ -445,6 +445,10 @@ export interface ArchOpts {
   boundaries: ArchBoundary[];
   /** 语义类型词汇(默认架构图那套) */
   types?: HouseTypes;
+  /** 图种名(进 metadata 与角标链接):arch2 / dataflow / lifecycle / erd / class */
+  template?: string;
+  /** 原始 URL 查询串:角标直链 explore 落地页用 */
+  tagQuery?: string;
   title?: string;
   gridCols: number;
   legend: boolean;
@@ -506,8 +510,6 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     bodyH = Math.max(bodyH, bb.y + bb.h + PAD);
   }
   const legend = o.legend ? drawLegend(placed, types) : { svg: '', h: 0 };
-  width = Math.max(width, o.minW ?? 0);
-  const height = Math.max(bodyH + titleH + legend.h, o.minH ?? 0);
 
   const routed = computeRoutesV2(placed, o.edges);
   const byId = new Map(placed.map((p) => [p.id, p]));
@@ -521,6 +523,23 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     }),
   ];
   const spots = placeEdgeLabels(routed, avoid);
+  // 画布要盖住走线和边标签:绕行的边会走到节点盒外面,标签又贴在走线上 ——
+  // 只按节点盒算尺寸,那一段就会被裁掉(字看不全)。
+  for (const rt of routed) {
+    for (const p of rt.pts) {
+      width = Math.max(width, p[0] + PAD);
+      bodyH = Math.max(bodyH, p[1] + PAD);
+    }
+  }
+  for (const s of spots) {
+    const w = textW(s.text, EDGE_FS) + 12;
+    const h = EDGE_FS + 8;
+    const rx = s.anchor === 'middle' ? s.x - w / 2 : s.anchor === 'end' ? s.x - w : s.x;
+    width = Math.max(width, rx + w + PAD);
+    bodyH = Math.max(bodyH, s.y - EDGE_FS - 1 + h + PAD);
+  }
+  width = Math.max(width, o.minW ?? 0);
+  const height = Math.max(bodyH + titleH + legend.h, o.minH ?? 0);
   const degree = new Map<string, number>();
   if (o.interactive) for (const e of o.edges) {
     degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
@@ -551,7 +570,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   const dy = titleH + Math.max(0, (height - titleH - legend.h - bodyH) / 2);
   const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
   const spec = { type: 'arch', title: o.title, nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
-  const svg = svgDoc(width, height, 'arch', o.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children);
+  const svg = svgDoc(width, height, o.template ?? 'arch2', o.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children, o.tagQuery, o.template ?? 'arch2');
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
 
@@ -578,6 +597,7 @@ export function renderArchFromUrl(url: URL, interactive = false): DrawResult {
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderArchCore({
     nodes, edges, boundaries, title, gridCols, legend, interactive,
+    template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',
     skin,

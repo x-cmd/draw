@@ -158,6 +158,7 @@ export function renderKindFromUrl(kind: string, url: URL, interactive = false): 
   return renderArchCore({
     nodes, edges, boundaries,
     types: spec.types,
+    template: kind, tagQuery: url.search,
     title: params.get('title')?.trim() || undefined,
     gridCols: clampInt(params, 'grid', 0, 1, 12),
     legend: params.get('legend') !== '0',

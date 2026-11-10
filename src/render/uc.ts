@@ -127,6 +127,8 @@ export interface UcOpts {
   edges: UcEdge[];
   /** b= 画出来的边界(可以有多层) */
   boundaries: ArchBoundary[];
+  /** 原始 URL 查询串:角标直链 explore 落地页用 */
+  tagQuery?: string;
   /** 参与方摆在右边(默认在左边) */
   actorsRight?: boolean;
   title?: string;
@@ -313,6 +315,7 @@ export function renderUcCore(o: UcOpts): DrawResult {
     o.title ?? `use case diagram, ${o.nodes.length} elements`,
     spec, o.skin,
     titleSvg + boundarySvg + edges.join('') + nodes,
+    o.tagQuery, 'uc',
   );
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
@@ -338,7 +341,7 @@ export function renderUcFromUrl(url: URL, interactive = false): DrawResult {
   }
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderUcCore({
-    nodes, edges, boundaries,
+    nodes, edges, boundaries, tagQuery: url.search,
     actorsRight: side === 'right',
     title: params.get('title')?.trim() || undefined,
     interactive,

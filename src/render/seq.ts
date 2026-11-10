@@ -82,6 +82,8 @@ export interface SeqOpts {
   frags: Frag[];
   /** b= 画出来的泳道(可以有多条) */
   boundaries: ArchBoundary[];
+  /** 原始 URL 查询串:角标直链 explore 落地页用 */
+  tagQuery?: string;
   title?: string;
   interactive: boolean;
   version: number;
@@ -255,6 +257,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
     o.title ?? `sequence diagram, ${o.msgs.length} messages`,
     spec, o.skin,
     titleSvg + headSvg + fragSvg() + parts.join(''),
+    o.tagQuery, 'seq',
   );
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
@@ -280,7 +283,7 @@ export function renderSeqFromUrl(url: URL, interactive = false): DrawResult {
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderSeqCore({
-    nodes, msgs, frags, boundaries,
+    nodes, msgs, frags, boundaries, tagQuery: url.search,
     title: params.get('title')?.trim() || undefined,
     interactive,
     version: v,

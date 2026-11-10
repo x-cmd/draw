@@ -444,7 +444,16 @@ function drawEdgeLabels(routed: Routed[], avoid: Box[], interactive = false): st
     const attrs = place.horiz
       ? `x="${r2(place.p[0])}" y="${r2(place.p[1] + (place.mirror ? 14 : -6))}" text-anchor="middle"`
       : `x="${r2(place.p[0] + (place.mirror ? -6 : 6))}" y="${r2(place.p[1] + 3.5)}" text-anchor="${place.mirror ? 'end' : 'start'}"`;
-    out.push(`<text${ia} ${attrs} font-size="11" fill="var(--d-text)">${esc(text)}</text>`);
+    // 底衬:标签比两个节点之间的空档还宽时会压到节点上,给个画布色的胶囊,
+    // 线从底下过、字浮在上面 —— 和 v2 的边标签一个样。
+    const tx = place.horiz ? place.p[0] : place.p[0] + (place.mirror ? -6 : 6);
+    const ty = place.horiz ? place.p[1] + (place.mirror ? 14 : -6) : place.p[1] + 3.5;
+    const chipX = place.horiz ? tx - w / 2 : place.mirror ? tx - w : tx;
+    const chipY = place.horiz ? ty - 12 : ty - 11;
+    out.push(
+      `<rect x="${r2(chipX)}" y="${r2(chipY)}" width="${r2(w)}" height="15" rx="4" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
+      `<text${ia} ${attrs} font-size="11" fill="var(--d-text)">${esc(text)}</text>`,
+    );
   }
   return out.join('');
 }
@@ -634,10 +643,18 @@ export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
     width = Math.max(width, p.box.x + p.box.w + PAD);
     bodyH = Math.max(bodyH, p.box.y + p.box.h + PAD);
   }
-  width = Math.max(width, o.minW ?? 0);
-  const height = Math.max(bodyH + titleH, o.minH ?? 0);
   // 管线:路由 → 边界标签选角(避开走线) → 边标签避让(节点盒 ∪ 边界标签区)
   const routed = o.edgeMode === 'straight' ? straightRoutes(placed, o.edges, o.straightDir ?? 'TB') : computeRoutes(placed, o.edges);
+  // 画布要盖住走线:反向边绕到节点外面(U 形),边标签又贴在走线上 ——
+  // 只按节点盒算尺寸,那一段会被裁掉(字看不全)。
+  for (const rt of routed) {
+    for (const p of rt.pts) {
+      width = Math.max(width, p[0] + PAD);
+      bodyH = Math.max(bodyH, p[1] + PAD);
+    }
+  }
+  width = Math.max(width, o.minW ?? 0);
+  const height = Math.max(bodyH + titleH, o.minH ?? 0);
   const byId = new Map(placed.map(p => [p.id, p]));
   const boxes = placed.map(p => p.box);
   const corners = o.boundaries.map(bd => boundaryLabelCorner(boundaryBox(byId, bd), bd.label.toUpperCase(), routed, boxes));
@@ -673,8 +690,9 @@ export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
   const body = iStyle + DEFS
     + drawBoundaries(placed, o.boundaries, corners, o.interactive)
     + drawRoutes(routed, o.interactive, o.style, byId)
-    + drawEdgeLabels(routed, avoid, o.interactive)
-    + placed.map(p => drawNode(p, o.interactive, degree.get(p.id) ?? 0, o.style)).join('');
+    + placed.map(p => drawNode(p, o.interactive, degree.get(p.id) ?? 0, o.style)).join('')
+    // 边标签画在节点之上:标签比空档宽时会伸进节点里,压在节点下面就看不见了
+    + drawEdgeLabels(routed, avoid, o.interactive);
   // 标题占位下移 + h 垫高的剩余空间上下均分(内容垂直居中,标题仍在顶部)
   const dy = titleH + (height - titleH - bodyH) / 2;
   const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">` + body + `</g>`;

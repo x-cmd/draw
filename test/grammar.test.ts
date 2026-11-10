@@ -238,3 +238,26 @@ describe('b= 泳道/边界,所有图种都认', () => {
       .toThrow(/ghost/);
   });
 });
+
+describe('Edit @X-CMD 角标直链 explore 落地页', () => {
+  const hrefOf = (svg: string): string => /<a href="([^"]*)"/.exec(svg)?.[1] ?? '';
+  const cases: [string, string, (u: URL) => { svg: string }][] = [
+    ['arch2', 'n=a;be;A;r0c0&n=b;be;B;r1c0&e=a;b', (u) => renderArchFromUrl(u)],
+    ['seq', 'n=a;be;A;r0c0&n=b;be;B;r1c0&e=a;b', (u) => renderSeqFromUrl(u)],
+    ['uc', 'n=a;actor;A&n=b;uc;B&e=a;b', (u) => renderUcFromUrl(u)],
+    ['dataflow', 'n=a;process;A;r0c0&n=b;store;B;r1c0&e=a;b', (u) => renderKindFromUrl('dataflow', u)],
+    ['lifecycle', 'n=a;state;A;r0c0&n=b;state;B;r1c0&e=a;b', (u) => renderKindFromUrl('lifecycle', u)],
+    ['erd', 'n=a;table;A;r0c0&n=b;table;B;r1c0&e=a;b', (u) => renderKindFromUrl('erd', u)],
+    ['class', 'n=a;class;A;r0c0&n=b;class;B;r1c0&e=a;b', (u) => renderKindFromUrl('class', u)],
+  ];
+  for (const [kind, q, fn] of cases) {
+    it(`${kind} 的角标链到 /draw/explore/${kind},并带着原来的参数`, () => {
+      const { svg } = fn(new URL(`https://x-cmd.com/draw/${kind}?${q}`));
+      const href = hrefOf(svg);
+      expect(href).toContain(`/draw/explore/${kind}?`);
+      // 参数还在(百分号编码也算)
+      expect(decodeURIComponent(href)).toContain('n=a;');
+      expect(decodeURIComponent(href)).toContain('e=a;b');
+    });
+  }
+});

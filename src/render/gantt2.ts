@@ -65,6 +65,8 @@ export interface Gantt2Opts {
   width?: number;
   height?: number;
   aria?: string;
+  /** 原始 URL 查询串:角标直链 explore 落地页用 */
+  tagQuery?: string;
 }
 
 /**
@@ -201,6 +203,7 @@ export function renderGantt2Core(o: Gantt2Opts): DrawResult {
     o.aria ?? o.title ?? `gantt chart, ${spans.length} tasks`,
     spec, o.skin,
     titleSvg + defs + parts.join(''),
+    o.tagQuery, 'gantt2',
   );
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
@@ -231,5 +234,6 @@ export function renderGantt2FromUrl(url: URL, interactive = false): DrawResult {
     interactive,
     width: clampInt(params, 'w', 0, 200, 2400),
     height: clampInt(params, 'h', 0, 140, 2400),
+    tagQuery: url.search,
   });
 }
