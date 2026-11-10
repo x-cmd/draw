@@ -70,7 +70,9 @@ reads the marker and draws the badge.
 - **`%0A` is a newline, not a space** — a plain space puts the whole list on
   one line.
 - **Cardinality goes on the edge** (`e=repos;charts;1:N`) — draw does not
-  infer it from the field names.
+  infer it from the field names. When the label is a cardinality, the edge
+  ends are drawn in the standard notation: a bar for the *one* side, a
+  crow's foot for the *many* side.
 - **A `+` in the URL is a space.** A field or member that starts with a
   literal plus has to be written `%2B` — in a query string a bare `+` means
   space.

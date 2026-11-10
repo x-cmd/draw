@@ -82,6 +82,22 @@ describe('new diagram kinds', () => {
     expect(texts).toContain('-');
   });
 
+  it('draws the crow\'s foot notation when the edge says 1:N', () => {
+    const q = 'n=a;table;A;id:int (pk);r0c0&n=b;table;B;id:int (pk);r0c1&e=a;b;1:N';
+    const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + q));
+    // 「一」是一根横杠,「多」是三根爪 —— 三爪 + 一杠 = 四段
+    const feet = [...svg.matchAll(/<path d="M[\d.]+ [\d.]+L[\d.]+ [\d.]+" fill="none" stroke="var\(--d-muted\)"/g)];
+    expect(feet.length).toBe(4);
+    // 基数标签还在
+    expect(svg).toContain('1:N');
+  });
+
+  it('leaves the plain arrow alone when the label is not a cardinality', () => {
+    const q = 'n=a;table;A;id:int;r0c0&n=b;table;B;id:int;r0c1&e=a;b;references';
+    const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + q));
+    expect(svg).toContain('marker-end');
+  });
+
   it('rejects a node that names an unknown peer', () => {
     expect(() => renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?n=x;process;X;r0c0&e=x;ghost'))).toThrow(/ghost/);
   });

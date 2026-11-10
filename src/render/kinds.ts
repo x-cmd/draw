@@ -44,6 +44,7 @@ const ERD: HouseTypes = {
   },
   order: ['table', 'view'],
   rows: 'fields', // 字段表:键标记 + 名字(左)+ 类型(右)
+  crows: 'erd',   // 边按 1:N 画鱼尾记号
 };
 
 const CLASS: HouseTypes = {

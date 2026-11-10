@@ -39,6 +39,8 @@ export interface HouseTypes {
   shape?: Record<string, 'rect' | 'round' | 'cylinder' | 'diamond'>;
   /** 节点里的多行内容按「字段表」画:键标记 + 名字(左)+ 类型(右) */
   rows?: 'fields';
+  /** 边按 ERD 记号画:标签写 1:N 时,两端画「一」与「多」 */
+  crows?: 'erd';
 }
 
 /** 语义类型 → (展示名, 角标字母) */
@@ -419,13 +421,72 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
 }
 
 /* ---------------------------------------------------------------- 边 */
-function drawRoutesV2(routed: V2Routed[], interactive: boolean): string {
+function drawRoutesV2(routed: V2Routed[], interactive: boolean, types: HouseTypes): string {
   return routed.map((rt) => {
     const d = rt.pts.map((p, j) => `${j === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('');
     const ia = interactive ? ` data-from="${esc(rt.e.from)}" data-to="${esc(rt.e.to)}"` : '';
     const s = rt as V2Routed & { stroke: string; width: number };
-    return `<path d="${d}"${ia} fill="none" stroke="${s.stroke}" stroke-width="${s.width}"${rt.dash} marker-end="url(#${rt.marker})"/>`;
+    const feet = types.crows === 'erd' ? crowFeetV2(rt, s.stroke) : '';
+    // 鱼尾画在端点上,箭头就不重复了(鱼尾本身就是「多」的记号)
+    const marker = feet ? '' : ` marker-end="url(#${rt.marker})"`;
+    return `<path d="${d}"${ia} fill="none" stroke="${s.stroke}" stroke-width="${s.width}"${rt.dash}${marker}/>` + feet;
   }).join('');
+}
+
+/* ---------------------------------------------------------------- 鱼尾符号
+   ERD 的基数记号:一端一根竖杠(「一」),另一端三根岔开的爪(「多」)。
+   基数写在边的标签上(1:N / N:1 / 1:1 / N:M),画在边上,不另设参数。 */
+const CARD_RE = /^\s*(1|n|zero|many|\*)\s*[:/]\s*(1|n|zero|many|\*)\s*$/i;
+
+/** 边的标签是不是一个基数(1:N 这种)?是的话返回 [源端, 目标端] */
+function cardinalityOf(label: string | undefined): ('one' | 'many')[] | undefined {
+  if (!label) return undefined;
+  const m = CARD_RE.exec(label);
+  if (!m) return undefined;
+  const side = (s: string): 'one' | 'many' => (s === '1' || s.toLowerCase() === 'zero' ? 'one' : 'many');
+  return [side(m[1]), side(m[2])];
+}
+
+/** 一端的记号:「一」是一根横杠,「多」是三根爪(爪尖落在实体边上,爪根在线上) */
+function footMarks(p: [number, number], into: [number, number], kind: 'one' | 'many', color: string): string {
+  const len = Math.hypot(into[0], into[1]) || 1;
+  const ux = into[0] / len;
+  const uy = into[1] / len;
+  const px = -uy;
+  const py = ux;
+  if (kind === 'one') {
+    // 横杠:垂直于线的方向,画在端点上
+    const h = 6;
+    return `<path d="M${r2(p[0] - px * h)} ${r2(p[1] - py * h)}L${r2(p[0] + px * h)} ${r2(p[1] + py * h)}" fill="none" stroke="${color}" stroke-width="1.5"/>`;
+  }
+  // 三根爪:爪根在线上(离实体边 12px),爪尖落在实体边上,中间那根与线重合
+  const L = 12;
+  const spread = 9;
+  const heel: [number, number] = [p[0] - ux * L, p[1] - uy * L];
+  const toes: [number, number][] = [
+    [p[0] + px * spread, p[1] + py * spread],
+    [p[0], p[1]],
+    [p[0] - px * spread, p[1] - py * spread],
+  ];
+  return toes
+    .map((t) => `<path d="M${r2(heel[0])} ${r2(heel[1])}L${r2(t[0])} ${r2(t[1])}" fill="none" stroke="${color}" stroke-width="1.5"/>`)
+    .join('');
+}
+
+/** 一条边两端的鱼尾:标签写 1:N,源端是「一」,目标端是「多」 */
+function crowFeetV2(rt: V2Routed, color: string): string {
+  const card = cardinalityOf(rt.e.label);
+  if (!card) return '';
+  const pts = rt.pts;
+  if (pts.length < 2) return '';
+  const p0 = pts[0];
+  const pN = pts[pts.length - 1];
+  const p1 = pts[1];
+  const pM = pts[pts.length - 2];
+  // 端点处「进入实体」的方向:源端是 p1→p0,目标端是 pM→pN
+  const d0: [number, number] = [p0[0] - p1[0], p0[1] - p1[1]];
+  const dN: [number, number] = [pN[0] - pM[0], pN[1] - pM[1]];
+  return footMarks(p0, d0, card[0], color) + footMarks(pN, dN, card[1], color);
 }
 
 /* ---------------------------------------------------------------- 边标签(带底衬) */
@@ -712,7 +773,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     : '';
   const body = iStyle + DEFS
     + drawBoundariesV2(placed, o.boundaries, o.interactive)
-    + drawRoutesV2(routed, o.interactive)
+    + drawRoutesV2(routed, o.interactive, types)
     + drawEdgeLabelsV2(spots, o.interactive)
     + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
     + drawBoundaryLabelsV2(placed, o.boundaries);
