@@ -546,8 +546,14 @@ export function pushBarLabelsAllOrNothing(
           const bx = cx - tw / 2 - 1;
           if (segments.some(([sx1, sy1, sx2, sy2]) => segRectIntersect(sx1, sy1, sx2, sy2, bx - 1, ty - fs - 1, tw + 2, fs + 2))) continue;
           if (!placer.fits(bx, ty - fs, tw + 2, fs + 2)) continue;
+          // 柱内标签可能被折线穿过:用「柱子同色」的一小块垫在字下面把线遮掉
+          // (不描边 —— 11-03 起全局不再给文字描边;垫色是背景,不是字形描边)
+          const mask = l.haloColor
+            ? `<rect x="${r2(bx)}" y="${r2(ty - fs)}" width="${r2(tw + 2)}" height="${r2(fs + 2)}" fill="${l.haloColor}"/>`
+            : '';
           out.push(
-            `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${r2(fs)}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fill}" style="${TAB}"${ds(l.series)}>${l.text}</text>`,
+            mask +
+            `<text x="${r2(cx)}" y="${r2(ty)}" text-anchor="middle" font-size="${r2(fs)}" ${l.peak ? 'font-weight="600" ' : ''}fill="${l.fill}"${l.haloColor ? ' data-mask="1"' : ''} style="${TAB}"${ds(l.series)}>${l.text}</text>`,
           );
           placed = true;
           break;

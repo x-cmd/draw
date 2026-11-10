@@ -635,13 +635,14 @@ describe('combo', () => {
   it('value labels are all-or-nothing: dense charts drop the whole layer', () => {
     const sparse = renderCombo(parseComboSpec(comboSpecFromParams(new URLSearchParams('labels=A,B&series=dl:1200,1800&line=g:3,9'))), { ...O, skin: COMBO_SKIN });
     expect((sparse.match(/fill="var\(--d-on-s\d\)"/g) ?? []).length).toBe(2); // 柱标全出
-    expect((sparse.match(/paint-order="stroke"/g) ?? []).length).toBe(2); // 线标全出
+    // 线标:正文色 + 带系列号(文字描边已于 11-03 去掉,不再有 paint-order)
+    expect((sparse.match(/fill="var\(--d-text\)"[^>]*data-series="/g) ?? []).length).toBe(2); // 线标全出
     const labels = Array.from({ length: 30 }, (_, i) => 'G' + i).join(',');
     const bars = Array.from({ length: 30 }, (_, i) => String(900 + (i * 137) % 1200)).join(',');
     const lines = Array.from({ length: 30 }, (_, i) => String(3 + (i % 7))).join(',');
     const dense = renderCombo(parseComboSpec(comboSpecFromParams(new URLSearchParams(`labels=${labels}&series=dl:${bars}&line=g:${lines}`))), { ...O, skin: COMBO_SKIN });
     expect(dense.match(/fill="var\(--d-on-s\d\)"/)).toBeNull(); // 柱标全无
-    expect(dense.match(/paint-order="stroke"/)).toBeNull(); // 线标全无
+    expect(dense.match(/fill="var\(--d-text\)"[^>]*data-series="/)).toBeNull(); // 线标全无
   });
 });
 
@@ -762,7 +763,8 @@ describe('measure 层纯函数', () => {
 
 
   it('plainGeo:默认数据零漂移(规范比例字面量),长标签实测撑大', () => {
-    expect(plainGeo(960, 520, true, {})).toEqual({ left: 79, right: 910, top: 96, bottom: 416, xLabelY: 466, legendY: 50 });
+    // legendY 已随「图例坐标题基线」(#27)从几何测量里删掉 —— 图例不再占一条带
+    expect(plainGeo(960, 520, true, {})).toEqual({ left: 79, right: 910, top: 96, bottom: 416, xLabelY: 466 });
     expect(plainGeo(960, 520, true, GEO).left).toBe(79); // 刻度列仍在规范内
     expect(plainGeo(960, 520, true, WIDE).left).toBe(79); // fmtNum 缩写后刻度列恒窄于规范
     const longLabel = plainGeo(960, 520, true, { xLabels: ['这是一个非常长的中文标签测试'] });
@@ -894,11 +896,14 @@ describe('sankey', () => {
 
   it('basic: node heights proportional, closed bands, outside labels', () => {
     const svg = renderSankey(parseSankeySpec(sankeySpecFromParams(new URLSearchParams(data))), { width: 720, height: 420, version: 1, skin: resolveSkin('sankey', null, 'light') });
-    const hs = [...svg.matchAll(/height="([\d.]+)" rx=/g)].map((m) => Number(m[1]));
-    expect(hs.length).toBe(5);
-    expect(hs[2] / hs[3]).toBeCloseTo(50 / 30, 0); // Signup:Ads = 流量比
+    // 只数节点(角标那个 rect 是 var(--d-link),不算节点)
+    const hs = [...svg.matchAll(/<rect x="[\d.]+" y="[\d.]+" width="[\d.]+" height="([\d.]+)" rx="[\d.]+" fill="var\(--d-s\d+\)"/g)].map((m) => Number(m[1]));
+    expect(hs.length).toBe(5);                                  // Ads/Web/Signup/Buy/Drop
+    expect(hs[0] / hs[1]).toBeCloseTo(30 / 20, 1);               // Ads:Web = 流量比
+    expect(hs[2]).toBeCloseTo(hs[0] + hs[1], 0);                 // Signup = Ads + Web
+    expect(hs[3] / hs[4]).toBeCloseTo(40 / 10, 1);               // Buy:Drop = 流量比
     expect((svg.match(/fill-opacity="0\.46"/g) ?? []).length).toBe(4); // 封闭流带
-    expect(svg).toContain('>30<');
+    expect(svg).toContain('>30<');                              // 标签在节点外面
     expect(svg).toContain('&quot;template&quot;:&quot;sankey&quot;');
   });
 
@@ -932,7 +937,8 @@ describe('文字不得重叠(硬规则回归)', () => {
       const anchor = (attrs.match(/text-anchor="(start|middle|end)"/) || [])[1] ?? 'start';
       if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
       const w = textW(raw, fs);
-      out.push({ raw, x0: anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x, y0: y - fs * 0.8, w, h: fs * 1.05, halo: /paint-order="stroke"/.test(attrs) });
+      // halo = 这行字自带遮罩(柱内标签垫了柱子同色的小块,线从底下过被挡住)
+      out.push({ raw, x0: anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x, y0: y - fs * 0.8, w, h: fs * 1.05, halo: /paint-order="stroke"/.test(attrs) || /data-mask="1"/.test(attrs) });
     }
     return out;
   };
@@ -992,7 +998,7 @@ describe('文字不得重叠(硬规则回归)', () => {
       }
       return true;
     };
-    // 允许被线穿过但带遮罩描边的文字(paint-order=stroke 把线遮住,数字仍清晰)
+    // 允许被线穿过的:自带遮罩的文字(柱内标签垫了同色小块,把线挡住,数字仍清晰)
     const crossed = boxes(svg)
       .filter((b) => !b.halo)
       .filter((b) => segs.some((sg) => hit(sg[0], sg[1], sg[2], sg[3], b.x0 - 1, b.y0 - 1, b.w + 2, b.h + 2)));
