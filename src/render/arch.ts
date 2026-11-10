@@ -303,8 +303,17 @@ const polyAt = (pts: [number, number][], t: number): { p: [number, number]; hori
 const overlap = (a: Box, b: Box): boolean =>
   a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 
+/** 两个矩形压在一起的面积(用来挑「最不糟」的位置) */
+const overlapArea = (a: Box, b: Box): number => {
+  const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+  const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+  return w > 0 && h > 0 ? w * h : 0;
+};
+
 function placeEdgeLabels(routed: V2Routed[], avoid: Box[]): Spot[] {
   const out: Spot[] = [];
+  // 已经放下的标签 —— 后面的标签要避开它们(不然两个标签会叠在一起)
+  const taken: Box[] = [];
   for (const rt of routed) {
     const text = rt.e.label;
     if (!text) continue;
@@ -314,26 +323,34 @@ function placeEdgeLabels(routed: V2Routed[], avoid: Box[]): Spot[] {
       horiz
         ? { x: p[0] - w / 2, y: mirror ? p[1] + 3 : p[1] - 3 - h, w, h }
         : { x: mirror ? p[0] - 3 - w : p[0] + 3, y: p[1] - h / 2, w, h };
-    const avoidAll = [...avoid];
+    const blockers = [...avoid, ...taken];
     let place: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
-    for (const t of [0.5, 0.38, 0.62, 0.3, 0.7, 0.2, 0.8]) {
+    let best: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
+    let bestCost = Infinity;
+    for (const t of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82]) {
       const at = polyAt(rt.pts, t);
       for (const mirror of [false, true]) {
-        if (!avoidAll.some((r) => overlap(rectOf(at.p, at.horiz, mirror), r))) {
+        const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(at.p, at.horiz, mirror), b), 0);
+        if (cost === 0) {
           place = { ...at, mirror };
           break;
+        }
+        if (cost < bestCost) {
+          bestCost = cost;
+          best = { ...at, mirror };
         }
       }
       if (place) break;
     }
-    if (!place) place = { ...polyAt(rt.pts, 0.5), mirror: false };
+    // 实在没地方放(标签比两个节点之间的空档还宽),挑压得最少的那个
+    if (!place) place = best ?? { ...polyAt(rt.pts, 0.5), mirror: false };
     const p = place.p;
     const x = place.horiz ? p[0] : p[0] + (place.mirror ? -8 : 8);
     const y = place.horiz ? p[1] + (place.mirror ? 15 : -7) : p[1] + 4;
     const anchor: Spot['anchor'] = place.horiz ? 'middle' : place.mirror ? 'end' : 'start';
     out.push({ text, x, y, anchor, horiz: place.horiz, edge: rt.e });
     // 这个标签占的位置,后面的标签也得避开
-    avoidAll.push({
+    taken.push({
       x: anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x,
       y: y - EDGE_FS - 3, w, h,
     });
@@ -350,7 +367,7 @@ function drawEdgeLabelsV2(spots: Spot[], interactive: boolean): string {
     const ia = interactive ? ` data-edge-label="${esc(s.edge.from)} ${esc(s.edge.to)}"` : '';
     return (
       `<g${ia}>` +
-      `<rect x="${r2(rx)}" y="${r2(ry)}" width="${r2(w)}" height="${r2(h)}" rx="5" fill="var(--d-bg)" fill-opacity="0.92"/>` +
+      `<rect x="${r2(rx)}" y="${r2(ry)}" width="${r2(w)}" height="${r2(h)}" rx="5" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>` +
       `<text x="${r2(s.x)}" y="${r2(s.y)}" text-anchor="${s.anchor}" font-size="${EDGE_FS}" fill="var(--d-text)">${esc(s.text)}</text>` +
       `</g>`
     );
@@ -441,12 +458,38 @@ export interface ArchOpts {
 }
 
 /**
+ * 边标签比两个节点之间的空档还宽时,把那一列撑开 —— 让标签有地方放,
+ * 而不是压在节点的角标上。同一行、相邻两列的横边才需要(横着走的那一段最短)。
+ */
+function labelGaps(nodes: ArchNode[], edges: ArchEdge[]): number[] {
+  const colOf = new Map<string, { col: number; row: number }>();
+  for (const n of nodes) if (n.grid) colOf.set(n.id, n.grid);
+  const need = new Map<number, number>();
+  for (const e of edges) {
+    if (!e.label) continue;
+    const a = colOf.get(e.from);
+    const b = colOf.get(e.to);
+    if (!a || !b || a.row !== b.row) continue;
+    const [c1, c2] = a.col < b.col ? [a.col, b.col] : [b.col, a.col];
+    if (c2 !== c1 + 1) continue; // 隔了列的边,横向那一段本来就够长
+    // 两端各留 16px 的接线头,再加标签自身的宽度
+    const w = textW(e.label, EDGE_FS) + 12 + 32;
+    need.set(c1, Math.max(need.get(c1) ?? 0, Math.min(w, 300)));
+  }
+  const out: number[] = [];
+  for (const [c, v] of need) out[c] = v;
+  return out;
+}
+
+/**
  * 渲染 v2 架构图。
  */
 export function renderArchCore(o: ArchOpts): DrawResult {
   const types = o.types ?? ARCH_TYPES;
+  // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
+  packGrid(o.nodes, o.gridCols, { gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size });
   const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
-    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size,
+    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size, gapAfter: labelGaps(o.nodes, o.edges),
   });
   const titleH = o.title ? 46 : 0;
   let width = Math.max(W, 320);

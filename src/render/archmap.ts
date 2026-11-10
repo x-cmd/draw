@@ -59,9 +59,19 @@ function bad(detail: string): never {
   throw new ApiError(400, `${detail} Example: ${N_EXAMPLE}`);
 }
 
+/**
+ * 切节点字段:末尾的空段丢掉(至少留 id;type;label 三段)。
+ * 这样 `n=id;type;label;;` 和 `n=id;type;label` 一样,不用作者数分号。
+ */
+export function splitFields(v: string): string[] {
+  const f = v.split(';');
+  while (f.length > 3 && f[f.length - 1].trim() === '') f.pop();
+  return f;
+}
+
 export function parseNodes(raw: string[]): ArchNode[] {
   return raw.map((v, i) => {
-    const f = v.split(';');
+    const f = splitFields(v);
     const where = `"n=${v}" (#${i + 1})`;
     if (f.length < 3 || f.length > 5) bad(`${where}: expected id;type;label[;sublabel][;pos] fields`);
     const [id, type, label] = f;
@@ -138,6 +148,8 @@ export interface GridOpts {
   pad?: number;
   /** 节点尺寸的量尺(默认 naturalSize) */
   sizeOf?: (n: ArchNode) => { w: number; h: number };
+  /** 某一列之后的额外间距(下标=列号):给太宽的边标签腾地方;没给的列用 gapX */
+  gapAfter?: number[];
 }
 
 export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {}): { placed: Placed[]; W: number; H: number } {
@@ -196,7 +208,7 @@ export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {
     trackX = new Array<number>(cols);
     trackY = new Array<number>(rows);
     let x = pad;
-    for (let c = 0; c < cols; c++) { trackX[c] = x; x += colW[c] + gapX; }
+    for (let c = 0; c < cols; c++) { trackX[c] = x; x += colW[c] + (opts.gapAfter?.[c] ?? gapX); }
     let y = pad;
     for (let r = 0; r < rows; r++) { trackY[r] = y; y += rowH[r] + gapY; }
   }

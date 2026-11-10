@@ -10,7 +10,7 @@
 // 节点里的多行内容用 \n 分隔(URL 里写 %0A)—— ERD 的字段表、class 的成员表靠它。
 import { ApiError } from '../specs/index.js';
 import type { ArchBoundary, ArchEdge, ArchNode } from './archmap.js';
-import { GRID_POS_RE, ID_RE, PX_POS_RE, parseBoundaries, parseEdges } from './archmap.js';
+import { GRID_POS_RE, ID_RE, PX_POS_RE, parseBoundaries, parseEdges, splitFields } from './archmap.js';
 import { renderArchCore, type HouseTypes } from './arch.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
@@ -58,7 +58,7 @@ const CLASS: HouseTypes = {
    和 archmap 同一套语法,只是类型不限定在那八种里(每种图有自己的一套)。 */
 function parseKindNodes(raw: string[], allowed: string[]): ArchNode[] {
   return raw.map((v, i) => {
-    const f = v.split(';').map((x) => x.trim());
+    const f = splitFields(v).map((x) => x.trim());
     if (f.length < 3 || f.length > 5) {
       throw new ApiError(400, `"n" #${i + 1} must be "id;type;label[;sub][;pos]". Example: ${f[0]}`);
     }

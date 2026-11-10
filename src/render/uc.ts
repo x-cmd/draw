@@ -9,6 +9,8 @@
 // 画法:参与者排成一列(左),用例排成一行(右),参与者和用例之间连线;
 // 用例外面套一个系统边界框。
 import { ApiError } from '../specs/index.js';
+import type { ArchBoundary } from './archmap.js';
+import { GRID_POS_RE, PX_POS_RE, parseBoundaries, splitFields } from './archmap.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, svgDoc, textW } from './svg.js';
@@ -26,21 +28,49 @@ interface UcNode {
   label: string;
   sub?: string;
   x: number; y: number; w: number; h: number;
+  /** 位置:和架构图同一套(不写就自己排) */
+  grid?: { row: number; col: number; w: number; h: number };
+  px?: { x: number; y: number; w?: number; h?: number };
 }
 
 interface UcEdge { from: string; to: string; label?: string; dep: boolean }
 
+/**
+ * 节点语法和架构图完全一致:id;类型;标签[;副标][;位置]
+ * —— 位置可省(用例图自己排),给了就按给的摆。
+ */
 function parseNodes(raw: string[]): UcNode[] {
   return raw.map((v, i) => {
-    const f = v.split(';').map((x) => x.trim());
-    if (f.length < 3) {
-      throw new ApiError(400, `"n" #${i + 1} must be "id;actor|label" or "id;uc|label". Example: n=caller;actor;Your app`);
+    const f = splitFields(v).map((x) => x.trim());
+    if (f.length < 3 || f.length > 5) {
+      throw new ApiError(400, `"n" #${i + 1} must be "id;actor|label[;sub][;pos]". Example: n=caller;actor;Your app`);
     }
     const kind = f[1];
     if (kind !== 'actor' && kind !== 'uc') {
       throw new ApiError(400, `"n" #${i + 1}: kind must be "actor" or "uc", got ${JSON.stringify(kind)}`);
     }
-    return { id: f[0], kind, label: f[2], sub: f[3] || undefined, x: 0, y: 0, w: 0, h: 0 };
+    if (!f[2]) throw new ApiError(400, `"n" #${i + 1}: label is required`);
+    let sub: string | undefined;
+    let pos: string | undefined;
+    if (f.length === 4) {
+      if (GRID_POS_RE.test(f[3]) || PX_POS_RE.test(f[3])) pos = f[3];
+      else sub = f[3];
+    } else if (f.length === 5) {
+      sub = f[3];
+      pos = f[4];
+    }
+    const node: UcNode = { id: f[0], kind, label: f[2], ...(sub ? { sub } : {}), x: 0, y: 0, w: 0, h: 0 };
+    if (pos) {
+      const g = GRID_POS_RE.exec(pos);
+      if (g) {
+        node.grid = { row: +g[1], col: +g[2], w: g[3] ? +g[3] : 1, h: g[4] ? +g[4] : 1 };
+      } else {
+        const px = PX_POS_RE.exec(pos);
+        if (!px) throw new ApiError(400, `"n" #${i + 1}: pos must look like r0c1[w2][h2] or p40,80[,120x48]`);
+        node.px = { x: +px[1], y: +px[2], ...(px[3] ? { w: +px[3], h: +px[4] } : {}) };
+      }
+    }
+    return node;
   });
 }
 
@@ -95,7 +125,8 @@ function drawUseCase(n: UcNode, color: string, interactive = false): string {
 export interface UcOpts {
   nodes: UcNode[];
   edges: UcEdge[];
-  boundary?: { label: string; ids: string[] };
+  /** b= 画出来的边界(可以有多层) */
+  boundaries: ArchBoundary[];
   /** 参与方摆在右边(默认在左边) */
   actorsRight?: boolean;
   title?: string;
@@ -117,15 +148,14 @@ export function renderUcCore(o: UcOpts): DrawResult {
   // 参与者一列(左),用例一行(右)
   const actorW = Math.max(120, ...actors.map((a) => textW(a.label, 13) + 36));
   const ucW = Math.max(150, ...ucs.map((u) => Math.max(textW(u.label, 13) + 64, u.sub ? textW(u.sub, 11) + 64 : 0)));
-  let x = PAD;
   let maxY = PAD + titleH;
-  actors.forEach((a, i) => { a.x = x; a.w = actorW; });
+  actors.forEach((a) => { a.w = actorW; });
   // 用例排成一列,参与者在另一侧 —— 中间留出一条「脊柱」通道走线,
   // 这样同一个参与方连多个用例时,线各走各的,不横穿别人的椭圆。
   const ucColH = ucs.length * (UC_H + UC_ROW_GAP) - UC_ROW_GAP;
   const actorColH = actors.length * (ACTOR_H + ROW_GAP) - ROW_GAP;
   const colH = Math.max(ucColH, actorColH);
-  const top = PAD + titleH + Math.max(0, (colH - colH) / 2);
+  const top = PAD + titleH;
   const ucTop = top + Math.max(0, (colH - ucColH) / 2);
   const actorTop = top + Math.max(0, (colH - actorColH) / 2);
   const ucX = o.actorsRight ? PAD : PAD + actorW + COL_GAP;
@@ -144,33 +174,66 @@ export function renderUcCore(o: UcOpts): DrawResult {
     a.h = ACTOR_H;
     maxY = Math.max(maxY, a.y + a.h);
   });
+  // 给了位置的按位置摆(和架构图同一套格子)
+  const placed = [...ucs, ...actors];
+  const gridNodes = placed.filter((n) => n.grid);
   // 脊柱:参与方和用例之间的空档正中
   const spineX = o.actorsRight
     ? ucX + ucW + COL_GAP / 2
     : PAD + actorW + COL_GAP / 2;
   let width = Math.max(320, (o.actorsRight ? actorX + actorW : ucX + ucW + 30) + PAD);
   let height = maxY + PAD;
-
-  // 系统边界:把用例框起来
-  let boundarySvg = '';
-  if (o.boundary && o.boundary.ids.length) {
-    const bs = o.boundary.ids.map((id) => o.nodes.find((n) => n.id === id)).filter(Boolean) as UcNode[];
-    if (bs.length) {
-      const bx = Math.min(...bs.map((b) => b.x)) - 26;
-      const by = Math.min(...bs.map((b) => b.y)) - 26;
-      const bw = Math.max(...bs.map((b) => b.x + b.w)) + 26 - bx;
-      const bh = Math.max(...bs.map((b) => b.y + b.h)) + 26 - by;
-      const label = o.boundary.label.toUpperCase();
-      const lw = textW(label, 10) + o.boundary.label.length * 1.2 + 20;
-      width = Math.max(width, bx + bw + PAD);
-      height = Math.max(height, by + bh + PAD);
-      boundarySvg =
-        `<g data-boundary="${esc(o.boundary.ids.join(' '))}">` +
-        `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="14" fill="none" stroke="var(--d-border)" stroke-width="1.3" stroke-dasharray="7 5"/>` +
-        `<rect x="${r2(bx + 14)}" y="${r2(by - 9)}" width="${r2(lw)}" height="20" rx="6" fill="var(--d-card)"/>` +
-        `<text x="${r2(bx + 14 + lw / 2)}" y="${r2(by + 4)}" text-anchor="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)">${esc(label)}</text>` +
-        `</g>`;
+  if (gridNodes.length) {
+    const rows = Math.max(...gridNodes.map((n) => n.grid!.row + n.grid!.h));
+    const cols = Math.max(...gridNodes.map((n) => n.grid!.col + n.grid!.w));
+    const colX = new Array<number>(cols).fill(0);
+    const rowY = new Array<number>(rows).fill(0);
+    for (const n of gridNodes) {
+      colX[n.grid!.col] = Math.max(colX[n.grid!.col], n.kind === 'actor' ? actorW : ucW);
+      rowY[n.grid!.row] = Math.max(rowY[n.grid!.row], n.kind === 'actor' ? ACTOR_H : UC_H);
     }
+    const trackX: number[] = [];
+    const trackY: number[] = [];
+    let gx = PAD;
+    for (let c = 0; c < cols; c++) { trackX[c] = gx; gx += colX[c] + COL_GAP; }
+    let gy = PAD + titleH;
+    for (let r = 0; r < rows; r++) { trackY[r] = gy; gy += rowY[r] + ROW_GAP; }
+    for (const n of gridNodes) {
+      const g = n.grid!;
+      n.x = trackX[g.col];
+      n.y = trackY[g.row];
+      n.w = n.kind === 'actor' ? actorW : ucW;
+      n.h = n.kind === 'actor' ? ACTOR_H : UC_H;
+      width = Math.max(width, n.x + n.w + PAD);
+      maxY = Math.max(maxY, n.y + n.h);
+    }
+    // 没给位置的用例回到用例列;没给位置的参与方留在原处
+    for (const n of placed) {
+      if (n.grid) continue;
+      if (n.kind === 'uc') n.x = ucX;
+    }
+    height = Math.max(height, maxY + PAD);
+  }
+
+  // 系统边界:把用例框起来(可以有多层)
+  let boundarySvg = '';
+  for (const b of o.boundaries) {
+    const bs = b.ids.map((id) => o.nodes.find((n) => n.id === id)).filter(Boolean) as UcNode[];
+    if (!bs.length) continue;
+    const bx = Math.min(...bs.map((x) => x.x)) - 26;
+    const by = Math.min(...bs.map((x) => x.y)) - 26;
+    const bw = Math.max(...bs.map((x) => x.x + x.w)) + 26 - bx;
+    const bh = Math.max(...bs.map((x) => x.y + x.h)) + 26 - by;
+    const label = b.label.toUpperCase();
+    const lw = textW(label, 10) + b.label.length * 1.2 + 20;
+    width = Math.max(width, bx + bw + PAD);
+    height = Math.max(height, by + bh + PAD);
+    boundarySvg +=
+      `<g data-boundary="${esc(b.ids.join(' '))}">` +
+      `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="14" fill="none" stroke="var(--d-border)" stroke-width="1.3" stroke-dasharray="7 5"/>` +
+      `<rect x="${r2(bx + 14)}" y="${r2(by - 9)}" width="${r2(lw)}" height="20" rx="6" fill="var(--d-card)"/>` +
+      `<text x="${r2(bx + 14 + lw / 2)}" y="${r2(by + 4)}" text-anchor="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)">${esc(label)}</text>` +
+      `</g>`;
   }
 
   // 连线:参与方 → 脊柱 → 用例,三段正交。同一个参与方连多个用例时,
@@ -178,6 +241,7 @@ export function renderUcCore(o: UcOpts): DrawResult {
   const byId = new Map(o.nodes.map((n) => [n.id, n]));
   const exitSeen = new Map<string, number>();
   const edges: string[] = [];
+  let labelRight = 0; // 标签往右伸出去多少(画布要留出这段)
   for (const e of o.edges) {
     const a = byId.get(e.from)!;
     const b = byId.get(e.to)!;
@@ -189,21 +253,24 @@ export function renderUcCore(o: UcOpts): DrawResult {
     let pts: [number, number][];
     let lx = 0;
     let ly = 0;
+    // 标签贴在哪:start = 从 lx 往右排,end = 往左排
+    let lanchor: 'start' | 'end' = 'start';
     if (a.kind === 'actor' && b.kind === 'uc') {
-      const side = o.actorsRight ? -1 : 1;
       const ax = o.actorsRight ? a.x - n * 9 : a.x + a.w + n * 9;
       const ay = a.y + 30;
       const bx = o.actorsRight ? b.x + b.w : b.x;
       const by = b.y + b.h / 2;
       pts = [[ax, ay], [spineX, ay], [spineX, by], [bx, by]];
-      lx = (spineX + bx) / 2; ly = by;
+      // 标签贴在用例左边,不压在椭圆上
+      lx = bx - 6; ly = by; lanchor = 'end';
     } else if (a.kind === 'uc' && b.kind === 'actor') {
       const ax = o.actorsRight ? a.x : a.x + a.w;
       const ay = a.y + a.h / 2;
-      const bx = o.actorsRight ? b.x + b.w + n * 9 : b.x - n * 9;
+      // 参与方在哪一侧,就从哪一侧接线(脊柱在参与方的右边还是左边)
+      const bx = o.actorsRight ? b.x - n * 9 : b.x + b.w + n * 9;
       const by = b.y + 30;
       pts = [[ax, ay], [spineX, ay], [spineX, by], [bx, by]];
-      lx = (spineX + bx) / 2; ly = by;
+      lx = bx + 6; ly = by; lanchor = 'start';
     } else {
       // 用例之间的依赖(<<include>>):绕到用例列右边的一条通道上,
       // 不从两个椭圆中间斜穿过去
@@ -213,19 +280,24 @@ export function renderUcCore(o: UcOpts): DrawResult {
       const bx = b.x + b.w;
       const by = b.y + b.h / 2;
       pts = [[ax, ay], [depX, ay], [depX, by], [bx, by]];
-      lx = depX; ly = (ay + by) / 2;
+      // 标签排在通道右边,一点不碰椭圆
+      lx = depX + 6; ly = (ay + by) / 2; lanchor = 'start';
     }
     edges.push(
       `<path d="${pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('')}" fill="none" stroke="${stroke}" stroke-width="1.3"${dash}${ia}/>`,
     );
     if (e.label) {
       const w = textW(e.label, 10.5) + 12;
+      const rx = lanchor === 'end' ? lx - w : lx;
+      const tx = lx;
+      labelRight = Math.max(labelRight, rx + w);
       edges.push(
-        `<rect x="${r2(lx - w / 2)}" y="${r2(ly - 15)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-bg)" fill-opacity="0.92"/>`,
-        `<text x="${r2(lx)}" y="${r2(ly - 3)}" text-anchor="middle" font-size="10.5" fill="var(--d-text)">${esc(e.label)}</text>`,
+        `<rect x="${r2(rx)}" y="${r2(ly - 15)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
+        `<text x="${r2(tx)}" y="${r2(ly - 3)}" text-anchor="${lanchor}" font-size="10.5" fill="var(--d-text)">${esc(e.label)}</text>`,
       );
     }
   }
+  width = Math.max(width, labelRight + PAD);
 
   const titleSvg = o.title
     ? `<text x="${PAD}" y="${PAD + 16}" font-size="18" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
@@ -258,15 +330,7 @@ export function renderUcFromUrl(url: URL, interactive = false): DrawResult {
   const ids = new Set(nodes.map((n) => n.id));
   if (ids.size !== nodes.length) throw new ApiError(400, 'duplicate element id');
   const edges = parseEdges(params.getAll('e'), ids);
-  const bRaw = params.get('b');
-  let boundary: { label: string; ids: string[] } | undefined;
-  if (bRaw) {
-    const i = bRaw.indexOf(';');
-    if (i < 1) throw new ApiError(400, '"b" must be "label;id id …". Example: b=draw;uc1 uc2');
-    const members = bRaw.slice(i + 1).trim().split(/\s+/).filter(Boolean);
-    for (const m of members) if (!ids.has(m)) throw new ApiError(400, `"b" references unknown id "${m}"`);
-    boundary = { label: bRaw.slice(0, i).trim(), ids: members };
-  }
+  const boundaries = parseBoundaries(params.getAll('b'), ids);
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
   const side = (params.get('actors') ?? 'left').toLowerCase();
   if (side !== 'left' && side !== 'right') {
@@ -274,7 +338,7 @@ export function renderUcFromUrl(url: URL, interactive = false): DrawResult {
   }
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderUcCore({
-    nodes, edges, boundary,
+    nodes, edges, boundaries,
     actorsRight: side === 'right',
     title: params.get('title')?.trim() || undefined,
     interactive,
