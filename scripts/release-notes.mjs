@@ -30,11 +30,16 @@ const prevTag = (() => {
   }
 })();
 
-/** 这一版改动的文件(还在的) */
+/** 这一版改动的文件(还在的、算代码的) */
 const changedFiles = (() => {
   if (!prevTag) return [];
   const out = git('diff', '--name-only', `${prevTag}..HEAD`);
-  return out.split('\n').map((s) => s.trim()).filter((s) => s && existsSync(join(ROOT, s)));
+  return out
+    .split('\n')
+    .map((s) => s.trim())
+    .filter((s) => s && existsSync(join(ROOT, s)))
+    // 锁文件、CI 配置不算「这一版写的代码」
+    .filter((s) => /^(src|test|scripts|docs)\//.test(s) || s.endsWith('.md'));
 })();
 
 /** tokei 的统计 → 每门语言三项合计(整份输出给 URL 太长,只留要的) */
@@ -77,15 +82,16 @@ if (increment && Object.keys(increment).length) {
   const files = changedFiles.length;
   lines.push(
     `This release touches ${files} file${files === 1 ? '' : 's'}. ` +
-    `Here is what that adds up to — code, comments and blanks per language:`,
+    `Here is the code in them — code, comments and blanks per language:`,
     '',
   );
-  const url = chart(increment, `${version} · code added`);
+  const url = chart(increment, `${version} · the files it touches`);
   if (url) {
-    lines.push('```text', url, '```', '', `![Code composition of ${version}](${url})`, '');
+    lines.push('```text', url, '```', '', `![Code composition of the files this release touches](${url})`, '');
   }
 }
 lines.push('## The codebase today', '');
+lines.push('Every file in `src/`, `test/` and `scripts/`, by language:', '');
 const totalUrl = chart(total, `${version} · the whole repo`);
 if (totalUrl) {
   lines.push('```text', totalUrl, '```', '', `![Code composition of the whole repo](${totalUrl})`, '');
