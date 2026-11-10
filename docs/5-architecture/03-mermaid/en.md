@@ -41,10 +41,10 @@ https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20
 ### A group of nodes
 
 ```text
-https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20subgraph%20Edge%0A%20%20%20%20CDN%5BCDN%5D%0A%20%20%20%20GW%5BGateway%5D%0A%20%20end%0A%20%20CDN%20--%3E%20GW%0A%20%20GW%20--%3E%20API%5BAPI%5D&w=560
+https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20subgraph%20Edge%0A%20%20%20%20CDN%5BCDN%5D%20--%3E%20GW%5BGateway%5D%0A%20%20end%0A%20%20GW%20--%3E%20API%5BAPI%5D&w=560
 ```
 
-[![Edge group](https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20subgraph%20Edge%0A%20%20%20%20CDN%5BCDN%5D%0A%20%20%20%20GW%5BGateway%5D%0A%20%20end%0A%20%20CDN%20--%3E%20GW%0A%20%20GW%20--%3E%20API%5BAPI%5D&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20TD%0A%20%20subgraph%20Edge%0A%20%20%20%20CDN%5BCDN%5D%0A%20%20%20%20GW%5BGateway%5D%0A%20%20end%0A%20%20CDN%20--%3E%20GW%0A%20%20GW%20--%3E%20API%5BAPI%5D&w=560)
+[![Edge group](https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20subgraph%20Edge%0A%20%20%20%20CDN%5BCDN%5D%20--%3E%20GW%5BGateway%5D%0A%20%20end%0A%20%20GW%20--%3E%20API%5BAPI%5D&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20TD%0A%20%20subgraph%20Edge%0A%20%20%20%20CDN%5BCDN%5D%20--%3E%20GW%5BGateway%5D%0A%20%20end%0A%20%20GW%20--%3E%20API%5BAPI%5D&w=560)
 
 The `subgraph` block became the `EDGE` box around the two nodes.
 
@@ -72,7 +72,7 @@ This is a diagram renderer, not a full Mermaid runtime. The subset:
   nodes inside it.
 
 A `gantt` source is also accepted here and is rendered by the
-[Gantt chart](../../6-schedule/01-gantt) page's engine.
+[Gantt chart](../01-gantt) page's engine.
 
 ## 3. Pitfalls
 
@@ -80,9 +80,9 @@ A `gantt` source is also accepted here and is rendered by the
   a newline `%0A`. A raw `&` inside the source splits the parameter.
 - **Only `graph` / `flowchart` / `gantt` are accepted** — a `sequenceDiagram`
   or a `pieChart` is a 400, not a silent no-op.
-- **Declare the nodes inside the block and the edges after it** — writing
-  the edge inside the `subgraph` block is not supported by the deployed
-  service; the nodes still belong inside the group.
+- **A `subgraph` block is one group** — the nodes inside it are boxed
+  together, edges and all; an edge that leaves the block still counts as
+  belonging to it.
 - **Shape syntax is strict** — `{…}` for a diamond, `[(…)]` for a
   cylinder; a stray bracket changes the shape or the parse.
 

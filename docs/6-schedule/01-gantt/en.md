@@ -22,21 +22,21 @@ The engine turns it into a chart.
 ### A sprint plan
 
 ```text
-https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%202026-11-04%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%202026-11-09%2C%203d&title=Sprint%20plan&w=560
+https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560
 ```
 
-[![Sprint plan](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%202026-11-04%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%202026-11-09%2C%203d&title=Sprint%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%202026-11-04%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%202026-11-09%2C%203d&title=Sprint%20plan&w=560)
+[![Sprint plan](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)
 
-`Design` is done, `Build` is active, `Ship` is a milestone, and `Regression`
-is the critical path.
+`Design` is done, `Build` is active and starts the moment `a1` ends, `Ship`
+is a milestone, and `Regression` is the critical path.
 
 ### A launch plan across two sections
 
 ```text
-https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%202026-10-21%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560
+https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%20after%20b1%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560
 ```
 
-[![Launch plan](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%202026-10-21%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%202026-10-21%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)
+[![Launch plan](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%20after%20b1%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%20after%20b1%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)
 
 ## 1. Parameters
 
@@ -55,10 +55,10 @@ https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%
 dateFormat YYYY-MM-DD
   section Dev
   Design :done, a1, 2026-11-01, 3d
-  Build :active, a2, 2026-11-04, 5d
+  Build :active, a2, after a1, 5d
   Ship :milestone, m1, 2026-11-10, 0d
   section QA
-  Regression :crit, b1, 2026-11-09, 3d
+  Regression :crit, b1, after a2, 3d
 ```
 
 - **`dateFormat`** — only `YYYY-MM-DD` is understood. Declaring another
@@ -92,12 +92,9 @@ Backend :active, b1, 2026-10-01, 20d, 40%
 - **Only `YYYY-MM-DD` dates parse** — anything else is a 400, not a guess.
 - **A task with no id cannot be depended on** — it still draws, it just has
   no name to point at.
-- **A dependent task still needs its own length** — `after <id>` sets the
-  start; write the end date as well (`a2, 2026-11-04, 5d`) so the bar is the
-  size you meant.
 
 ## 4. Related
 
 The same engine renders a Mermaid `gantt` source handed to
-[the flowchart endpoint](../../5-architecture/03-mermaid).
+[the flowchart endpoint](../03-mermaid).
 

@@ -21,10 +21,10 @@ x-json-ld:
 ### 迭代计划
 
 ```text
-https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%202026-11-04%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%202026-11-09%2C%203d&title=Sprint%20plan&w=560
+https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560
 ```
 
-[![迭代计划](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%202026-11-04%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%202026-11-09%2C%203d&title=Sprint%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%202026-11-04%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%202026-11-09%2C%203d&title=Sprint%20plan&w=560)
+[![迭代计划](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)
 
 `Design` 已完成,`Build` 进行中且在 `a1` 之后开始,`Ship` 是里程碑,
 `Regression` 在关键路径上。
@@ -32,10 +32,10 @@ https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%
 ### 跨两个分���的上线计划
 
 ```text
-https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%202026-10-21%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560
+https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%20after%20b1%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560
 ```
 
-[![上线计划](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%202026-10-21%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%202026-10-21%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)
+[![上线计划](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%20after%20b1%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%0A%20%20Wireframes%20%3Adone%2C%20w1%2C%202026-09-01%2C%2010d%0A%20%20Visual%20design%20%3Acrit%2C%20w2%2C%202026-09-15%2C%2012d%0A%20%20section%20Build%0A%20%20Backend%20%3Aactive%2C%20b1%2C%202026-10-01%2C%2020d%0A%20%20Frontend%20%3Ab2%2C%20after%20b1%2C%2015d%0A%20%20Launch%20%3Amilestone%2C%20m1%2C%202026-11-20%2C%200d&title=Launch%20plan&w=560)
 
 ## 一、参数
 
@@ -54,10 +54,10 @@ https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Design%
 dateFormat YYYY-MM-DD
   section Dev
   Design :done, a1, 2026-11-01, 3d
-  Build :active, a2, 2026-11-04, 5d
+  Build :active, a2, after a1, 5d
   Ship :milestone, m1, 2026-11-10, 0d
   section QA
-  Regression :crit, b1, 2026-11-09, 3d
+  Regression :crit, b1, after a2, 3d
 ```
 
 - **`dateFormat`** —— 只认 `YYYY-MM-DD`。写了别的格式会被忽略;日期本身仍必须是 `YYYY-MM-DD`。
@@ -86,10 +86,8 @@ Backend :active, b1, 2026-10-01, 20d, 40%
 - **`milestone` 长度是 0** —— 写 `0d`。
 - **日期只认 `YYYY-MM-DD`** —— 别的写法会 400,不会帮你猜。
 - **没有 id 的任务没法被依赖** —— 它照样画得出来,只是没人能指向它。
-- **依赖来的任务自己也得写长度** —— `after <id>` 只定开始,结束日期也要写
-  (`a2, 2026-11-04, 5d`),条子才是你要的长度。
 
 ## 四、相关
 
-同一套引擎也能渲染交给[流程图入口](../../5-architecture/03-mermaid)的 Mermaid `gantt` 源码。
+同一套引擎也能渲染交给[流程图入口](../03-mermaid)的 Mermaid `gantt` 源码。
 

@@ -58,7 +58,7 @@ https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20
   `-->|文字|` 在线��写字。
 - **subgraph** —— `subgraph 名字 … end` 变成包住里面节点的边界框。
 
-这里也接受 `gantt` 源码,走的是[甘特图](../../6-schedule/01-gantt)那套引擎。
+这里也接受 `gantt` 源码,走的是[甘特图](../01-gantt)那套引擎。
 
 ## 三、踩坑
 
@@ -66,8 +66,8 @@ https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20
   源码里没编码的 `&` 会把参数截断。
 - **只认 `graph` / `flowchart` / `gantt`** —— `sequenceDiagram`、`pieChart`
   这些会 400,不会静默忽略。
-- **节点写在块里、连线写在块外面** —— 连线写在 `subgraph` 块里,线上服务还不支持;
-  节点该在组里还是要在组里。
+- **`subgraph` 块就是一个组** —— 块里的节点(连同块内的连线)会被框在一起;
+  出块的连线也算这个组的。
 - **形状写法很挑** —— 菱形是 `{…}`,圆柱是 `[(…)]`;括号错一个就换形状或解析失败。
 
 ## 四、相关
