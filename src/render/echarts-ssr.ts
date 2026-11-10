@@ -232,7 +232,7 @@ function stripTextStrokes(svg: string): string {
     tag.replace(/ (stroke|stroke-width|stroke-opacity|stroke-linejoin|stroke-dasharray|stroke-miterlimit|paint-order)="[^"]*"/g, ''));
 }
 
-// 后处理:根 svg 补 role/aria/font-family,内嵌皮肤变量(含 Inter 子集)+ metadata;
+// 后处理:根 svg 补 role/aria/font-family,内嵌皮肤变量 + metadata;
 // 注入 Edit @X-CMD 角标(#27,svgDoc 覆盖核心层,此处覆盖 echarts)
 function decorate(svg: string, skin: Skin, version: number, option: unknown): string {
   const m = /^<svg\b[^>]*>/.exec(svg);
