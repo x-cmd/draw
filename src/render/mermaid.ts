@@ -64,6 +64,15 @@ export function parseFlow(text: string): FlowDoc {
     };
   };
 
+  // 连线两端可能从没作为独立节点声明过(subgraph 里的写法)——补一个占位节点,
+  // 免得布局阶段查不到盒子。
+  const ensureVertex = (id: string): void => {
+    if (byId.has(id)) return;
+    const n = { id, label: id, shape: 'rect' };
+    byId.set(id, n);
+    doc.nodes.push(n);
+  };
+
   const yy = {
     // mermaid FlowDB 约定:lexer 通过 yy.lex.firstGraph 区分首行方向
     lex: { firstGraph(): boolean { const r = first; first = false; return r; } },
@@ -86,6 +95,10 @@ export function parseFlow(text: string): FlowDoc {
     addLink(sources: string[], targets: string[], link: { text?: unknown } | undefined) {
       const label = asText(link && (link as { text?: unknown }).text);
       for (const s of sources) for (const t of targets) {
+        // subgraph 里写的连线不会先触发 addVertex —— 两端自己补上,
+        // 否则布局阶段找不到节点就炸了(500)。
+        ensureVertex(s);
+        ensureVertex(t);
         const info = pending[0] ?? { stroke: 'normal' };
         doc.edges.push({ from: s, to: t, label, dotted: info.stroke === 'dotted', thick: info.stroke === 'thick' });
       }
@@ -93,7 +106,12 @@ export function parseFlow(text: string): FlowDoc {
     },
     addSubGraph(id: unknown, list: unknown[]) {
       const title = asText(id) || 'group';
-      const nodes = (list ?? []).map((x) => asText(x)).filter(Boolean);
+      // 成员可能是嵌套数组,也可能是「GW CDN」这样一整行文本 —— 摊平后按空白切开,
+      // 再只留下确实是节点的 id(否则边界框找不到节点,渲染时 500)。
+      const nodes = (Array.isArray(list) ? list : [list])
+        .flatMap((x) => asText(x).split(/\s+/))
+        .filter(Boolean)
+        .filter((nid) => byId.has(nid));
       if (nodes.length) doc.groups.push({ title, nodes });
     },
     // 以下均为渲染态/交互态特性,v1 不消费,静默吞掉

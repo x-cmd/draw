@@ -62,10 +62,8 @@ export function parseGantt(text: string): GanttDoc {
       if (!cur) { cur = { name: 'Tasks', tasks: [] }; doc.sections.push(cur); }
       const meta = String(raw ?? '').replace(/^:/, '').split(',').map(x => x.trim()).filter(Boolean);
       const flags: string[] = [];
-      let id: string | undefined;
-      let start: string | undefined;
+      const pos: string[] = [];
       let after: string | undefined;
-      let endOrDur: string | undefined;
       let progress: number | undefined;
       let consumedFlags = true;
       for (const tk of meta) {
@@ -74,10 +72,13 @@ export function parseGantt(text: string): GanttDoc {
         const pm = /^(\d+(?:\.\d+)?)%$/.exec(tk);
         if (pm) { progress = Math.min(100, Math.max(0, +pm[1])); continue; } // 语法扩展:可选完成百分比
         if (tk.startsWith('after ')) { after = tk.slice(6).trim(); continue; }
-        if (id === undefined) { id = tk; continue; }
-        if (start === undefined) { start = tk; continue; }
-        if (endOrDur === undefined) { endOrDur = tk; }
+        pos.push(tk);
       }
+      // 位置参数按顺序取:id、开始、结束/时长。用了 after 时开始由依赖决定,
+      // 后面的那个 token 就是时长 —— 否则它会落进「开始」槽被丢掉(任务只剩 1 天)。
+      const id = pos[0];
+      const start = after === undefined ? pos[1] : undefined;
+      const endOrDur = after === undefined ? pos[2] : pos[1];
       cur.tasks.push({ name: name.trim(), id, flags, start, after, endOrDur, ...(progress !== undefined ? { progress } : {}) });
     },
   };
