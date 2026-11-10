@@ -1,0 +1,37 @@
+id: x-draw-4-strategy-03-uc
+
+data:
+  - name:
+      en: Use case diagram
+      cn: 用例图
+    qa:
+      - id: include
+        question:
+          en: "How do I show that one use case needs another?"
+          cn: "怎么表示「这个用例要用那个」?"
+        answer:
+          en: >
+            Label the association `<<include>>` or `<<extend>>` — the line becomes a dashed dependency, the UML way.
+          cn: >
+            在关联上写 `<<include>>` 或 `<<extend>>` —— 线变成虚线依赖,这就是 UML 的写法。
+        confidence: 9
+        reference:
+          - docs/4-strategy/03-uc/en.md
+          - docs/4-strategy/03-uc/cn.md
+  - name:
+      en: Use case diagram
+      cn: 用例图
+    qa:
+      - id: boundary
+        question:
+          en: "What does `b=` draw?"
+          cn: "`b=` 画的是什么?"
+        answer:
+          en: >
+            The system boundary — a dashed box around the use cases it names, with the label on top.
+          cn: >
+            系统边界 —— 一个虚线框,框住它点名的那些用例,标签在框上。
+        confidence: 9
+        reference:
+          - docs/4-strategy/03-uc/en.md
+          - docs/4-strategy/03-uc/cn.md

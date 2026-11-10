@@ -16,6 +16,8 @@ import { renderEchartsFromUrl } from './render/echarts-ssr.js';
 import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderArchFromUrl } from './render/arch.js';
+import { renderSeqFromUrl } from './render/seq.js';
+import { renderUcFromUrl } from './render/uc.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderGanttFromUrl } from './render/gantt.js';
 import { renderTokeiFromUrl } from './render/tokei.js';
@@ -275,6 +277,20 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<sub>][;<r0c1>]`, { allow: 'GET' });
     }
     return chartResponse(url, renderArchFromUrl(url));
+  }
+  // /draw/seq 时序图:参与方在上一行,消息按 URL 顺序往下走
+  if (sub === '/seq') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<pos>] and ?e=from;to[;label]`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderSeqFromUrl(url));
+  }
+  // /draw/uc 用例图:参与者(火柴人)+ 用例(椭圆)+ 系统边界
+  if (sub === '/uc') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;actor|label or <id>;uc|label`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderUcFromUrl(url));
   }
   // /draw/mindmap 树形导图(x-cmd-hub/draw#17/#20):n=<根/枝/叶 路径>,树→自动布局
   if (sub === '/mindmap') {

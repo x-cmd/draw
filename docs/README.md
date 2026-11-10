@@ -48,6 +48,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 |---|---|---|
 | [01 quadrant](4-strategy/01-quadrant/en.md) | 2×2 decision matrix | prioritisation, retro, portfolio |
 | [02 compass](4-strategy/02-compass/en.md) | four-arrow compass | directions radiating from a centre |
+| [03 uc](4-strategy/03-uc/en.md) | use case diagram | who uses it, and for what |
 
 ## 5 · Architecture 架构图
 
@@ -56,6 +57,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [01 archmap](5-architecture/01-archmap/en.md) | grid architecture diagram | systems, topology, boundaries |
 | [02 mindmap](5-architecture/02-mindmap/en.md) | mind map | feature maps, checklists |
 | [03 mermaid](5-architecture/03-mermaid/en.md) | flowchart from Mermaid | decision flows, pipelines |
+| [04 seq](5-architecture/04-seq/en.md) | sequence diagram | who talks to whom, in what order |
 
 ## 6 · Schedule 日程与排布
 

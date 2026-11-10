@@ -89,5 +89,5 @@ Backend :active, b1, 2026-10-01, 20d, 40%
 
 ## 四、相关
 
-同一套引擎也能渲染交给[流程图入口](../03-mermaid)的 Mermaid `gantt` 源码。
+同一套引擎也能渲染交给[流程图入口](../../5-architecture/03-mermaid)的 Mermaid `gantt` 源码。
 

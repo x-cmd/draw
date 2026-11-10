@@ -96,5 +96,5 @@ Backend :active, b1, 2026-10-01, 20d, 40%
 ## 4. Related
 
 The same engine renders a Mermaid `gantt` source handed to
-[the flowchart endpoint](../03-mermaid).
+[the flowchart endpoint](../../5-architecture/03-mermaid).
 

@@ -42,6 +42,8 @@ export { renderArchFromUrl, renderArchCore } from './render/arch.js';
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';
 export { parseTokei, renderTokeiFromUrl } from './render/tokei.js';
+export { renderSeqFromUrl, renderSeqCore } from './render/seq.js';
+export { renderUcFromUrl, renderUcCore } from './render/uc.js';
 // mindmap 树形导图:同步,与 GET /draw/mindmap 同参同输出
 export { renderMindmapFromUrl } from './render/mindmap.js';
 // PNG 导出(x-cmd-hub/draw#24):任意渲染产出的 SVG → 平面化(烘焙) → resvg-wasm 光栅化;

@@ -31,8 +31,20 @@ for (const d of ['specs', 'render', 'styles']) {
   if (!statSync(dir).isDirectory()) throw new Error(`src/${d}/ 不在了(结构图)`);
 }
 
-/** 空格要编码;`;` `,` `=` 是 archmap 的分隔符,原样留着 */
-const arch = (params) => `${BASE}/arch2?${params.replace(/ /g, '%20')}`;
+/**
+ * 参数编码:archmap/seq/uc 的语法里 `;` `=` `,` `:` `/` `@` 是分隔符,原样留着;
+ * 其余(含空格、`+`、`<`、`>`)一律百分号编码 —— 特别是 `+`:在 query 里不编码会被
+ * 当成空格,标签就碎了。
+ */
+const enc = (s) => encodeURIComponent(s)
+  .replace(/%3B/g, ';')
+  .replace(/%3D/g, '=')
+  .replace(/%2C/g, ',')
+  .replace(/%3A/g, ':')
+  .replace(/%2F/g, '/')
+  .replace(/%40/g, '@');
+
+const arch = (params) => `${BASE}/arch2?${params.map(enc).join('&')}`;
 
 /* ---------------------------------------------------------------- 结构图
    行 = 层:入口 → 路由 → 解析/存储 → 渲染/皮肤。边界圈住「跑在 Worker 上的部分」。 */
@@ -48,44 +60,42 @@ const structure = arch([
   'e=entry;handler', 'e=node;handler', 'e=handler;specs', 'e=handler;store',
   'e=handler;demo', 'e=handler;render', 'e=render;styles',
   'b=Edge worker;handler specs store render styles',
-  'title=Inside%20draw',
-].join('&'));
+  'title=Inside draw',
+]);
 
 /* ---------------------------------------------------------------- 时序图
-   行 = 参与方,列 = 时间。一条请求从 URL 走到 SVG 的每一步。 */
-const sequence = arch([
-  'n=app;fe;Your app;r0c0',
-  'n=svgback;fe;SVG in your page;r0c5',
-  'n=worker;be;Worker;r1c1',
-  'n=resp;fe;200 + <metadata>;r1c4',
-  'n=specs;be;specs/ parse;r2c2',
-  'n=styles;be;styles/ skin;r3c3',
-  'n=render;be;render/ draw;r4c4',
-  'e=app;worker', 'e=worker;specs', 'e=specs;styles', 'e=styles;render',
-  'e=render;resp', 'e=resp;svgback',
-  'b=Your app;app svgback',
-  'b=Worker;worker resp',
-  'b=specs/;specs',
-  'b=styles/;styles',
-  'b=render/;render',
-  'title=One%20request',
-].join('&'));
+   真正的时序图:参与方在上一行,消息按 URL 里的顺序往下走(时间往下)。
+   /draw/seq —— 生命线、消息箭头、激活条、回信写 dash 变虚线。 */
+const sequence = `${BASE}/seq?${[
+  'n=app;fe;Your app;;r0c0',
+  'n=worker;be;Worker;;r0c1',
+  'n=specs;be;specs/;parse + validate;r0c2',
+  'n=render;be;render/;draw the SVG;r0c3',
+  'e=app;worker;GET /draw?type=pie',
+  'e=worker;specs;parse the spec',
+  'e=specs;worker;spec;dash',
+  'e=worker;render;draw',
+  'e=render;worker;SVG;dash',
+  'e=worker;app;200 + <metadata>;dash',
+  'title=One request',
+].map(enc).join('&')}`;
 
 /* ---------------------------------------------------------------- 用例图
-   外面是使用的人,里面是 draw 提供的用例。 */
-const usecase = arch([
-  'n=caller;ext;Your app or CI;r0c0',
-  'n=agent;ext;AI agent;r0c1',
-  'n=writer;ext;README or docs;r0c2',
-  'n=ops;sec;Self-host operator;r0c3',
-  'n=uc1;be;Render a chart;GET /draw?type=...;r1c0',
-  'n=uc2;be;Store a short link;POST /draw;r1c1',
-  'n=uc3;be;Embed the SVG;markdown + img;r1c2',
-  'n=uc4;be;Run it yourself;npm + wrangler;r1c3',
+   真正的用例图:/draw/uc —— 参与者是火柴人,用例是椭圆,外面一圈系统边界;
+   写 <<include>> / <<extend>> 就是虚线依赖。 */
+const usecase = `${BASE}/uc?${[
+  'n=caller;actor;Your app or CI',
+  'n=agent;actor;AI agent',
+  'n=writer;actor;README or docs',
+  'n=ops;actor;Self-host operator',
+  'n=uc1;uc;Render a chart;GET /draw?type=...',
+  'n=uc2;uc;Store a short link;POST /draw',
+  'n=uc3;uc;Embed the SVG;markdown + img',
+  'n=uc4;uc;Run it yourself;npm + wrangler',
   'e=caller;uc1', 'e=caller;uc2', 'e=agent;uc1', 'e=writer;uc3', 'e=ops;uc4',
   'b=draw;uc1 uc2 uc3 uc4',
-  'title=What%20draw%20is%20for',
-].join('&'));
+  'title=What draw is for',
+].map(enc).join('&')}`;
 
 /* ---------------------------------------------------------------- markdown */
 const block = (title, sub, url, alt) => `### ${title}

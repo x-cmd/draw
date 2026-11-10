@@ -95,30 +95,30 @@ Three pictures worth having: what the code is, what one request does, and who dr
 One edge worker, one render core, four directories that matter: `specs/` parses, `styles/` skins, `render/` draws, `store.ts` keeps the short links.
 
 ```text
-https://x-cmd.com/draw/arch2?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20+%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20+%20responses;r1c0&n=demo;fe;demo/;gallery%20+%20landing;r1c1&n=specs;be;specs/;parse%20+%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20+%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw
+https://x-cmd.com/draw/arch2?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20%2B%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20%2B%20responses;r1c0&n=demo;fe;demo/;gallery%20%2B%20landing;r1c1&n=specs;be;specs/;parse%20%2B%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20%2B%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw
 ```
 
-![draw 的代码结构](https://x-cmd.com/draw/arch2?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20+%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20+%20responses;r1c0&n=demo;fe;demo/;gallery%20+%20landing;r1c1&n=specs;be;specs/;parse%20+%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20+%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw)
+![draw 的代码结构](https://x-cmd.com/draw/arch2?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20%2B%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20%2B%20responses;r1c0&n=demo;fe;demo/;gallery%20%2B%20landing;r1c1&n=specs;be;specs/;parse%20%2B%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20%2B%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw)
 
 ### One request, step by step
 
 The URL is parsed, a skin is picked, the SVG is drawn, and it comes back with `<metadata>` inside — one path for every chart type.
 
 ```text
-https://x-cmd.com/draw/arch2?n=app;fe;Your%20app;r0c0&n=svgback;fe;SVG%20in%20your%20page;r0c5&n=worker;be;Worker;r1c1&n=resp;fe;200%20+%20<metadata>;r1c4&n=specs;be;specs/%20parse;r2c2&n=styles;be;styles/%20skin;r3c3&n=render;be;render/%20draw;r4c4&e=app;worker&e=worker;specs&e=specs;styles&e=styles;render&e=render;resp&e=resp;svgback&b=Your%20app;app%20svgback&b=Worker;worker%20resp&b=specs/;specs&b=styles/;styles&b=render/;render&title=One%20request
+https://x-cmd.com/draw/seq?n=app;fe;Your%20app;;r0c0&n=worker;be;Worker;;r0c1&n=specs;be;specs/;parse%20%2B%20validate;r0c2&n=render;be;render/;draw%20the%20SVG;r0c3&e=app;worker;GET%20/draw%3Ftype=pie&e=worker;specs;parse%20the%20spec&e=specs;worker;spec;dash&e=worker;render;draw&e=render;worker;SVG;dash&e=worker;app;200%20%2B%20%3Cmetadata%3E;dash&title=One%20request
 ```
 
-![一次请求的时序](https://x-cmd.com/draw/arch2?n=app;fe;Your%20app;r0c0&n=svgback;fe;SVG%20in%20your%20page;r0c5&n=worker;be;Worker;r1c1&n=resp;fe;200%20+%20<metadata>;r1c4&n=specs;be;specs/%20parse;r2c2&n=styles;be;styles/%20skin;r3c3&n=render;be;render/%20draw;r4c4&e=app;worker&e=worker;specs&e=specs;styles&e=styles;render&e=render;resp&e=resp;svgback&b=Your%20app;app%20svgback&b=Worker;worker%20resp&b=specs/;specs&b=styles/;styles&b=render/;render&title=One%20request)
+![一次请求的时序](https://x-cmd.com/draw/seq?n=app;fe;Your%20app;;r0c0&n=worker;be;Worker;;r0c1&n=specs;be;specs/;parse%20%2B%20validate;r0c2&n=render;be;render/;draw%20the%20SVG;r0c3&e=app;worker;GET%20/draw%3Ftype=pie&e=worker;specs;parse%20the%20spec&e=specs;worker;spec;dash&e=worker;render;draw&e=render;worker;SVG;dash&e=worker;app;200%20%2B%20%3Cmetadata%3E;dash&title=One%20request)
 
 ### What draw is for
 
 Four kinds of callers: your code, an AI agent, your README, and whoever runs their own copy.
 
 ```text
-https://x-cmd.com/draw/arch2?n=caller;ext;Your%20app%20or%20CI;r0c0&n=agent;ext;AI%20agent;r0c1&n=writer;ext;README%20or%20docs;r0c2&n=ops;sec;Self-host%20operator;r0c3&n=uc1;be;Render%20a%20chart;GET%20/draw?type=...;r1c0&n=uc2;be;Store%20a%20short%20link;POST%20/draw;r1c1&n=uc3;be;Embed%20the%20SVG;markdown%20+%20img;r1c2&n=uc4;be;Run%20it%20yourself;npm%20+%20wrangler;r1c3&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for
+https://x-cmd.com/draw/uc?n=caller;actor;Your%20app%20or%20CI&n=agent;actor;AI%20agent&n=writer;actor;README%20or%20docs&n=ops;actor;Self-host%20operator&n=uc1;uc;Render%20a%20chart;GET%20/draw%3Ftype=...&n=uc2;uc;Store%20a%20short%20link;POST%20/draw&n=uc3;uc;Embed%20the%20SVG;markdown%20%2B%20img&n=uc4;uc;Run%20it%20yourself;npm%20%2B%20wrangler&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for
 ```
 
-![draw 的用户用例](https://x-cmd.com/draw/arch2?n=caller;ext;Your%20app%20or%20CI;r0c0&n=agent;ext;AI%20agent;r0c1&n=writer;ext;README%20or%20docs;r0c2&n=ops;sec;Self-host%20operator;r0c3&n=uc1;be;Render%20a%20chart;GET%20/draw?type=...;r1c0&n=uc2;be;Store%20a%20short%20link;POST%20/draw;r1c1&n=uc3;be;Embed%20the%20SVG;markdown%20+%20img;r1c2&n=uc4;be;Run%20it%20yourself;npm%20+%20wrangler;r1c3&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for)
+![draw 的用户用例](https://x-cmd.com/draw/uc?n=caller;actor;Your%20app%20or%20CI&n=agent;actor;AI%20agent&n=writer;actor;README%20or%20docs&n=ops;actor;Self-host%20operator&n=uc1;uc;Render%20a%20chart;GET%20/draw%3Ftype=...&n=uc2;uc;Store%20a%20short%20link;POST%20/draw&n=uc3;uc;Embed%20the%20SVG;markdown%20%2B%20img&n=uc4;uc;Run%20it%20yourself;npm%20%2B%20wrangler&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for)
 <!-- END draw-diagrams -->
 ## Six ways to use it (one render core)
 
@@ -413,8 +413,8 @@ Reference pages live in [`docs/`](docs/README.md), grouped the same way this REA
 | 1 · Overview | [What is draw](docs/1-overview/01-what-is-draw/en.md) · [Quick start](docs/1-overview/02-quick-start/en.md) · [Style families](docs/1-overview/03-styles/en.md) · [Data formats](docs/1-overview/04-data-and-api/en.md) · [Deploy it yourself](docs/1-overview/05-self-hosting/en.md) |
 | 2 · Data charts | [pie](docs/2-data-charts/01-pie/en.md) · [bar](docs/2-data-charts/02-bar/en.md) · [hbar](docs/2-data-charts/03-hbar/en.md) · [line](docs/2-data-charts/04-line/en.md) · [area](docs/2-data-charts/05-area/en.md) · [radar](docs/2-data-charts/06-radar/en.md) · [gauge](docs/2-data-charts/07-gauge/en.md) · [scatter](docs/2-data-charts/08-scatter/en.md) · [combo](docs/2-data-charts/09-combo/en.md) · [tokei](docs/2-data-charts/10-tokei/en.md) |
 | 3 · Relations | [sankey](docs/3-relations/01-sankey/en.md) |
-| 4 · Strategy and decision | [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) |
-| 5 · Architecture | [archmap](docs/5-architecture/01-archmap/en.md) · [mindmap](docs/5-architecture/02-mindmap/en.md) · [mermaid](docs/5-architecture/03-mermaid/en.md) |
+| 4 · Strategy and decision | [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) · [use case](docs/4-strategy/03-uc/en.md) |
+| 5 · Architecture | [archmap](docs/5-architecture/01-archmap/en.md) · [mindmap](docs/5-architecture/02-mindmap/en.md) · [mermaid](docs/5-architecture/03-mermaid/en.md) · [sequence](docs/5-architecture/04-seq/en.md) |
 | 6 · Schedule | [gantt](docs/6-schedule/01-gantt/en.md) |
 | 7 · Infographics | [qr](docs/7-infographics/01-qr/en.md) |
 | 8 · Maps | [maps](docs/8-maps/01-maps/en.md) |

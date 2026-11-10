@@ -72,7 +72,7 @@ This is a diagram renderer, not a full Mermaid runtime. The subset:
   nodes inside it.
 
 A `gantt` source is also accepted here and is rendered by the
-[Gantt chart](../01-gantt) page's engine.
+[Gantt chart](../../6-schedule/01-gantt) page's engine.
 
 ## 3. Pitfalls
 

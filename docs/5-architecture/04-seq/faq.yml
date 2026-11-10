@@ -1,0 +1,37 @@
+id: x-draw-5-architecture-04-seq
+
+data:
+  - name:
+      en: Sequence diagram
+      cn: 时序图
+    qa:
+      - id: order
+        question:
+          en: "How is the order of the messages decided?"
+          cn: "消息的顺序谁定?"
+        answer:
+          en: >
+            By the order of the `e=` parameters in the URL. The first one is drawn on the first line, the second on the second line — nothing is sorted for you.
+          cn: >
+            看 URL 里 `e=` 的先后。第一个画在第一行,第二个画在第二行 —— 引擎不替你排序。
+        confidence: 9
+        reference:
+          - docs/5-architecture/04-seq/en.md
+          - docs/5-architecture/04-seq/cn.md
+  - name:
+      en: Sequence diagram
+      cn: 时序图
+    qa:
+      - id: return
+        question:
+          en: "How do I draw a reply?"
+          cn: "回信怎么画?"
+        answer:
+          en: >
+            Add `dash` as the last field of the message: `e=worker;app;200 with metadata;dash`. The arrow comes back dashed.
+          cn: >
+            在消息的最后一个字段写 `dash`:`e=worker;app;200 with metadata;dash`,回来的箭头就是虚线。
+        confidence: 9
+        reference:
+          - docs/5-architecture/04-seq/en.md
+          - docs/5-architecture/04-seq/cn.md
