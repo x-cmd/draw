@@ -16,7 +16,7 @@ describe('renderEchartsFromUrl', () => {
     expect(svg).toMatch(/^<svg role="img"/);
     expect(svg).toContain('var(--d-s1)'); // 系列色走皮肤变量
     expect(svg).toContain('--d-grid'); // 轴/网格中性色变量已内嵌
-    expect(svg).toContain('DrawInter'); // Inter 子集 @font-face + 根 font-family
+    expect(svg).toContain('ui-sans-serif'); // 系统字体栈(2026-11-03 起不再内嵌 Inter 子集)
     expect(svg).toContain('<metadata>'); // AI round-trip:option 原文内嵌(metaTag 统一转义,与核心层一致)
     expect(svg).toContain('&quot;generator&quot;:&quot;draw&quot;');
     expect(svg).toContain('&quot;template&quot;:&quot;echarts&quot;');
