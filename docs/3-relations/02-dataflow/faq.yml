@@ -1,0 +1,37 @@
+id: x-draw-3-relations-02-dataflow
+
+data:
+  - name:
+      en: Data flow
+      cn: 数据流图
+    qa:
+      - id: types
+        question:
+          en: "What are the node types?"
+          cn: "节点有哪几种?"
+        answer:
+          en: >
+            `process` transforms, `store` holds, `source` feeds in, `sink` drains out — and each gets its own shape and colour.
+          cn: >
+            `process` 处理、`store` 存、`source` 进、`sink` 出 —— 各自一个形状和颜色。
+        confidence: 9
+        reference:
+          - docs/3-relations/02-dataflow/en.md
+          - docs/3-relations/02-dataflow/cn.md
+  - name:
+      en: Data flow
+      cn: 数据流图
+    qa:
+      - id: labels
+        question:
+          en: "Where does the data name go?"
+          cn: "数据名写在哪?"
+        answer:
+          en: >
+            On the edge: `e=parse;store;write parquet`. Without it the diagram is a dependency graph, not a data flow.
+          cn: >
+            写在边上:`e=parse;store;write parquet`。不写就成了依赖图,不是数据流。
+        confidence: 9
+        reference:
+          - docs/3-relations/02-dataflow/en.md
+          - docs/3-relations/02-dataflow/cn.md

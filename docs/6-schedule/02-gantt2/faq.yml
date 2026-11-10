@@ -1,0 +1,37 @@
+id: x-draw-6-schedule-02-gantt2
+
+data:
+  - name:
+      en: Gantt v2
+      cn: 甘特图 v2
+    qa:
+      - id: same-source
+        question:
+          en: "Is it a different syntax?"
+          cn: "语法不一样吗?"
+        answer:
+          en: >
+            No — same `m=` source as `/draw/gantt`. Only the face changed: bars coloured by status, a badge per row, a legend underneath.
+          cn: >
+            不是 —— `m=` 的源码和 `/draw/gantt` 完全一样。变的是脸:条按状态着色、每行一个角标、底下有图例。
+        confidence: 9
+        reference:
+          - docs/6-schedule/02-gantt2/en.md
+          - docs/6-schedule/02-gantt2/cn.md
+  - name:
+      en: Gantt v2
+      cn: 甘特图 v2
+    qa:
+      - id: old-one
+        question:
+          en: "What happened to /draw/gantt?"
+          cn: "老的 `/draw/gantt` 呢?"
+        answer:
+          en: >
+            Still there, untouched, with its own look. The two endpoints take the same source and draw differently.
+          cn: >
+            还在,一行未动,还是它自己那张脸。两个端点吃同一份源码,画出来不一样。
+        confidence: 9
+        reference:
+          - docs/6-schedule/02-gantt2/en.md
+          - docs/6-schedule/02-gantt2/cn.md

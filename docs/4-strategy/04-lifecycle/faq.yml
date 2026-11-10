@@ -1,0 +1,37 @@
+id: x-draw-4-strategy-04-lifecycle
+
+data:
+  - name:
+      en: Lifecycle
+      cn: 生命周期图
+    qa:
+      - id: types
+        question:
+          en: "What are the node types?"
+          cn: "节点有哪几种?"
+        answer:
+          en: >
+            `state` is a state, `decision` is a branch point, `terminal` is where it starts or ends.
+          cn: >
+            `state` 是状态、`decision` 是分叉点、`terminal` 是开始或结束。
+        confidence: 9
+        reference:
+          - docs/4-strategy/04-lifecycle/en.md
+          - docs/4-strategy/04-lifecycle/cn.md
+  - name:
+      en: Lifecycle
+      cn: 生命周期图
+    qa:
+      - id: trigger
+        question:
+          en: "What goes on the arrows?"
+          cn: "箭头上写什么?"
+        answer:
+          en: >
+            The trigger — `payment ok`, `fail`, `reopen`. That is what makes it a state machine.
+          cn: >
+            触发条件 —— `payment ok`、`fail`、`reopen`。这才让它成为状态机。
+        confidence: 9
+        reference:
+          - docs/4-strategy/04-lifecycle/en.md
+          - docs/4-strategy/04-lifecycle/cn.md

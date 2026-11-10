@@ -412,10 +412,10 @@ Reference pages live in [`docs/`](docs/README.md), grouped the same way this REA
 |---|---|
 | 1 · Overview | [What is draw](docs/1-overview/01-what-is-draw/en.md) · [Quick start](docs/1-overview/02-quick-start/en.md) · [Style families](docs/1-overview/03-styles/en.md) · [Data formats](docs/1-overview/04-data-and-api/en.md) · [Deploy it yourself](docs/1-overview/05-self-hosting/en.md) |
 | 2 · Data charts | [pie](docs/2-data-charts/01-pie/en.md) · [bar](docs/2-data-charts/02-bar/en.md) · [hbar](docs/2-data-charts/03-hbar/en.md) · [line](docs/2-data-charts/04-line/en.md) · [area](docs/2-data-charts/05-area/en.md) · [radar](docs/2-data-charts/06-radar/en.md) · [gauge](docs/2-data-charts/07-gauge/en.md) · [scatter](docs/2-data-charts/08-scatter/en.md) · [combo](docs/2-data-charts/09-combo/en.md) · [tokei](docs/2-data-charts/10-tokei/en.md) |
-| 3 · Relations | [sankey](docs/3-relations/01-sankey/en.md) |
-| 4 · Strategy and decision | [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) · [use case](docs/4-strategy/03-uc/en.md) |
-| 5 · Architecture | [archmap](docs/5-architecture/01-archmap/en.md) · [mindmap](docs/5-architecture/02-mindmap/en.md) · [mermaid](docs/5-architecture/03-mermaid/en.md) · [sequence](docs/5-architecture/04-seq/en.md) |
-| 6 · Schedule | [gantt](docs/6-schedule/01-gantt/en.md) |
+| 3 · Relations | [sankey](docs/3-relations/01-sankey/en.md) · [dataflow](docs/3-relations/02-dataflow/en.md) |
+| 4 · Strategy and decision | [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) · [use case](docs/4-strategy/03-uc/en.md) · [lifecycle](docs/4-strategy/04-lifecycle/en.md) |
+| 5 · Architecture | [archmap](docs/5-architecture/01-archmap/en.md) · [mindmap](docs/5-architecture/02-mindmap/en.md) · [mermaid](docs/5-architecture/03-mermaid/en.md) · [sequence](docs/5-architecture/04-seq/en.md) · [erd](docs/5-architecture/05-erd/en.md) · [class](docs/5-architecture/06-class/en.md) |
+| 6 · Schedule | [gantt](docs/6-schedule/01-gantt/en.md) · [gantt v2](docs/6-schedule/02-gantt2/en.md) |
 | 7 · Infographics | [qr](docs/7-infographics/01-qr/en.md) |
 | 8 · Maps | [maps](docs/8-maps/01-maps/en.md) |
 | 9 · Showcases | [github](docs/9-showcases/01-github/en.md) · [analysis report](docs/9-showcases/02-analysis-report/en.md) · [macro economics](docs/9-showcases/03-macro-economics/en.md) · [marketing](docs/9-showcases/04-marketing/en.md) · [product roadmap](docs/9-showcases/05-product-roadmap/en.md) · [ops and reliability](docs/9-showcases/06-ops-reliability/en.md) · [education](docs/9-showcases/07-education/en.md) · [healthcare](docs/9-showcases/08-healthcare/en.md) · [finance](docs/9-showcases/09-finance/en.md) · [logistics](docs/9-showcases/10-logistics/en.md) |
