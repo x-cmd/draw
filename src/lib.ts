@@ -40,6 +40,7 @@ export { renderArchmapFromUrl } from './render/archmap.js';
 // mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';
+export { parseTokei, renderTokeiFromUrl } from './render/tokei.js';
 // mindmap 树形导图:同步,与 GET /draw/mindmap 同参同输出
 export { renderMindmapFromUrl } from './render/mindmap.js';
 // PNG 导出(x-cmd-hub/draw#24):任意渲染产出的 SVG → 平面化(烘焙) → resvg-wasm 光栅化;

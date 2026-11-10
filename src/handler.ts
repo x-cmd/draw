@@ -17,6 +17,7 @@ import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderGanttFromUrl } from './render/gantt.js';
+import { renderTokeiFromUrl } from './render/tokei.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
 import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub, fetchSrcDoc } from './render/onepage.js';
 import { renderOnesvg } from './render/onesvg.js';
@@ -280,6 +281,18 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?m=<gantt source>`, { allow: 'GET' });
     }
     return chartResponse(url, renderGanttFromUrl(url));
+  }
+  // /draw/tokei 代码统计图:d=<tokei --output json> → 「代码/注释/空行」三段堆叠柱。
+  // POST 也收:body 直接放 tokei 的 json(tokei --output json | curl -X POST --data-binary @- …)
+  if (sub === '/tokei') {
+    if (method === 'POST') {
+      const body = await readBody(request);
+      return chartResponse(url, renderTokeiFromUrl(url, body));
+    }
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?d=<tokei json> or POST with the json as the body`, { allow: 'GET, POST' });
+    }
+    return chartResponse(url, renderTokeiFromUrl(url));
   }
   // /draw/x-cmd/release-banner 命名空间路由(x-cmd 发布封面):title/version/cmd/paper
   if (sub === '/x-cmd/release-banner' || sub === '/x-cmd/release') {
