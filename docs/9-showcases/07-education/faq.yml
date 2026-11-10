@@ -1,0 +1,20 @@
+id: x-draw-9-showcases-07-education
+
+data:
+  - name:
+      en: Education showcase
+      cn: 教学场景
+    qa:
+      - id: which-chart
+        question:
+          en: "Why a scatter plot for attendance and scores?"
+          cn: "出勤和成绩为什么用散点图?"
+        answer:
+          en: >
+            Because the question is about the relationship, not the averages. One point per student: a tight diagonal means attendance tracks the score, a cloud means it does not.
+          cn: >
+            因为问的是关系,不是平均分。一个学生一个点:点贴着斜线说明出勤和成绩同向,散成一片就说明没关系。
+        confidence: 9
+        reference:
+          - docs/9-showcases/07-education/en.md
+          - docs/9-showcases/07-education/cn.md

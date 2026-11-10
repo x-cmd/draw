@@ -1,0 +1,20 @@
+id: x-draw-9-showcases-09-finance
+
+data:
+  - name:
+      en: Finance showcase
+      cn: 金融场景
+    qa:
+      - id: which-chart
+        question:
+          en: "Scatter or line for return against risk?"
+          cn: "收益对风险用散点还是折线?"
+        answer:
+          en: >
+            Scatter — each point is a portfolio, and the question is which combination of return and volatility you would pick. A line would force the points into an order that does not exist.
+          cn: >
+            用散点 —— 一个点一个组合,问题是「你要选哪一份收益和波动」。折线会把这些点硬排成一个并不存在的顺序。
+        confidence: 9
+        reference:
+          - docs/9-showcases/09-finance/en.md
+          - docs/9-showcases/09-finance/cn.md

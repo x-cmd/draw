@@ -1,6 +1,6 @@
 ---
 name: docs/6-schedule/01-gantt
-description: 'x-cmd/draw Gantt chart (/draw/gantt). Schedule as text: sections, tasks, durations, dependencies. Params: m (source), scale (day/week/month), t, title, w/h.'
+description: 'x-cmd/draw Gantt chart (/draw/gantt). The schedule is written as text: sections, tasks, durations, dependencies. Params: m (source), scale (day/week/month), t, title, w/h.'
 type: reference
 ---
 
@@ -8,19 +8,23 @@ type: reference
 
 core_features:
 
-  - `/draw/gantt` — schedule written as text
-  - `m=` source: `dateFormat …`, `section …`, then `Name :status, id, start, duration`
-  - Task status: `done` / `active` / `crit` / `milestone`
-  - `after <id>` chains one task after another
+  - `/draw/gantt` — the schedule written as text
+  - `m=` source: `dateFormat YYYY-MM-DD`, `section …`, one line per task
+  - A task line: `Name :status, id, start, duration`
+  - Status: `done` / `active` / `crit` / `milestone`; `NN%` for progress
+  - `after <id>` starts a task when another one ends
+  - `scale=` the time axis: `day` / `week` / `month`
 
 # Key Information
 
 highlights:
 
-  - `/draw/gantt` — schedule written as text
-  - `m=` source: `dateFormat …`, `section …`, then `Name :status, id, start, duration`
-  - Task status: `done` / `active` / `crit` / `milestone`
-  - `after <id>` chains one task after another
+  - `/draw/gantt` — the schedule written as text
+  - `m=` source: `dateFormat YYYY-MM-DD`, `section …`, one line per task
+  - A task line: `Name :status, id, start, duration`
+  - Status: `done` / `active` / `crit` / `milestone`; `NN%` for progress
+  - `after <id>` starts a task when another one ends
+  - `scale=` the time axis: `day` / `week` / `month`
 
 # Use Cases
 
@@ -28,7 +32,7 @@ use_cases:
 
   - Sprint and iteration plans
   - Project timelines with milestones
-  - Release schedules and launch checklists
+  - Release schedules and launch plans
   - Onboarding and rollout plans
 
 # Related Resources

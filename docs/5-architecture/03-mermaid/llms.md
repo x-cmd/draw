@@ -1,6 +1,6 @@
 ---
 name: docs/5-architecture/03-mermaid
-description: 'x-cmd/draw flowchart (/draw/mermaid). Mermaid syntax in, SVG out. Params: m (source), t (mono), title, w/h.'
+description: 'x-cmd/draw flowchart (/draw/mermaid). Mermaid syntax in, SVG out. Params: m (source), t (mono/soft), title, w/h. The supported subset is graph/flowchart with node shapes, edge labels and subgraphs.'
 type: reference
 ---
 
@@ -10,8 +10,9 @@ core_features:
 
   - `/draw/mermaid` — Mermaid source rendered server-side
   - `m=` the source: `graph LR …` / `flowchart TD …`, URL-encoded
-  - `t=` style: `mono` for line art
-  - The source must be URL-encoded (`>` → `%3E`, newline → `%0A`)
+  - Node shapes: `[box]`, `{{diamond}}`, `([round])`, `[(cylinder)]`
+  - Edges: `-->`, `---`, `-.->`, `==>`, and `-->|label|`
+  - `subgraph Name … end` becomes a boundary group
 
 # Key Information
 
@@ -19,8 +20,9 @@ highlights:
 
   - `/draw/mermaid` — Mermaid source rendered server-side
   - `m=` the source: `graph LR …` / `flowchart TD …`, URL-encoded
-  - `t=` style: `mono` for line art
-  - The source must be URL-encoded (`>` → `%3E`, newline → `%0A`)
+  - Node shapes: `[box]`, `{{diamond}}`, `([round])`, `[(cylinder)]`
+  - Edges: `-->`, `---`, `-.->`, `==>`, and `-->|label|`
+  - `subgraph Name … end` becomes a boundary group
 
 # Use Cases
 

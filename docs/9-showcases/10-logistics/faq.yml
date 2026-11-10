@@ -1,0 +1,20 @@
+id: x-draw-9-showcases-10-logistics
+
+data:
+  - name:
+      en: Logistics showcase
+      cn: 物流场景
+    qa:
+      - id: which-chart
+        question:
+          en: "Why a Sankey for order-to-door?"
+          cn: "订单到交付为什么用桑基图?"
+        answer:
+          en: >
+            Because orders do not all take the same route — some skip picking, some go straight out. A funnel would hide that; the Sankey keeps every path and its size.
+          cn: >
+            因为订单走的路不一样 —— 有的跳过拣货,有的直接发走。漏斗图看不出来,桑基图把每条路径和它的量都留着。
+        confidence: 9
+        reference:
+          - docs/9-showcases/10-logistics/en.md
+          - docs/9-showcases/10-logistics/cn.md

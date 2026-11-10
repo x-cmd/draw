@@ -18,3 +18,20 @@ data:
         reference:
           - docs/5-architecture/03-mermaid/en.md
           - docs/5-architecture/03-mermaid/cn.md
+  - name:
+      en: Supported syntax
+      cn: 支持的语法
+    qa:
+      - id: subset
+        question:
+          en: "Is all of Mermaid supported?"
+          cn: "Mermaid 全都支持吗?"
+        answer:
+          en: >
+            No — only the flowchart subset: `graph` / `flowchart` with node shapes, edge styles and labels, and subgraphs. A `sequenceDiagram` or a `pieChart` is a 400.
+          cn: >
+            不全 —— 只支持流程图这一部分:`graph` / `flowchart`,带节点形状、连线样式和文字,以及 subgraph。`sequenceDiagram`、`pieChart` 这些会 400。
+        confidence: 9
+        reference:
+          - docs/5-architecture/03-mermaid/en.md
+          - docs/5-architecture/03-mermaid/cn.md

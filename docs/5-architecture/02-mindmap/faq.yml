@@ -18,3 +18,20 @@ data:
         reference:
           - docs/5-architecture/02-mindmap/en.md
           - docs/5-architecture/02-mindmap/cn.md
+  - name:
+      en: Style
+      cn: 形态
+    qa:
+      - id: style-vs-theme
+        question:
+          en: "What is the difference between `style=` and `t=`?"
+          cn: "`style=` 和 `t=` 有什么区别?"
+        answer:
+          en: >
+            `style=` picks the shape — organic, tree, radial or bubble. `t=` picks the colours. Setting `t=` never changes the layout.
+          cn: >
+            `style=` 定形态 —— organic、tree、radial、bubble;`t=` 定颜色。改 `t=` 不会动布局。
+        confidence: 9
+        reference:
+          - docs/5-architecture/02-mindmap/en.md
+          - docs/5-architecture/02-mindmap/cn.md

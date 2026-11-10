@@ -381,6 +381,6 @@ Reference pages live in [`docs/`](docs/README.md), grouped the same way this REA
 | 6 · Schedule | [gantt](docs/6-schedule/01-gantt/en.md) |
 | 7 · Infographics | [qr](docs/7-infographics/01-qr/en.md) |
 | 8 · Maps | [maps](docs/8-maps/01-maps/en.md) |
-| 9 · Showcases | [github](docs/9-showcases/01-github/en.md) · [analysis report](docs/9-showcases/02-analysis-report/en.md) · [macro economics](docs/9-showcases/03-macro-economics/en.md) · [marketing](docs/9-showcases/04-marketing/en.md) · [product roadmap](docs/9-showcases/05-product-roadmap/en.md) · [ops and reliability](docs/9-showcases/06-ops-reliability/en.md) |
+| 9 · Showcases | [github](docs/9-showcases/01-github/en.md) · [analysis report](docs/9-showcases/02-analysis-report/en.md) · [macro economics](docs/9-showcases/03-macro-economics/en.md) · [marketing](docs/9-showcases/04-marketing/en.md) · [product roadmap](docs/9-showcases/05-product-roadmap/en.md) · [ops and reliability](docs/9-showcases/06-ops-reliability/en.md) · [education](docs/9-showcases/07-education/en.md) · [healthcare](docs/9-showcases/08-healthcare/en.md) · [finance](docs/9-showcases/09-finance/en.md) · [logistics](docs/9-showcases/10-logistics/en.md) |
 
 Start with [quick start](docs/1-overview/02-quick-start/en.md) for a first chart, or the per-type page when you already know which chart you want.

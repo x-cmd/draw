@@ -5,15 +5,49 @@ data:
       en: Architecture diagram
       cn: 架构图
     qa:
-      - id: how-to-place
+      - id: how-it-works
         question:
           en: "Do I have to draw the boxes and the lines myself?"
           cn: "方块和线要自己画吗?"
         answer:
           en: >
-            No. You name the nodes and say which one points at which; the engine sizes the boxes, places them on the grid you gave and routes the edges around them.
+            No. You name the nodes and say which one points at which; the engine sizes the boxes, packs them onto the grid you gave and routes the lines around them.
           cn: >
             不用。你只写节点、写谁指向谁,引擎负责量盒子、放到你给的格子上,并把线绕开走。
+        confidence: 9
+        reference:
+          - docs/5-architecture/01-archmap/en.md
+          - docs/5-architecture/01-archmap/cn.md
+  - name:
+      en: Node types
+      cn: 节点类型
+    qa:
+      - id: types
+        question:
+          en: "What do the node types change?"
+          cn: "节点类型影响什么?"
+        answer:
+          en: >
+            The colour and the icon — `fe` front end, `be` back end, `db` database, `cloud` managed service, `ext` external, `sec` security, `bus` message bus, `svc` generic service.
+          cn: >
+            颜色和图标 —— `fe` 前端、`be` 后端、`db` 数据库、`cloud` 云服务、`ext` 外部系统、`sec` 安全、`bus` 消息、`svc` 通用服务。
+        confidence: 9
+        reference:
+          - docs/5-architecture/01-archmap/en.md
+          - docs/5-architecture/01-archmap/cn.md
+  - name:
+      en: Boundaries
+      cn: 边界
+    qa:
+      - id: boundary
+        question:
+          en: "How do I group boxes together?"
+          cn: "怎么把方块框成一组?"
+        answer:
+          en: >
+            With `b=label;id id …` — every id after the semicolon is boxed together under that label. The ids must exist already; a boundary never creates nodes.
+          cn: >
+            用 `b=名称;id id …` —— 分号后面的 id 会被框在一起、归到这个名字下。id 必须先存在,边界不会替你建节点。
         confidence: 9
         reference:
           - docs/5-architecture/01-archmap/en.md

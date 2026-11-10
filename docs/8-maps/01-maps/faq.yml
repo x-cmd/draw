@@ -18,3 +18,20 @@ data:
         reference:
           - docs/8-maps/01-maps/en.md
           - docs/8-maps/01-maps/cn.md
+  - name:
+      en: Region names
+      cn: 地名写法
+    qa:
+      - id: names
+        question:
+          en: "What are the region names written in?"
+          cn: "地名要用什么写法?"
+        answer:
+          en: >
+            Whatever the GeoJSON uses: English for the US and the EU, Chinese short forms for China (`北京`), German for Germany (`Hamburg`), Portuguese for Brazil.
+          cn: >
+            跟着 GeoJSON 走:美国和欧盟用英文,中国用简称(`北京`),德国用德语(`Hamburg`),巴西用葡萄牙语。
+        confidence: 9
+        reference:
+          - docs/8-maps/01-maps/en.md
+          - docs/8-maps/01-maps/cn.md

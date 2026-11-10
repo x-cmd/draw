@@ -1,0 +1,20 @@
+id: x-draw-9-showcases-08-healthcare
+
+data:
+  - name:
+      en: Healthcare showcase
+      cn: 医疗场景
+    qa:
+      - id: which-chart
+        question:
+          en: "Occupancy as a gauge — what does the scale buy me?"
+          cn: "占用率用仪表盘,刻度有什么用?"
+        answer:
+          en: >
+            With the reliability style the ring is segmented and carries a scale, so 78% is read as 78% rather than as a vague full arc. A plain gauge would hide the difference between 78% and 95%.
+          cn: >
+            reliability 风格的环是分段的、还带刻度,78% 就读成 78%,而不是「差不多满了」。普通仪表盘会把 78% 和 95% 的差别藏起来。
+        confidence: 9
+        reference:
+          - docs/9-showcases/08-healthcare/en.md
+          - docs/9-showcases/08-healthcare/cn.md

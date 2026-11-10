@@ -18,3 +18,20 @@ data:
         reference:
           - docs/6-schedule/01-gantt/en.md
           - docs/6-schedule/01-gantt/cn.md
+  - name:
+      en: Encoding
+      cn: 编码
+    qa:
+      - id: encoding
+        question:
+          en: "Does the source need escaping?"
+          cn: "源码要转义吗?"
+        answer:
+          en: >
+            Yes — it goes into `m=` URL-encoded: newlines become `%0A` and spaces `%20`. A raw `&` or `,` inside a task name breaks the parse.
+          cn: >
+            要 —— 源码要 URL 编码后放进 `m=`:换行变 `%0A`、空格变 `%20`。任务名里没编码的 `&` 或 `,` 会让解析断掉。
+        confidence: 9
+        reference:
+          - docs/6-schedule/01-gantt/en.md
+          - docs/6-schedule/01-gantt/cn.md

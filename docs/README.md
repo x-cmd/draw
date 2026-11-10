@@ -86,3 +86,7 @@ Real scenarios, each one a set of ready URLs.
 | [04 marketing](9-showcases/04-marketing/en.md) | marketing — funnels, channels, spend and ROI, customer segments |
 | [05 product roadmap](9-showcases/05-product-roadmap/en.md) | product and roadmap — product maps, launch checklists, sprint plans |
 | [06 ops and reliability](9-showcases/06-ops-reliability/en.md) | ops and reliability — uptime, storage, cluster topology, login flow |
+| [07 education](9-showcases/07-education/en.md) | education — enrolment, scores, the course map, the term plan |
+| [08 healthcare](9-showcases/08-healthcare/en.md) | healthcare — waiting times, bed occupancy, case mix, patient pathways |
+| [09 finance](9-showcases/09-finance/en.md) | finance — allocation, return against risk, the deal funnel |
+| [10 logistics](9-showcases/10-logistics/en.md) | logistics — throughput, warehouse fill, the fulfilment network |
