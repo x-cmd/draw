@@ -88,6 +88,11 @@ b=Data Layer;pg cache
 b=Namespace;p1 p2
 ```
 
+An optional **third field** picks the frame's colour — a palette number 1–10
+(`b=AWS Region;cdn lb api;9`). Leave it out and draw picks a colour the
+diagram's node types are not using, so a frame never blends into the boxes it
+surrounds.
+
 ## 2. Positions
 
 | form | meaning |

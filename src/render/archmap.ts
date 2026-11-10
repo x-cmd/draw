@@ -46,7 +46,12 @@ export interface ArchNode {
   px?: { x: number; y: number; w?: number; h?: number };
 }
 export interface ArchEdge { from: string; to: string; label?: string; variant: EdgeVariant }
-export interface ArchBoundary { label: string; ids: string[] }
+export interface ArchBoundary {
+  label: string;
+  ids: string[];
+  /** 可选的色板编号(1–10):b=名称;id id…;9 —— v2 用它给边界上色,v1 不用 */
+  color?: number;
+}
 interface ArchSpec {
   type: 'archmap';
   title?: string;
@@ -122,10 +127,23 @@ export function parseBoundaries(raw: string[], ids: Set<string>): ArchBoundary[]
     const sep = v.indexOf(';');
     if (sep < 1) bad(`"b=${v}" (#${i + 1}): expected <label>;<id> <id> ...`);
     const label = v.slice(0, sep).trim();
-    const members = v.slice(sep + 1).trim().split(/\s+/).filter(Boolean);
+    let rest = v.slice(sep + 1).trim();
+    // 可选的第三段:色板编号 1–10(b=名称;id id…;9)
+    let color: number | undefined;
+    const csep = rest.lastIndexOf(';');
+    if (csep > 0) {
+      const tail = rest.slice(csep + 1).trim();
+      if (/^\d{1,2}$/.test(tail)) {
+        const n = Number(tail);
+        if (n < 1 || n > 10) bad(`"b=${v}": colour must be a palette number 1-10, got "${tail}"`);
+        color = n;
+        rest = rest.slice(0, csep).trim();
+      }
+    }
+    const members = rest.split(/\s+/).filter(Boolean);
     if (!label || !members.length) bad(`"b=${v}" (#${i + 1}): label and at least one member id required`);
     for (const m of members) if (!ids.has(m)) bad(`"b=${v}": unknown node "${m}"`);
-    return { label, ids: members };
+    return { label, ids: members, ...(color ? { color } : {}) };
   });
 }
 

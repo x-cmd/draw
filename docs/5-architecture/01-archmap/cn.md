@@ -77,6 +77,10 @@ https://x-cmd.com/draw/arch2?n=api;be;API%20Gateway;auth;r1c0w2
 
 `/draw/archmap` 一行未动,还在老地方;要拿给人看的那张,用 `/draw/arch2`。
 
+v2 里边界框是**有颜色的** —— 第三段可以指定色板编号(`b=AWS Region;cdn lb api;9`),
+不写就由 draw 挑一个这套图的节点类型没用到的颜色。绕行的边会待在它所属的框里,
+不会跑出「区域」。
+
 ## 三、节点怎么写
 
 ```

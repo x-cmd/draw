@@ -233,6 +233,40 @@ describe('b= 泳道/边界,所有图种都认', () => {
     expect(svg).toContain('OUTER');
   });
 
+  it('边界上色:作者指定的色板编号优先', () => {
+    const q = 'n=a;be;A;r0c0&n=b;be;B;r1c0&e=a;b&b=sys;a b;9';
+    const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + q));
+    expect(svg).toContain('var(--d-s9)');
+  });
+
+  it('边界默认取「这套词汇没被类型占用」的颜色', () => {
+    // 架构图那八种类型占了 s1–s7,边界只能用 s8/s9/s10
+    const q = 'n=a;be;A;r0c0&n=b;be;B;r1c0&e=a;b&b=sys;a b';
+    const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + q));
+    expect(svg).toContain('var(--d-s8)');
+    expect(svg).not.toContain('var(--d-s1)" stroke-opacity="0.65"');
+  });
+
+  it('绕行的边待在边界框里,不跑出「区域」', () => {
+    // 两端都在区域里,中间的盒子挡路 → 绕行通道应该在框内
+    // 同一行里 d 和 e 之间夹着一个盒子 m → d→e 必须绕行
+    const nodes = [
+      'n=a;be;A;;r0c0', 'n=m;be;M;;r1c1',
+      'n=d;be;D;;r1c0', 'n=e;be;E;;r1c2',
+    ];
+    const q = [...nodes, 'e=d;e;write', 'b=Region;d e m'].join('&');
+    const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + q));
+    // 边界框的下沿
+    const bb = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="14" fill="none" stroke="var\(--d-s\d+\)"/.exec(svg);
+    expect(bb).toBeTruthy();
+    const bottom = Number(bb![2]) + Number(bb![4]);
+    // 走线的每一个 y 都要在框内(框的上沿留出标签胶囊的余量)
+    for (const m of svg.matchAll(/<path d="M([\d.]+) ([\d.]+)L([\d.]+) ([\d.]+)/g)) {
+      expect(Number(m[2])).toBeLessThan(bottom);
+      expect(Number(m[4])).toBeLessThan(bottom);
+    }
+  });
+
   it('b= 里的 id 不存在就报错', () => {
     expect(() => renderSeqFromUrl(new URL('https://x-cmd.com/draw/seq?n=a;fe;A;r0c0&b=sys;ghost')))
       .toThrow(/ghost/);

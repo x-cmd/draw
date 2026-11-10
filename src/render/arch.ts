@@ -302,22 +302,37 @@ const hitBox = (x1: number, y1: number, x2: number, y2: number, boxes: Box[]): b
   boxes.some((b) => segHits(x1, y1, x2, y2, b));
 
 /** 在 a/b 之外找一条横向通道:先往下找,再往上找,取第一条不撞盒子的 */
-function detourY(a: Box, b: Box, x1: number, x2: number, boxes: Box[]): number {
+/**
+ * 绕行通道:横向的线撞到挡路的盒子就换一条空通道走。
+ * `inside` = 两端共同所属的边界(有的话)—— 通道优先待在框里,
+ * 否则那条线看起来像是从「区域」里跑出去了。
+ */
+function detourY(a: Box, b: Box, x1: number, x2: number, boxes: Box[], inside?: Box): number {
   const lo = Math.min(x1, x2);
   const hi = Math.max(x1, x2);
-  const cands = [
-    Math.max(a.y + a.h, b.y + b.h) + 22,
-    Math.max(a.y + a.h, b.y + b.h) + 54,
-    Math.min(a.y, b.y) - 22,
-    Math.min(a.y, b.y) - 54,
-  ];
-  for (const y of cands) {
-    if (!hitBox(lo, y, hi, y, boxes)) return y;
-  }
+  const below = Math.max(a.y + a.h, b.y + b.h);
+  const above = Math.min(a.y, b.y);
+  const cands = [below + 20, below + 52, above - 20, above - 52];
+  const free = (y: number): boolean => !hitBox(lo, y, hi, y, boxes);
+  const fits = (y: number): boolean => !inside || (y > inside.y + 4 && y < inside.y + inside.h - 4);
+  for (const y of cands) if (fits(y) && free(y)) return y;
+  for (const y of cands) if (free(y)) return y;
   return cands[0];
 }
 
-function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
+/** 两端都在哪个边界里(取最小的那个)—— 绕行时别跑出这个框 */
+function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
+  let best: Box | undefined;
+  for (const bb of bounds) {
+    const holds = (o: Box): boolean =>
+      o.x >= bb.x - 1 && o.y >= bb.y - 1 && o.x + o.w <= bb.x + bb.w + 1 && o.y + o.h <= bb.y + bb.h + 1;
+    if (!holds(a) || !holds(b)) continue;
+    if (!best || bb.w * bb.h < best.w * best.h) best = bb;
+  }
+  return best;
+}
+
+function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []): V2Routed[] {
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
   const cx = (b: Box) => b.x + b.w / 2;
@@ -373,7 +388,7 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
   for (const [key, idxs] of groups) {
     if (idxs.length < 2) continue;
     const src = byId.get(edges[idxs[0]].from)!.box;
-    const channelY = src.y + src.h + 26;
+    const channelY = src.y + src.h + 20;
     idxs.forEach((i) => busOf.set(i, { channelY, n: idxs.length }));
   }
 
@@ -405,7 +420,7 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
     if (exit === 'left' || exit === 'right') {
       // 横向:中间那段若横穿别人的盒子,改走下方(或上方)的通道
       if (hitBox(Math.min(p1[0], p3[0]), p1[1], Math.max(p1[0], p3[0]), p1[1], others)) {
-        const dy = detourY(a.box, b.box, p1[0], p3[0], others);
+        const dy = detourY(a.box, b.box, p1[0], p3[0], others, enclosingBoundary(a.box, b.box, bounds));
         pts = [p0, p1, [p1[0], dy], [p3[0], dy], p3, p4];
       } else {
         const mid = (p1[0] + p3[0]) / 2;
@@ -587,31 +602,67 @@ function drawEdgeLabelsV2(spots: Spot[], interactive: boolean): string {
 }
 
 /* ---------------------------------------------------------------- 边界 */
-function drawBoundariesV2(placed: Placed[], boundaries: ArchBoundary[], interactive: boolean): string {
+/**
+ * 边界的颜色:
+ * - 作者在 b= 的第三段指定了色板编号就用它(b=名称;id id…;9)
+ * - 没指定就按顺序取「这套词汇里没被类型占用的颜色」——
+ *   边界是框,盒子是类型,两者撞色就分不清了。
+ */
+function boundaryColors(boundaries: ArchBoundary[], types: HouseTypes): string[] {
+  const used = new Set(Object.values(types.meta).map((m) => m.color).filter((c) => c >= 0));
+  const free: number[] = [];
+  for (let i = 0; i < 10; i++) if (!used.has(i)) free.push(i);
+  return boundaries.map((bd, i) => {
+    if (bd.color) return sVar(bd.color - 1);
+    if (!free.length) return 'var(--d-faint)';
+    return sVar(free[i % free.length]);
+  });
+}
+
+/**
+ * v2 的边界盒:比 v1 多留一圈 —— 边要从「区域」里绕行时,通道得待在框内,
+ * 否则那条线看起来像是跑出了这个区域。
+ */
+const BOUNDARY_PAD = 30;
+function boundaryBoxV2(byId: Map<string, Placed>, bd: ArchBoundary): Box {
+  const boxes = bd.ids.map((id) => byId.get(id)!.box);
+  const x = Math.min(...boxes.map((o) => o.x)) - BOUNDARY_PAD;
+  const y = Math.min(...boxes.map((o) => o.y)) - BOUNDARY_PAD;
+  return {
+    x, y,
+    w: Math.max(...boxes.map((o) => o.x + o.w)) + BOUNDARY_PAD - x,
+    h: Math.max(...boxes.map((o) => o.y + o.h)) + BOUNDARY_PAD - y,
+  };
+}
+
+function drawBoundariesV2(placed: Placed[], boundaries: ArchBoundary[], interactive: boolean, colors: string[]): string {
   const byId = new Map(placed.map((p) => [p.id, p]));
-  return boundaries.map((bd) => {
-    const box = boundaryBox(byId, bd);
+  return boundaries.map((bd, i) => {
+    const box = boundaryBoxV2(byId, bd);
     const ia = interactive ? ` data-boundary="${esc(bd.ids.join(' '))}"` : '';
+    const c = colors[i];
     return (
       `<g${ia}>` +
       `<rect x="${r2(box.x)}" y="${r2(box.y)}" width="${r2(box.w)}" height="${r2(box.h)}" rx="14"` +
-      ` fill="none" stroke="var(--d-border)" stroke-width="1.3" stroke-dasharray="7 5"/>` +
+      ` fill="none" stroke="${c}" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="7 5"/>` +
       `</g>`
     );
   }).join('');
 }
 
 /** 边界的标签胶囊:画在走线之上,线不会压在字上 */
-function drawBoundaryLabelsV2(placed: Placed[], boundaries: ArchBoundary[]): string {
+function drawBoundaryLabelsV2(placed: Placed[], boundaries: ArchBoundary[], colors: string[]): string {
   const byId = new Map(placed.map((p) => [p.id, p]));
-  return boundaries.map((bd) => {
-    const box = boundaryBox(byId, bd);
+  return boundaries.map((bd, i) => {
+    const box = boundaryBoxV2(byId, bd);
     const label = bd.label.toUpperCase();
     const w = textW(label, 10) + bd.label.length * 1.2 + 20;
+    const c = colors[i];
     return (
       `<g>` +
       `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="var(--d-card)"/>` +
-      `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(box.y + 4)}" text-anchor="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)">${esc(label)}</text>` +
+      `<rect x="${r2(box.x + 15)}" y="${r2(box.y - 8)}" width="${r2(w - 2)}" height="18" rx="5" fill="${c}" fill-opacity="0.16"/>` +
+      `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(box.y + 4)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
       `</g>`
     );
   }).join('');
@@ -718,19 +769,19 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   }
   // 边界框比它的成员大一圈:画布要给它留出位置,不然图例会压在边界上
   for (const bd of o.boundaries) {
-    const bb = boundaryBox(byIdEarly, bd);
+    const bb = boundaryBoxV2(byIdEarly, bd);
     width = Math.max(width, bb.x + bb.w + PAD);
     bodyH = Math.max(bodyH, bb.y + bb.h + PAD);
   }
   const legend = o.legend ? drawLegend(placed, types) : { svg: '', h: 0 };
 
-  const routed = computeRoutesV2(placed, o.edges);
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
+  const routed = computeRoutesV2(placed, o.edges, o.boundaries.map((bd) => boundaryBoxV2(byId, bd)));
   const avoid: Box[] = [
     ...boxes.map((b) => ({ x: b.x - 2, y: b.y - 2, w: b.w + 4, h: b.h + 4 })),
     ...o.boundaries.map((bd) => {
-      const bb = boundaryBox(byId, bd);
+      const bb = boundaryBoxV2(byId, bd);
       const w = textW(bd.label.toUpperCase(), 10) + bd.label.length * 1.2 + 20;
       return { x: bb.x + 14, y: bb.y - 12, w, h: 22 };
     }),
@@ -771,12 +822,13 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   const titleSvg = o.title
     ? `<text x="${PAD}" y="${PAD + 16}" font-size="19" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
     : '';
+  const bColors = boundaryColors(o.boundaries, types);
   const body = iStyle + DEFS
-    + drawBoundariesV2(placed, o.boundaries, o.interactive)
+    + drawBoundariesV2(placed, o.boundaries, o.interactive, bColors)
     + drawRoutesV2(routed, o.interactive, types)
     + drawEdgeLabelsV2(spots, o.interactive)
     + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
-    + drawBoundaryLabelsV2(placed, o.boundaries);
+    + drawBoundaryLabelsV2(placed, o.boundaries, bColors);
   const legendSvg = legend.svg
     ? `<g transform="translate(0 ${r2(bodyH + 14)})">${legend.svg}</g>`
     : '';
