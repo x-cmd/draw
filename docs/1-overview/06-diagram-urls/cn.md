@@ -187,7 +187,20 @@ n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 | `<` `>` | `%3C` `%3E` | 写 `<<include>>` 时用 |
 | 换行 | `%0A` | 写多行文字时用 |
 
-## 7. 画图开关
+## 7. 在浏览器里试
+
+每种图都有交互页:`/draw/explore/arch2?n=…`(seq / uc / erd / class / dataflow /
+lifecycle / archmap / mindmap 同理)。
+
+页面左边是图,右边是**可以改的参数表** —— 一行一个 `n=` / `e=` / `b=`。
+改一格,图立刻跟着重画;加一行就是加一个节点或一条边;删一行就是删掉它。
+写错了就把服务端的原话显示出来(「unknown type "Postgres"
+(one of ext/fe/be/db/cloud/sec/bus/svc)」),图还留着上一次画得出来的那版。
+
+**Copy Markdown** / **Copy HTML** 给的是你刚改出来的 URL —— 图是链接,
+不是图片的链接。
+
+## 8. 画图开关
 
 | 参数 | 做什么 |
 |---|---|
@@ -197,7 +210,7 @@ n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 | `w=` / `h=` | 最小宽 / 高 |
 | `v=N` | 钉住版本 |
 
-## 8. 另外几种图,另外的语法
+## 9. 另外几种图,另外的语法
 
 有三个路径不用属性表,因为它们有自己的标准:
 
@@ -207,7 +220,7 @@ n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 | `/draw/mermaid` | `m=` | Mermaid 流程图源码 |
 | `/draw/gantt`、`/draw/gantt2` | `m=` | Mermaid Gantt 源码 |
 
-## 9. 坑
+## 10. 坑
 
 - **边只能指向存在的节点。** id 写错是 400,不会悄悄少画一条线。
 - **一个节点一条 `n=`。** id 重复是 400。

@@ -204,7 +204,23 @@ else that has meaning in a URL must be escaped:
 | `<` `>` | `%3C` `%3E` | for `<<include>>` |
 | newline | `%0A` | for multi-line text |
 
-## 7. Rendering flags
+## 7. Try it in the browser
+
+Every diagram kind has an explore page: `/draw/explore/arch2?n=…` (and the
+same for `seq`, `uc`, `erd`, `class`, `dataflow`, `lifecycle`, `archmap`,
+`mindmap`).
+
+The page shows the diagram and its **parameters as an editable table** — one
+row per `n=` / `e=` / `b=`. Change a value and the diagram redraws as you
+type; add a row to add a node or an edge; delete a row to remove one. Get it
+wrong and the server's own complaint is shown verbatim ("unknown type
+"Postgres" (one of ext/fe/be/db/cloud/sec/bus/svc)") while the diagram
+keeps the last version that drew.
+
+**Copy Markdown** / **Copy HTML** then give you the URL you just built —
+the diagram as a link, not a picture of one.
+
+## 8. Rendering flags
 
 | param | what it does |
 |---|---|
@@ -214,7 +230,7 @@ else that has meaning in a URL must be escaped:
 | `w=` / `h=` | minimum width / height |
 | `v=N` | freeze the response at a version |
 
-## 8. Other kinds, other grammars
+## 9. Other kinds, other grammars
 
 Three diagram paths do not use the property table, because they have a
 standard of their own:
@@ -225,7 +241,7 @@ standard of their own:
 | `/draw/mermaid` | `m=` | a Mermaid flowchart source |
 | `/draw/gantt`, `/draw/gantt2` | `m=` | a Mermaid Gantt source |
 
-## 9. Pitfalls
+## 10. Pitfalls
 
 - **An edge can only point at a node that exists.** A typo in an id is a 400,
   never a silently dropped line.

@@ -81,6 +81,8 @@ https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Clo
 
 另外三种图用自己的语法:`/draw/mindmap`(`n=根/子/孙`)、`/draw/mermaid`(`m=`)、`/draw/gantt` 与 `/draw/gantt2`(`m=`,同一份源码两张脸)。
 
+**在浏览器里试**:每种图都有交互页 `/draw/explore/<图种>?n=…`,右边是可改的参数表 —— 改一格图立刻重画,加行/删行就是加节点/删节点,复制按钮给的是改完的 URL。
+
 ## 通用参数
 
 - `t` 风格(见下)/ `scheme=light|dark|auto` / `title=` / `unit=`
