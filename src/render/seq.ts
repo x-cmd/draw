@@ -15,11 +15,34 @@ import { esc, r2, svgDoc, textW } from './svg.js';
 
 const PAD = 40;
 const HEADER_H = 56;      // 参与方标题盒高
-const MSG_GAP = 64;       // 两条消息之间的行距
+const MSG_GAP = 78;       // 两条消息之间的行距(要给分支框的标签留位置)
 const ARROW = 10;         // 箭头长度
 const LABEL_FS = 12;
 
 interface Msg { from: string; to: string; label?: string; dash: boolean }
+
+/** 一个分支框:kind=alt|else|opt|loop|par|break,label=守卫文字,start/end=消息下标(含两端) */
+interface Frag { kind: string; label: string; start: number; end: number }
+
+/** f=kind;label;start;end —— 分支框罩住第 start..end 条消息(含两端) */
+function parseFrags(raw: string[], msgCount: number): Frag[] {
+  return raw.map((v, i) => {
+    const f = v.split(';').map((x) => x.trim());
+    if (f.length < 4) {
+      throw new ApiError(400, `"f" #${i + 1} must be "kind;label;start;end". Example: f=alt;ok;0;2`);
+    }
+    const kind = f[0].toLowerCase();
+    if (!['alt', 'else', 'opt', 'loop', 'par', 'break'].includes(kind)) {
+      throw new ApiError(400, `"f" #${i + 1}: kind must be one of alt, else, opt, loop, par, break`);
+    }
+    const start = Number(f[2]);
+    const end = Number(f[3]);
+    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < start || end >= msgCount) {
+      throw new ApiError(400, `"f" #${i + 1}: start/end must be message indexes within 0..${msgCount - 1}`);
+    }
+    return { kind, label: f[1], start, end };
+  });
+}
 
 /** e=from;to[;label][;dash] —— 按 URL 里的顺序就是时间顺序 */
 function parseMessages(raw: string[]): Msg[] {
@@ -54,6 +77,7 @@ function headerBox(x: number, y: number, w: number, label: string, sub: string |
 export interface SeqOpts {
   nodes: ArchNode[];
   msgs: Msg[];
+  frags: Frag[];
   title?: string;
   interactive: boolean;
   version: number;
@@ -84,7 +108,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
     return b.x + b.w / 2;
   };
   const headerBottom = Math.max(...placed.map((p) => p.box.y + p.box.h));
-  const rowY = (i: number): number => headerBottom + 34 + i * MSG_GAP;
+  const rowY = (i: number): number => headerBottom + 58 + i * MSG_GAP;
 
   let width = Math.max(320, ...placed.map((p) => p.box.x + p.box.w + PAD));
   let height = rowY(Math.max(0, o.msgs.length - 1)) + 34 + PAD;
@@ -142,6 +166,53 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
     );
   }
 
+  // 分支框(alt / else / opt / loop / par / break):
+  // 一个 alt 后面连续的 else 归成一组,共用一个外框,中间一条虚线分开两支。
+  const fragSvg = (): string => {
+    if (!o.frags.length) return '';
+    const groups: { frags: Frag[] }[] = [];
+    for (const f of o.frags) {
+      const last = groups[groups.length - 1];
+      const join = last && ((last.frags[0].kind === 'alt' && f.kind === 'else') || (last.frags[0].kind !== 'alt' && f.kind === last.frags[0].kind && f.kind !== 'else'));
+      if (join) last.frags.push(f);
+      else groups.push({ frags: [f] });
+    }
+    const out: string[] = [];
+    for (const g of groups) {
+      const first = g.frags[0];
+      const lastF = g.frags[g.frags.length - 1];
+      const rows: number[] = [];
+      for (let i = first.start; i <= lastF.end; i++) rows.push(i);
+      const xs = rows.flatMap((i) => [cxOf(o.msgs[i].from), cxOf(o.msgs[i].to)]);
+      const x0 = Math.min(...xs) - 18;
+      const x1 = Math.max(...xs) + 18;
+      const y0 = rowY(first.start) - 50;
+      const y1 = rowY(lastF.end) + 24;
+      out.push(
+        `<rect x="${r2(x0)}" y="${r2(y0)}" width="${r2(x1 - x0)}" height="${r2(y1 - y0)}" rx="8" fill="var(--d-muted)" fill-opacity="0.06" stroke="var(--d-border)" stroke-width="1.2"/>`,
+      );
+      // 标签:alt [ok] / else [fail] / loop [each]
+      g.frags.forEach((f, i) => {
+        const text = f.label ? `${f.kind} [${f.label}]` : f.kind;
+        const w = textW(text, 10.5) + 12;
+        const lx = x0 + 12;
+        // 第一支的标签贴在框顶;后面的支(else)贴在分隔线上
+        const ly = i === 0 ? y0 + 14 : rowY(f.start) - 34 + 4;
+        if (i > 0) {
+          const dy = rowY(f.start) - 34;
+          out.push(
+            `<line x1="${r2(x0)}" y1="${r2(dy)}" x2="${r2(x1)}" y2="${r2(dy)}" stroke="var(--d-border)" stroke-width="1.2" stroke-dasharray="5 4"/>`,
+          );
+        }
+        out.push(
+          `<rect x="${r2(lx - 6)}" y="${r2(ly - 11)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-bg)" fill-opacity="0.95"/>`,
+          `<text x="${r2(lx)}" y="${r2(ly + 1)}" font-size="10.5" font-weight="600" letter-spacing="0.4" fill="var(--d-muted)">${esc(text)}</text>`,
+        );
+      });
+    }
+    return out.join('');
+  };
+
   const titleSvg = o.title
     ? `<text x="${PAD}" y="${PAD + 16}" font-size="18" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
     : '';
@@ -151,7 +222,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
     width, height, 'seq', o.version,
     o.title ?? `sequence diagram, ${o.msgs.length} messages`,
     spec, o.skin,
-    titleSvg + headSvg + parts.join(''),
+    titleSvg + headSvg + fragSvg() + parts.join(''),
   );
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
@@ -172,10 +243,11 @@ export function renderSeqFromUrl(url: URL, interactive = false): DrawResult {
     seen.add(n.id);
   }
   const msgs = parseMessages(params.getAll('e'));
+  const frags = parseFrags(params.getAll('f'), msgs.length);
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderSeqCore({
-    nodes, msgs,
+    nodes, msgs, frags,
     title: params.get('title')?.trim() || undefined,
     interactive,
     version: v,

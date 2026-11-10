@@ -30,6 +30,7 @@ https://x-cmd.com/draw/draw/seq?n=app;fe;Your%20app;;r0c0&n=worker;be;Worker;;r0
 |---|---|---|
 | `n=` | a participant: `id;type;label[;sub][;pos]` — one per participant | — |
 | `e=` | a message: `from;to[;label][;dash]` — repeat in the order they happen | — |
+| `f=` | a branch: `kind;guard;start;end` — message indexes, inclusive | — |
 | `title=` | diagram title | — |
 | `w=` / `h=` | canvas size | natural size |
 | `v=` | freeze the response at a version | latest |
@@ -49,7 +50,23 @@ they colour the header box.
   that participant is busy: it runs from the message it received to the next
   message it sends.
 
-## 3. Pitfalls
+## 3. Fragments — alt / else / opt / loop
+
+A branch is a box around the messages it covers. `f=kind;guard;start;end`
+says which ones: **the message indexes are the order of the `e=` parameters**,
+counted from zero.
+
+```text
+f=alt;ok;0;2
+f=else;overloaded;3;4
+```
+
+- **`alt`** with a following **`else`** share one box, with a dashed divider
+  between the two branches — the UML way of saying "one of these happens".
+- **`opt`** (optional), **`loop`**, **`par`** and **`break`** are plain boxes.
+- The kind is the first field, so the label reads `alt [ok]` on the box.
+
+## 4. Pitfalls
 
 - **The URL order is the time order.** The engine does not sort; it draws
   message 1 on the first line, message 2 on the second.
@@ -58,4 +75,6 @@ they colour the header box.
 - **A message to an unknown participant is a 400**, not a dropped arrow.
 - **A participant needs a `pos`** (`r0c0`, `r0c1`, …) or it lands on top of
   another one.
+- **A fragment's indexes must exist** — `f=alt;ok;0;9` on three messages is a
+  400, not a silently clipped box.
 

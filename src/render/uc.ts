@@ -96,6 +96,8 @@ export interface UcOpts {
   nodes: UcNode[];
   edges: UcEdge[];
   boundary?: { label: string; ids: string[] };
+  /** 参与方摆在右边(默认在左边) */
+  actorsRight?: boolean;
   title?: string;
   interactive: boolean;
   version: number;
@@ -118,27 +120,35 @@ export function renderUcCore(o: UcOpts): DrawResult {
   let x = PAD;
   let maxY = PAD + titleH;
   actors.forEach((a, i) => { a.x = x; a.w = actorW; });
-  // 用例排成网格(最多三列),参与者一列摆在左边,上下居中 —— 经典用例图的排法
-  const ucCols = Math.max(1, Math.min(3, Math.ceil(Math.sqrt(ucs.length))));
-  const ucRows = Math.ceil(ucs.length / ucCols);
-  const gridH = ucRows * (UC_H + UC_ROW_GAP) - UC_ROW_GAP;
+  // 用例排成一列,参与者在另一侧 —— 中间留出一条「脊柱」通道走线,
+  // 这样同一个参与方连多个用例时,线各走各的,不横穿别人的椭圆。
+  const ucColH = ucs.length * (UC_H + UC_ROW_GAP) - UC_ROW_GAP;
   const actorColH = actors.length * (ACTOR_H + ROW_GAP) - ROW_GAP;
-  const actorTop = PAD + titleH + Math.max(0, (gridH - actorColH) / 2);
-  actors.forEach((a, i) => {
-    a.y = actorTop + i * (ACTOR_H + ROW_GAP);
-    a.h = ACTOR_H;
-    maxY = Math.max(maxY, a.y + a.h);
-  });
-  const ucX = PAD + actorW + COL_GAP;
-  const gridTop = actorTop + Math.max(0, (actorColH - gridH) / 2); // 用例网格对着参与者列居中
+  const colH = Math.max(ucColH, actorColH);
+  const top = PAD + titleH + Math.max(0, (colH - colH) / 2);
+  const ucTop = top + Math.max(0, (colH - ucColH) / 2);
+  const actorTop = top + Math.max(0, (colH - actorColH) / 2);
+  const ucX = o.actorsRight ? PAD : PAD + actorW + COL_GAP;
+  const actorX = o.actorsRight ? PAD + actorW + COL_GAP + ucW + COL_GAP : PAD;
   ucs.forEach((u, i) => {
-    u.x = ucX + (i % ucCols) * (ucW + COL_GAP);
-    u.y = gridTop + Math.floor(i / ucCols) * (UC_H + UC_ROW_GAP);
+    u.x = ucX;
+    u.y = ucTop + i * (UC_H + UC_ROW_GAP);
     u.w = ucW;
     u.h = UC_H;
     maxY = Math.max(maxY, u.y + u.h);
   });
-  let width = Math.max(320, ucX + ucCols * (ucW + COL_GAP) - COL_GAP + PAD);
+  actors.forEach((a, i) => {
+    a.x = actorX;
+    a.y = actorTop + i * (ACTOR_H + ROW_GAP);
+    a.w = actorW;
+    a.h = ACTOR_H;
+    maxY = Math.max(maxY, a.y + a.h);
+  });
+  // 脊柱:参与方和用例之间的空档正中
+  const spineX = o.actorsRight
+    ? ucX + ucW + COL_GAP / 2
+    : PAD + actorW + COL_GAP / 2;
+  let width = Math.max(320, (o.actorsRight ? actorX + actorW : ucX + ucW + 30) + PAD);
   let height = maxY + PAD;
 
   // 系统边界:把用例框起来
@@ -163,28 +173,56 @@ export function renderUcCore(o: UcOpts): DrawResult {
     }
   }
 
-  // 连线
+  // 连线:参与方 → 脊柱 → 用例,三段正交。同一个参与方连多个用例时,
+  // 每条线在参与方那边错开一点、在脊柱上各走各的一段,互不压。
   const byId = new Map(o.nodes.map((n) => [n.id, n]));
+  const exitSeen = new Map<string, number>();
   const edges: string[] = [];
   for (const e of o.edges) {
     const a = byId.get(e.from)!;
     const b = byId.get(e.to)!;
-    const ax = a.kind === 'actor' ? a.x + a.w / 2 : a.x + a.w;
-    const ay = a.kind === 'actor' ? a.y + 30 : a.y + a.h / 2;
-    const bx = b.kind === 'actor' ? b.x + b.w / 2 : b.x;
-    const by = b.kind === 'actor' ? b.y + 30 : b.y + b.h / 2;
     const stroke = e.dep ? 'var(--d-faint)' : 'var(--d-muted)';
     const dash = e.dep ? ' stroke-dasharray="5 4"' : '';
     const ia = o.interactive ? ` data-from="${esc(e.from)}" data-to="${esc(e.to)}"` : '';
-    // 直线连到椭圆/火柴人身上
-    edges.push(`<path d="M${r2(ax)} ${r2(ay)}L${r2(bx)} ${r2(by)}" fill="none" stroke="${stroke}" stroke-width="1.3"${dash}${ia}/>`);
+    const n = (exitSeen.get(e.from) ?? 0);
+    exitSeen.set(e.from, n + 1);
+    let pts: [number, number][];
+    let lx = 0;
+    let ly = 0;
+    if (a.kind === 'actor' && b.kind === 'uc') {
+      const side = o.actorsRight ? -1 : 1;
+      const ax = o.actorsRight ? a.x - n * 9 : a.x + a.w + n * 9;
+      const ay = a.y + 30;
+      const bx = o.actorsRight ? b.x + b.w : b.x;
+      const by = b.y + b.h / 2;
+      pts = [[ax, ay], [spineX, ay], [spineX, by], [bx, by]];
+      lx = (spineX + bx) / 2; ly = by;
+    } else if (a.kind === 'uc' && b.kind === 'actor') {
+      const ax = o.actorsRight ? a.x : a.x + a.w;
+      const ay = a.y + a.h / 2;
+      const bx = o.actorsRight ? b.x + b.w + n * 9 : b.x - n * 9;
+      const by = b.y + 30;
+      pts = [[ax, ay], [spineX, ay], [spineX, by], [bx, by]];
+      lx = (spineX + bx) / 2; ly = by;
+    } else {
+      // 用例之间的依赖(<<include>>):绕到用例列右边的一条通道上,
+      // 不从两个椭圆中间斜穿过去
+      const depX = ucX + ucW + 18;
+      const ax = a.x + a.w;
+      const ay = a.y + a.h / 2;
+      const bx = b.x + b.w;
+      const by = b.y + b.h / 2;
+      pts = [[ax, ay], [depX, ay], [depX, by], [bx, by]];
+      lx = depX; ly = (ay + by) / 2;
+    }
+    edges.push(
+      `<path d="${pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('')}" fill="none" stroke="${stroke}" stroke-width="1.3"${dash}${ia}/>`,
+    );
     if (e.label) {
-      const mx = (ax + bx) / 2;
-      const my = (ay + by) / 2;
       const w = textW(e.label, 10.5) + 12;
       edges.push(
-        `<rect x="${r2(mx - w / 2)}" y="${r2(my - 15)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-bg)" fill-opacity="0.92"/>`,
-        `<text x="${r2(mx)}" y="${r2(my - 3)}" text-anchor="middle" font-size="10.5" fill="var(--d-text)">${esc(e.label)}</text>`,
+        `<rect x="${r2(lx - w / 2)}" y="${r2(ly - 15)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-bg)" fill-opacity="0.92"/>`,
+        `<text x="${r2(lx)}" y="${r2(ly - 3)}" text-anchor="middle" font-size="10.5" fill="var(--d-text)">${esc(e.label)}</text>`,
       );
     }
   }
@@ -230,9 +268,14 @@ export function renderUcFromUrl(url: URL, interactive = false): DrawResult {
     boundary = { label: bRaw.slice(0, i).trim(), ids: members };
   }
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
+  const side = (params.get('actors') ?? 'left').toLowerCase();
+  if (side !== 'left' && side !== 'right') {
+    throw new ApiError(400, `"actors" must be "left" (default) or "right". Got: ${JSON.stringify(side)}`);
+  }
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderUcCore({
     nodes, edges, boundary,
+    actorsRight: side === 'right',
     title: params.get('title')?.trim() || undefined,
     interactive,
     version: v,

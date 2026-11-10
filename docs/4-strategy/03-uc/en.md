@@ -30,14 +30,18 @@ https://x-cmd.com/draw/draw/uc?n=caller;actor;Your%20app%20or%20CI&n=agent;actor
 | `n=` | an element: `id;actor\|label[;sub]` or `id;uc\|label[;sub]` | — |
 | `e=` | an association: `from;to[;label]` | — |
 | `b=` | the system boundary: `label;id id …` | — |
+| `actors=` | put the actors on the right instead of the left | `left` |
 | `title=` | diagram title | — |
 | `w=` / `h=` | canvas size | natural size |
 | `v=` | freeze the response at a version | latest |
 
 ## 2. How it is drawn
 
-- **Actors** are stick figures in a column on the left; **use cases** are
-  ovals in a grid on the right.
+- **Actors** are stick figures in a column; **use cases** are ovals in a
+  column of their own. `actors=right` swaps the two sides.
+- **Associations are orthogonal** — they leave the actor, run down the gap
+  between the two columns and come into the oval, so one actor reaching
+  several use cases never draws over an oval.
 - **An association** is a plain line. A label of `<<include>>` or `<<extend>>`
   turns it into a dashed dependency — that is the UML way of saying "this use
   case always needs that one".
@@ -48,7 +52,7 @@ https://x-cmd.com/draw/draw/uc?n=caller;actor;Your%20app%20or%20CI&n=agent;actor
 - **The kind is `actor` or `uc`** — anything else is a 400.
 - **A boundary only frames use cases** — putting an actor inside it draws the
   box around the actor too.
-- **The use cases are laid out in a grid, at most three columns** — the order
-  in the URL decides the order in the grid.
+- **The use cases are stacked in one column** — the order in the URL is the
+  order from the top.
 - **A `+` in a label must be encoded** (`%2B`), like everywhere else.
 

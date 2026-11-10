@@ -64,6 +64,49 @@ describe('sequence diagram', () => {
   });
 });
 
+describe('sequence fragments', () => {
+  it('draws an alt/else box with a divider', () => {
+    const q = [
+      ...PARTICIPANTS,
+      'e=app;worker;GET /draw?type=pie',
+      'e=worker;app;200 with metadata;dash',
+      'e=app;worker;retry',
+      'e=worker;app;503 overloaded;dash',
+      'f=alt;ok;0;1',
+      'f=else;overloaded;2;3',
+    ].join('&');
+    const { svg } = renderSeqFromUrl(new URL('https://x-cmd.com/draw/seq?' + q));
+    expect(svg).toContain('alt [ok]');
+    expect(svg).toContain('else [overloaded]');
+    // 分支之间一条虚线
+    expect(svg.match(/stroke-dasharray="5 4"/g)?.length).toBeGreaterThan(0);
+  });
+
+  it('draws an opt and a loop', () => {
+    const q = [
+      ...PARTICIPANTS,
+      'e=app;worker;ping',
+      'e=worker;app;pong;dash',
+      'e=app;worker;again',
+      'f=opt;maybe;0;1',
+      'f=loop;each;2;2',
+    ].join('&');
+    const { svg } = renderSeqFromUrl(new URL('https://x-cmd.com/draw/seq?' + q));
+    expect(svg).toContain('opt [maybe]');
+    expect(svg).toContain('loop [each]');
+  });
+
+  it('rejects a fragment that points outside the messages', () => {
+    const q = [...PARTICIPANTS, 'e=app;worker;hi', 'f=alt;ok;0;9'].join('&');
+    expect(() => renderSeqFromUrl(new URL('https://x-cmd.com/draw/seq?' + q))).toThrow(/f/);
+  });
+
+  it('rejects an unknown fragment kind', () => {
+    const q = [...PARTICIPANTS, 'e=app;worker;hi', 'f=maybe;x;0;0'].join('&');
+    expect(() => renderSeqFromUrl(new URL('https://x-cmd.com/draw/seq?' + q))).toThrow(/alt/);
+  });
+});
+
 describe('use case diagram', () => {
   const uc = [
     'n=caller;actor;Your app or CI',
@@ -88,6 +131,26 @@ describe('use case diagram', () => {
     expect(svg).toContain('stroke-dasharray');
     // 依赖是虚线
     expect(svg).toContain('&lt;&lt;include&gt;&gt;');
+  });
+
+  it('puts the actors on the right when asked', () => {
+    const left = renderUcFromUrl(new URL('https://x-cmd.com/draw/uc?' + uc.join('&'))).svg;
+    const right = renderUcFromUrl(new URL('https://x-cmd.com/draw/uc?' + [...uc, 'actors=right'].join('&'))).svg;
+    expect(left).not.toBe(right);
+    // 参与者那一列换到右边:第一个参与者盒子的 x 变大了
+    const xOf = (s: string): number => Number(/<circle cx="([0-9.]+)"/.exec(s)![1]);
+    expect(xOf(right)).toBeGreaterThan(xOf(left));
+  });
+
+  it('rejects an unknown actors side', () => {
+    expect(() => renderUcFromUrl(new URL('https://x-cmd.com/draw/uc?' + [...uc, 'actors=middle'].join('&')))).toThrow(/actors/);
+  });
+
+  it('routes an association through the gap instead of over the ovals', () => {
+    const { svg } = renderUcFromUrl(new URL('https://x-cmd.com/draw/uc?' + uc.join('&')));
+    // 关联是折线(至少两段),不是一条直线
+    const paths = [...svg.matchAll(/<path d="(M[^"]+)"/g)].map((m) => m[1]);
+    expect(paths.some((d) => d.split('L').length >= 3)).toBe(true);
   });
 
   it('rejects an unknown kind', () => {
