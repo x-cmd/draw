@@ -166,6 +166,7 @@ export function renderKindFromUrl(kind: string, url: URL, interactive = false): 
     title: params.get('title')?.trim() || undefined,
     gridCols: clampInt(params, 'grid', 0, 1, 12),
     legend: params.get('legend') !== '0',
+    paper: params.get('paper') !== '0' && params.get('paper') !== 'false',
     interactive,
     version: v,
     cacheControl: 'public, max-age=300',

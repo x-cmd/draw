@@ -202,6 +202,17 @@ describe('边标签要看得清', () => {
   });
 });
 
+describe('画布纸(paper=1)', () => {
+  it('默认不铺纸,写了才有', () => {
+    const q = 'n=a;be;A;;r0c0&n=b;be;B;;r0c1&e=a;b';
+    const plain = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + q)).svg;
+    const paper = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + q + '&paper=1')).svg;
+    expect(plain).not.toContain('url(#am-paper)');
+    expect(paper).toContain('url(#am-paper)');
+    expect(paper).toContain('am-paper" width="26"');
+  });
+});
+
 describe('b= 泳道/边界,所有图种都认', () => {
   it('seq 把一组参与方圈成泳道', () => {
     const q = [

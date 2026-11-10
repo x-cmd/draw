@@ -204,7 +204,17 @@ else that has meaning in a URL must be escaped:
 | `<` `>` | `%3C` `%3E` | for `<<include>>` |
 | newline | `%0A` | for multi-line text |
 
-## 7. Other kinds, other grammars
+## 7. Rendering flags
+
+| param | what it does |
+|---|---|
+| `legend=0` | no legend at the bottom |
+| `paper=1` | lay a faint grid of squares under the diagram — it gives a big diagram a "sheet of paper" to sit on |
+| `title=` | the diagram's title |
+| `w=` / `h=` | minimum width / height |
+| `v=N` | freeze the response at a version |
+
+## 8. Other kinds, other grammars
 
 Three diagram paths do not use the property table, because they have a
 standard of their own:
@@ -215,7 +225,7 @@ standard of their own:
 | `/draw/mermaid` | `m=` | a Mermaid flowchart source |
 | `/draw/gantt`, `/draw/gantt2` | `m=` | a Mermaid Gantt source |
 
-## 8. Pitfalls
+## 9. Pitfalls
 
 - **An edge can only point at a node that exists.** A typo in an id is a 400,
   never a silently dropped line.

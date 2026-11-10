@@ -730,6 +730,8 @@ const DEFS =
   `<marker id="am-d" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-faint)"/></marker>` +
   // UML 记号:空心三角(继承用实线,实现用虚线)
   `<marker id="am-h" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1.5 1.5L13 7L1.5 12.5z" fill="var(--d-card)" stroke="var(--d-muted)" stroke-width="1.6"/></marker>` +
+  // 画布纸:很淡的方格,让大图有个「纸」的感觉
+  `<pattern id="am-paper" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="var(--d-grid)" stroke-width="1"/></pattern>` +
   `</defs>`;
 
 export interface ArchOpts {
@@ -745,6 +747,8 @@ export interface ArchOpts {
   title?: string;
   gridCols: number;
   legend: boolean;
+  /** 画布纸:底下铺一层很淡的方格(默认关) */
+  paper: boolean;
   interactive: boolean;
   version: number;
   cacheControl: string;
@@ -853,6 +857,9 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     ? `<text x="${PAD}" y="${PAD + 16}" font-size="19" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
     : '';
   const bColors = boundaryColors(o.boundaries, types);
+  const paperSvg = o.paper
+    ? `<rect x="0" y="0" width="${r2(width)}" height="${r2(height)}" fill="url(#am-paper)"/>`
+    : '';
   const body = iStyle + DEFS
     + drawBoundariesV2(placed, o.boundaries, o.interactive, bColors)
     + drawRoutesV2(routed, o.interactive, types)
@@ -863,7 +870,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     ? `<g transform="translate(0 ${r2(bodyH + 14)})">${legend.svg}</g>`
     : '';
   const dy = titleH + Math.max(0, (height - titleH - legend.h - bodyH) / 2);
-  const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
+  const children = paperSvg + titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
   const spec = { type: 'arch', title: o.title, nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
   const svg = svgDoc(width, height, o.template ?? 'arch2', o.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children, o.tagQuery, o.template ?? 'arch2');
   return { svg, version: o.version, cacheControl: o.cacheControl };
@@ -888,10 +895,12 @@ export function renderArchFromUrl(url: URL, interactive = false): DrawResult {
   const gridCols = clampInt(params, 'grid', 0, 1, 12);
   const legendRaw = params.get('legend');
   const legend = legendRaw === null || legendRaw === '' ? true : legendRaw !== '0' && legendRaw !== 'false';
+  const paperRaw = params.get('paper');
+  const paper = paperRaw !== null && paperRaw !== '' && paperRaw !== '0' && paperRaw !== 'false';
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderArchCore({
-    nodes, edges, boundaries, title, gridCols, legend, interactive,
+    nodes, edges, boundaries, title, gridCols, legend, paper, interactive,
     template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',

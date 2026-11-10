@@ -187,7 +187,17 @@ n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 | `<` `>` | `%3C` `%3E` | 写 `<<include>>` 时用 |
 | 换行 | `%0A` | 写多行文字时用 |
 
-## 7. 另外几种图,另外的语法
+## 7. 画图开关
+
+| 参数 | 做什么 |
+|---|---|
+| `legend=0` | 不要底部图例 |
+| `paper=1` | 底下铺一层很淡的方格 —— 大图有了「纸」垫着,不那么空 |
+| `title=` | 图的标题 |
+| `w=` / `h=` | 最小宽 / 高 |
+| `v=N` | 钉住版本 |
+
+## 8. 另外几种图,另外的语法
 
 有三个路径不用属性表,因为它们有自己的标准:
 
@@ -197,7 +207,7 @@ n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 | `/draw/mermaid` | `m=` | Mermaid 流程图源码 |
 | `/draw/gantt`、`/draw/gantt2` | `m=` | Mermaid Gantt 源码 |
 
-## 8. 坑
+## 9. 坑
 
 - **边只能指向存在的节点。** id 写错是 400,不会悄悄少画一条线。
 - **一个节点一条 `n=`。** id 重复是 400。
