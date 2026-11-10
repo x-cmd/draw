@@ -1,0 +1,37 @@
+id: x-draw-2-data-charts-10-tokei
+
+data:
+  - name:
+      en: Code composition
+      cn: 代码构成图
+    qa:
+      - id: input
+        question:
+          en: "What exactly does it accept?"
+          cn: "到底接受什么输入?"
+        answer:
+          en: >
+            The JSON that `tokei --output json` prints — the whole thing or a trimmed object with just `code`, `comments` and `blanks` per language. The per-file detail is ignored; only the three totals per language are drawn.
+          cn: >
+            `tokei --output json` 打印的那份 JSON —— 整份,或者裁剪成每门语言只有 `code`、`comments`、`blanks` 的精简对象。每个文件的明细会被忽略,只画每门语言那三个合计数。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/10-tokei/en.md
+          - docs/2-data-charts/10-tokei/cn.md
+  - name:
+      en: Code composition
+      cn: 代码构成图
+    qa:
+      - id: increment
+        question:
+          en: "How do I show only what a pull request changed?"
+          cn: "只想看 PR 改了什么呢?"
+        answer:
+          en: >
+            Run tokei over the files the diff touches — `git diff --name-only origin/main… | xargs tokei --output json` — and post that. The chart then shows the increment rather than the whole repository.
+          cn: >
+            把 tokei 跑在这次改动碰到的文件上 —— `git diff --name-only origin/main… | xargs tokei --output json` —— 再 POST 进去,画出来的就是增量而不是整个仓库。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/10-tokei/en.md
+          - docs/2-data-charts/10-tokei/cn.md

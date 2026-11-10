@@ -1,111 +1,95 @@
 ---
-x-title: GitHub 与开源项目 —— 仓库主人真正会画的那几张图
-x-desc: 'x-cmd/draw 场景用例:Github 与开源项目。语言 star、贡献者漏斗、每天提交、各区域 issue、仓库导图、安装二维码的真实 URL。'
+x-title: GitHub —— issue、PR 与 release
+x-desc: 'x-cmd/draw 场景用例:GitHub 的 issue、pull request 与 release。值得贴的图:用例图、时序图、一次改动的代码构成、PR 碰到的文件、代码库的架构与关键文件夹。'
 x-sidebar: draw 场景用例 github
-x-keywords: github 图表, 仓库数据看板, draw 场景用例, svg, 开源数据
+x-keywords: github issue, pull request, release 说明, draw 场景用例, 从代码出架构图
 x-json-ld:
   '@context': https://schema.org
   '@graph':
     - '@type': TechArticle
       headline: 'draw 场景用例 github'
       inLanguage: 'cn'
-      about: 'x-cmd/draw showcase 01-github'
+      about: 'x-cmd/draw 01-github'
 ---
 
-# GitHub 与开源项目 —— 仓库主人真正会画的那几张图
+# GitHub —— issue、PR 与 release
 
-维护者、会议演讲者、README 作者要展示的项目信息 —— 以及渲染它们的 URL。
+没人爱看 star 数的图。读者在 issue、pull request、release 上真正想看的,
+是这件事本身的样子:它做什么、改了什么、代码现在长什么样。
 
-### 按语言看 star —— 看占比
+## 一个 issue —— 它应该怎么表现?
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520
-```
+### 用例图
 
-[![Stars by language](https://x-cmd.com/draw?type=pie&t=market-mono&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520)
-
-环形图一眼看出「star 落在各语言上的比例」。
-
-### 同一组数据排个名 —— 看数量
+左边是参与者,里面是用例,系统本身用一个边界圈起来:
 
 ```text
-https://x-cmd.com/draw?type=hbar&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520&unit=stars
+https://x-cmd.com/draw/archmap?n=caller;ext;Your%20app;r0c0&n=uc1;be;Render%20a%20chart;r1c0&n=uc2;be;Store%20it%20as%20a%20short%20link;r1c1&n=uc3;be;Deploy%20it%20yourself;r1c2&e=caller;uc1&e=caller;uc2&e=caller;uc3&b=draw;uc1%20uc2%20uc3
 ```
 
-[![Stars by language](https://x-cmd.com/draw?type=hbar&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520&unit=stars)](https://x-cmd.com/draw/explore?type=hbar&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520&unit=stars)
+[![用例图](https://x-cmd.com/draw/archmap?n=caller;ext;Your%20app;r0c0&n=uc1;be;Render%20a%20chart;r1c0&n=uc2;be;Store%20it%20as%20a%20short%20link;r1c1&n=uc3;be;Deploy%20it%20yourself;r1c2&e=caller;uc1&e=caller;uc2&e=caller;uc3&b=draw;uc1%20uc2%20uc3)](https://x-cmd.com/draw/explore/archmap?n=caller;ext;Your%20app;r0c0&n=uc1;be;Render%20a%20chart;r1c0&n=uc2;be;Store%20it%20as%20a%20short%20link;r1c1&n=uc3;be;Deploy%20it%20yourself;r1c2&e=caller;uc1&e=caller;uc2&e=caller;uc3&b=draw;uc1%20uc2%20uc3)
 
-横条把标签放左边、数字放右边 —— 名字长、或者要读准数的时候更好用。
+### 时序图
 
-### 贡献者漏斗 —— 读者在哪一步掉队
+时间从左往右:方块是对象,箭头是消息。
 
 ```text
-https://x-cmd.com/draw?type=sankey&t=fund&title=Contributor%20funnel&labels=Docs,Blog,Talks,Issue,PR,Merged&links=Docs>Issue:40;Blog>Issue:25;Talks>Issue:15;Issue>PR:32;PR>Merged:18
+https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20App%5BYour%20app%5D%20--%3E%7CGET%20%2Fdraw%3Ftype%3Dpie%7C%20Edge%5BEdge%20worker%5D%0A%20%20Edge%20--%3E%7Cparse%20the%20spec%7C%20Spec%5Bspecs%2F%5D%0A%20%20Edge%20--%3E%7Crender%7C%20Render%5Brender%2F%5D%0A%20%20Render%20--%3E%7CSVG%7C%20Edge%0A%20%20Edge%20--%3E%7C200%20OK%7C%20App&w=560
 ```
 
-[![Contributor funnel](https://x-cmd.com/draw?type=sankey&t=fund&title=Contributor%20funnel&labels=Docs,Blog,Talks,Issue,PR,Merged&links=Docs>Issue:40;Blog>Issue:25;Talks>Issue:15;Issue>PR:32;PR>Merged:18)](https://x-cmd.com/draw/explore?type=sankey&t=fund&title=Contributor%20funnel&labels=Docs,Blog,Talks,Issue,PR,Merged&links=Docs>Issue:40;Blog>Issue:25;Talks>Issue:15;Issue>PR:32;PR>Merged:18)
+[![时序图](https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20App%5BYour%20app%5D%20--%3E%7CGET%20%2Fdraw%3Ftype%3Dpie%7C%20Edge%5BEdge%20worker%5D%0A%20%20Edge%20--%3E%7Cparse%20the%20spec%7C%20Spec%5Bspecs%2F%5D%0A%20%20Edge%20--%3E%7Crender%7C%20Render%5Brender%2F%5D%0A%20%20Render%20--%3E%7CSVG%7C%20Edge%0A%20%20Edge%20--%3E%7C200%20OK%7C%20App&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20LR%0A%20%20App%5BYour%20app%5D%20--%3E%7CGET%20%2Fdraw%3Ftype%3Dpie%7C%20Edge%5BEdge%20worker%5D%0A%20%20Edge%20--%3E%7Cparse%20the%20spec%7C%20Spec%5Bspecs%2F%5D%0A%20%20Edge%20--%3E%7Crender%7C%20Render%5Brender%2F%5D%0A%20%20Render%20--%3E%7CSVG%7C%20Edge%0A%20%20Edge%20--%3E%7C200%20OK%7C%20App&w=560)
 
-桑基图把整条链路(read → star → fork → PR → merged)和收窄的地方都画出来。
+## 一个 PR —— 改了什么?
 
-### 每天的提交 —— 谁在什么时候干活
+### 代码构成
+
+把 tokei 跑在这次改动碰到的文件上,直接画出来:
 
 ```text
-https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=dev:12,18,9,15,21,8,17&series=ci:8,11,6,13,16,5,12&title=Commits%20by%20day
+https://x-cmd.com/draw/tokei?d=%7B%22TypeScript%22%3A%7B%22code%22%3A4820%2C%22comments%22%3A1180%2C%22blanks%22%3A940%7D%2C%22JavaScript%22%3A%7B%22code%22%3A1687%2C%22comments%22%3A298%2C%22blanks%22%3A71%7D%2C%22Shell%22%3A%7B%22code%22%3A640%2C%22comments%22%3A120%2C%22blanks%22%3A88%7D%2C%22CSS%22%3A%7B%22code%22%3A210%2C%22comments%22%3A40%2C%22blanks%22%3A35%7D%2C%22Markdown%22%3A%7B%22code%22%3A180%2C%22comments%22%3A760%2C%22blanks%22%3A120%7D%2C%22JSON%22%3A%7B%22code%22%3A95%2C%22comments%22%3A0%2C%22blanks%22%3A12%7D%7D&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440
 ```
 
-[![Commits by day](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=dev:12,18,9,15,21,8,17&series=ci:8,11,6,13,16,5,12&title=Commits%20by%20day)](https://x-cmd.com/draw/explore?type=bar&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=dev:12,18,9,15,21,8,17&series=ci:8,11,6,13,16,5,12&title=Commits%20by%20day)
+[![代码构成](https://x-cmd.com/draw/tokei?d=%7B%22TypeScript%22%3A%7B%22code%22%3A4820%2C%22comments%22%3A1180%2C%22blanks%22%3A940%7D%2C%22JavaScript%22%3A%7B%22code%22%3A1687%2C%22comments%22%3A298%2C%22blanks%22%3A71%7D%2C%22Shell%22%3A%7B%22code%22%3A640%2C%22comments%22%3A120%2C%22blanks%22%3A88%7D%2C%22CSS%22%3A%7B%22code%22%3A210%2C%22comments%22%3A40%2C%22blanks%22%3A35%7D%2C%22Markdown%22%3A%7B%22code%22%3A180%2C%22comments%22%3A760%2C%22blanks%22%3A120%7D%2C%22JSON%22%3A%7B%22code%22%3A95%2C%22comments%22%3A0%2C%22blanks%22%3A12%7D%7D&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)](https://x-cmd.com/draw/explore/tokei?d=%7B%22TypeScript%22%3A%7B%22code%22%3A4820%2C%22comments%22%3A1180%2C%22blanks%22%3A940%7D%2C%22JavaScript%22%3A%7B%22code%22%3A1687%2C%22comments%22%3A298%2C%22blanks%22%3A71%7D%2C%22Shell%22%3A%7B%22code%22%3A640%2C%22comments%22%3A120%2C%22blanks%22%3A88%7D%2C%22CSS%22%3A%7B%22code%22%3A210%2C%22comments%22%3A40%2C%22blanks%22%3A35%7D%2C%22Markdown%22%3A%7B%22code%22%3A180%2C%22comments%22%3A760%2C%22blanks%22%3A120%7D%2C%22JSON%22%3A%7B%22code%22%3A95%2C%22comments%22%3A0%2C%22blanks%22%3A12%7D%7D&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)
 
-每个工作日两组(功能与 CI),分组柱状图让对比不掺水。
+柱子分成代码、注释、空行 —— 是 reviewer 真正想看的增量,不是整个仓库。
 
-### star 的增长曲线
+### 这次碰了哪些文件
 
 ```text
-https://x-cmd.com/draw?type=area&t=star&labels=Jan,Feb,Mar,Apr,May,Jun,Jul&values=120,180,150,260,310,420,560&title=Stars%20over%20time
+https://x-cmd.com/draw/mindmap?n=draw/src/render/tokei.ts&n=draw/src/handler.ts&n=draw/test/tokei.test.ts&n=draw/docs/2-data-charts/10-tokei/en.md&style=tree&title=Files%20changed%20in%20%2331&w=560
 ```
 
-[![Stars over time](https://x-cmd.com/draw?type=area&t=star&labels=Jan,Feb,Mar,Apr,May,Jun,Jul&values=120,180,150,260,310,420,560&title=Stars%20over%20time)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Jan,Feb,Mar,Apr,May,Jun,Jul&values=120,180,150,260,310,420,560&title=Stars%20over%20time)
+[![改动的文件](https://x-cmd.com/draw/mindmap?n=draw/src/render/tokei.ts&n=draw/src/handler.ts&n=draw/test/tokei.test.ts&n=draw/docs/2-data-charts/10-tokei/en.md&style=tree&title=Files%20changed%20in%20%2331&w=560)](https://x-cmd.com/draw/explore/mindmap?n=draw/src/render/tokei.ts&n=draw/src/handler.ts&n=draw/test/tokei.test.ts&n=draw/docs/2-data-charts/10-tokei/en.md&style=tree&title=Files%20changed%20in%20%2331&w=560)
 
-面积风格在线下填色,像 star 这种累计数字读起来最顺。
+## 一个 release —— 代码现在长什么样?
 
-### 各区域的 issue —— 未关与已关
+### 架构图
+
+读一遍代码,把方块摆到格子上、点名连线:
 
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
+https://x-cmd.com/draw/archmap?n=edge;fe;Edge%20worker;r0c0&n=specs;be;specs/;r1c0&n=render;be;render/;r1c1&n=styles;be;styles/;r1c2&n=store;db;store.ts;r2c0&n=fonts;db;fonts;r2c1&n=geo;db;vendor%20geojson;r2c2&e=edge;specs&e=edge;render&e=edge;styles&e=render;store&e=render;fonts&e=render;geo&b=Draw%20core;specs%20render%20styles
 ```
 
-[![Issues by area](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
+[![架构图](https://x-cmd.com/draw/archmap?n=edge;fe;Edge%20worker;r0c0&n=specs;be;specs/;r1c0&n=render;be;render/;r1c1&n=styles;be;styles/;r1c2&n=store;db;store.ts;r2c0&n=fonts;db;fonts;r2c1&n=geo;db;vendor%20geojson;r2c2&e=edge;specs&e=edge;render&e=edge;styles&e=render;store&e=render;fonts&e=render;geo&b=Draw%20core;specs%20render%20styles)](https://x-cmd.com/draw/explore/archmap?n=edge;fe;Edge%20worker;r0c0&n=specs;be;specs/;r1c0&n=render;be;render/;r1c1&n=styles;be;styles/;r1c2&n=store;db;store.ts;r2c0&n=fonts;db;fonts;r2c1&n=geo;db;vendor%20geojson;r2c2&e=edge;specs&e=edge;render&e=edge;styles&e=render;store&e=render;fonts&e=render;geo&b=Draw%20core;specs%20render%20styles)
 
-每个区域两根条:还开着的,和已经做完的。
-
-### 仓库地图 —— 东西各在哪
+### 关键的文件夹
 
 ```text
-https://x-cmd.com/draw/mindmap?n=draw/Charts/Pie&n=draw/Charts/Bar%20and%20Line&n=draw/Charts/Sankey&n=draw/Arch/Archmap&n=draw/Arch/Mindmap&n=draw/Ecosystem/Skill&n=draw/Ecosystem/Data%20link&w=560
+https://x-cmd.com/draw/mindmap?n=draw/src/specs&n=draw/src/render&n=draw/src/styles&n=draw/src/store.ts&n=draw/src/handler.ts&n=draw/test&n=draw/docs&style=tree&title=Repository%20layout&w=560
 ```
 
-[![draw feature map](https://x-cmd.com/draw/mindmap?n=draw/Charts/Pie&n=draw/Charts/Bar%20and%20Line&n=draw/Charts/Sankey&n=draw/Arch/Archmap&n=draw/Arch/Mindmap&n=draw/Ecosystem/Skill&n=draw/Ecosystem/Data%20link&w=560)](https://x-cmd.com/draw/explore/mindmap?n=draw/Charts/Pie&n=draw/Charts/Bar%20and%20Line&n=draw/Charts/Sankey&n=draw/Arch/Archmap&n=draw/Arch/Mindmap&n=draw/Ecosystem/Skill&n=draw/Ecosystem/Data%20link&w=560)
-
-仓库的思维导图:功能、图种、生态。
-
-### 指向仓库的二维码 —— 放幻灯片、印纸上
-
-```text
-https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
-```
-
-[![QR code](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
-
-一张指向仓库的二维码,直接贴进幻灯片。
-
+[![仓库结构](https://x-cmd.com/draw/mindmap?n=draw/src/specs&n=draw/src/render&n=draw/src/styles&n=draw/src/store.ts&n=draw/src/handler.ts&n=draw/test&n=draw/docs&style=tree&title=Repository%20layout&w=560)](https://x-cmd.com/draw/explore/mindmap?n=draw/src/specs&n=draw/src/render&n=draw/src/styles&n=draw/src/store.ts&n=draw/src/handler.ts&n=draw/test&n=draw/docs&style=tree&title=Repository%20layout&w=560)
 
 ## 该用哪张图
 
 | 问题 | 图种 | 参考 |
 |---|---|---|
-| 用户主要用哪种语言? | 饼图 | [pie](../../2-data-charts/01-pie/cn.md) |
-| 名字长、还要排名? | 横条图 | [hbar](../../2-data-charts/03-hbar/cn.md) |
-| 读者在哪一步流失? | 桑基图 | [sankey](../../3-relations/01-sankey/cn.md) |
-| 每天干了多少活? | 柱状图 | [bar](../../2-data-charts/02-bar/cn.md) |
-| 增长有多快? | 面积图 | [area](../../2-data-charts/05-area/cn.md) |
-| 还有多少没做完? | 横条图 | [hbar](../../2-data-charts/03-hbar/cn.md) |
-| 仓库里东西各在哪? | 思维导图 | [mindmap](../../5-architecture/02-mindmap/cn.md) |
-| 别人怎么装? | 二维码 | [qr](../../7-infographics/01-qr/cn.md) |
+| 这东西是干什么的、给谁用?", "架构图", [archmap](../../5-architecture/01-archmap/cn.md) |
+| 谁做什么?", "用例图", [archmap](../../5-architecture/01-archmap/cn.md) |
+| 先发生什么、后发生什么?", "流程图", [mermaid](../../5-architecture/03-mermaid/cn.md) |
+| 这个 PR 加了多少?", "代码构成图", [tokei](../../2-data-charts/10-tokei/cn.md) |
+| 它碰了哪些文件?", "思维导图", [mindmap](../../5-architecture/02-mindmap/cn.md) |
+| 这个项目整体长什么样?", "架构图", [archmap](../../5-architecture/01-archmap/cn.md) |
+| 项目怎么分目录?", "思维导图", [mindmap](../../5-architecture/02-mindmap/cn.md) |
+

@@ -93,8 +93,8 @@ the tree.
 
 - **The root needs a branch** — a single path with no depth is a 400; the
   tree needs at least two levels.
-- **Paths are the whole input**: a node that shares no prefix with another
-  path becomes a second root, which is rarely what you meant.
+- **All the paths share one root** — two different roots is a 400, not two
+  trees. Start every path with the same first segment.
 - **`style=` is not a theme** — it changes the layout. The colours come from
   `t=`.
 - **Order does not matter** — the engine sorts by subtree size, not by the

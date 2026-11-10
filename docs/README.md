@@ -34,6 +34,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [07 gauge](2-data-charts/07-gauge/en.md) | dial | one number, now |
 | [08 scatter](2-data-charts/08-scatter/en.md) | points | correlation |
 | [09 combo](2-data-charts/09-combo/en.md) | bars + line | two measures at once |
+| [10 tokei](2-data-charts/10-tokei/en.md) | code composition | code, comments and blanks per language |
 
 ## 3 · Relations 关系图
 
@@ -80,7 +81,7 @@ Real scenarios, each one a set of ready URLs.
 
 | page | scenario |
 |---|---|
-| [01 github](9-showcases/01-github/en.md) | GitHub and open source — stars, contributors, issues, the repo map |
+| [01 github](9-showcases/01-github/en.md) | GitHub — issues, PRs and releases: use cases, sequences, code composition, architecture |
 | [02 analysis report](9-showcases/02-analysis-report/en.md) | analysis reports — latency, pass rates, scorecards, revenue and margin |
 | [03 macro economics](9-showcases/03-macro-economics/en.md) | macro economics — GDP, inflation, trade flows, regional maps |
 | [04 marketing](9-showcases/04-marketing/en.md) | marketing — funnels, channels, spend and ROI, customer segments |

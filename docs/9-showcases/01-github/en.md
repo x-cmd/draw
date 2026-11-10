@@ -1,113 +1,99 @@
 ---
-x-title: GitHub and open source — the charts a repo owner actually needs
-x-desc: 'x-cmd/draw showcase: GitHub and open source. Real URLs for stars by language, the contributor funnel, commits by day, issues by area, the repo mind map and an install QR code.'
+x-title: GitHub — issues, PRs and releases
+x-desc: 'x-cmd/draw showcase: GitHub issues, pull requests and releases. The pictures worth attaching: a use case diagram, a sequence diagram, the code composition of a diff, the files a PR touched, the architecture of the codebase and the folders that matter.'
 x-sidebar: draw showcase github
-x-keywords: github chart, github dashboard, draw showcase, svg, open source metrics
+x-keywords: github issue, pull request, release notes, draw showcase, architecture from code
 x-json-ld:
   '@context': https://schema.org
   '@graph':
     - '@type': TechArticle
       headline: 'draw showcase github'
       inLanguage: 'en'
-      about: 'x-cmd/draw showcase 01-github'
+      about: 'x-cmd/draw 01-github'
 ---
 
-# GitHub and open source — the charts a repo owner actually needs
+# GitHub — issues, PRs and releases
 
-What a maintainer, a conference speaker or a README author needs to show about a project —
-and the URL that renders each one.
+Nobody reads a chart of star counts. What a reader wants on an issue, a pull
+request or a release is a picture of the thing itself: what it does, what
+changed, what the code looks like now.
 
-### Stars by language — the share
+## An issue — what should it do?
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520
-```
+### Use case diagram
 
-[![Stars by language](https://x-cmd.com/draw?type=pie&t=market-mono&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520)
-
-A donut answers “what share of the stars sits in each language” in one glance.
-
-### The same numbers as a ranking — the count
+The actors on the left, the use cases in the system, one boundary around the
+system itself:
 
 ```text
-https://x-cmd.com/draw?type=hbar&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520&unit=stars
+https://x-cmd.com/draw/archmap?n=caller;ext;Your%20app;r0c0&n=uc1;be;Render%20a%20chart;r1c0&n=uc2;be;Store%20it%20as%20a%20short%20link;r1c1&n=uc3;be;Deploy%20it%20yourself;r1c2&e=caller;uc1&e=caller;uc2&e=caller;uc3&b=draw;uc1%20uc2%20uc3
 ```
 
-[![Stars by language](https://x-cmd.com/draw?type=hbar&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520&unit=stars)](https://x-cmd.com/draw/explore?type=hbar&title=Stars%20by%20language&labels=TypeScript,Python,Go,Rust,Java&values=4821,2312,980,645,520&unit=stars)
+[![Use case diagram](https://x-cmd.com/draw/archmap?n=caller;ext;Your%20app;r0c0&n=uc1;be;Render%20a%20chart;r1c0&n=uc2;be;Store%20it%20as%20a%20short%20link;r1c1&n=uc3;be;Deploy%20it%20yourself;r1c2&e=caller;uc1&e=caller;uc2&e=caller;uc3&b=draw;uc1%20uc2%20uc3)](https://x-cmd.com/draw/explore/archmap?n=caller;ext;Your%20app;r0c0&n=uc1;be;Render%20a%20chart;r1c0&n=uc2;be;Store%20it%20as%20a%20short%20link;r1c1&n=uc3;be;Deploy%20it%20yourself;r1c2&e=caller;uc1&e=caller;uc2&e=caller;uc3&b=draw;uc1%20uc2%20uc3)
 
-Horizontal bars put the labels on the left and the counts on the right — better when the
-names are long or you want to read the exact numbers.
+### Sequence diagram
 
-### The contributor funnel — where readers drop off
+Time runs left to right: the objects are the boxes, the messages are the
+arrows.
 
 ```text
-https://x-cmd.com/draw?type=sankey&t=fund&title=Contributor%20funnel&labels=Docs,Blog,Talks,Issue,PR,Merged&links=Docs>Issue:40;Blog>Issue:25;Talks>Issue:15;Issue>PR:32;PR>Merged:18
+https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20App%5BYour%20app%5D%20--%3E%7CGET%20%2Fdraw%3Ftype%3Dpie%7C%20Edge%5BEdge%20worker%5D%0A%20%20Edge%20--%3E%7Cparse%20the%20spec%7C%20Spec%5Bspecs%2F%5D%0A%20%20Edge%20--%3E%7Crender%7C%20Render%5Brender%2F%5D%0A%20%20Render%20--%3E%7CSVG%7C%20Edge%0A%20%20Edge%20--%3E%7C200%20OK%7C%20App&w=560
 ```
 
-[![Contributor funnel](https://x-cmd.com/draw?type=sankey&t=fund&title=Contributor%20funnel&labels=Docs,Blog,Talks,Issue,PR,Merged&links=Docs>Issue:40;Blog>Issue:25;Talks>Issue:15;Issue>PR:32;PR>Merged:18)](https://x-cmd.com/draw/explore?type=sankey&t=fund&title=Contributor%20funnel&labels=Docs,Blog,Talks,Issue,PR,Merged&links=Docs>Issue:40;Blog>Issue:25;Talks>Issue:15;Issue>PR:32;PR>Merged:18)
+[![Sequence diagram](https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20App%5BYour%20app%5D%20--%3E%7CGET%20%2Fdraw%3Ftype%3Dpie%7C%20Edge%5BEdge%20worker%5D%0A%20%20Edge%20--%3E%7Cparse%20the%20spec%7C%20Spec%5Bspecs%2F%5D%0A%20%20Edge%20--%3E%7Crender%7C%20Render%5Brender%2F%5D%0A%20%20Render%20--%3E%7CSVG%7C%20Edge%0A%20%20Edge%20--%3E%7C200%20OK%7C%20App&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20LR%0A%20%20App%5BYour%20app%5D%20--%3E%7CGET%20%2Fdraw%3Ftype%3Dpie%7C%20Edge%5BEdge%20worker%5D%0A%20%20Edge%20--%3E%7Cparse%20the%20spec%7C%20Spec%5Bspecs%2F%5D%0A%20%20Edge%20--%3E%7Crender%7C%20Render%5Brender%2F%5D%0A%20%20Render%20--%3E%7CSVG%7C%20Edge%0A%20%20Edge%20--%3E%7C200%20OK%7C%20App&w=560)
 
-A Sankey shows the whole chain — read → star → fork → PR → merged — and where it narrows.
+## A PR — what changed?
 
-### Commits by day — who works when
+### Code composition
+
+`tokei` over the files the diff touches, straight into the chart:
 
 ```text
-https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=dev:12,18,9,15,21,8,17&series=ci:8,11,6,13,16,5,12&title=Commits%20by%20day
+https://x-cmd.com/draw/tokei?d=%7B%22TypeScript%22%3A%7B%22code%22%3A4820%2C%22comments%22%3A1180%2C%22blanks%22%3A940%7D%2C%22JavaScript%22%3A%7B%22code%22%3A1687%2C%22comments%22%3A298%2C%22blanks%22%3A71%7D%2C%22Shell%22%3A%7B%22code%22%3A640%2C%22comments%22%3A120%2C%22blanks%22%3A88%7D%2C%22CSS%22%3A%7B%22code%22%3A210%2C%22comments%22%3A40%2C%22blanks%22%3A35%7D%2C%22Markdown%22%3A%7B%22code%22%3A180%2C%22comments%22%3A760%2C%22blanks%22%3A120%7D%2C%22JSON%22%3A%7B%22code%22%3A95%2C%22comments%22%3A0%2C%22blanks%22%3A12%7D%7D&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440
 ```
 
-[![Commits by day](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=dev:12,18,9,15,21,8,17&series=ci:8,11,6,13,16,5,12&title=Commits%20by%20day)](https://x-cmd.com/draw/explore?type=bar&labels=Mon,Tue,Wed,Thu,Fri,Sat,Sun&series=dev:12,18,9,15,21,8,17&series=ci:8,11,6,13,16,5,12&title=Commits%20by%20day)
+[![Code composition](https://x-cmd.com/draw/tokei?d=%7B%22TypeScript%22%3A%7B%22code%22%3A4820%2C%22comments%22%3A1180%2C%22blanks%22%3A940%7D%2C%22JavaScript%22%3A%7B%22code%22%3A1687%2C%22comments%22%3A298%2C%22blanks%22%3A71%7D%2C%22Shell%22%3A%7B%22code%22%3A640%2C%22comments%22%3A120%2C%22blanks%22%3A88%7D%2C%22CSS%22%3A%7B%22code%22%3A210%2C%22comments%22%3A40%2C%22blanks%22%3A35%7D%2C%22Markdown%22%3A%7B%22code%22%3A180%2C%22comments%22%3A760%2C%22blanks%22%3A120%7D%2C%22JSON%22%3A%7B%22code%22%3A95%2C%22comments%22%3A0%2C%22blanks%22%3A12%7D%7D&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)](https://x-cmd.com/draw/explore/tokei?d=%7B%22TypeScript%22%3A%7B%22code%22%3A4820%2C%22comments%22%3A1180%2C%22blanks%22%3A940%7D%2C%22JavaScript%22%3A%7B%22code%22%3A1687%2C%22comments%22%3A298%2C%22blanks%22%3A71%7D%2C%22Shell%22%3A%7B%22code%22%3A640%2C%22comments%22%3A120%2C%22blanks%22%3A88%7D%2C%22CSS%22%3A%7B%22code%22%3A210%2C%22comments%22%3A40%2C%22blanks%22%3A35%7D%2C%22Markdown%22%3A%7B%22code%22%3A180%2C%22comments%22%3A760%2C%22blanks%22%3A120%7D%2C%22JSON%22%3A%7B%22code%22%3A95%2C%22comments%22%3A0%2C%22blanks%22%3A12%7D%7D&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)
 
-Two series (feature work and CI) per weekday; a grouped bar keeps the comparison honest.
+The bar is split into code, comments and blanks — the increment a reviewer
+actually wants, not the whole repository.
 
-### Stars over time — the growth curve
+### The files it touched
 
 ```text
-https://x-cmd.com/draw?type=area&t=star&labels=Jan,Feb,Mar,Apr,May,Jun,Jul&values=120,180,150,260,310,420,560&title=Stars%20over%20time
+https://x-cmd.com/draw/mindmap?n=draw/src/render/tokei.ts&n=draw/src/handler.ts&n=draw/test/tokei.test.ts&n=draw/docs/2-data-charts/10-tokei/en.md&style=tree&title=Files%20changed%20in%20%2331&w=560
 ```
 
-[![Stars over time](https://x-cmd.com/draw?type=area&t=star&labels=Jan,Feb,Mar,Apr,May,Jun,Jul&values=120,180,150,260,310,420,560&title=Stars%20over%20time)](https://x-cmd.com/draw/explore?type=area&t=star&labels=Jan,Feb,Mar,Apr,May,Jun,Jul&values=120,180,150,260,310,420,560&title=Stars%20over%20time)
+[![Files changed](https://x-cmd.com/draw/mindmap?n=draw/src/render/tokei.ts&n=draw/src/handler.ts&n=draw/test/tokei.test.ts&n=draw/docs/2-data-charts/10-tokei/en.md&style=tree&title=Files%20changed%20in%20%2331&w=560)](https://x-cmd.com/draw/explore/mindmap?n=draw/src/render/tokei.ts&n=draw/src/handler.ts&n=draw/test/tokei.test.ts&n=draw/docs/2-data-charts/10-tokei/en.md&style=tree&title=Files%20changed%20in%20%2331&w=560)
 
-The area style fills under the line, which reads well for a cumulative number like stars.
+## A release — what the codebase looks like now?
 
-### Issues by area — open against closed
+### Architecture
+
+Read the code, then place the boxes on a grid and name the edges:
 
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
+https://x-cmd.com/draw/archmap?n=edge;fe;Edge%20worker;r0c0&n=specs;be;specs/;r1c0&n=render;be;render/;r1c1&n=styles;be;styles/;r1c2&n=store;db;store.ts;r2c0&n=fonts;db;fonts;r2c1&n=geo;db;vendor%20geojson;r2c2&e=edge;specs&e=edge;render&e=edge;styles&e=render;store&e=render;fonts&e=render;geo&b=Draw%20core;specs%20render%20styles
 ```
 
-[![Issues by area](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
+[![Architecture diagram](https://x-cmd.com/draw/archmap?n=edge;fe;Edge%20worker;r0c0&n=specs;be;specs/;r1c0&n=render;be;render/;r1c1&n=styles;be;styles/;r1c2&n=store;db;store.ts;r2c0&n=fonts;db;fonts;r2c1&n=geo;db;vendor%20geojson;r2c2&e=edge;specs&e=edge;render&e=edge;styles&e=render;store&e=render;fonts&e=render;geo&b=Draw%20core;specs%20render%20styles)](https://x-cmd.com/draw/explore/archmap?n=edge;fe;Edge%20worker;r0c0&n=specs;be;specs/;r1c0&n=render;be;render/;r1c1&n=styles;be;styles/;r1c2&n=store;db;store.ts;r2c0&n=fonts;db;fonts;r2c1&n=geo;db;vendor%20geojson;r2c2&e=edge;specs&e=edge;render&e=edge;styles&e=render;store&e=render;fonts&e=render;geo&b=Draw%20core;specs%20render%20styles)
 
-Two series per area, one bar each: what is still open against what is already done.
-
-### The repo map — what lives where
+### The folders that matter
 
 ```text
-https://x-cmd.com/draw/mindmap?n=draw/Charts/Pie&n=draw/Charts/Bar%20and%20Line&n=draw/Charts/Sankey&n=draw/Arch/Archmap&n=draw/Arch/Mindmap&n=draw/Ecosystem/Skill&n=draw/Ecosystem/Data%20link&w=560
+https://x-cmd.com/draw/mindmap?n=draw/src/specs&n=draw/src/render&n=draw/src/styles&n=draw/src/store.ts&n=draw/src/handler.ts&n=draw/test&n=draw/docs&style=tree&title=Repository%20layout&w=560
 ```
 
-[![draw feature map](https://x-cmd.com/draw/mindmap?n=draw/Charts/Pie&n=draw/Charts/Bar%20and%20Line&n=draw/Charts/Sankey&n=draw/Arch/Archmap&n=draw/Arch/Mindmap&n=draw/Ecosystem/Skill&n=draw/Ecosystem/Data%20link&w=560)](https://x-cmd.com/draw/explore/mindmap?n=draw/Charts/Pie&n=draw/Charts/Bar%20and%20Line&n=draw/Charts/Sankey&n=draw/Arch/Archmap&n=draw/Arch/Mindmap&n=draw/Ecosystem/Skill&n=draw/Ecosystem/Data%20link&w=560)
-
-A mind map of the repository: the features, the drawing kinds, the ecosystem.
-
-### A QR to the repo — for slides and print
-
-```text
-https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
-```
-
-[![QR code](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
-
-A QR code pointing at the repository, straight into a slide.
-
+[![Repository layout](https://x-cmd.com/draw/mindmap?n=draw/src/specs&n=draw/src/render&n=draw/src/styles&n=draw/src/store.ts&n=draw/src/handler.ts&n=draw/test&n=draw/docs&style=tree&title=Repository%20layout&w=560)](https://x-cmd.com/draw/explore/mindmap?n=draw/src/specs&n=draw/src/render&n=draw/src/styles&n=draw/src/store.ts&n=draw/src/handler.ts&n=draw/test&n=draw/docs&style=tree&title=Repository%20layout&w=560)
 
 ## Which chart for what
 
 | question | chart | reference |
 |---|---|---|
-| Which languages do people use? | pie | [pie](../../2-data-charts/01-pie/en.md) |
-| Who ranks highest, with long labels? | hbar | [hbar](../../2-data-charts/03-hbar/en.md) |
-| Where do readers drop off? | sankey | [sankey](../../3-relations/01-sankey/en.md) |
-| How much work happens each day? | bar | [bar](../../2-data-charts/02-bar/en.md) |
-| How fast is it growing? | area | [area](../../2-data-charts/05-area/en.md) |
-| What is still open? | hbar | [hbar](../../2-data-charts/03-hbar/en.md) |
-| What lives where in the repo? | mind map | [mindmap](../../5-architecture/02-mindmap/en.md) |
-| How do people install it? | QR code | [qr](../../7-infographics/01-qr/en.md) |
+| What does this thing do, and for whom?", "architecture diagram", [archmap](../../5-architecture/01-archmap/en.md) |
+| Who does what?", "use case diagram", [archmap](../../5-architecture/01-archmap/en.md) |
+| What happens, in what order?", "flowchart", [mermaid](../../5-architecture/03-mermaid/en.md) |
+| What did this PR add?", "code composition", [tokei](../../2-data-charts/10-tokei/en.md) |
+| Which files did it touch?", "mind map", [mindmap](../../5-architecture/02-mindmap/en.md) |
+| What does the project look like?", "architecture diagram", [archmap](../../5-architecture/01-archmap/en.md) |
+| How is the project laid out?", "mind map", [mindmap](../../5-architecture/02-mindmap/en.md) |
+

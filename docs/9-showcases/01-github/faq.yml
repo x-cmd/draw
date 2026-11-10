@@ -5,15 +5,15 @@ data:
       en: GitHub showcase
       cn: GitHub 场景
     qa:
-      - id: which-chart
+      - id: not-stars
         question:
-          en: "Share or count — which one should I use?"
-          cn: "占比还是数量,该用哪个?"
+          en: "Why no chart of stars or commits?"
+          cn: "为什么没有 star 数、提交数那种图?"
         answer:
           en: >
-            Share, use the donut: it answers “how is the total split” at a glance. Count, use the horizontal bar: the numbers stay readable and long language names do not get cut.
+            Because nobody reads them. The pictures that earn their place on an issue, a PR or a release are the ones that show the thing itself: what it does, what changed, what the code looks like now.
           cn: >
-            看占比用环形图,一眼就知道总量怎么分;看数量用横条图,数字读得准,长名字也不会被截断。
+            因为没人看。真正该贴��� issue、PR、release 上的,是能看见事情本身的图:它做什么、改了什么、代码现在长什么样。
         confidence: 9
         reference:
           - docs/9-showcases/01-github/en.md
