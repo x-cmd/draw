@@ -19,58 +19,58 @@ x-json-ld:
 **OpenData（默认，标签圈外）**
 
 ```text
-https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4
+https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20%E5%8D%A0%E6%AF%94&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=65,18,7,6,4
 ```
 
-[![OpenData（默认，标签圈外）](https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4)](https://x-cmd.com/draw/explore?type=pie&t=opendata&title=Chrome%20holds&labels=Chrome,Safari,Firefox,Edge,Other&values=65,18,7,6,4)
+[![OpenData（默认，标签圈外）](https://x-cmd.com/draw?type=pie&t=opendata&title=Chrome%20%E5%8D%A0%E6%AF%94&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=65,18,7,6,4)](https://x-cmd.com/draw/explore?type=pie&t=opendata&title=Chrome%20%E5%8D%A0%E6%AF%94&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=65,18,7,6,4)
 
 **Evil（圆角扇区+数值内标）**
 
 ```text
-https://x-cmd.com/draw?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90
+https://x-cmd.com/draw?type=pie&t=evil&title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B8%82%E5%9C%BA&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=275,200,187,173,90
 ```
 
-[![Evil（圆角扇区+数值内标）](https://x-cmd.com/draw?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)
+[![Evil（圆角扇区+数值内标）](https://x-cmd.com/draw?type=pie&t=evil&title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B8%82%E5%9C%BA&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=275,200,187,173,90)](https://x-cmd.com/draw/explore?type=pie&t=evil&title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B8%82%E5%9C%BA&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=275,200,187,173,90)
 
 **Evil 外标（黑白印刷）**
 
 ```text
-https://x-cmd.com/draw?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90
+https://x-cmd.com/draw?type=pie&t=evil-mono&title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B8%82%E5%9C%BA&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=275,200,187,173,90
 ```
 
-[![Evil 外标（黑白印刷）](https://x-cmd.com/draw?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=Browser%20market&labels=Chrome,Safari,Firefox,Edge,Other&values=275,200,187,173,90)
+[![Evil 外标（黑白印刷）](https://x-cmd.com/draw?type=pie&t=evil-mono&title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B8%82%E5%9C%BA&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=275,200,187,173,90)](https://x-cmd.com/draw/explore?type=pie&t=evil-mono&title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B8%82%E5%9C%BA&labels=Chrome%2CSafari%2CFirefox%2CEdge%2C%E5%85%B6%E4%BB%96&values=275,200,187,173,90)
 
 **Market Mono（灰阶+环心总计）**
 
 ```text
-https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12
+https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=%E5%B8%82%E5%9C%BA%E4%BB%BD%E9%A2%9D&labels=%E5%A4%A9%E9%99%85%E7%BA%BF%2C%E6%95%B0%E6%8D%AE%E6%B3%89%2C%E4%BA%91%E5%B3%B0%2C%E4%BB%BB%E5%8A%A1%E6%A1%A5%2C%E6%B5%81%E5%B7%A5%E5%9C%BA&values=27,21,13,21,12
 ```
 
-[![Market Mono（灰阶+环心总计）](https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&unit=B&title=Market%20share&labels=Skyline,Datawell,Cloudpeak,Taskbridge,Streamforge&values=27,21,13,21,12)
+[![Market Mono（灰阶+环心总计）](https://x-cmd.com/draw?type=pie&t=market-mono&unit=B&title=%E5%B8%82%E5%9C%BA%E4%BB%BD%E9%A2%9D&labels=%E5%A4%A9%E9%99%85%E7%BA%BF%2C%E6%95%B0%E6%8D%AE%E6%B3%89%2C%E4%BA%91%E5%B3%B0%2C%E4%BB%BB%E5%8A%A1%E6%A1%A5%2C%E6%B5%81%E5%B7%A5%E5%9C%BA&values=27,21,13,21,12)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&unit=B&title=%E5%B8%82%E5%9C%BA%E4%BB%BD%E9%A2%9D&labels=%E5%A4%A9%E9%99%85%E7%BA%BF%2C%E6%95%B0%E6%8D%AE%E6%B3%89%2C%E4%BA%91%E5%B3%B0%2C%E4%BB%BB%E5%8A%A1%E6%A1%A5%2C%E6%B5%81%E5%B7%A5%E5%9C%BA&values=27,21,13,21,12)
 
 **Progress（点状进度环）**
 
 ```text
-https://x-cmd.com/draw?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67
+https://x-cmd.com/draw?type=pie&t=progress&unit=%E6%AC%A1&title=%E5%B7%A5%E4%BD%9C%E6%97%B6%E9%97%B4%E9%83%BD%E6%BC%8F%E5%9C%A8%E5%93%AA&labels=%E9%A2%9D%E5%A4%96%E7%9A%84%E6%94%AF%E6%8C%81%E8%AF%B7%E6%B1%82%2C%E4%B8%8D%E5%87%86%E7%A1%AE%E7%9A%84%E9%A2%84%E6%B5%8B&values=48,67
 ```
 
-[![Progress（点状进度环）](https://x-cmd.com/draw?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67)](https://x-cmd.com/draw/explore?type=pie&t=progress&unit=responses&title=Where%20the%20workday%20leaks&labels=Additional%20support%20requests,Inaccurate%20forecasts&values=48,67)
+[![Progress（点状进度环）](https://x-cmd.com/draw?type=pie&t=progress&unit=%E6%AC%A1&title=%E5%B7%A5%E4%BD%9C%E6%97%B6%E9%97%B4%E9%83%BD%E6%BC%8F%E5%9C%A8%E5%93%AA&labels=%E9%A2%9D%E5%A4%96%E7%9A%84%E6%94%AF%E6%8C%81%E8%AF%B7%E6%B1%82%2C%E4%B8%8D%E5%87%86%E7%A1%AE%E7%9A%84%E9%A2%84%E6%B5%8B&values=48,67)](https://x-cmd.com/draw/explore?type=pie&t=progress&unit=%E6%AC%A1&title=%E5%B7%A5%E4%BD%9C%E6%97%B6%E9%97%B4%E9%83%BD%E6%BC%8F%E5%9C%A8%E5%93%AA&labels=%E9%A2%9D%E5%A4%96%E7%9A%84%E6%94%AF%E6%8C%81%E8%AF%B7%E6%B1%82%2C%E4%B8%8D%E5%87%86%E7%A1%AE%E7%9A%84%E9%A2%84%E6%B5%8B&values=48,67)
 
 **Revenue（渐变扇区+右图例）**
 
 ```text
-https://x-cmd.com/draw?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300
+https://x-cmd.com/draw?type=pie&t=revenue&unit=%E5%8D%95&title=%E8%90%A5%E6%94%B6&labels=%E7%9B%B4%E8%90%A5%2C%E5%B9%B3%E5%8F%B0%2C%E6%89%B9%E5%8F%91%2C%E8%81%94%E7%9B%9F&values=52400,38900,24150,16300
 ```
 
-[![Revenue（渐变扇区+右图例）](https://x-cmd.com/draw?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300)](https://x-cmd.com/draw/explore?type=pie&t=revenue&unit=orders&title=Revenue&labels=Direct,Marketplace,Wholesale,Affiliate&values=52400,38900,24150,16300)
+[![Revenue（渐变扇区+右图例）](https://x-cmd.com/draw?type=pie&t=revenue&unit=%E5%8D%95&title=%E8%90%A5%E6%94%B6&labels=%E7%9B%B4%E8%90%A5%2C%E5%B9%B3%E5%8F%B0%2C%E6%89%B9%E5%8F%91%2C%E8%81%94%E7%9B%9F&values=52400,38900,24150,16300)](https://x-cmd.com/draw/explore?type=pie&t=revenue&unit=%E5%8D%95&title=%E8%90%A5%E6%94%B6&labels=%E7%9B%B4%E8%90%A5%2C%E5%B9%B3%E5%8F%B0%2C%E6%89%B9%E5%8F%91%2C%E8%81%94%E7%9B%9F&values=52400,38900,24150,16300)
 
 **实心饼（donut=0）**
 
 ```text
-https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9
+https://x-cmd.com/draw?type=pie&donut=0&title=%E5%8D%A0%E6%AF%94&labels=TS,Py,Go&values=48,23,9
 ```
 
-[![实心饼（donut=0）](https://x-cmd.com/draw?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9)](https://x-cmd.com/draw/explore?type=pie&donut=0&title=Share&labels=TS,Py,Go&values=48,23,9)
+[![实心饼（donut=0）](https://x-cmd.com/draw?type=pie&donut=0&title=%E5%8D%A0%E6%AF%94&labels=TS,Py,Go&values=48,23,9)](https://x-cmd.com/draw/explore?type=pie&donut=0&title=%E5%8D%A0%E6%AF%94&labels=TS,Py,Go&values=48,23,9)
 
 ---
 

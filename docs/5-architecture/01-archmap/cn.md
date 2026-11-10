@@ -22,36 +22,36 @@ x-json-ld:
 ### 三层 Web 应用
 
 ```text
-https://x-cmd.com/draw/archmap?n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache
+https://x-cmd.com/draw/archmap?n=web%3Bfe%3B%E6%B5%8F%E8%A7%88%E5%99%A8%3Br0c0&n=cdn;cloud;CDN;r0c1&n=gw%3Bbe%3BAPI%20%E7%BD%91%E5%85%B3%3Bauth%3Br0c2&n=auth%3Bbe%3B%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%3Br1c1&n=render%3Bbe%3B%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93%3Br1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=%E6%95%B0%E6%8D%AE%E5%B1%82%3Bpg%20cache
 ```
 
-[![三层 Web 应用](https://x-cmd.com/draw/archmap?n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)](https://x-cmd.com/draw/explore/archmap?n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)
+[![三层 Web 应用](https://x-cmd.com/draw/archmap?n=web%3Bfe%3B%E6%B5%8F%E8%A7%88%E5%99%A8%3Br0c0&n=cdn;cloud;CDN;r0c1&n=gw%3Bbe%3BAPI%20%E7%BD%91%E5%85%B3%3Bauth%3Br0c2&n=auth%3Bbe%3B%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%3Br1c1&n=render%3Bbe%3B%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93%3Br1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=%E6%95%B0%E6%8D%AE%E5%B1%82%3Bpg%20cache)](https://x-cmd.com/draw/explore/archmap?n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)
 
 图里的 `Data Layer` 框是**边界**:被点名的两个节点框在一起,读者一眼看出哪层归谁管。
 
 ### 同一张图换个风格
 
 ```text
-https://x-cmd.com/draw/archmap?t=mono&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache
+https://x-cmd.com/draw/archmap?t=mono&n=web%3Bfe%3B%E6%B5%8F%E8%A7%88%E5%99%A8%3Br0c0&n=cdn;cloud;CDN;r0c1&n=gw%3Bbe%3BAPI%20%E7%BD%91%E5%85%B3%3Bauth%3Br0c2&n=auth%3Bbe%3B%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%3Br1c1&n=render%3Bbe%3B%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93%3Br1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=%E6%95%B0%E6%8D%AE%E5%B1%82%3Bpg%20cache
 ```
 
-[![三层 Web 应用 · mono](https://x-cmd.com/draw/archmap?t=mono&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)](https://x-cmd.com/draw/explore/archmap?t=mono&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)
+[![三层 Web 应用 · mono](https://x-cmd.com/draw/archmap?t=mono&n=web%3Bfe%3B%E6%B5%8F%E8%A7%88%E5%99%A8%3Br0c0&n=cdn;cloud;CDN;r0c1&n=gw%3Bbe%3BAPI%20%E7%BD%91%E5%85%B3%3Bauth%3Br0c2&n=auth%3Bbe%3B%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%3Br1c1&n=render%3Bbe%3B%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93%3Br1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=%E6%95%B0%E6%8D%AE%E5%B1%82%3Bpg%20cache)](https://x-cmd.com/draw/explore/archmap?t=mono&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)
 
 `mono` 去掉填色只留线条 —— 复印也不糊。`soft` 是同图的柔和版:
 
 ```text
-https://x-cmd.com/draw/archmap?t=soft&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache
+https://x-cmd.com/draw/archmap?t=soft&n=web%3Bfe%3B%E6%B5%8F%E8%A7%88%E5%99%A8%3Br0c0&n=cdn;cloud;CDN;r0c1&n=gw%3Bbe%3BAPI%20%E7%BD%91%E5%85%B3%3Bauth%3Br0c2&n=auth%3Bbe%3B%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%3Br1c1&n=render%3Bbe%3B%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93%3Br1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=%E6%95%B0%E6%8D%AE%E5%B1%82%3Bpg%20cache
 ```
 
-[![三层 Web 应用 · soft](https://x-cmd.com/draw/archmap?t=soft&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)](https://x-cmd.com/draw/explore/archmap?t=soft&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)
+[![三层 Web 应用 · soft](https://x-cmd.com/draw/archmap?t=soft&n=web%3Bfe%3B%E6%B5%8F%E8%A7%88%E5%99%A8%3Br0c0&n=cdn;cloud;CDN;r0c1&n=gw%3Bbe%3BAPI%20%E7%BD%91%E5%85%B3%3Bauth%3Br0c2&n=auth%3Bbe%3B%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%3Br1c1&n=render%3Bbe%3B%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93%3Br1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=%E6%95%B0%E6%8D%AE%E5%B1%82%3Bpg%20cache)](https://x-cmd.com/draw/explore/archmap?t=soft&n=web;fe;Browser;r0c0&n=cdn;cloud;CDN;r0c1&n=gw;be;API%20Gateway;auth;r0c2&n=auth;be;Auth%20Service;r1c1&n=render;be;Chart%20Render;r1c2&n=pg;db;Postgres;r2c1&n=cache;db;Redis;r2c2&e=web;cdn&e=cdn;gw&e=gw;auth&e=gw;render&e=auth;pg&e=render;pg&e=render;cache&b=Data%20Layer;pg%20cache)
 
 ### 带命名空间边界的 Kubernetes 拓扑
 
 ```text
-https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560
+https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw%3Bfe%3BWeb%20%E7%95%8C%E9%9D%A2%3Br0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%3Bp1%20p2&title=Kubernetes%20%E6%8B%93%E6%89%91&w=560
 ```
 
-[![Kubernetes 拓扑](https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560)](https://x-cmd.com/draw/explore/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560)
+[![Kubernetes 拓扑](https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw%3Bfe%3BWeb%20%E7%95%8C%E9%9D%A2%3Br0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%3Bp1%20p2&title=Kubernetes%20%E6%8B%93%E6%89%91&w=560)](https://x-cmd.com/draw/explore/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560)
 
 ## 一、参数
 

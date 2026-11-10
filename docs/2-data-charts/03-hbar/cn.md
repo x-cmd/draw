@@ -19,50 +19,50 @@ x-json-ld:
 **排行（默认 base）**
 
 ```text
-https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area
+https://x-cmd.com/draw?type=hbar&labels=CLI%2C%E6%A0%B8%E5%BF%83%2C%E6%96%87%E6%A1%A3%2CUI&values=42,31,18,9&title=%E5%90%84%E6%A8%A1%E5%9D%97%E6%8F%90%E4%BA%A4%E9%87%8F
 ```
 
-[![排行（默认 base）](https://x-cmd.com/draw?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area)](https://x-cmd.com/draw/explore?type=hbar&labels=cli,core,docs,ui&values=42,31,18,9&title=Commits%20by%20area)
+[![排行（默认 base）](https://x-cmd.com/draw?type=hbar&labels=CLI%2C%E6%A0%B8%E5%BF%83%2C%E6%96%87%E6%A1%A3%2CUI&values=42,31,18,9&title=%E5%90%84%E6%A8%A1%E5%9D%97%E6%8F%90%E4%BA%A4%E9%87%8F)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI%2C%E6%A0%B8%E5%BF%83%2C%E6%96%87%E6%A1%A3%2CUI&values=42,31,18,9&title=%E5%90%84%E6%A8%A1%E5%9D%97%E6%8F%90%E4%BA%A4%E9%87%8F)
 
 **单系列长标签**
 
 ```text
-https://x-cmd.com/draw?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews
+https://x-cmd.com/draw?type=hbar&labels=%E7%94%B2%2C%E4%B9%99%2C%E4%B8%99%2C%E4%B8%81%2C%E6%88%8A&values=120,98,150,75,60&title=%E8%AF%84%E5%AE%A1%E6%95%B0
 ```
 
-[![单系列长标签](https://x-cmd.com/draw?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews)](https://x-cmd.com/draw/explore?type=hbar&labels=Alice,Bob,Charlie,Diana,Edward&values=120,98,150,75,60&title=Reviews)
+[![单系列长标签](https://x-cmd.com/draw?type=hbar&labels=%E7%94%B2%2C%E4%B9%99%2C%E4%B8%99%2C%E4%B8%81%2C%E6%88%8A&values=120,98,150,75,60&title=%E8%AF%84%E5%AE%A1%E6%95%B0)](https://x-cmd.com/draw/explore?type=hbar&labels=%E7%94%B2%2C%E4%B9%99%2C%E4%B8%99%2C%E4%B8%81%2C%E6%88%8A&values=120,98,150,75,60&title=%E8%AF%84%E5%AE%A1%E6%95%B0)
 
 **像素条%（t=xcmd）**
 
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages
+https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript%2CPython%2CGo%2C%E5%85%B6%E4%BB%96&values=68,21,9,2&title=%E8%AF%AD%E8%A8%80%E5%8D%A0%E6%AF%94
 ```
 
-[![像素条%（t=xcmd）](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=TypeScript,Python,Go,Other&values=68,21,9,2&title=Languages)
+[![像素条%（t=xcmd）](https://x-cmd.com/draw?type=hbar&t=xcmd&labels=TypeScript%2CPython%2CGo%2C%E5%85%B6%E4%BB%96&values=68,21,9,2&title=%E8%AF%AD%E8%A8%80%E5%8D%A0%E6%AF%94)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd&labels=TypeScript%2CPython%2CGo%2C%E5%85%B6%E4%BB%96&values=68,21,9,2&title=%E8%AF%AD%E8%A8%80%E5%8D%A0%E6%AF%94)
 
 **双系列蝴蝶（t=xcmd-issue）**
 
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area
+https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI%2C%E6%A0%B8%E5%BF%83%2C%E6%96%87%E6%A1%A3%2CCI%2CUI&series=%E6%9C%AA%E8%A7%A3%E5%86%B3%3A12%2C8%2C15%2C4%2C9&series=closed:38,52,20,11,26&title=%E5%90%84%E6%A8%A1%E5%9D%97%20issue
 ```
 
-[![双系列蝴蝶（t=xcmd-issue）](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=cli,core,docs,ci,ui&series=open:12,8,15,4,9&series=closed:38,52,20,11,26&title=Issues%20by%20area)
+[![双系列蝴蝶（t=xcmd-issue）](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI%2C%E6%A0%B8%E5%BF%83%2C%E6%96%87%E6%A1%A3%2CCI%2CUI&series=%E6%9C%AA%E8%A7%A3%E5%86%B3%3A12%2C8%2C15%2C4%2C9&series=closed:38,52,20,11,26&title=%E5%90%84%E6%A8%A1%E5%9D%97%20issue)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI%2C%E6%A0%B8%E5%BF%83%2C%E6%96%87%E6%A1%A3%2CCI%2CUI&series=%E6%9C%AA%E8%A7%A3%E5%86%B3%3A12%2C8%2C15%2C4%2C9&series=closed:38,52,20,11,26&title=%E5%90%84%E6%A8%A1%E5%9D%97%20issue)
 
 **双系列斜纹（t=rank）**
 
 ```text
-https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly
+https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=%E5%AD%A3%E5%BA%A6%E5%AF%B9%E6%AF%94
 ```
 
-[![双系列斜纹（t=rank）](https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=Quarterly)
+[![双系列斜纹（t=rank）](https://x-cmd.com/draw?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=%E5%AD%A3%E5%BA%A6%E5%AF%B9%E6%AF%94)](https://x-cmd.com/draw/explore?type=hbar&t=rank&labels=Q1,Q2,Q3&series=2025:80,95,110&series=2026:110,85,120&title=%E5%AD%A3%E5%BA%A6%E5%AF%B9%E6%AF%94)
 
 **参考线（t=opendata, ref=）**
 
 ```text
-https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points
+https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=%E5%86%B2%E5%88%BA%E7%82%B9%E6%95%B0
 ```
 
-[![参考线（t=opendata, ref=）](https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=Sprint%20points)
+[![参考线（t=opendata, ref=）](https://x-cmd.com/draw?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=%E5%86%B2%E5%88%BA%E7%82%B9%E6%95%B0)](https://x-cmd.com/draw/explore?type=hbar&t=opendata&labels=alpha,beta,gamma,delta&values=8,6,9,4&ref=7&reflabel=target&title=%E5%86%B2%E5%88%BA%E7%82%B9%E6%95%B0)
 
 水平柱状图，柱子是横向的。**适合 label 文字很长**的场景（如人名 / 项目名 / 长分类名）。
 
