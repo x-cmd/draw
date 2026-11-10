@@ -1,0 +1,46 @@
+name: 想要一种新的图 / Want a new chart kind
+description: 缺一种图 —— 把你想要的样子画出来,贴上来
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        缺什么图,直接说;要是 draw 现在画不出来,把**你想要的样子**用 draw 画出来贴上来 ——
+        架构图(`/draw/archmap`)、导图(`/draw/mindmap`)、流程图(`/draw/mermaid`)、
+        甘特图(`/draw/gantt`)都能画,先画出来比讲清楚快。
+
+  - type: input
+    id: what
+    attributes:
+      label: 想要什么图
+      description: 一句话:比如「时序图」「用例图」「横向堆叠条」。
+      placeholder: 时序图:对象当泳道,消息带名字,从左往右
+    validations:
+      required: true
+
+  - type: textarea
+    id: sketch
+    attributes:
+      label: 你想要的样子(可选)
+      description: 贴一个 draw 的 URL —— 它会直接渲染成图;或者描述一下要哪几块、什么关系。
+      placeholder: https://x-cmd.com/draw/archmap?n=...
+    validations:
+      required: false
+
+  - type: textarea
+    id: use
+    attributes:
+      label: 谁会用、用来干什么
+      description: 什么场景下非画它不可?现在你拿什么凑合?
+    validations:
+      required: true
+
+  - type: textarea
+    id: data
+    attributes:
+      label: 数据长什么样
+      description: 字段名和形状:是标签+数值,还是节点+连线?
+      placeholder: 一串 {name, value},或者 {from, to, label}
+    validations:
+      required: false

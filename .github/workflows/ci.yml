@@ -21,3 +21,6 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      # README 里那三张图是 scripts/diagrams.mjs 生成的:代码结构改了要重新生成,
+      # 否则 README 和代码就对不上了
+      - run: node scripts/diagrams.mjs --check

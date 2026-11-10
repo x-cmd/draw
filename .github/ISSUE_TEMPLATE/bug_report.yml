@@ -1,0 +1,62 @@
+name: 图表画错了 / Chart renders wrong
+description: 某个 URL 画出来不对 —— 贴 URL,图会直接出现在 issue 里
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢你来报 bug。图不用截图 —— 把 draw 的 URL 贴上来,issue 里会直接渲染出那张图。
+
+  - type: input
+    id: good-url
+    attributes:
+      label: 画得对的 URL(没有就算了)
+      description: 同一份数据、不带问题参数时能画对的那个 URL。
+      placeholder: https://x-cmd.com/draw?type=combo&labels=Q1,Q2&series=Revenue:120,180&line=Margin:5,8
+    validations:
+      required: false
+
+  - type: input
+    id: bad-url
+    attributes:
+      label: 画错的 URL(必填)
+      description: 最小复现 —— 能画错的那个 URL,原样贴。
+      placeholder: https://x-cmd.com/draw?type=combo&t=evil&labels=Q1,Q2&series=Revenue:120,180&line=Margin:5,8
+    validations:
+      required: true
+
+  - type: textarea
+    id: expect
+    attributes:
+      label: 期望是什么
+      description: 哪一块不对:整个系列没了?轴错了?数值错了?标签压住了?
+      placeholder: 第二个柱系列整个不见了,第二根 y 轴也没有了,线上的数值是错的
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际是什么
+      description: 浏览器里的现象,或者换个说法:同一个 URL 换个 t= 就对了。
+    validations:
+      required: false
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境
+      description: 浏览器 / Node / wrangler 版本,自托管还是 x-cmd.com。
+      placeholder: x-cmd.com,Chrome 140
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 顺便确认一下
+      options:
+        - label: 换个 `t=` 或去掉某个参数,问题就消失了
+        - label: 自托管(wrangler)上一样
+        - label: 只有 PNG(`format=png`)有问题,SVG 正常

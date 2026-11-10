@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 图库 / Gallery
+    url: https://x-cmd.com/draw/demo
+    about: 现成的图长什么样 —— 先看看有没有已经能画的
+  - name: 文档 / Docs
+    url: https://x-cmd.com/draw/docs/
+    about: 每种图的参数和坑

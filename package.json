@@ -40,6 +40,9 @@
     "vendor:japan": "node scripts/vendor-japan.mjs",
     "vendor:countries": "node scripts/vendor-countries.mjs",
     "test": "vitest run",
+    "diagrams": "node scripts/diagrams.mjs",
+    "diagrams:check": "node scripts/diagrams.mjs --check",
+    "release-notes": "node scripts/release-notes.mjs",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
