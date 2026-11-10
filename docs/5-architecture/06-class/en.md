@@ -48,6 +48,16 @@ n=draw;class;draw;spec: object%0Areturns: DrawResult;r0c0
 Two lines: `spec: object` and `returns: DrawResult`. A method reads the way
 you would write it in code — `greet(): void`.
 
+Each line is drawn as a **member row**: the name on the left, the type on the
+right (monospaced, so the types line up down the column). The split happens at
+the first colon *outside* parentheses, so a method keeps its parameters:
+`charge(amount: Money): Result` is the member `charge(amount: Money)` of type
+`Result`.
+
+**Visibility** — start a line with `+`, `-` or `#` and draw puts that marker in
+front of it. A literal `+` has to be written `%2B` (in a query string a bare
+`+` means space).
+
 ## 3. The vocabulary
 
 | type | it is |

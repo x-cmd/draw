@@ -43,6 +43,7 @@ const ERD: HouseTypes = {
     view: { name: 'View', badge: 'V', color: 3 },
   },
   order: ['table', 'view'],
+  rows: 'fields', // 字段表:键标记 + 名字(左)+ 类型(右)
 };
 
 const CLASS: HouseTypes = {
@@ -52,6 +53,7 @@ const CLASS: HouseTypes = {
     enum: { name: 'Enum', badge: 'E', color: 4 },
   },
   order: ['class', 'iface', 'enum'],
+  rows: 'fields', // 成员表:可见性标记 + 名字(左)+ 类型(右)
 };
 
 /* ---------------------------------------------------------------- 节点解析

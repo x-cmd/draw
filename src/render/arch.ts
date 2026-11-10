@@ -37,6 +37,8 @@ export interface HouseTypes {
   order: string[];
   /** 类型 → 形状(rect / round / cylinder / diamond) */
   shape?: Record<string, 'rect' | 'round' | 'cylinder' | 'diamond'>;
+  /** 节点里的多行内容按「字段表」画:键标记 + 名字(左)+ 类型(右) */
+  rows?: 'fields';
 }
 
 /** 语义类型 → (展示名, 角标字母) */
@@ -58,7 +60,8 @@ export const ARCH_TYPES: HouseTypes = { meta: TYPE_META, order: [...TYPE_ORDER] 
 const sVar = (i: number): string => `var(--d-s${i + 1})`;
 
 /** v2 的节点尺寸:更宽更松,标题 14px;副标题多行时按行数长高 */
-const v2Size = (n: ArchNode): { w: number; h: number } => {
+const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
+  if (types.rows === 'fields') return fieldsSize(n);
   const lines = linesOf(n);
   const w = Math.max(
     NODE_MIN_W,
@@ -72,6 +75,78 @@ const v2Size = (n: ArchNode): { w: number; h: number } => {
 /** 节点副标题可以多行(用 \n 分隔)—— ERD 的字段表、class 的成员表靠它 */
 const linesOf = (n: { sub?: string }): string[] =>
   n.sub ? n.sub.split('\n').filter((l) => l !== '') : [];
+
+/* ---------------------------------------------------------------- 字段表
+   ERD 的字段、class 的成员 —— 一行一项:键标记 + 名字(左)+ 类型(右)。 */
+interface FieldRow {
+  name: string;
+  type?: string;
+  /** 主键 / 外键 / 唯一键 */
+  key?: 'pk' | 'fk' | 'uk';
+  /** UML 可见性:+ 公有 / - 私有 / # 保护 */
+  vis?: '+' | '-' | '#';
+}
+
+const KEY_MARK_RE = /\((pk|fk|uk)\)\s*$/i;
+const VIS_MARK_RE = /^([+\-#])\s+/;
+
+/**
+ * 解析字段表的一行:
+ *   id:int (pk)        → 名字 id,类型 int,主键
+ *   user_id:int (fk)   → 外键
+ *   + gateway: Payment → UML 公有成员
+ *   greet(): void      → 方法
+ *   charge(amount: Money): Result → 参数里的冒号不算,类型是 Result
+ */
+function parseFieldRow(line: string): FieldRow {
+  let s = line.trim();
+  const row: FieldRow = { name: s };
+  const vm = VIS_MARK_RE.exec(s);
+  if (vm) {
+    row.vis = vm[1] as '+' | '-' | '#';
+    s = s.slice(vm[0].length).trim();
+  }
+  const km = KEY_MARK_RE.exec(s);
+  if (km) {
+    row.key = km[1].toLowerCase() as 'pk' | 'fk' | 'uk';
+    s = s.slice(0, km.index).trim();
+  }
+  // 括号外的第一个冒号才是「名字 : 类型」的分界
+  let depth = 0;
+  let ci = -1;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === '(' || ch === '<' || ch === '[') depth++;
+    else if (ch === ')' || ch === '>' || ch === ']') depth--;
+    else if (ch === ':' && depth === 0) { ci = i; break; }
+  }
+  row.name = ci < 0 ? s : s.slice(0, ci).trim();
+  const type = ci < 0 ? '' : s.slice(ci + 1).trim();
+  if (type) row.type = type;
+  return row;
+}
+
+const fieldRowsOf = (n: { sub?: string }): FieldRow[] =>
+  n.sub ? n.sub.split('\n').filter((l) => l.trim() !== '').map(parseFieldRow) : [];
+
+const KEY_BADGE_W = 26;   // 键标记(PK/FK/UK)那一列的宽
+const VIS_W = 14;         // 可见性标记那一列的宽
+const ROW_H = 19;         // 一行字段的高
+const HEAD_H = 30;        // 标题条的高
+const COL_GAP = 18;       // 名字列与类型列之间的空档
+
+/** 字段表模式的节点尺寸:名字左、类型右,两列都要放得下 */
+function fieldsSize(n: ArchNode): { w: number; h: number } {
+  const rows = fieldRowsOf(n);
+  const keyCol = rows.some((r) => r.key) ? KEY_BADGE_W : 0;
+  const visCol = rows.some((r) => r.vis) ? VIS_W : 0;
+  const nameW = Math.max(0, ...rows.map((r) => textW(r.name, SUB_FS)));
+  const typeW = Math.max(0, ...rows.map((r) => textW(r.type ?? '', SUB_FS)));
+  const bodyW = keyCol + visCol + nameW + (typeW ? COL_GAP + typeW : 0);
+  const w = Math.max(NODE_MIN_W, textW(n.label, LABEL_FS) + 52, bodyW + 26);
+  const h = HEAD_H + rows.length * ROW_H + 10;
+  return { w: Math.min(w, 460), h };
+}
 
 /* ---------------------------------------------------------------- 节点 */
 function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: HouseTypes): string {
@@ -119,6 +194,10 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
   } else {
     frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${NODE_R}"${fillAttrs}/>`;
   }
+  // 字段表模式(ERD 的字段、class 的成员):标题条 + 一行一项
+  if (types.rows === 'fields') {
+    return drawFieldNodeV2(n, frame, badgeFill, color, neutral, meta, ia, titleW, badgeRight);
+  }
   return (
     `<g${ia}>` +
     frame +
@@ -133,6 +212,78 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
       : '') +
     `</g>`
   );
+}
+
+/**
+ * 字段表节点(ERD 的表、class 的类):标题条 + 一行一项
+ * —— 键标记(PK/FK/UK)在最左,名字靠左,类型靠右(等宽字体,一眼能对上行)。
+ */
+function drawFieldNodeV2(
+  n: Placed,
+  frame: string,
+  badgeFill: string,
+  color: string,
+  neutral: boolean,
+  meta: { badge: string },
+  ia: string,
+  titleW: number,
+  badgeRight: number,
+): string {
+  const b = n.box;
+  const rows = fieldRowsOf(n);
+  const keyCol = rows.some((r) => r.key) ? KEY_BADGE_W : 0;
+  const visCol = rows.some((r) => r.vis) ? VIS_W : 0;
+  const nameX = b.x + 12 + keyCol + visCol;
+  const typeX = b.x + b.w - 12;
+  const parts: string[] = [];
+  // 标题条:上圆角、下直角,正好贴住盒子的上边
+  const barOp = neutral ? 0.1 : 0.16;
+  parts.push(
+    `<path d="M${r2(b.x)} ${r2(b.y + NODE_R)}A${NODE_R} ${NODE_R} 0 0 1 ${r2(b.x + NODE_R)} ${r2(b.y)}` +
+    `H${r2(b.x + b.w - NODE_R)}A${NODE_R} ${NODE_R} 0 0 1 ${r2(b.x + b.w)} ${r2(b.y + NODE_R)}` +
+    `V${r2(b.y + HEAD_H)}H${r2(b.x)}Z" fill="${color}" fill-opacity="${barOp}"/>`,
+  );
+  // 角标 + 标题(标题左对齐,跟在角标后面)
+  const bx = b.x + 12;
+  const by = b.y + (HEAD_H - BADGE) / 2;
+  parts.push(
+    `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
+    ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>`,
+    `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>`,
+    `<text x="${r2(badgeRight + 8)}" y="${r2(b.y + HEAD_H / 2 + 5)}" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(n.label)}</text>`,
+  );
+  // 字段行
+  rows.forEach((r, i) => {
+    const y = b.y + HEAD_H + 8 + i * ROW_H;
+    let x = b.x + 12;
+    if (keyCol) {
+      if (r.key) {
+        const keyColor = r.key === 'pk' ? 'var(--d-s3)' : r.key === 'fk' ? 'var(--d-s5)' : 'var(--d-s4)';
+        parts.push(
+          `<rect x="${r2(x)}" y="${r2(y - 8)}" width="21" height="12" rx="4" fill="${keyColor}" fill-opacity="0.18" stroke="${keyColor}" stroke-opacity="0.5" stroke-width="1"/>`,
+          `<text x="${r2(x + 10.5)}" y="${r2(y + 1)}" text-anchor="middle" font-size="8" font-weight="700" letter-spacing="0.4" fill="${keyColor}">${esc(r.key.toUpperCase())}</text>`,
+        );
+      }
+      x += keyCol;
+    }
+    if (visCol) {
+      if (r.vis) {
+        parts.push(
+          `<text x="${r2(x + 8)}" y="${r2(y)}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--d-faint)">${esc(r.vis)}</text>`,
+        );
+      }
+      x += visCol;
+    }
+    parts.push(
+      `<text x="${r2(nameX)}" y="${r2(y)}" font-size="${SUB_FS}" fill="var(--d-ink)">${esc(r.name)}</text>`,
+    );
+    if (r.type) {
+      parts.push(
+        `<text x="${r2(typeX)}" y="${r2(y)}" text-anchor="end" font-size="${SUB_FS}" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="var(--d-muted)">${esc(r.type)}</text>`,
+      );
+    }
+  });
+  return `<g${ia}>` + frame + parts.join('') + `</g>`;
 }
 
 /* ---------------------------------------------------------------- 走线
@@ -491,9 +642,10 @@ function labelGaps(nodes: ArchNode[], edges: ArchEdge[]): number[] {
 export function renderArchCore(o: ArchOpts): DrawResult {
   const types = o.types ?? ARCH_TYPES;
   // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
-  packGrid(o.nodes, o.gridCols, { gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size });
+  const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
+  packGrid(o.nodes, o.gridCols, { gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf });
   const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
-    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size, gapAfter: labelGaps(o.nodes, o.edges),
+    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
   });
   const titleH = o.title ? 46 : 0;
   let width = Math.max(W, 320);

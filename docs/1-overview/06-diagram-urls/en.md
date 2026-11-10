@@ -171,6 +171,20 @@ n=users;table;users;id:int (pk)%0Aname:text%0Acreated_at:timestamp;r0c0
 n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 ```
 
+In **ERD** and **class** each line is drawn as a row: the name on the left,
+the type on the right in a monospaced face, and a key badge in front. The
+line splits at the first colon *outside* parentheses, so a method keeps its
+parameters — `charge(amount: Money): Result` is the member
+`charge(amount: Money)` of type `Result`.
+
+| line | reads as |
+|---|---|
+| `id:int (pk)` | name `id`, type `int`, primary key |
+| `user_id:int (fk)` | name `user_id`, type `int`, foreign key |
+| `slug:text (uk)` | name `slug`, type `text`, unique key |
+| `greet(): void` | name `greet()`, type `void` |
+| `+ id:int` | the `+` is a UML visibility marker (write `%2B` in a URL) |
+
 ## 6. Encoding
 
 The separators `;` `=` `,` `:` `/` `@` and `-` stay as they are. Everything

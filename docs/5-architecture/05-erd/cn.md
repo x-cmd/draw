@@ -45,7 +45,11 @@ n=users;table;users;id:int (pk)%0Aname:text%0Acreated_at:timestamp;r0c0
 这是三行:`id:int (pk)`、`name:text`、`created_at:timestamp`。
 节点的第一个字段是表名,读者看到的是标题。
 
-**键自己标** —— 主键写 `id:int (pk)`,外键写 `user_id:int (fk)`。draw 不猜。
+每一行画成一条**字段行**:名字靠左,类型靠右(等宽字体,一列类型上下对齐),
+前面还有一个键标记角标。
+
+**键自己标** —— 主键写 `id:int (pk)`,外键写 `user_id:int (fk)`,
+唯一键写 `slug:text (uk)`。draw 不猜,只照着标记画角标。
 
 ## 三、词汇
 
@@ -59,4 +63,6 @@ n=users;table;users;id:int (pk)%0Aname:text%0Acreated_at:timestamp;r0c0
 - **字段表是第四个字段** —— `id;类型;表名;字段表;位置`。位置不写,表会自己排。
 - **`%0A` 是换行,不是空格** —— 写成空格,整个列表就挤在一行。
 - **基数写在边上**(`e=repos;charts;1:N`)—— draw 不会从字段名推出来。
+- **URL 里的 `+` 是空格。** 字段名开头要写真的加号,得写成 `%2B` ——
+  查询串里裸的 `+` 会被当成空格。
 

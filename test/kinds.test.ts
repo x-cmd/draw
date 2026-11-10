@@ -52,10 +52,34 @@ describe('new diagram kinds', () => {
     expect(() => renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?n=x;class;C;r0c0'))).toThrow(/table/);
   });
 
-  it('renders a multi-line node (field list) as separate lines', () => {
+  it('renders a multi-line node (field list) as a field table', () => {
     const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + ERD.join('&')));
-    expect(svg).toContain('id:int (pk)');
-    expect(svg).toContain('user_id:int (fk)');
+    // 画在图上的文字(不是 metadata 里的原文)
+    const texts = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]);
+    expect(texts).toContain('id');        // 名字列
+    expect(texts).toContain('int');       // 类型列(靠右)
+    expect(texts).toContain('user_id');
+    expect(texts).toContain('PK');        // 键标记
+    expect(texts).toContain('FK');
+    // 字段表是「两列」而不是一整行
+    expect(texts).not.toContain('id:int (pk)');
+  });
+
+  it('splits a method signature at the colon outside the parentheses', () => {
+    const q = 'n=user;class;User;%2B charge(amount: Money): Result%0A%2B id:int;r0c0';
+    const { svg } = renderKindFromUrl('class', new URL('https://x-cmd.com/draw/class?' + q));
+    const texts = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]);
+    expect(texts).toContain('charge(amount: Money)');  // 名字
+    expect(texts).toContain('Result');                  // 类型
+    expect(texts).not.toContain('charge(amount: Money): Result');
+  });
+
+  it('marks UML visibility when the member line starts with + - #', () => {
+    const q = 'n=user;class;User;%2B id:int%0A- secret(): void;r0c0';
+    const { svg } = renderKindFromUrl('class', new URL('https://x-cmd.com/draw/class?' + q));
+    const texts = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]);
+    expect(texts).toContain('+');
+    expect(texts).toContain('-');
   });
 
   it('rejects a node that names an unknown peer', () => {

@@ -46,6 +46,13 @@ n=draw;class;draw;spec: object%0Areturns: DrawResult;r0c0
 两行:`spec: object` 和 `returns: DrawResult`。方法就按你写代码的样子写 ——
 `greet(): void`。
 
+每一行画成一条**成员行**:名字靠左,类型靠右(等宽字体,一列类型上下对齐)。
+分界取的是**括号外**的第一个冒号,所以方法带着自己的参数:
+`charge(amount: Money): Result` 是成员 `charge(amount: Money)`,类型 `Result`。
+
+**可见性** —— 行首写 `+`、`-` 或 `#`,draw 就在前面画上这个标记。
+真的加号要写成 `%2B`(查询串里裸的 `+` 是空格)。
+
 ## 三、词汇
 
 | 类型 | 是什么 |
@@ -58,5 +65,6 @@ n=draw;class;draw;spec: object%0Areturns: DrawResult;r0c0
 
 - **成员表是第四个字段** —— `id;类型;类名;成员表;位置`。
 - **`%0A` 是换行** —— 写成空格,整个列表挤一行。
+- **URL 里的 `+` 是空格** —— 可见性标记 `+` 得写成 `%2B`。
 - **关系是边,文字你自己写** —— `e=user;repo;implements`。draw 不知道你语言里的关键字。
 

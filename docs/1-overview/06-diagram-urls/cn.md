@@ -158,6 +158,18 @@ n=users;table;users;id:int (pk)%0Aname:text%0Acreated_at:timestamp;r0c0
 n=user;class;User;id:int%0Aname:string%0Agreet(): void;r0c0
 ```
 
+**ERD** 和 **class** 的每一行画成一条:名字靠左,类型靠右(等宽字体,一列类型
+上下对齐),前面带键标记。分界取**括号外**的第一个冒号,所以方法带着自己的参数 ——
+`charge(amount: Money): Result` 是成员 `charge(amount: Money)`,类型 `Result`。
+
+| 写法 | 读作 |
+|---|---|
+| `id:int (pk)` | 名字 `id`,类型 `int`,主键 |
+| `user_id:int (fk)` | 名字 `user_id`,类型 `int`,外键 |
+| `slug:text (uk)` | 名字 `slug`,类型 `text`,唯一键 |
+| `greet(): void` | 名字 `greet()`,类型 `void` |
+| `+ id:int` | 开头的 `+` 是 UML 可见性标记(URL 里写 `%2B`) |
+
 ## 6. 转义
 
 分隔符 `;` `=` `,` `:` `/` `@` `-` 保持原样。其余在 URL 里有意义的字符都要转义:
