@@ -71,9 +71,45 @@ export function parseTokei(raw: string): MultiSpec {
 /**
  * /draw/tokei 入口:GET ?d=<tokei json>,或 POST(body 就是 tokei 的 json)。
  */
+/**
+ * property 形态:langs=TypeScript:4820:1180:940,JavaScript:1687:298:71
+ * 每项是 语言:代码:注释:空行,后两个可省。主推这个 —— 短,而且一眼能读。
+ */
+function parseLangs(raw: string): Record<string, { code: number; comments: number; blanks: number }> {
+  const out: Record<string, { code: number; comments: number; blanks: number }> = {};
+  for (const item of raw.split(',')) {
+    const s = item.trim();
+    if (!s) continue;
+    const f = s.split(':').map((x) => x.trim());
+    if (f.length < 2) {
+      throw new ApiError(400, `"langs" must be "lang:code[:comments[:blanks]]" per language, comma separated. Example: langs=TypeScript:4820:1180:940,Shell:640:120:88`);
+    }
+    const name = f[0];
+    if (!name) {
+      throw new ApiError(400, `"langs": language name is missing. Example: langs=TypeScript:4820:1180:940`);
+    }
+    const nums = f.slice(1).map((x) => Number(x));
+    if (nums.some((n) => !Number.isFinite(n) || n < 0)) {
+      throw new ApiError(400, `"langs": counts must be numbers ≥ 0. Example: langs=TypeScript:4820:1180:940`);
+    }
+    out[name] = {
+      code: Math.round(nums[0]),
+      comments: Math.round(nums[1] ?? 0),
+      blanks: Math.round(nums[2] ?? 0),
+    };
+  }
+  if (!Object.keys(out).length) {
+    throw new ApiError(400, `"langs" is empty. Example: langs=TypeScript:4820:1180:940`);
+  }
+  return out;
+}
+
 export function renderTokeiFromUrl(url: URL, body?: string): DrawResult {
   const params = url.searchParams;
-  const spec = parseTokei(body ?? params.get('d') ?? '');
+  const langs = params.get('langs');
+  const spec = langs !== null && langs !== ''
+    ? parseTokei(JSON.stringify(parseLangs(langs)))
+    : parseTokei(body ?? params.get('d') ?? '');
   const title = params.get('title')?.trim();
   const unit = params.get('unit')?.trim();
   const skin = resolveSkin('bar', params.get('t'), schemeParam(params));

@@ -35,18 +35,41 @@ https://x-cmd.com/draw?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,M
 
 [![Code composition · bar](https://x-cmd.com/draw?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,Markdown,JSON&series=code:4820,1687,640,210,180,95&series=comments:1180,298,120,40,760,0&series=blanks:940,71,88,35,120,12&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,Markdown,JSON&series=code:4820,1687,640,210,180,95&series=comments:1180,298,120,40,760,0&series=blanks:940,71,88,35,120,12&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)
 
-## 1. Parameters
+## 1. Two ways to hand it the numbers
+
+**The short one — `langs=`, and the one we push:**
+
+```text
+https://x-cmd.com/draw/tokei?langs=TypeScript:4820:1180:940,JavaScript:1687:298:71
+```
+
+Each item is `language:code:comments:blanks`, comma separated; the last two
+may be left out. It is about eight times shorter than the JSON form and a
+person — or an agent — can read it without unescaping anything.
+
+**The machine one — `d=`, the JSON `tokei --output json` prints:**
+
+```text
+https://x-cmd.com/draw/tokei?d={"TypeScript":{"code":4820,"comments":1180,"blanks":940},…}
+```
+
+Same picture from either. The JSON form takes tokei's own output verbatim,
+including the per-file detail (which is ignored); the property form is what
+you want in a README.
+
+## 2. Parameters
 
 | param | meaning | default |
 |---|---|---|
-| `d=` | the tokei JSON (the whole output, or a trimmed subset) | — |
+| `langs=` | the short form: `Lang:code:comments:blanks`, comma separated | — |
+| `d=` | the JSON form (tokei's own output, or a trimmed subset) | — |
 | `title=` | chart title | — |
 | `unit=` | unit shown next to the values | — |
 | `w=` / `h=` | canvas size | 760 × 440 |
 | `t=` | skin (the bar families) | — |
 | `scheme=` | `dark` / `light` | auto |
 
-## 2. The input
+## 3. The input
 
 `tokei --output json` prints one object per language:
 
@@ -64,7 +87,7 @@ Two things the endpoint does for you:
 - the `Total` row tokei adds is **not** drawn as a column;
 - languages are sorted by their total, **largest first**.
 
-## 3. POST it straight from tokei
+## 4. POST it straight from tokei
 
 The body of a POST is the JSON, so the whole thing is one pipe:
 
@@ -72,7 +95,7 @@ The body of a POST is the JSON, so the whole thing is one pipe:
 tokei --output json | curl -X POST --data-binary @- https://x-cmd.com/draw/tokei
 ```
 
-## 4. Only what the PR changed
+## 5. Only what the PR changed
 
 For a pull request, run tokei over the files the diff touches:
 
@@ -84,7 +107,7 @@ and post that. The chart then shows the increment, not the whole repository —
 which is the number a reviewer actually wants. The same trick gives a
 release its "what changed since the last tag" chart.
 
-## 5. Pitfalls
+## 6. Pitfalls
 
 - **The input has to be tokei's shape** — an object of
   `language → {code, comments, blanks}`. Anything else is a 400 with the

@@ -35,18 +35,39 @@ https://x-cmd.com/draw?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,M
 
 [![代码构成 · bar](https://x-cmd.com/draw?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,Markdown,JSON&series=code:4820,1687,640,210,180,95&series=comments:1180,298,120,40,760,0&series=blanks:940,71,88,35,120,12&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,Markdown,JSON&series=code:4820,1687,640,210,180,95&series=comments:1180,298,120,40,760,0&series=blanks:940,71,88,35,120,12&title=Code%20composition%20%C2%B7%20v0.3.0&w=760&h=440)
 
-## 一、参数
+## 一、两种给数的方式
+
+**短的那种 —— `langs=`,我们主推这个:**
+
+```text
+https://x-cmd.com/draw/tokei?langs=TypeScript:4820:1180:940,JavaScript:1687:298:71
+```
+
+每一项是 `语言:代码:注释:空行`,逗号分隔;后两个可以不写。比 JSON 形态短
+八倍左右,而且人(或 agent)不用解转义就能读。
+
+**机器的那种 —— `d=`,tokei --output json 的原样:**
+
+```text
+https://x-cmd.com/draw/tokei?d={"TypeScript":{"code":4820,"comments":1180,"blanks":940},…}
+```
+
+两种形态出同一张图。JSON 形态可以直接吃 tokei 的原样输出(含每个文件的明细,
+那部分会被忽略);property 形态是放进 README 用的。
+
+## 二、参数
 
 | 参数 | 含义 | 默认 |
 |---|---|---|
-| `d=` | tokei 的 JSON(整份输出,或裁剪过的子集) | — |
+| `langs=` | 短形态:`语言:代码:注释:空行`,逗号分隔 | — |
+| `d=` | JSON 形态(tokei 的输出,或裁剪过的子集) | — |
 | `title=` | 图标题 | — |
 | `unit=` | 数值旁的单位 | — |
 | `w=` / `h=` | 画布尺寸 | 760 × 440 |
 | `t=` | 皮肤(柱状图那几族) | — |
 | `scheme=` | `dark` / `light` | 自动 |
 
-## 二、输入长什么样
+## 三、输入长什么样
 
 `tokei --output json` 按语言打印一个对象:
 
@@ -63,7 +84,7 @@ URL 短的时候用这个。
 - tokei 多加的 `Total` 行**不会**画成一根柱;
 - 语言按总量**从大到小**排。
 
-## 三、POST 直接接 tokei
+## 四、POST 直接接 tokei
 
 POST 的 body 就是那份 JSON,整件事一个管道:
 
@@ -71,7 +92,7 @@ POST 的 body 就是那份 JSON,整件事一个管道:
 tokei --output json | curl -X POST --data-binary @- https://x-cmd.com/draw/tokei
 ```
 
-## 四、只看 PR 改动的部分
+## 五、只看 PR 改动的部分
 
 pull request 就把 tokei 跑在这次改动碰到的文件上:
 
@@ -82,7 +103,7 @@ git diff --name-only origin/main… | xargs tokei --output json
 再 POST 进去。画出来的是**增量**而不是整个仓库 —— 这才是 reviewer 真正想看的数。
 同样的招数也能给出「这个 release 相对上一个 tag 改了什么」。
 
-## 五、踩坑
+## 六、踩坑
 
 - **输入必须是 tokei 的形状** —— 一个「语言 → {code, comments, blanks}」的对象。
   不像样会 400,报错里带着该长什么样。
