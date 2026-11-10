@@ -20,6 +20,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [Style families](1-overview/03-styles/en.md) | the `t=` catalog, dark and light |
 | [Data formats](1-overview/04-data-and-api/en.md) | flat parameters versus `?d=` JSON, per-type schemas |
 | [Deploy it yourself](1-overview/05-self-hosting/en.md) | Cloudflare Workers, a local Node server, the npm library, short links |
+| [Diagram URLs](1-overview/06-diagram-urls/en.md) | one grammar for the diagrams — `n=` / `e=` / `b=`, positions, the type table per kind |
 
 ## 2 · Data charts 数据图
 

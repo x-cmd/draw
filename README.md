@@ -255,6 +255,31 @@ const response = await handleRequest(request, env, {});
 **`POST /draw?type=...`** — submit a JSON/CSV body to create a permanent short link
 **`GET /draw/c/<hash>`** — short-link render (immutable)
 
+**Diagram paths** — every diagram kind reads the **same three parameters**, so you only learn the grammar once:
+
+```text
+n=id;type;label[;sub][;pos]     node   (id;type;label[;sub][;grid cell or pixels])
+e=from;to[;label][;variant]      edge   (variant: main | dash)
+b=label;id id …                  group  (a boundary or a swim lane)
+```
+
+| path | kind | node types |
+|---|---|---|
+| `/draw/arch2` | architecture — coloured boxes, type badges, legend | `fe` `be` `db` `cloud` `sec` `bus` `svc` `ext` |
+| `/draw/archmap` | architecture — the plain version | same |
+| `/draw/seq` | sequence — participants, messages, lanes | same |
+| `/draw/uc` | use case — actors, use cases, system box | `actor` `uc` |
+| `/draw/dataflow` | data flow — processes, stores, sources, sinks | `process` `store` `source` `sink` |
+| `/draw/lifecycle` | lifecycle — states, decisions, terminal | `state` `decision` `terminal` |
+| `/draw/erd` | ERD — tables and views, fields in the box | `table` `view` |
+| `/draw/class` | class — classes, interfaces, enums | `class` `iface` `enum` |
+
+```text
+https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Cloudflare Worker;r0c1&e=web;api;GET /draw?type=pie
+```
+
+Full manual — positions, multi-line text, encoding rules, per-kind table: [Diagram URLs](docs/1-overview/06-diagram-urls/en.md).
+
 Common parameters:
 
 - `t` style family (per chart type, see below; falls back to default when not built for that type)

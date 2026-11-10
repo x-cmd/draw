@@ -1,0 +1,106 @@
+id: x-draw-1-overview-06-diagram-urls
+
+data:
+  - name:
+      en: The grammar
+      cn: 语法
+    qa:
+      - id: one-grammar
+        question:
+          en: "Do all the diagram kinds take the same parameters?"
+          cn: "所有图种的参数都一样吗?"
+        answer:
+          en: >
+            Yes — every diagram kind reads the same three lines: `n=id;type;label[;sub][;pos]` for nodes,
+            `e=from;to[;label][;variant]` for edges and `b=label;id id …` for groups. Only the vocabulary
+            of node types changes from one kind to the next.
+          cn: >
+            是的 —— 每种图都读同样三行:`n=id;type;label[;sub][;pos]` 是节点、`e=from;to[;label][;variant]`
+            是边、`b=label;id id …` 是分组。变的只有每种图各认的节点类型。
+        confidence: 9
+        reference:
+          - docs/1-overview/06-diagram-urls/en.md
+          - docs/1-overview/06-diagram-urls/cn.md
+      - id: position
+        question:
+          en: "How do I place a node?"
+          cn: "节点怎么摆?"
+        answer:
+          en: >
+            With the optional last field of `n=`: a grid cell `r0c1`, a span `r0c1w2` or `r1c0h2`,
+            or exact pixels `p40,80` / `p40,80,120x48`. Leave it out and the engine packs the nodes
+            itself, in the order you wrote them.
+          cn: >
+            写在 `n=` 的最后一段(可省):格子 `r0c1`、跨格 `r0c1w2` 或 `r1c0h2`,或者精确像素
+            `p40,80` / `p40,80,120x48`。不写就由引擎按你写的顺序自己排。
+        confidence: 9
+        reference:
+          - docs/1-overview/06-diagram-urls/en.md
+          - docs/1-overview/06-diagram-urls/cn.md
+      - id: vocabulary
+        question:
+          en: "What are the node types for each kind?"
+          cn: "每种图的节点类型有哪些?"
+        answer:
+          en: >
+            Architecture, sequence: `fe be db cloud sec bus svc ext`. Use case: `actor uc`.
+            Data flow: `process store source sink`. Lifecycle: `state decision terminal`.
+            ERD: `table view`. Class: `class iface enum`.
+          cn: >
+            架构图、时序图:`fe be db cloud sec bus svc ext`。用例图:`actor uc`。数据流:
+            `process store source sink`。生命周期:`state decision terminal`。ERD:`table view`。
+            类图:`class iface enum`。
+        confidence: 9
+        reference:
+          - docs/1-overview/06-diagram-urls/en.md
+          - docs/1-overview/06-diagram-urls/cn.md
+  - name:
+      en: Getting it right
+      cn: 写对
+    qa:
+      - id: encoding
+        question:
+          en: "Which characters have to be escaped?"
+          cn: "哪些字符要转义?"
+        answer:
+          en: >
+            Space becomes `%20` (a raw `+` would be read as a space), a literal plus becomes `%2B`,
+            `&` becomes `%26`, `#` becomes `%23`, `<` and `>` become `%3C` and `%3E`, and a newline
+            becomes `%0A`. The separators `;` `=` `,` `:` `/` `@` stay as they are.
+          cn: >
+            空格写成 `%20`(裸的 `+` 会被当成空格),真的加号写成 `%2B`,`&` 写成 `%26`,`#` 写成
+            `%23`,`<` `>` 写成 `%3C` `%3E`,换行写成 `%0A`。分隔符 `;` `=` `,` `:` `/` `@` 保持原样。
+        confidence: 9
+        reference:
+          - docs/1-overview/06-diagram-urls/en.md
+          - docs/1-overview/06-diagram-urls/cn.md
+      - id: mistakes
+        question:
+          en: "What happens if I get an id wrong?"
+          cn: "id 写错了会怎样?"
+        answer:
+          en: >
+            You get a 400 with a corrected example — an edge pointing at a node that does not exist is
+            an error, never a silently dropped line. Two nodes in one grid cell, or the same id twice,
+            are errors too.
+          cn: >
+            会得到 400 和一个改好的示例 —— 边指向不存在的节点是报错,不会悄悄少画一条线。
+            两个节点占同一格、或者 id 写重了,也是报错。
+        confidence: 9
+        reference:
+          - docs/1-overview/06-diagram-urls/en.md
+          - docs/1-overview/06-diagram-urls/cn.md
+      - id: multiline
+        question:
+          en: "How do I put several lines in one node?"
+          cn: "一个节点里怎么写好几行?"
+        answer:
+          en: >
+            Put `%0A` inside the `sub` field — that is how an ERD table lists its fields and a class
+            lists its members.
+          cn: >
+            在 `sub` 那一段里写 `%0A` —— ERD 的字段表、类图的成员表就是这么来的。
+        confidence: 9
+        reference:
+          - docs/1-overview/06-diagram-urls/en.md
+          - docs/1-overview/06-diagram-urls/cn.md

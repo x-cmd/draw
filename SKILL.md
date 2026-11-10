@@ -45,6 +45,42 @@ explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)
 - **sankey**:≤24 节点/60 链接,`links=A>B:30` 分号分隔,禁止环
 - **qr**:`d=` 文本 ≤1000 字符;`fg`/`bg` 六位 hex(`#` 写成 `%23`);`title`/`unit` 为码下标注
 
+## 图:一套语法,八种图
+
+架构图、时序图、用例图、数据流、生命周期、ERD、类图读的是**同样三行参数** —— 只需学一遍:
+
+```
+n=id;type;label[;sub][;pos]     节点(可重复)
+e=from;to[;label][;variant]      边(可重复)
+b=label;id id …                  分组/边界(可重复)
+```
+
+- **id** —— 字母数字点横线下划线,不能以标点开头;`e=`、`b=` 里用它指代
+- **type** —— 每种图各一套词汇(下表),决定颜色、角标和形状;用错了是 400,错误里带着它认识的那几个
+- **label** —— 大字;**sub** —— 小字,`%0A` 断行(ERD 字段表、类图成员表靠它)
+- **pos** —— 可省。格子 `r0c1`、跨格 `r0c1w2` / `r1c0h2`;像素 `p40,80[,120x48]`。不写就由引擎按你写的顺序自己排
+- **variant** —— archmap/arch2 与四种新图种用 `main`(主流程)/`dash`(次要);seq 用结尾一段 `dash` 表示回信;uc 用 `<<include>>` 标签表示虚线依赖
+- **b=** 把已有的 id 框成一组(系统边界、泳道),可写多次;它不替你建节点
+
+| 路径 | 节点类型 |
+|---|---|
+| `/draw/arch2` `/draw/archmap` `/draw/seq` | `fe` `be` `db` `cloud` `sec` `bus` `svc` `ext` |
+| `/draw/uc` | `actor` `uc` |
+| `/draw/dataflow` | `process` `store` `source` `sink` |
+| `/draw/lifecycle` | `state` `decision` `terminal` |
+| `/draw/erd` | `table` `view` |
+| `/draw/class` | `class` `iface` `enum` |
+
+架构图那八种:`fe` 前端、`be` 后端、`db` 数据库、`cloud` 云服务、`sec` 安全、`bus` 消息、`svc` 通用服务、`ext` 外部系统。
+
+```
+https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Cloudflare Worker;r0c1&e=web;api;GET /draw?type=pie
+```
+
+转义:空格 `%20`(裸 `+` 会被当成空格)、真的加号 `%2B`、`&` `%26`、`#` `%23`、`<` `>` `%3C` `%3E`、换行 `%0A`;分隔符 `;` `=` `,` `:` `/` `@` 保持原样。
+
+另外三种图用自己的语法:`/draw/mindmap`(`n=根/子/孙`)、`/draw/mermaid`(`m=`)、`/draw/gantt` 与 `/draw/gantt2`(`m=`,同一份源码两张脸)。
+
 ## 通用参数
 
 - `t` 风格(见下)/ `scheme=light|dark|auto` / `title=` / `unit=`
