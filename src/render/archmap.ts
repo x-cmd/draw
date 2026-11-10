@@ -586,7 +586,8 @@ export function renderArchmapFromUrl(url: URL, interactive = false): DrawResult 
   const skin = resolveSkin('sankey', style === 'base' ? tParam : null, schemeParam(params));
 
   return renderArchmapCore({ nodes, edges, boundaries, title, style, interactive, gridCols, v, skin,
-    minW: clampInt(params, 'w', 0, 200, 2000), minH: clampInt(params, 'h', 0, 140, 2000) });
+    minW: clampInt(params, 'w', 0, 200, 2000), minH: clampInt(params, 'h', 0, 140, 2000),
+    tagQuery: url.search });
 }
 
 // spec 级入口:节点/边/边界 + 版本与皮肤由调用方备好(mermaid 语法糖复用此层)
@@ -606,10 +607,15 @@ export interface ArchmapCoreOpts {
   /** 正交折线(默认,格位架构图)或直连线(mermaid 流程图:迎面边直连,零弯折) */
   edgeMode?: 'ortho' | 'straight';
   straightDir?: 'TB' | 'LR';
+  /** 原始 URL 查询串:角标直链 explore 落地页用(#44) */
+  tagQuery?: string;
+  /** 角标 explore 路径段(mermaid 复用本引擎时为 'mermaid') */
+  tagKind?: string;
 }
 export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
   const { placed, W, H } = packGrid(o.nodes, o.gridCols);
-  const titleH = o.title ? 40 : 0;
+  // 无标题也留 30px 角标带(#44):Edit 胶囊占右上 y≈25–45,不留带会压住首行节点
+  const titleH = o.title ? 40 : 30;
   let width = Math.max(W, 320);
   let bodyH = H;
   for (const p of placed) { // 像素节点可能超出轨道画布
@@ -661,7 +667,7 @@ export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
   const dy = titleH + (height - titleH - bodyH) / 2;
   const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">` + body + `</g>`;
   const spec: ArchSpec = { type: 'archmap', ...(o.title ? { title: o.title } : {}), nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
-  const svg = svgDoc(width, height, 'archmap', o.v.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children);
+  const svg = svgDoc(width, height, 'archmap', o.v.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children, o.tagQuery, o.tagKind);
   return { svg, version: o.v.version, cacheControl: o.v.cacheControl };
 }
 

@@ -145,7 +145,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 /** 渲染(视觉 2.0,对齐行业惯例):双行轴(月/年带+日/周/月刻度)、实线 hairline 网格、
  *  section 交替色带、周末底纹、today 实线;状态色 done=实色灰 / crit=淡红+描边 / active=满色+墨描边。
  *  opts.scale 显式时间粒度(缺省按跨度自适应);任务可带语法扩展的完成百分比(条内深色进度段) */
-export function renderGantt(doc: GanttDoc, opts: { v: VersionInfo; skin: Skin; interactive: boolean; width?: number; height?: number; scale?: 'day' | 'week' | 'month' }): DrawResult {
+export function renderGantt(doc: GanttDoc, opts: { v: VersionInfo; skin: Skin; interactive: boolean; width?: number; height?: number; scale?: 'day' | 'week' | 'month'; tagQuery?: string }): DrawResult {
   const spans = resolveSpans(doc);
   const minT = Math.min(...spans.map(s => s.start));
   const maxT = Math.max(...spans.map(s => s.end));
@@ -387,7 +387,7 @@ export function renderGantt(doc: GanttDoc, opts: { v: VersionInfo; skin: Skin; i
       `#am.hl [data-node],#am.hl text[data-row]{opacity:.3}` +
       `#am.hl [data-node].on,#am.hl text[data-row].on{opacity:1}</style>`
     : '';
-  const svg = svgDoc(width, height, 'gantt', opts.v.version, doc.title ?? `gantt, ${spans.length} tasks`, { type: 'gantt', doc }, opts.skin, interStyle + gtasksSvg + `<g id="am" data-scale="${mode}">${titleSvg + parts.join('')}</g>`);
+  const svg = svgDoc(width, height, 'gantt', opts.v.version, doc.title ?? `gantt, ${spans.length} tasks`, { type: 'gantt', doc }, opts.skin, interStyle + gtasksSvg + `<g id="am" data-scale="${mode}">${titleSvg + parts.join('')}</g>`, opts.tagQuery);
   return { svg, version: opts.v.version, cacheControl: opts.v.cacheControl };
 }
 
@@ -403,5 +403,5 @@ export function renderGanttFromUrl(url: URL, interactive = false): DrawResult {
   const height = /(\d+)/.test(params.get('h') ?? '') ? Math.max(140, Math.min(2000, +params.get('h')!)) : undefined;
   const sv = params.get('scale');
   const scale = sv === 'day' || sv === 'week' || sv === 'month' ? sv : undefined;
-  return renderGantt(doc, { v, skin, interactive, width, height, ...(scale ? { scale } : {}) });
+  return renderGantt(doc, { v, skin, interactive, width, height, tagQuery: url.search, ...(scale ? { scale } : {}) });
 }

@@ -373,7 +373,8 @@ export function renderMindmapFromUrl(url: URL, interactive = false): DrawResult 
       : style === 'bubble'
         ? drawBubble(root, interactive)
         : drawOrganic(root, interactive);
-  const titleH = title ? 40 : 0;
+  // 无标题也留 30px 角标带(#44):Edit 胶囊占右上 y≈25–45,不留带会压住顶部节点
+  const titleH = title ? 40 : 30;
   const width = Math.max(W, clampInt(params, 'w', 0, 200, 2400));
   const height = Math.max(H + titleH, clampInt(params, 'h', 0, 140, 2000));
   const titleSvg = title
@@ -394,6 +395,6 @@ export function renderMindmapFromUrl(url: URL, interactive = false): DrawResult 
   const inner = iStyle + `<g id="mm">` + body + `</g>`;
   const children = titleH ? titleSvg + `<g transform="translate(0 ${titleH})">` + inner + `</g>` : inner;
   const spec = { type: 'mindmap' as const, style, ...(title ? { title } : {}), paths };
-  const svg = svgDoc(width, height, 'mindmap', v.version, title ?? `mindmap: ${root.label}`, spec, skin, children);
+  const svg = svgDoc(width, height, 'mindmap', v.version, title ?? `mindmap: ${root.label}`, spec, skin, children, url.search);
   return { svg, version: v.version, cacheControl: v.cacheControl };
 }

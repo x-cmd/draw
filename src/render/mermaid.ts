@@ -269,6 +269,7 @@ export function renderMermaidFromUrl(url: URL, interactive = false): DrawResult 
     aria: title ?? `mermaid flowchart, ${doc.nodes.length} nodes`,
     edgeMode: 'straight',
     straightDir: doc.direction === 'LR' || doc.direction === 'RL' ? 'LR' : 'TB',
+    tagQuery: url.search, tagKind: 'mermaid', // 角标直链 explore(#44)
   };
   return renderArchmapCore(opts);
 }

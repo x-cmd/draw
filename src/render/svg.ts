@@ -226,6 +226,8 @@ export function skinStyle(skin: Skin): string {
 }
 
 // 统一 SVG 文档包装:外壳 + 皮肤变量 + metadata(渲染器不再各自拼 <svg>)
+// tagQuery(#44):原始 URL 查询串 —— archmap/mindmap/mermaid/gantt 等路径式图种
+// 的角标直链到 /draw/explore/<template>?<原参数>(w/h/scheme/format 剥掉),不再是泛链首页
 export function svgDoc(
   width: number,
   height: number,
@@ -235,6 +237,8 @@ export function svgDoc(
   spec: unknown,
   skin: Skin,
   children: string,
+  tagQuery?: string,
+  tagKind?: string, // 角标 explore 路径段(缺省=template;mermaid 流程图复用 archmap 引擎时覆盖为 'mermaid')
 ): string {
   // Edit @X-CMD 角标(#27):右上角,与标题同一基线(y=38/54,普通 baseline),蓝色链接胶囊
   // 可点击(#13 水印=广告):链到对应 explore 页;图表家族带 ?d= 全量数据,点击即得可编辑副本
@@ -245,6 +249,11 @@ export function svgDoc(
     tagHref = `https://x-cmd.com/draw/explore?type=${template}&d=${encodeURIComponent(JSON.stringify(spec))}`;
   } else if (template === 'qr') {
     tagHref = `https://x-cmd.com/draw/explore?type=qr&d=${encodeURIComponent(String((spec as { text?: string })?.text ?? ''))}`;
+  } else if (tagQuery) {
+    const q = new URLSearchParams(tagQuery.replace(/^\?/, ''));
+    for (const k of ['w', 'h', 'scheme', 'format']) q.delete(k); // 尺寸/渲染控制参数不带进落地页
+    const qs = q.toString();
+    if (qs) tagHref = `https://x-cmd.com/draw/explore/${tagKind ?? template}?${qs}`;
   }
   const tag = editTag(tagHref, width, tagY, tagFs);
   return (
