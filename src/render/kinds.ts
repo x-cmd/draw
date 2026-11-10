@@ -55,6 +55,7 @@ const CLASS: HouseTypes = {
   },
   order: ['class', 'iface', 'enum'],
   rows: 'fields', // 成员表:可见性标记 + 名字(左)+ 类型(右)
+  uml: true,      // extends / implements 画 UML 的空心三角
 };
 
 /* ---------------------------------------------------------------- 节点解析

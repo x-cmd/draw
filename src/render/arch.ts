@@ -41,6 +41,8 @@ export interface HouseTypes {
   rows?: 'fields';
   /** 边按 ERD 记号画:标签写 1:N 时,两端画「一」与「多」 */
   crows?: 'erd';
+  /** 边按 UML 记号画:标签写 extends / implements 时用空心三角 */
+  uml?: boolean;
 }
 
 /** 语义类型 → (展示名, 角标字母) */
@@ -442,24 +444,45 @@ function drawRoutesV2(routed: V2Routed[], interactive: boolean, types: HouseType
     const ia = interactive ? ` data-from="${esc(rt.e.from)}" data-to="${esc(rt.e.to)}"` : '';
     const s = rt as V2Routed & { stroke: string; width: number };
     const feet = types.crows === 'erd' ? crowFeetV2(rt, s.stroke) : '';
-    // 鱼尾画在端点上,箭头就不重复了(鱼尾本身就是「多」的记号)
-    const marker = feet ? '' : ` marker-end="url(#${rt.marker})"`;
-    return `<path d="${d}"${ia} fill="none" stroke="${s.stroke}" stroke-width="${s.width}"${rt.dash}${marker}/>` + feet;
+    // UML 记号:extends 用实线空心三角,implements 用虚线空心三角
+    const uml = types.uml ? umlKind(rt.e.label) : undefined;
+    const marker = feet ? '' : ` marker-end="url(#${uml ? 'am-h' : rt.marker})"`;
+    const dash = uml === 'implements' ? ' stroke-dasharray="5 4"' : rt.dash;
+    return `<path d="${d}"${ia} fill="none" stroke="${s.stroke}" stroke-width="${s.width}"${dash}${marker}/>` + feet;
   }).join('');
+}
+
+/** 边的标签写的是什么,就画什么记号(继承=实线空心三角,实现=虚线空心三角) */
+function umlKind(label: string | undefined): 'extends' | 'implements' | undefined {
+  if (!label) return undefined;
+  const t = label.trim().toLowerCase();
+  if (/^(extends|inherit|inherits|继承)$/.test(t)) return 'extends';
+  if (/^(implements|realize|realizes|实现)$/.test(t)) return 'implements';
+  return undefined;
 }
 
 /* ---------------------------------------------------------------- 鱼尾符号
    ERD 的基数记号:一端一根竖杠(「一」),另一端三根岔开的爪(「多」)。
    基数写在边的标签上(1:N / N:1 / 1:1 / N:M),画在边上,不另设参数。 */
-const CARD_RE = /^\s*(1|n|zero|many|\*)\s*[:/]\s*(1|n|zero|many|\*)\s*$/i;
+// 基数可以在标签的前面,后面跟动词:「1:N」「1:N placed by」
+const CARD_RE = /^\s*(1|n|zero|many|\*)\s*[:/]\s*(1|n|zero|many|\*)\b/i;
 
-/** 边的标签是不是一个基数(1:N 这种)?是的话返回 [源端, 目标端] */
+/**
+ * 边的标签是不是一个基数(1:N 这种)?是的话返回 [源端, 目标端]。
+ * 基数后面可以跟一个动词(「1:N placed by」)—— 动词留给标签,基数画鱼尾。
+ */
 function cardinalityOf(label: string | undefined): ('one' | 'many')[] | undefined {
   if (!label) return undefined;
   const m = CARD_RE.exec(label);
   if (!m) return undefined;
   const side = (s: string): 'one' | 'many' => (s === '1' || s.toLowerCase() === 'zero' ? 'one' : 'many');
   return [side(m[1]), side(m[2])];
+}
+
+/** 标签里的基数部分(「1:N placed by」→「1:N」);没有基数就原样返回 */
+function cardinalityPart(label: string): string {
+  const m = CARD_RE.exec(label);
+  return m ? m[0].trim() : label;
 }
 
 /** 一端的记号:「一」是一根横杠,「多」是三根爪(爪尖落在实体边上,爪根在线上) */
@@ -537,13 +560,18 @@ const overlapArea = (a: Box, b: Box): number => {
   return w > 0 && h > 0 ? w * h : 0;
 };
 
-function placeEdgeLabels(routed: V2Routed[], avoid: Box[]): Spot[] {
+function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = false): Spot[] {
   const out: Spot[] = [];
   // 已经放下的标签 —— 后面的标签要避开它们(不然两个标签会叠在一起)
   const taken: Box[] = [];
   for (const rt of routed) {
-    const text = rt.e.label;
+    let text = rt.e.label;
     if (!text) continue;
+    // ERD:标签写成「1:N placed by」时,基数画鱼尾,标签只留动词
+    if (splitCardinality) {
+      const card = cardinalityPart(text);
+      if (card !== text.trim()) text = text.slice(card.length).trim() || card;
+    }
     const w = textW(text, EDGE_FS) + 12;
     const h = EDGE_FS + 8;
     const rectOf = (p: [number, number], horiz: boolean, mirror: boolean): Box =>
@@ -700,6 +728,8 @@ const DEFS =
   `<marker id="am-p" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-muted)"/></marker>` +
   `<marker id="am-m" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-ink)"/></marker>` +
   `<marker id="am-d" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-faint)"/></marker>` +
+  // UML 记号:空心三角(继承用实线,实现用虚线)
+  `<marker id="am-h" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1.5 1.5L13 7L1.5 12.5z" fill="var(--d-card)" stroke="var(--d-muted)" stroke-width="1.6"/></marker>` +
   `</defs>`;
 
 export interface ArchOpts {
@@ -786,7 +816,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
       return { x: bb.x + 14, y: bb.y - 12, w, h: 22 };
     }),
   ];
-  const spots = placeEdgeLabels(routed, avoid);
+  const spots = placeEdgeLabels(routed, avoid, types.crows === 'erd');
   // 画布要盖住走线和边标签:绕行的边会走到节点盒外面,标签又贴在走线上 ——
   // 只按节点盒算尺寸,那一段就会被裁掉(字看不全)。
   for (const rt of routed) {

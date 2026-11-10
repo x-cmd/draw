@@ -98,6 +98,26 @@ describe('new diagram kinds', () => {
     expect(svg).toContain('marker-end');
   });
 
+  it('class: extends 用实线空心三角,implements 用虚线空心三角', () => {
+    const q = 'n=a;class;A;;r0c0&n=b;class;B;;r1c0&n=c;iface;I;;r0c1&e=a;b;extends&e=a;c;implements';
+    const { svg } = renderKindFromUrl('class', new URL('https://x-cmd.com/draw/class?' + q));
+    // 空心三角的记号
+    expect(svg).toContain('url(#am-h)');
+    // implements 那条是虚线
+    expect(svg).toContain('stroke-dasharray="5 4"');
+  });
+
+  it('erd: 标签写成「1:N placed by」时,基数画鱼尾,标签只留动词', () => {
+    const q = 'n=a;table;A;id:int (pk);r0c0&n=b;table;B;id:int (pk);r0c1&e=a;b;1:N placed by';
+    const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + q));
+    const texts = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]);
+    expect(texts).toContain('placed by');
+    expect(texts).not.toContain('1:N placed by');
+    // 鱼尾(三根爪 + 一根杠)
+    const feet = [...svg.matchAll(/<path d="M[\d.]+ [\d.]+L[\d.]+ [\d.]+" fill="none" stroke="var\(--d-muted\)"/g)];
+    expect(feet.length).toBe(4);
+  });
+
   it('rejects a node that names an unknown peer', () => {
     expect(() => renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?n=x;process;X;r0c0&e=x;ghost'))).toThrow(/ghost/);
   });

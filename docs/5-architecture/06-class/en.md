@@ -58,6 +58,10 @@ the first colon *outside* parentheses, so a method keeps its parameters:
 front of it. A literal `+` has to be written `%2B` (in a query string a bare
 `+` means space).
 
+**Relations** — the edge label decides the notation: `extends` draws a solid
+line with a hollow triangle (inheritance), `implements` draws a dashed line
+with a hollow triangle. Any other label is an ordinary association.
+
 ## 3. The vocabulary
 
 | type | it is |

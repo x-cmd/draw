@@ -73,6 +73,8 @@ reads the marker and draws the badge.
   infer it from the field names. When the label is a cardinality, the edge
   ends are drawn in the standard notation: a bar for the *one* side, a
   crow's foot for the *many* side.
+- **A verb can follow the cardinality** (`e=repos;charts;1:N placed by`) —
+  the cardinality draws the notation, the verb stays as the label.
 - **A `+` in the URL is a space.** A field or member that starts with a
   literal plus has to be written `%2B` — in a query string a bare `+` means
   space.
