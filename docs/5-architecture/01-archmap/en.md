@@ -69,7 +69,19 @@ https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1
 | `w=` / `h=` | minimum width / height | natural size |
 | `v=` | freeze the response at a version | latest |
 
-## 2. The node line
+## 2. A newer look: `/draw/arch2`
+
+Same URL model (`n=` / `e=` / `b=`), different face — the node types get
+colours, each node carries a type badge, and the diagram ends with a legend:
+
+```text
+https://x-cmd.com/draw/arch2?n=api;be;API%20Gateway;auth;r1c0w2
+```
+
+`/draw/archmap` is unchanged and stays where it is; `/draw/arch2` is the one
+to reach for when the diagram is going in front of people.
+
+## 3. The node line
 
 ```
 n=id;type;label[;sublabel][;position]
@@ -99,7 +111,7 @@ n=id;type;label[;sublabel][;position]
 Leave the position out and the engine packs the boxes itself, in the order
 you gave them.
 
-## 3. The edge line
+## 4. The edge line
 
 ```
 e=from;to[;label][;variant]
@@ -110,7 +122,7 @@ e=from;to[;label][;variant]
 - **variant** — `main` for the line that carries the main flow, `dash` for a
   secondary one.
 
-## 4. The boundary line
+## 5. The boundary line
 
 ```
 b=label;id id …
@@ -119,7 +131,7 @@ b=label;id id …
 Everything named after the semicolon is boxed together under the label. A
 boundary with no members is a 400.
 
-## 5. Pitfalls
+## 6. Pitfalls
 
 - **An edge can only point at a node that exists** — a typo in an id is a
   400, not a silently dropped line.

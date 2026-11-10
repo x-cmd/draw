@@ -34,7 +34,7 @@ const MIN_CELL_W = 96;
 const MIN_CELL_H = 40;
 const N_EXAMPLE = 'n=api;be;API Gateway;auth;r1c0w2';
 
-interface Box { x: number; y: number; w: number; h: number }
+export interface Box { x: number; y: number; w: number; h: number }
 export interface ArchNode {
   id: string;
   type: NodeType;
@@ -59,7 +59,7 @@ function bad(detail: string): never {
   throw new ApiError(400, `${detail} Example: ${N_EXAMPLE}`);
 }
 
-function parseNodes(raw: string[]): ArchNode[] {
+export function parseNodes(raw: string[]): ArchNode[] {
   return raw.map((v, i) => {
     const f = v.split(';');
     const where = `"n=${v}" (#${i + 1})`;
@@ -90,7 +90,7 @@ function parseNodes(raw: string[]): ArchNode[] {
   });
 }
 
-function parseEdges(raw: string[], ids: Set<string>): ArchEdge[] {
+export function parseEdges(raw: string[], ids: Set<string>): ArchEdge[] {
   return raw.map((v, i) => {
     const f = v.split(';');
     const where = `"e=${v}" (#${i + 1})`;
@@ -107,7 +107,7 @@ function parseEdges(raw: string[], ids: Set<string>): ArchEdge[] {
   });
 }
 
-function parseBoundaries(raw: string[], ids: Set<string>): ArchBoundary[] {
+export function parseBoundaries(raw: string[], ids: Set<string>): ArchBoundary[] {
   return raw.map((v, i) => {
     const sep = v.indexOf(';');
     if (sep < 1) bad(`"b=${v}" (#${i + 1}): expected <label>;<id> <id> ...`);
@@ -120,17 +120,31 @@ function parseBoundaries(raw: string[], ids: Set<string>): ArchBoundary[] {
 }
 
 // 自然尺寸:label 13px 加左右内边距;副标 11px;盒高 40(带副标 56)
-export function naturalSize(n: ArchNode): { w: number; h: number } {
-  const w = Math.max(MIN_CELL_W, textW(n.label, 13) + 34, n.sub ? textW(n.sub, 11) + 34 : 0);
-  const h = n.sub ? 56 : 40;
+export function naturalSize(n: ArchNode, scale = 1): { w: number; h: number } {
+  const w = Math.max(MIN_CELL_W * scale, textW(n.label, 13 * scale) + 34 * scale, n.sub ? textW(n.sub, 11 * scale) + 34 * scale : 0);
+  const h = (n.sub ? 56 : 40) * scale;
   return { w: Math.min(w, 360), h };
 }
 
-interface Placed extends ArchNode { box: Box; color: number } // color: -1 = 中性(ext)
+export interface Placed extends ArchNode { box: Box; color: number } // color: -1 = 中性(ext)
 
 // auto 轨道打包:单格成员先定轨道宽高,跨格节点不足则补差均摊到跨越轨道。
 // 返回 placed(含最终盒)与轨道联合画布尺寸;纯像素图无轨道,W/H 由调用侧从盒推。
-function packGrid(nodes: ArchNode[], gridCols: number): { placed: Placed[]; W: number; H: number } {
+export interface GridOpts {
+  /** 轨道间距(默认 GAP_X / GAP_Y) */
+  gapX?: number;
+  gapY?: number;
+  /** 画布留白(默认 PAD) */
+  pad?: number;
+  /** 节点尺寸的量尺(默认 naturalSize) */
+  sizeOf?: (n: ArchNode) => { w: number; h: number };
+}
+
+export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {}): { placed: Placed[]; W: number; H: number } {
+  const gapX = opts.gapX ?? GAP_X;
+  const gapY = opts.gapY ?? GAP_Y;
+  const pad = opts.pad ?? PAD;
+  const sizeOf = opts.sizeOf ?? ((n: ArchNode) => naturalSize(n));
   // 格子占用(显式先标,冲突即报);无 pos 节点自动落入首个空格(行优先,确定性,回程记录落位)
   const cell = new Map<string, string>();
   const mark = (n: ArchNode & { grid: NonNullable<ArchNode['grid']> }): void => {
@@ -162,32 +176,32 @@ function packGrid(nodes: ArchNode[], gridCols: number): { placed: Placed[]; W: n
   let colW: number[] = [];
   let rowH: number[] = [];
   if (cols > 0 && rows > 0) {
-    colW = new Array<number>(cols).fill(MIN_CELL_W);
-    rowH = new Array<number>(rows).fill(MIN_CELL_H);
+    colW = new Array<number>(cols).fill(sizeOf({ id: '', type: 'be', label: '' }).w);
+    rowH = new Array<number>(rows).fill(sizeOf({ id: '', type: 'be', label: '' }).h);
     const spans: typeof gridNodes = [];
     for (const n of gridNodes) {
-      const sz = naturalSize(n);
+      const sz = sizeOf(n);
       if (n.grid.w === 1) colW[n.grid.col] = Math.max(colW[n.grid.col], sz.w);
       if (n.grid.h === 1) rowH[n.grid.row] = Math.max(rowH[n.grid.row], sz.h);
       if (n.grid.w > 1 || n.grid.h > 1) spans.push(n);
     }
     for (const n of spans) {
-      const sz = naturalSize(n);
+      const sz = sizeOf(n);
       const { col, row, w, h } = n.grid;
-      const needW = sz.w - (colW.slice(col, col + w).reduce((a, b) => a + b, 0) + GAP_X * (w - 1));
+      const needW = sz.w - (colW.slice(col, col + w).reduce((a, b) => a + b, 0) + gapX * (w - 1));
       if (needW > 0) for (let c = col; c < col + w; c++) colW[c] += needW / w;
-      const needH = sz.h - (rowH.slice(row, row + h).reduce((a, b) => a + b, 0) + GAP_Y * (h - 1));
+      const needH = sz.h - (rowH.slice(row, row + h).reduce((a, b) => a + b, 0) + gapY * (h - 1));
       if (needH > 0) for (let r = row; r < row + h; r++) rowH[r] += needH / h;
     }
     trackX = new Array<number>(cols);
     trackY = new Array<number>(rows);
-    let x = PAD;
-    for (let c = 0; c < cols; c++) { trackX[c] = x; x += colW[c] + GAP_X; }
-    let y = PAD;
-    for (let r = 0; r < rows; r++) { trackY[r] = y; y += rowH[r] + GAP_Y; }
+    let x = pad;
+    for (let c = 0; c < cols; c++) { trackX[c] = x; x += colW[c] + gapX; }
+    let y = pad;
+    for (let r = 0; r < rows; r++) { trackY[r] = y; y += rowH[r] + gapY; }
   }
-  const W = cols > 0 && rows > 0 ? trackX[cols - 1] + colW[cols - 1] + PAD : 0;
-  const H = cols > 0 && rows > 0 ? trackY[rows - 1] + rowH[rows - 1] + PAD : 0;
+  const W = cols > 0 && rows > 0 ? trackX[cols - 1] + colW[cols - 1] + pad : 0;
+  const H = cols > 0 && rows > 0 ? trackY[rows - 1] + rowH[rows - 1] + pad : 0;
   const placed: Placed[] = nodes.map(n => {
     if (n.grid) {
       const { row, col, w, h } = n.grid;
@@ -198,18 +212,18 @@ function packGrid(nodes: ArchNode[], gridCols: number): { placed: Placed[]; W: n
       };
       return { ...n, box, color: TYPE_COLOR[n.type] ?? -1 };
     }
-    const sz = naturalSize(n);
+    const sz = sizeOf(n);
     return { ...n, box: { x: n.px!.x, y: n.px!.y, w: n.px!.w ?? sz.w, h: n.px!.h ?? sz.h }, color: TYPE_COLOR[n.type] ?? -1 };
   });
   return { placed, W, H };
 }
 
-type Side = 'left' | 'right' | 'top' | 'bottom';
+export type Side = 'left' | 'right' | 'top' | 'bottom';
 const boxCx = (b: Box) => b.x + b.w / 2;
 const boxCy = (b: Box) => b.y + b.h / 2;
 
 // 端口:同面多边均匀扩散(第 i/n 条落在面长 (i+1)/(n+1) 处)
-function port(b: Box, side: Side, i: number, n: number): [number, number] {
+export function port(b: Box, side: Side, i: number, n: number): [number, number] {
   const len = side === 'left' || side === 'right' ? b.h : b.w;
   const off = ((i + 1) / (n + 1) - 0.5) * len;
   switch (side) {
@@ -220,7 +234,7 @@ function port(b: Box, side: Side, i: number, n: number): [number, number] {
   }
 }
 
-function step(p: [number, number], side: Side, d: number): [number, number] {
+export function step(p: [number, number], side: Side, d: number): [number, number] {
   switch (side) {
     case 'left': return [p[0] - d, p[1]];
     case 'right': return [p[0] + d, p[1]];
@@ -269,7 +283,7 @@ function polyAt(pts: [number, number][], t: number): { p: [number, number]; hori
 const rectsOverlap = (a: Box, b: Box): boolean =>
   a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 
-interface Routed {
+export interface Routed {
   e: ArchEdge;
   pts: [number, number][];
   stroke: string;
@@ -322,7 +336,7 @@ function straightRoutes(placed: Placed[], edges: ArchEdge[], dir: 'TB' | 'LR'): 
   });
 }
 
-function computeRoutes(placed: Placed[], edges: ArchEdge[]): Routed[] {
+export function computeRoutes(placed: Placed[], edges: ArchEdge[]): Routed[] {
   const byId = new Map(placed.map(p => [p.id, p]));
   const boxes = placed.map(p => p.box);
   const exitSeen = new Map<string, number>();
@@ -473,7 +487,7 @@ function drawNode(n: Placed, interactive = false, degree = 0, style: ArchStyle =
   );
 }
 
-function boundaryBox(byId: Map<string, Placed>, bd: ArchBoundary): Box {
+export function boundaryBox(byId: Map<string, Placed>, bd: ArchBoundary): Box {
   const boxes = bd.ids.map(id => byId.get(id)!.box);
   const x = Math.min(...boxes.map(o => o.x)) - 14;
   const y = Math.min(...boxes.map(o => o.y)) - 14;

@@ -15,6 +15,7 @@ import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from 
 import { renderEchartsFromUrl } from './render/echarts-ssr.js';
 import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
+import { renderArchFromUrl } from './render/arch.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderGanttFromUrl } from './render/gantt.js';
 import { renderTokeiFromUrl } from './render/tokei.js';
@@ -266,6 +267,14 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;...;<r0c1>] params`, { allow: 'GET' });
     }
     return chartResponse(url, renderArchmapFromUrl(url));
+  }
+  // /draw/arch2 架构图 v2:同一套 n=/e=/b= 模型,换一张更像架构图的脸(类型着色 + 图例 + 角标)。
+  // 路径不叫 /arch —— 那是 archmap 的老别名,不动。
+  if (sub === '/arch2') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<sub>][;<r0c1>]`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderArchFromUrl(url));
   }
   // /draw/mindmap 树形导图(x-cmd-hub/draw#17/#20):n=<根/枝/叶 路径>,树→自动布局
   if (sub === '/mindmap') {

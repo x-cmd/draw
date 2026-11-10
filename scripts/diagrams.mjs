@@ -1,4 +1,5 @@
 // 画出 draw 自己的三张图:代码结构、请求时序、用户用例。
+// 走 /draw/arch2(架构图 v2:类型着色 + 角标 + 图例 + 总线走线)。
 //
 //   node scripts/diagrams.mjs            打印 README 要用的 markdown
 //   node scripts/diagrams.mjs --check    对比 README 里的那段,不一致就退出 1(CI 用)
@@ -31,7 +32,7 @@ for (const d of ['specs', 'render', 'styles']) {
 }
 
 /** 空格要编码;`;` `,` `=` 是 archmap 的分隔符,原样留着 */
-const arch = (params) => `${BASE}/archmap?${params.replace(/ /g, '%20')}`;
+const arch = (params) => `${BASE}/arch2?${params.replace(/ /g, '%20')}`;
 
 /* ---------------------------------------------------------------- 结构图
    行 = 层:入口 → 路由 → 解析/存储 → 渲染/皮肤。边界圈住「跑在 Worker 上的部分」。 */

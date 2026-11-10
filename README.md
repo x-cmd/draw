@@ -95,30 +95,30 @@ Three pictures worth having: what the code is, what one request does, and who dr
 One edge worker, one render core, four directories that matter: `specs/` parses, `styles/` skins, `render/` draws, `store.ts` keeps the short links.
 
 ```text
-https://x-cmd.com/draw/archmap?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20+%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20+%20responses;r1c0&n=demo;fe;demo/;gallery%20+%20landing;r1c1&n=specs;be;specs/;parse%20+%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20+%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw
+https://x-cmd.com/draw/arch2?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20+%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20+%20responses;r1c0&n=demo;fe;demo/;gallery%20+%20landing;r1c1&n=specs;be;specs/;parse%20+%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20+%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw
 ```
 
-![draw 的代码结构](https://x-cmd.com/draw/archmap?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20+%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20+%20responses;r1c0&n=demo;fe;demo/;gallery%20+%20landing;r1c1&n=specs;be;specs/;parse%20+%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20+%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw)
+![draw 的代码结构](https://x-cmd.com/draw/arch2?n=entry;fe;Worker%20entry;src/index.ts;r0c0&n=node;svc;Node%20server%20+%20CLI;src/node/;r0c1&n=handler;be;handler.ts;routing%20+%20responses;r1c0&n=demo;fe;demo/;gallery%20+%20landing;r1c1&n=specs;be;specs/;parse%20+%20validate;r2c0&n=store;db;store.ts;short%20links%20in%20a%20Git%20repo;r2c1&n=render;be;render/;draw%20the%20SVG;r3c0&n=styles;be;styles/;skins%20+%20families;r3c1&e=entry;handler&e=node;handler&e=handler;specs&e=handler;store&e=handler;demo&e=handler;render&e=render;styles&b=Edge%20worker;handler%20specs%20store%20render%20styles&title=Inside%20draw)
 
 ### One request, step by step
 
 The URL is parsed, a skin is picked, the SVG is drawn, and it comes back with `<metadata>` inside — one path for every chart type.
 
 ```text
-https://x-cmd.com/draw/archmap?n=app;fe;Your%20app;r0c0&n=svgback;fe;SVG%20in%20your%20page;r0c5&n=worker;be;Worker;r1c1&n=resp;fe;200%20+%20<metadata>;r1c4&n=specs;be;specs/%20parse;r2c2&n=styles;be;styles/%20skin;r3c3&n=render;be;render/%20draw;r4c4&e=app;worker&e=worker;specs&e=specs;styles&e=styles;render&e=render;resp&e=resp;svgback&b=Your%20app;app%20svgback&b=Worker;worker%20resp&b=specs/;specs&b=styles/;styles&b=render/;render&title=One%20request
+https://x-cmd.com/draw/arch2?n=app;fe;Your%20app;r0c0&n=svgback;fe;SVG%20in%20your%20page;r0c5&n=worker;be;Worker;r1c1&n=resp;fe;200%20+%20<metadata>;r1c4&n=specs;be;specs/%20parse;r2c2&n=styles;be;styles/%20skin;r3c3&n=render;be;render/%20draw;r4c4&e=app;worker&e=worker;specs&e=specs;styles&e=styles;render&e=render;resp&e=resp;svgback&b=Your%20app;app%20svgback&b=Worker;worker%20resp&b=specs/;specs&b=styles/;styles&b=render/;render&title=One%20request
 ```
 
-![一次请求的时序](https://x-cmd.com/draw/archmap?n=app;fe;Your%20app;r0c0&n=svgback;fe;SVG%20in%20your%20page;r0c5&n=worker;be;Worker;r1c1&n=resp;fe;200%20+%20<metadata>;r1c4&n=specs;be;specs/%20parse;r2c2&n=styles;be;styles/%20skin;r3c3&n=render;be;render/%20draw;r4c4&e=app;worker&e=worker;specs&e=specs;styles&e=styles;render&e=render;resp&e=resp;svgback&b=Your%20app;app%20svgback&b=Worker;worker%20resp&b=specs/;specs&b=styles/;styles&b=render/;render&title=One%20request)
+![一次请求的时序](https://x-cmd.com/draw/arch2?n=app;fe;Your%20app;r0c0&n=svgback;fe;SVG%20in%20your%20page;r0c5&n=worker;be;Worker;r1c1&n=resp;fe;200%20+%20<metadata>;r1c4&n=specs;be;specs/%20parse;r2c2&n=styles;be;styles/%20skin;r3c3&n=render;be;render/%20draw;r4c4&e=app;worker&e=worker;specs&e=specs;styles&e=styles;render&e=render;resp&e=resp;svgback&b=Your%20app;app%20svgback&b=Worker;worker%20resp&b=specs/;specs&b=styles/;styles&b=render/;render&title=One%20request)
 
 ### What draw is for
 
 Four kinds of callers: your code, an AI agent, your README, and whoever runs their own copy.
 
 ```text
-https://x-cmd.com/draw/archmap?n=caller;ext;Your%20app%20or%20CI;r0c0&n=agent;ext;AI%20agent;r0c1&n=writer;ext;README%20or%20docs;r0c2&n=ops;sec;Self-host%20operator;r0c3&n=uc1;be;Render%20a%20chart;GET%20/draw?type=...;r1c0&n=uc2;be;Store%20a%20short%20link;POST%20/draw;r1c1&n=uc3;be;Embed%20the%20SVG;markdown%20+%20img;r1c2&n=uc4;be;Run%20it%20yourself;npm%20+%20wrangler;r1c3&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for
+https://x-cmd.com/draw/arch2?n=caller;ext;Your%20app%20or%20CI;r0c0&n=agent;ext;AI%20agent;r0c1&n=writer;ext;README%20or%20docs;r0c2&n=ops;sec;Self-host%20operator;r0c3&n=uc1;be;Render%20a%20chart;GET%20/draw?type=...;r1c0&n=uc2;be;Store%20a%20short%20link;POST%20/draw;r1c1&n=uc3;be;Embed%20the%20SVG;markdown%20+%20img;r1c2&n=uc4;be;Run%20it%20yourself;npm%20+%20wrangler;r1c3&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for
 ```
 
-![draw 的用户用例](https://x-cmd.com/draw/archmap?n=caller;ext;Your%20app%20or%20CI;r0c0&n=agent;ext;AI%20agent;r0c1&n=writer;ext;README%20or%20docs;r0c2&n=ops;sec;Self-host%20operator;r0c3&n=uc1;be;Render%20a%20chart;GET%20/draw?type=...;r1c0&n=uc2;be;Store%20a%20short%20link;POST%20/draw;r1c1&n=uc3;be;Embed%20the%20SVG;markdown%20+%20img;r1c2&n=uc4;be;Run%20it%20yourself;npm%20+%20wrangler;r1c3&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for)
+![draw 的用户用例](https://x-cmd.com/draw/arch2?n=caller;ext;Your%20app%20or%20CI;r0c0&n=agent;ext;AI%20agent;r0c1&n=writer;ext;README%20or%20docs;r0c2&n=ops;sec;Self-host%20operator;r0c3&n=uc1;be;Render%20a%20chart;GET%20/draw?type=...;r1c0&n=uc2;be;Store%20a%20short%20link;POST%20/draw;r1c1&n=uc3;be;Embed%20the%20SVG;markdown%20+%20img;r1c2&n=uc4;be;Run%20it%20yourself;npm%20+%20wrangler;r1c3&e=caller;uc1&e=caller;uc2&e=agent;uc1&e=writer;uc3&e=ops;uc4&b=draw;uc1%20uc2%20uc3%20uc4&title=What%20draw%20is%20for)
 <!-- END draw-diagrams -->
 ## Six ways to use it (one render core)
 

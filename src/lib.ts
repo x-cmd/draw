@@ -37,6 +37,7 @@ export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
 export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_RULES } from './render/echarts-ssr.js';
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
 export { renderArchmapFromUrl } from './render/archmap.js';
+export { renderArchFromUrl, renderArchCore } from './render/arch.js';
 // mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';
