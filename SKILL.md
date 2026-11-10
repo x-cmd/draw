@@ -87,7 +87,7 @@ https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Clo
 - `w=` / `h=` 尺寸(缺省用该风格规范画布,数据密集时自动微调;范围 200–1600 / 140–1200,短链 w 可至 120,qr 为 120–1000)
 - `num=all|peak|none` 数值标注(pie/bar/hbar/line/area/scatter/combo;radar/gauge/sankey/qr 忽略)
 - `v=N` 钉住版本,缓存 1 天(N 为 1..当前版本);不带 = 最新版(短缓存 300s)
-- `format=png` 输出位图(配 `scale=1–3` 倍率;scheme 固化,缺省 light;仅内嵌拉丁字体子集,中文在 PNG 中无字形)
+- `format=png` 输出位图(配 `scale=1–3` 倍率;scheme 固化,缺省 light;中文已内置 Noto Sans SC 子集(GB2312 一级 3755 字 + 中文标点),SVG 里出现中文才挂载,常用字都能显示;子集外的生僻字仍无字形)
 
 ## 风格家族(可选 `t=`)
 

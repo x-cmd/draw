@@ -285,7 +285,7 @@ Common parameters:
 - `t` style family (per chart type, see below; falls back to default when not built for that type)
 - `scheme` `auto` (default, follows system) / `dark` / `light`
 - `v` pin a version; `w`/`h` size (200–1600 / 140–1200; qr is 120–1000 / 140–1000)
-- `format=png` rasterize instead of SVG (`scale=1–3` pixel ratio; scheme is baked — omitting it means light). Latin text only: the embedded Inter subset has no CJK glyphs
+- `format=png` rasterize instead of SVG (`scale=1–3` pixel ratio; scheme is baked — omitting it means light). CJK is bundled as a Noto Sans SC subset (GB2312 level 1 — 3755 common hanzi plus punctuation) and mounted only when the SVG actually contains CJK, so common Chinese renders fine; rarer hanzi outside the subset still have no glyph
 - `num` value labels: `all` / `peak` (highest only) / `none`. Defaults follow the style; applies to pie/bar/hbar/line/area/scatter/combo (radar/gauge/sankey/qr ignore it)
 - `subtitle` editorial subtitle (only rendered by area's editorial style `t=opendata`), `source` data-source footnote (area only, any `t`); other types parse but ignore these
 
