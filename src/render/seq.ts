@@ -130,11 +130,15 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
 
   // 泳道(b=):把一组参与方圈起来 —— 虚线框 + 框内左上角的标签。
   // 框从参与方标题盒上面开始(那一行留给标签),一直到生命线底下。
+  // 颜色和架构图的边界一个规矩:用「节点类型没占用的颜色」,不跟盒子撞色。
   const laneSvg = (): string => {
     const out: string[] = [];
-    for (const b of o.boundaries) {
+    // 架构图那八种类型占了 s1–s7,泳道用 s8/s9/s10
+    const LANE_COLORS = ['var(--d-s8)', 'var(--d-s9)', 'var(--d-s10)'];
+    o.boundaries.forEach((b, i) => {
       const ms = b.ids.map((id) => byId.get(id)!).filter(Boolean);
-      if (!ms.length) continue;
+      if (!ms.length) return;
+      const c = b.color ? `var(--d-s${b.color})` : LANE_COLORS[i % LANE_COLORS.length];
       const x0 = Math.min(...ms.map((m) => m.box.x)) - 16;
       const x1 = Math.max(...ms.map((m) => m.box.x + m.box.w)) + 16;
       const y0 = Math.min(...ms.map((m) => m.box.y)) - LANE_TOP;
@@ -143,12 +147,13 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
       const lw = textW(label, 10) + b.label.length * 1.2 + 20;
       out.push(
         `<g data-boundary="${esc(b.ids.join(' '))}">` +
-        `<rect x="${r2(x0)}" y="${r2(y0)}" width="${r2(x1 - x0)}" height="${r2(y1 - y0)}" rx="12" fill="none" stroke="var(--d-border)" stroke-width="1.2" stroke-dasharray="7 5"/>` +
+        `<rect x="${r2(x0)}" y="${r2(y0)}" width="${r2(x1 - x0)}" height="${r2(y1 - y0)}" rx="12" fill="none" stroke="${c}" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="7 5"/>` +
         `<rect x="${r2(x0 + 10)}" y="${r2(y0 + 5)}" width="${r2(lw)}" height="19" rx="6" fill="var(--d-card)"/>` +
-        `<text x="${r2(x0 + 10 + lw / 2)}" y="${r2(y0 + 18)}" text-anchor="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)">${esc(label)}</text>` +
+        `<rect x="${r2(x0 + 11)}" y="${r2(y0 + 6)}" width="${r2(lw - 2)}" height="17" rx="5" fill="${c}" fill-opacity="0.16"/>` +
+        `<text x="${r2(x0 + 10 + lw / 2)}" y="${r2(y0 + 18)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
         `</g>`,
       );
-    }
+    });
     return out.join('');
   };
   parts.push(laneSvg());

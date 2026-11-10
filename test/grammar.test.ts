@@ -211,6 +211,15 @@ describe('画布纸(paper=1)', () => {
     expect(paper).toContain('url(#am-paper)');
     expect(paper).toContain('am-paper" width="26"');
   });
+
+  it('四种新图种默认也不铺纸', () => {
+    // 之前这里写成了 params.get('paper') !== '0' —— 没传参数时是 null,于是纸默认铺上了
+    const q = 'n=a;process;A;;r0c0&n=b;store;B;;r1c0&e=a;b';
+    const plain = renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?' + q)).svg;
+    expect(plain).not.toContain('url(#am-paper)');
+    const on = renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?' + q + '&paper=1')).svg;
+    expect(on).toContain('url(#am-paper)');
+  });
 });
 
 describe('b= 泳道/边界,所有图种都认', () => {
