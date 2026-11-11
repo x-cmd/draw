@@ -280,10 +280,16 @@ b=label;id id …                  group  (a boundary or a swim lane)
 https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Cloudflare Worker;r0c1&e=web;api;GET /draw?type=pie
 ```
 
-Leave the position out and the engine lays the graph out **in layers** — ranked by
-dependency (sources first, sinks last), ordered inside a layer to keep edges
-from crossing, aligned with their neighbours. `dir=tb` stacks the layers instead
-of putting them side by side; `grid=N` asks for the plain grid instead.
+Leave the position out and the engine places the nodes itself: `dir=tb` stacks
+the layers instead of putting them side by side, `grid=N` asks for the plain
+grid instead.
+
+**Placement is pluggable.** The package ships a generic placement (fill the grid
+in the order you wrote). Callers who want a better one pass their own engine:
+`renderArchCore({ layout })` — the library hands it the nodes, the edges, the
+group boundaries and the measured box sizes, and takes back a box per node.
+There is no engine parameter in the URL: picking an engine is the caller's
+business, not part of the diagram grammar.
 
 Full manual — positions, multi-line text, encoding rules, per-kind table: [Diagram URLs](docs/1-overview/06-diagram-urls/en.md).
 

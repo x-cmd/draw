@@ -108,8 +108,9 @@ Grid cells are counted from zero. Two nodes in the same cell is a 400.
 **Leave the position out** and the engine places the nodes itself — for the
 architecture, lifecycle, data-flow and class faces that means a **layered
 layout**: ranked by dependency (sources first, sinks last), ordered inside a
-layer to keep edges from crossing, and aligned with their neighbours. A
-diagram with no position at all is still readable:
+layer to keep edges from crossing, and aligned with their neighbours. Groups
+(`b=`) become tight boxes of their own — unrelated nodes never get swept
+inside one. A diagram with no position at all is still readable:
 
 ```text
 https://x-cmd.com/draw/arch2?n=web;fe;Browser&n=gw;be;API%20Gateway&n=auth;be;Auth%20Service&n=db;db;Postgres&e=web;gw&e=gw;auth&e=auth;db
@@ -121,6 +122,12 @@ https://x-cmd.com/draw/arch2?n=web;fe;Browser&n=gw;be;API%20Gateway&n=auth;be;Au
 - `grid=N` asks for the grid instead: N per row, in the order you wrote them.
 - Give positions to only some nodes and the rest land next to their
   neighbours, not in the top-left corner.
+
+> **For library users**: the `@x-cmd/draw` package ships the *generic* placement
+> (fill the grid in the order you wrote) — the better algorithms are not
+> published with it. The library leaves a mount point: callers can plug in their
+> own engine (`renderArchCore({ layout })`). There is no engine parameter in the
+> URL — picking an engine is the caller's business.
 
 In a **sequence diagram** the position is the column the participant stands
 in (`r0c0`, `r0c1`, … — one row, many columns). In a **use case diagram**
