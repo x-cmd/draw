@@ -58,13 +58,19 @@ https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time
 
 [![Memory, disk and report time](https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time&labels=duckdb,sqlite&left=peak%20memory%20(GB):0.32,0.04&right=data%20on%20disk%20(GB):0.37,3.08&line=report%20time%20(ms):536,49178&lineside=right&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&title=Memory,%20disk%20and%20report%20time&labels=duckdb,sqlite&left=peak%20memory%20(GB):0.32,0.04&right=data%20on%20disk%20(GB):0.37,3.08&line=report%20time%20(ms):536,49178&lineside=right)
 
-### The same chart, two styles — with a track, without one
+### The same chart, four styles — clean / track / ticks / both
 
 ```text
-https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
+https://x-cmd.com/draw?type=butterfly&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
 ```
 
-[![Issues opened vs closed, no track](https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
+[![Issues opened vs closed](https://x-cmd.com/draw?type=butterfly&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
+
+```text
+https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
+```
+
+[![Issues opened vs closed, with scale](https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
 
 ## 1. Parameters
 
@@ -80,7 +86,7 @@ https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed
 | `unit=` | unit, shown in the legend | — |
 | `w=` / `h=` | canvas size | 640 × 420 |
 | `scheme=` | `dark` / `light` | auto |
-| `t=` | style family: `base` (a faint track behind each bar) or `bare` (bars only — the empty track reads as data otherwise) | `base` |
+| `t=` | style family: `base` (default — clean: no track, no tick lines), `track` (adds a faint track behind each bar), `grid` (adds the vertical tick lines), `scale` (both) | `base` |
 | `d=` | the JSON form (below) | — |
 
 **The JSON form** — for anything the short form cannot say:
@@ -118,13 +124,30 @@ Both sides share **one scale** for the bars — that is the whole point, the
 lengths are comparable. A line always gets **its own scale**, because its unit
 usually differs.
 
-## 3. In the explore app
+## 3. The four looks (`t=`)
+
+A track and a set of tick lines are both "empty things": the part of the track
+the bar doesn't reach is grey, and the tick lines carry no numbers. A reader
+takes the grey for part of the data and the lines for leftover scaffolding. So
+the **default is clean** — bars, the value at each bar's end, and a legend:
+
+| `t=` | look | when |
+|---|---|---|
+| `base` (default) | no track, no tick lines | the usual case |
+| `track` | adds a faint track behind each bar | to show how far this side could reach |
+| `grid` | adds the vertical tick lines on both sides | to show the intervals of the scale |
+| `scale` | track + tick lines | the full "this is a ruler" look |
+
+The values sit at the end of each bar anyway, so dropping the track and the
+lines **loses no information** — bars alone still read.
+
+## 4. In the explore app
 
 `/draw/explore?type=butterfly&…` shows the chart and its parameters as an
 editable table: one row per category, one column per segment. Change a value
 and the chart redraws; the URL follows.
 
-## 4. Pitfalls
+## 5. Pitfalls
 
 - **The unit belongs in the legend, not on the axis.** Write `left=peak memory
   (GB):…` rather than `unit=GB`: a reader who finds "1k" under an axis has no

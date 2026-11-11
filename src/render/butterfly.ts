@@ -48,8 +48,10 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
   const { version, skin } = o;
   const n = spec.labels.length;
   const tb = spec.dir === 'tb';
-  // 底纹轨道:默认画;t=bare 不画(空着的底纹容易被当成数据的一部分)
-  const track = skin.rules.butterflyMode !== 'bare';
+  // 底纹轨道:空着的底纹容易被当成数据的一部分 → 默认不画(t=track / t=scale 才画)
+  const track = skin.rules.butterflyMode === 'track';
+  // 刻度线:默认不画(数值就写在柱端,再画一堆没数字的竖线只是噪声)→ grid=none
+  const scale = skin.rules.grid !== 'none';
   const unit = spec.unit?.trim();
   const left = paintSide(spec.left, 'Left', 0, unit);
   const right = paintSide(spec.right, 'Right', left.length, unit);
@@ -111,17 +113,19 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
         parts.push(`<line x1="${r2(x)}" y1="${r2(contentTop)}" x2="${r2(x)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)"/>`);
       }
     };
-    if (each) {
-      gridFor(leftMax, -1);
-      gridFor(rightMax, 1);
-    } else {
-      const ticks = niceTicks(barMax, 4);
-      const tickMax = ticks[ticks.length - 1] || barMax;
-      for (const t of ticks) {
-        if (t === 0) continue;
-        const dx = (t / tickMax) * half;
-        for (const x of [centre - dx, centre + dx]) {
-          parts.push(`<line x1="${r2(x)}" y1="${r2(contentTop)}" x2="${r2(x)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)"/>`);
+    if (scale) {
+      if (each) {
+        gridFor(leftMax, -1);
+        gridFor(rightMax, 1);
+      } else {
+        const ticks = niceTicks(barMax, 4);
+        const tickMax = ticks[ticks.length - 1] || barMax;
+        for (const t of ticks) {
+          if (t === 0) continue;
+          const dx = (t / tickMax) * half;
+          for (const x of [centre - dx, centre + dx]) {
+            parts.push(`<line x1="${r2(x)}" y1="${r2(contentTop)}" x2="${r2(x)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)"/>`);
+          }
         }
       }
     }
@@ -247,17 +251,19 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
         parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(width - PAD)}" y2="${r2(y)}" stroke="var(--d-grid)"/>`);
       }
     };
-    if (eachTb) {
-      gridTb(leftMax, -1);
-      gridTb(rightMax, 1);
-    } else {
-      const ticks = niceTicks(barMax, 4);
-      const tickMax = ticks[ticks.length - 1] || barMax;
-      for (const t of ticks) {
-        if (t === 0) continue;
-        const dy = (t / tickMax) * half;
-        for (const y of [centreY - dy, centreY + dy]) {
-          parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(width - PAD)}" y2="${r2(y)}" stroke="var(--d-grid)"/>`);
+    if (scale) {
+      if (eachTb) {
+        gridTb(leftMax, -1);
+        gridTb(rightMax, 1);
+      } else {
+        const ticks = niceTicks(barMax, 4);
+        const tickMax = ticks[ticks.length - 1] || barMax;
+        for (const t of ticks) {
+          if (t === 0) continue;
+          const dy = (t / tickMax) * half;
+          for (const y of [centreY - dy, centreY + dy]) {
+            parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(width - PAD)}" y2="${r2(y)}" stroke="var(--d-grid)"/>`);
+          }
         }
       }
     }

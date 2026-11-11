@@ -307,7 +307,7 @@ Per chart type, with automatic light/dark palettes:
 | `radar` | `base` (default), `evil` (multi-series), `xcmd` |
 | `sankey` | `base` (default), `fund`, `pipeline` |
 | `gauge` | `base` (default), `gradient`, `reliability` (zoned ring gauge) |
-| `butterfly` | `base` (default, a faint track behind each bar), `bare` (bars only — the empty track reads as data) |
+| `butterfly` | `base` (default, clean: no track, no tick lines), `track` (adds the track), `grid` (adds the tick lines), `scale` (both) |
 | `scatter` / `combo` / `qr` | `base` (combo also has `evil`) |
 
 ## Two ways to pass data

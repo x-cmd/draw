@@ -167,7 +167,14 @@ export function renderTokeiFromUrl(url: URL, body?: string): DrawResult {
   if (!['bar', 'butterfly', 'files', 'tb'].includes(layout)) {
     throw new ApiError(400, `"layout" must be one of bar, butterfly, files, tb. Got: ${JSON.stringify(layout)}`);
   }
-  const skin = resolveSkin('bar', params.get('t'), schemeParam(params));
+  const butterflyLayout = layout === 'butterfly' || layout === 'files' || layout === 'tb';
+  // 双翼的摆法用双翼自己的风格家族(t=track/grid/scale,缺省是干净的);
+  // 柱状用柱状家族。两边同一张图,t= 的意思也就一致了。
+  const skin = resolveSkin(
+    butterflyLayout ? 'butterfly' : 'bar',
+    params.get('t'),
+    schemeParam(params),
+  );
   const o = {
     width: clampInt(params, 'w', 760, 200, 2400),
     height: clampInt(params, 'h', 420, 140, 2000),

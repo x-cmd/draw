@@ -55,13 +55,19 @@ https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time
 
 [![Memory, disk and report time](https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time&labels=duckdb,sqlite&left=peak%20memory%20(GB):0.32,0.04&right=data%20on%20disk%20(GB):0.37,3.08&line=report%20time%20(ms):536,49178&lineside=right&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&title=Memory,%20disk%20and%20report%20time&labels=duckdb,sqlite&left=peak%20memory%20(GB):0.32,0.04&right=data%20on%20disk%20(GB):0.37,3.08&line=report%20time%20(ms):536,49178&lineside=right)
 
-### 同一张图,两种风格 —— 有底纹 / 没底纹
+### 同一张图,四种风格 —— 干净 / 有底纹 / 有竖线 / 两个都有
 
 ```text
-https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
+https://x-cmd.com/draw?type=butterfly&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
 ```
 
-[![Issues opened vs closed, no track](https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
+[![Issues opened vs closed](https://x-cmd.com/draw?type=butterfly&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
+
+```text
+https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
+```
+
+[![Issues opened vs closed, with scale](https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
 
 ## 1. 参数
 
@@ -77,7 +83,7 @@ https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed
 | `unit=` | 单位,显示在图例里 | — |
 | `w=` / `h=` | 画布尺寸 | 640 × 420 |
 | `scheme=` | `dark` / `light` | auto |
-| `t=` | 风格家族:`base`(每根柱后面一层淡底纹)或 `bare`(只画柱 —— 空着的底纹容易被当成数据) | `base` |
+| `t=` | 风格家族:`base`(缺省 —— 干净:无底纹、无竖线)、`track`(加一层淡底纹轨道)、`grid`(加两侧的竖线刻度)、`scale`(两个都加) | `base` |
 | `d=` | JSON 形态(见下) | — |
 
 **JSON 形态** —— 短形态说不清的时候用:
@@ -113,12 +119,27 @@ https://x-cmd.com/draw?type=butterfly&d={"labels":["duckdb","sqlite"],"left":{"n
 两侧的柱**共用一把标尺** —— 这正是双翼图的意义:长度可比。折线永远是**自己的
 标尺**,因为它的单位通常不一样。
 
-## 3. 在交互页里
+## 3. 四种长相(`t=`)
+
+底纹和刻度线都是「空的东西」:底纹没被柱填满的那截是灰的,刻度线又没有数字。
+读者容易把灰当成数据的一部分,把没数字的竖线当成多余的骨架。所以**缺省是干净的**
+—— 只有柱、柱端的数值和图例:
+
+| `t=` | 长相 | 什么时候用 |
+|---|---|---|
+| `base`(缺省) | 无底纹、无竖线 | 平时就用这个 |
+| `track` | 加一层淡底纹轨道 | 想看出「这一侧最长能到哪」 |
+| `grid` | 加两侧等距的竖线刻度 | 想看出标尺的间隔 |
+| `scale` | 底纹 + 刻度 | 完整的标尺感 |
+
+数值本来就写在柱端,所以去掉底纹和刻度**不丢信息** —— 只剩柱也读得懂。
+
+## 4. 在交互页里
 
 `/draw/explore?type=butterfly&…` 左边是图,右边是参数的表格:一行一个类别,
 一列一段。改一格图立刻重画,URL 跟着变。
 
-## 4. 坑
+## 5. 坑
 
 - **单位进图例,不要放轴上。** 写 `left=peak memory (GB):…`,别用 `unit=GB`:
   读者在轴上看到「1k」根本不知道那是 MB。图例是他唯一会看的地方。

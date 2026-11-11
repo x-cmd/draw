@@ -60,7 +60,7 @@ export interface Rules {
   // 水平柱
   hbarMode: 'plain' | 'rows' | 'cells' | 'diverging' | 'lift';
   // 双翼条形图
-  butterflyMode: 'track' | 'bare'; // track=每侧带底纹轨道(缺省) bare=只画柱,没有底纹
+  butterflyMode: 'track' | 'bare'; // track=每侧带底纹轨道 bare=只画柱,没有底纹(缺省)
   // rows=逐行配色+内标值(opendata) cells=像素格(xcmd) diverging=蝴蝶新建/关闭 lift=实底+斜纹增益(rank)
   // 雷达图
   radarMode: 'web' | 'evil' | 'xcmd';
@@ -90,7 +90,7 @@ export interface Rules {
 }
 
 export const DEFAULT_RULES: Rules = {
-  butterflyMode: 'track',
+  butterflyMode: 'bare',
   canvas: 'card',
   title: 'plain',
   grid: 'solid',

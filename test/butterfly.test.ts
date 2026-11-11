@@ -49,15 +49,32 @@ describe('butterfly(双翼条形图)', () => {
     expect(texts(svg)).toContain('49,178');
   });
 
-  it('t=bare:不画底纹(空着的底纹会被当成数据)', () => {
+  it('缺省是干净的:无底纹、无刻度线(空着的和没数字的都不画)', () => {
+    const svg = renderFromUrl(url('type=butterfly&labels=A&left=Opened:7&right=Closed:5')).svg;
+    // 底纹:一层很淡的灰(var(--d-faint) + 0.35)
+    expect(svg.match(/fill="var\(--d-faint\)" fill-opacity="0\.35"/g) ?? []).toHaveLength(0);
+    // 刻度线:两侧等距的竖线(没有数字,只是噪声)
+    expect(svg.match(/stroke="var\(--d-grid\)"/g) ?? []).toHaveLength(0);
+    // 中轴那根还在 —— 两侧靠它分开
+    expect(svg).toContain('stroke="var(--d-border)"');
+    // 柱端的数值照旧
+    expect(texts(svg)).toContain('7');
+    expect(texts(svg)).toContain('5');
+  });
+
+  it('t=track / t=grid / t=scale:底纹与刻度各自能加回来', () => {
     const q = 'type=butterfly&labels=A&left=Opened:7&right=Closed:5';
-    const withTrack = renderFromUrl(url(q)).svg;
-    const bare = renderFromUrl(url(q + '&t=bare')).svg;
-    // 底纹是一层很淡的灰(var(--d-faint) + 0.35)
-    const track = withTrack.match(/fill="var\(--d-faint\)" fill-opacity="0\.35"/g) ?? [];
-    const noTrack = bare.match(/fill="var\(--d-faint\)" fill-opacity="0\.35"/g) ?? [];
-    expect(track.length).toBe(2);   // 两侧各一条
-    expect(noTrack.length).toBe(0);
+    const nTrack = (s: string): number => (s.match(/fill="var\(--d-faint\)" fill-opacity="0\.35"/g) ?? []).length;
+    const nGrid = (s: string): number => (s.match(/stroke="var\(--d-grid\)"/g) ?? []).length;
+    const track = renderFromUrl(url(q + '&t=track')).svg;
+    const grid = renderFromUrl(url(q + '&t=grid')).svg;
+    const scale = renderFromUrl(url(q + '&t=scale')).svg;
+    expect(nTrack(track)).toBe(2);   // 两侧各一条
+    expect(nGrid(track)).toBe(0);
+    expect(nTrack(grid)).toBe(0);
+    expect(nGrid(grid)).toBeGreaterThan(0);
+    expect(nTrack(scale)).toBe(2);
+    expect(nGrid(scale)).toBeGreaterThan(0);
   });
 
   it('metadata 带全量数据(AI 能原样重建,角标链接也靠它)', () => {
