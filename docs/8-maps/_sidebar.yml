@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:map
+<text>:
+  en: Maps
+  zh: 地图
+  cs: Mapy
+  de: Karten
+  es: Mapas
+  fr: Cartes
+  id: Peta
+  it: Mappe
+  ja: 地図
+  ko: 지도
+  pl: Mapy
+  ro: Hărți
+  ru: Карты
+  th: แผนที่
+  tr: Haritalar
+  uk: Карти
+  vi: Bản đồ
+  pt-br: Mapas
+  pt-pt: Mapas

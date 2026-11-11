@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:chart-column
+<text>:
+  en: Data charts
+  zh: 数据图
+  cs: Datové grafy
+  de: Datendiagramme
+  es: Gráficos de datos
+  fr: Graphiques de données
+  id: Grafik data
+  it: Grafici dei dati
+  ja: データチャート
+  ko: 데이터 차트
+  pl: Wykresy danych
+  ro: Grafice de date
+  ru: Диаграммы данных
+  th: แผนภูมิข้อมูล
+  tr: Veri grafikleri
+  uk: Діаграми даних
+  vi: Biểu đồ dữ liệu
+  pt-br: Gráficos de dados
+  pt-pt: Gráficos de dados

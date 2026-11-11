@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:store
+<text>:
+  en: Overview
+  zh: 概览
+  cs: Přehled
+  de: Übersicht
+  es: Descripción general
+  fr: Vue d'ensemble
+  id: Ikhtisar
+  it: Panoramica
+  ja: 概要
+  ko: 개요
+  pl: Przegląd
+  ro: Prezentare generală
+  ru: Обзор
+  th: ภาพรวม
+  tr: Genel bakış
+  uk: Огляд
+  vi: Tổng quan
+  pt-br: Visão geral
+  pt-pt: Visão geral
