@@ -101,3 +101,4 @@ Real scenarios, each one a set of ready URLs.
 | [09 finance](9-showcases/09-finance/en.md) | finance — allocation, return against risk, the deal funnel |
 | [10 logistics](9-showcases/10-logistics/en.md) | logistics — throughput, warehouse fill, the fulfilment network |
 | [11 ai-coding era](9-showcases/11-ai-coding-era/en.md) | the AI-coding era — one person, the whole picture: composition, files, architecture, plan |
+| [12 reference charts](9-showcases/12-reference-examples/en.md) | seven reference charts checked one by one — agent leaderboard, home network, CI pipeline, character network |
