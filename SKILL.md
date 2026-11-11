@@ -31,6 +31,7 @@ explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)
 | 柱+线混合 | `combo` | `type=combo&labels=Mon,Tue&series=dl:120,180&line=growth:5,8` |
 | 流向 | `sankey` | `type=sankey&labels=Ads,Web,Buy&links=Ads>Buy:30;Web>Buy:20` |
 | 二维码 | `qr` | `type=qr&d=https://x-cmd.com` |
+| 两个系列背靠背 | `butterfly` | `type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6` |
 
 ## 每图种要点
 

@@ -36,6 +36,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [08 scatter](2-data-charts/08-scatter/en.md) | points | correlation |
 | [09 combo](2-data-charts/09-combo/en.md) | bars + line | two measures at once |
 | [10 tokei](2-data-charts/10-tokei/en.md) | code composition | code, comments and blanks per language |
+| [11 butterfly](2-data-charts/11-butterfly/en.md) | butterfly chart | two series back to back, each side stackable, either side can carry a line |
 
 ## 3 · Relations 关系图
 
