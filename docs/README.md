@@ -66,6 +66,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [04 seq](5-architecture/04-seq/en.md) | sequence diagram | who talks to whom, in what order |
 | [05 erd](5-architecture/05-erd/en.md) | ERD | the tables, their fields, how they relate |
 | [06 class](5-architecture/06-class/en.md) | class diagram | the types, and how they hang together |
+| [07 icons](5-architecture/07-icons/en.md) | cloud vendor icons for architecture nodes, from the open-source diagrams library |
 
 ## 6 · Schedule 日程与排布
 
@@ -105,3 +106,4 @@ Real scenarios, each one a set of ready URLs.
 | [11 ai-coding era](9-showcases/11-ai-coding-era/en.md) | the AI-coding era — one person, the whole picture: composition, files, architecture, plan |
 | [12 reference charts](9-showcases/12-reference-examples/en.md) | seven reference charts checked one by one — agent leaderboard, home network, CI pipeline, character network |
 | [13 calendar](9-showcases/13-calendar/en.md) | ten calendar cases — course timetable, release schedule, on-call roster, team month, personal month, week, October holidays, the year 2026, two months, three months |
+| [14 cloud architecture](9-showcases/14-cloud-architecture/en.md) | five cloud architectures that ship — three-tier web app, CI/CD, data pipeline, serverless API, EKS microservices |

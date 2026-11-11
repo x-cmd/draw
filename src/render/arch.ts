@@ -18,6 +18,7 @@ import {
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, svgDoc, textW } from './svg.js';
+import { iconOf } from './icons.js';
 
 /* ---------------------------------------------------------------- 视觉常量 */
 const PAD = 44;          // 画布留白
@@ -203,12 +204,17 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
   if (types.rows === 'fields') {
     return drawFieldNodeV2(n, frame, badgeFill, color, neutral, meta, ia, titleW, badgeRight);
   }
+  // 角标:有图标(diagrams 图标库)就用图标,没有才画类型字母
+  const icon = n.icon ? iconOf(n.icon) : undefined;
+  const badge = icon
+    ? `<image href="${icon}" x="${r2(bx - 2)}" y="${r2(by - 2)}" width="${r2(BADGE + 4)}" height="${r2(BADGE + 4)}" preserveAspectRatio="xMidYMid meet"/>`
+    : `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
+      ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>` +
+      `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>`;
   return (
     `<g${ia}>` +
     frame +
-    `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
-    ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>` +
-    `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>` +
+    badge +
     `<text x="${r2(tx)}" y="${r2(titleY)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(n.label)}</text>` +
     (n.sub
       ? lines.length

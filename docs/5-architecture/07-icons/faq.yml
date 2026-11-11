@@ -1,0 +1,48 @@
+id: x-draw-5-architecture-07-icons
+
+data:
+  - name:
+      en: Icons
+      cn: 图标
+    qa:
+      - id: source
+        question:
+          en: "Where do the icons come from?"
+          cn: "图标哪来的?"
+        answer:
+          en: >
+            From the open-source library in mingrammer/diagrams (Apache-2.0). We took
+            the common ones, scaled them to 48×48, quantised them and embedded them as
+            data URIs — so the SVG and the PNG both carry them, with no external fetch.
+        confidence: 9
+        reference:
+          - docs/5-architecture/07-icons/en.md
+          - docs/5-architecture/07-icons/cn.md
+      - id: syntax
+        question:
+          en: "How do I put an icon on a node?"
+          cn: "图标怎么写到节点上?"
+        answer:
+          en: >
+            One more optional field: `n=id;type;label[;subtitle][;position][;icon]`,
+            where the icon looks like `aws:ec2`. It lands where the type badge
+            would be. The field can sit before or after the subtitle and position —
+            whatever looks like `aws:ec2` is the icon, `r0c1` is the position,
+            anything else is the subtitle.
+        confidence: 9
+        reference:
+          - docs/5-architecture/07-icons/en.md
+          - docs/5-architecture/07-icons/cn.md
+      - id: why-embedded
+        question:
+          en: "Why embed the icons instead of linking them?"
+          cn: "为什么内嵌,不外链?"
+        answer:
+          en: >
+            Because the PNG output is the one that ends up in a README, and the
+            rasteriser does not fetch external images — linked icons would vanish
+            from every PNG. Embedding costs a few KB per SVG.
+        confidence: 9
+        reference:
+          - docs/5-architecture/07-icons/en.md
+          - docs/5-architecture/07-icons/cn.md

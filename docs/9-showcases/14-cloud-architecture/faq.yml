@@ -1,0 +1,33 @@
+id: x-draw-9-showcases-14-cloud-architecture
+
+data:
+  - name:
+      en: Cloud architecture
+      cn: 云上架构
+    qa:
+      - id: icons
+        question:
+          en: "Why do the nodes carry vendor icons?"
+          cn: "节点上为什么带云厂商图标?"
+        answer:
+          en: >
+            Because the reader needs to recognise the services at a glance. "a box
+            labelled API" and "a box with Lambda's orange glyph" are not the same
+            thing — and the icons survive into the PNG that ends up in a README.
+        confidence: 9
+        reference:
+          - docs/9-showcases/14-cloud-architecture/en.md
+          - docs/9-showcases/14-cloud-architecture/cn.md
+      - id: boundaries
+        question:
+          en: "What do the dashed frames mean?"
+          cn: "那些虚线框是什么?"
+        answer:
+          en: >
+            They are the `b=` boundaries: the public and private subnets, the data
+            lake and the warehouse, the cluster. The grouping is part of the URL,
+            not something drawn by hand.
+        confidence: 9
+        reference:
+          - docs/9-showcases/14-cloud-architecture/en.md
+          - docs/9-showcases/14-cloud-architecture/cn.md

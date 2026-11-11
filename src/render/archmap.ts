@@ -40,6 +40,8 @@ export interface ArchNode {
   type: NodeType;
   label: string;
   sub?: string;
+  /** 图标(diagrams 图标库的名字,如 aws:ec2)—— 画在角标的位置 */
+  icon?: string;
   /** mermaid 源形状:方/菱(判定)/圆柱(存储)/圆角胶囊;缺省 rect */
   shape?: 'rect' | 'diamond' | 'cylinder' | 'round';
   grid?: { row: number; col: number; w: number; h: number };
@@ -74,18 +76,23 @@ export function splitFields(v: string): string[] {
   return f;
 }
 
+/** 图标字段:provider:名字(aws:ec2 / azure:vm / gcp:gce) */
+export const ICON_FIELD_RE = /^(?:aws|azure|gcp):[a-z0-9][a-z0-9-]*$/;
+
 export function parseNodes(raw: string[]): ArchNode[] {
   return raw.map((v, i) => {
     const f = splitFields(v);
     const where = `"n=${v}" (#${i + 1})`;
-    if (f.length < 3 || f.length > 5) bad(`${where}: expected id;type;label[;sublabel][;pos] fields`);
+    if (f.length < 3 || f.length > 6) bad(`${where}: expected id;type;label[;sublabel][;pos][;icon] fields`);
     const [id, type, label] = f;
-    let sub: string | undefined = f[3];
-    let pos: string | undefined = f[4];
-    // 4 字段时第 4 段按形状判别:像格位/像素坐标 → pos,否则视作 sublabel
-    if (f.length === 4 && (GRID_POS_RE.test(f[3]) || PX_POS_RE.test(f[3]))) {
-      pos = f[3];
-      sub = undefined;
+    let sub: string | undefined;
+    let pos: string | undefined;
+    let icon: string | undefined;
+    // 剩下的段按形状认:图标(aws:ec2) / 格位(r0c1) / 像素(p40,80) / 副标题
+    for (const seg of f.slice(3)) {
+      if (icon === undefined && ICON_FIELD_RE.test(seg)) icon = seg;
+      else if (pos === undefined && (GRID_POS_RE.test(seg) || PX_POS_RE.test(seg))) pos = seg;
+      else if (sub === undefined) sub = seg;
     }
     if (!ID_RE.test(id)) bad(`${where}: id must be alnum/dot/dash/underscore, not starting with a digit-punct`);
     if (!(TYPES as readonly string[]).includes(type)) bad(`${where}: unknown type "${type}" (one of ${TYPES.join('/')})`);
@@ -101,7 +108,7 @@ export function parseNodes(raw: string[]): ArchNode[] {
         px = { x: +p[1], y: +p[2], ...(p[3] ? { w: +p[3], h: +p[4] } : {}) };
       }
     }
-    return { id, type: type as NodeType, label: label.trim(), sub: sub?.trim() || undefined, grid, px };
+    return { id, type: type as NodeType, label: label.trim(), sub: sub?.trim() || undefined, icon, grid, px };
   });
 }
 
