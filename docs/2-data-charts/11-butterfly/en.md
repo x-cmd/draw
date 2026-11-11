@@ -58,6 +58,14 @@ https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time
 
 [![Memory, disk and report time](https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time&labels=duckdb,sqlite&left=peak%20memory%20(GB):0.32,0.04&right=data%20on%20disk%20(GB):0.37,3.08&line=report%20time%20(ms):536,49178&lineside=right&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&title=Memory,%20disk%20and%20report%20time&labels=duckdb,sqlite&left=peak%20memory%20(GB):0.32,0.04&right=data%20on%20disk%20(GB):0.37,3.08&line=report%20time%20(ms):536,49178&lineside=right)
 
+### The same chart, two styles — with a track, without one
+
+```text
+https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440
+```
+
+[![Issues opened vs closed, no track](https://x-cmd.com/draw?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=bare&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
+
 ## 1. Parameters
 
 | param | meaning | default |
