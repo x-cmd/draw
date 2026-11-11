@@ -68,6 +68,7 @@ export const LIMITS = {
   subtitle: 96,
   source: 96,
   unit: 16,
+  axisName: 48,   // 轴标题(X/Y 轴叫什么)
   label: 64,
   maxPie: 100,
   maxBar: 30,

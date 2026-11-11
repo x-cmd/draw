@@ -1,14 +1,25 @@
 // 散点图(scatter):x,y 点对;单系列扁平 x=/y=(或 JSON points),多系列重复 x=/y= 参数(或 JSON series)。
+// 点可以带名字(names= / JSON 里的 label)—— 榜单类散点图没有名字就分不清谁是谁。
 import { ApiError, LIMITS, clip } from './base.js';
 
 // ===== 散点图(scatter):x,y 点对 =====
+
+/**
+ * One scatter point: coordinates plus an optional label.
+ */
+export interface ScatterPoint {
+  x: number;
+  y: number;
+  /** 点旁边的名字(榜单类散点:名字是信息本身) */
+  label?: string;
+}
 
 /**
  * One scatter series: a name plus `[x,y]` points.
  */
 export interface ScatterSeries {
   name: string;
-  points: { x: number; y: number }[];
+  points: ScatterPoint[];
 }
 
 /**
@@ -16,9 +27,12 @@ export interface ScatterSeries {
  */
 export interface ScatterSpec {
   title?: string;
-  unit?: string;
+  unit?: string;   // 单位(也当作 X 轴标题的缺省)
+  xname?: string;  // X 轴标题
+  yname?: string;  // Y 轴标题
+  logx?: boolean;  // X 轴取对数(量级差得远时:价格 1 块和 20 块挤在一起就分不开了)
   /** 单系列形态(无名,无图例) */
-  points?: { x: number; y: number }[];
+  points?: ScatterPoint[];
   /** 多系列形态(规范 scatter-1 双系列对比) */
   series?: ScatterSeries[];
 }
@@ -43,8 +57,7 @@ export function scatterSpecFromParams(params: URLSearchParams): string | null {
     const series = xsAll.map((xv, i) => ({ name: `S${i + 1}`, points: pairs(xv, ysAll[i]) }));
     return JSON.stringify({
       series,
-      ...(params.get('title') ? { title: params.get('title') } : {}),
-      ...(params.get('unit') ? { unit: params.get('unit') } : {}),
+      ...extras(params),
     });
   }
   const xs = (xsAll[0] ?? '').split(',').filter(Boolean);
@@ -55,14 +68,33 @@ export function scatterSpecFromParams(params: URLSearchParams): string | null {
   if (xs.length !== ys.length) {
     throw new ApiError(400, `got ${xs.length} x values but ${ys.length} y values — they must match`);
   }
+  // names= 给每个点起名字(榜单类散点:没有名字就分不清谁是谁)
+  const names = (params.get('names') ?? '').split(',').map((n) => n.trim()).filter(Boolean);
+  if (names.length && names.length !== xs.length) {
+    throw new ApiError(400, `got ${names.length} names but ${xs.length} points — they must match`);
+  }
   return JSON.stringify({
-    points: xs.map((x, i) => [Number(x), Number(ys[i])]),
-    ...(params.get('title') ? { title: params.get('title') } : {}),
-    ...(params.get('unit') ? { unit: params.get('unit') } : {}),
+    points: xs.map((x, i) => {
+      const p: ScatterPoint = { x: Number(x), y: Number(ys[i]) };
+      if (names[i]) p.label = names[i];
+      return p;
+    }),
+    ...extras(params),
   });
 }
 
-function pairs(xRaw: string, yRaw: string): { x: number; y: number }[] {
+/** 标题/单位/Y 轴名/对数轴 —— 扁平与 JSON 两种形态共用 */
+function extras(params: URLSearchParams): Record<string, unknown> {
+  return {
+    ...(params.get('title') ? { title: params.get('title') } : {}),
+    ...(params.get('unit') ? { unit: params.get('unit') } : {}),
+    ...(params.get('xname') ? { xname: params.get('xname') } : {}),
+    ...(params.get('yname') ? { yname: params.get('yname') } : {}),
+    ...(params.get('logx') === '1' || params.get('logx') === 'true' ? { logx: true } : {}),
+  };
+}
+
+function pairs(xRaw: string, yRaw: string): ScatterPoint[] {
   const xs = xRaw.split(',').filter(Boolean);
   const ys = yRaw.split(',').filter(Boolean);
   if (xs.length !== ys.length) {
@@ -76,23 +108,29 @@ function pairs(xRaw: string, yRaw: string): { x: number; y: number }[] {
   });
 }
 
-function parsePoints(rawPoints: unknown[], at: string): { x: number; y: number }[] {
+function parsePoints(rawPoints: unknown[], at: string): ScatterPoint[] {
   if (rawPoints.length > LIMITS.maxScatter) {
     throw new ApiError(400, `${at} has ${rawPoints.length} entries; scatter supports at most ${LIMITS.maxScatter} per series`);
   }
   return rawPoints.map((p, i) => {
     let x: unknown;
     let y: unknown;
+    let label: unknown;
     if (Array.isArray(p)) {
       [x, y] = p;
     } else if (typeof p === 'object' && p !== null) {
       x = (p as Record<string, unknown>).x;
       y = (p as Record<string, unknown>).y;
+      label = (p as Record<string, unknown>).label;
     }
     if (typeof x !== 'number' || !Number.isFinite(x) || typeof y !== 'number' || !Number.isFinite(y)) {
       throw new ApiError(400, `${at}[${i}] must be [x,y] numbers, got: ${JSON.stringify(p)}`);
     }
-    return { x, y };
+    if (label === undefined || label === null) return { x, y };
+    if (typeof label !== 'string') {
+      throw new ApiError(400, `${at}[${i}].label must be a string, got: ${JSON.stringify(label)}`);
+    }
+    return { x, y, label: clip(label, LIMITS.seriesName) };
   });
 }
 
@@ -139,6 +177,26 @@ export function parseScatterSpec(raw: string | null): ScatterSpec {
   if (o.unit !== undefined) {
     if (typeof o.unit !== 'string') throw new ApiError(400, `"unit" must be a string`);
     spec.unit = clip(o.unit, LIMITS.unit);
+  }
+  if (o.xname !== undefined) {
+    if (typeof o.xname !== 'string') throw new ApiError(400, `"xname" must be a string`);
+    spec.xname = clip(o.xname, LIMITS.axisName);
+  }
+  if (o.yname !== undefined) {
+    if (typeof o.yname !== 'string') throw new ApiError(400, `"yname" must be a string`);
+    spec.yname = clip(o.yname, LIMITS.axisName);
+  }
+  if (o.logx !== undefined) {
+    if (typeof o.logx !== 'boolean') throw new ApiError(400, `"logx" must be true/false`);
+    spec.logx = o.logx;
+  }
+  // 对数轴:x 必须全为正,否则量不出来
+  if (spec.logx) {
+    const all = (spec.series ?? [{ name: '', points: spec.points ?? [] }]).flatMap((x) => x.points);
+    const bad = all.find((p) => p.x <= 0);
+    if (bad) {
+      throw new ApiError(400, `"logx" needs every x > 0, got ${bad.x}. Example: ?type=scatter&x=1,2&y=4,5&logx=1`);
+    }
   }
   return spec;
 }

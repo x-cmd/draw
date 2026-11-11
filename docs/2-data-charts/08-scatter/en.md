@@ -75,7 +75,9 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=Peak
 | --- | --- | --- |
 | `points=x1,y1;x2,y2;...` | single group (semicolon between points, comma between coords) | single group ✓ |
 | `series=A:x1,y1;x2,y2;...&series=B:...` | multiple groups | multi-group ✓ |
-| `xlabel=` / `ylabel=` | axis labels | ✗ |
+| `names=` | a name per point (comma separated, one per point) — a leaderboard scatter is unreadable without them | ✗ |
+| `xname=` / `yname=` | what each axis is called | ✗ |
+| `logx=1` | log scale on the X axis (when the magnitudes differ a lot — $1 and $20 bunch up on a linear axis) | ✗ |
 | `title=` | chart title | ✗ |
 
 ---

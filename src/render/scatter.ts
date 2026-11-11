@@ -2,7 +2,7 @@
 // 单系列(x=/y=)无图例;多系列(重复 x=/y= 或 JSON series)右上圆点图例。默认不标数值(轴已可读)。
 import type { ScatterSpec, ScatterSeries } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceStep, r2, snap, trunc, TAG_RESERVE, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, marksLayer, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { esc, fmtNum, niceStep, r2, snap, textW, trunc, TAG_RESERVE, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, marksLayer, type RenderOpts, svgDoc, titleBlock } from './svg.js';
 import { tickColW } from './measure.js';
 
 // 取整量程刻度:数据向下/向上取整到步长(规范 -18..19 → -20..20),刻度线铺满整域
@@ -13,6 +13,20 @@ function spanTicks(min: number, max: number, count: number): number[] {
   const out: number[] = [];
   for (let v = lo; v <= hi + 1e-9; v += step) out.push(snap(v, step));
   return out;
+}
+
+// 对数轴刻度:1/2/5 × 10^k(价格这类量级差得远的轴:1 块和 20 块挤在一起就分不开了)
+function logTicks(min: number, max: number): number[] {
+  const lo = Math.floor(Math.log10(min));
+  const hi = Math.ceil(Math.log10(max));
+  const out: number[] = [];
+  for (let e = lo; e <= hi; e++) {
+    for (const m of [1, 2, 5]) {
+      const v = m * Math.pow(10, e);
+      if (v >= min * 0.999 && v <= max * 1.001) out.push(v);
+    }
+  }
+  return out.length >= 2 ? out : spanTicks(min, max, 4);
 }
 
 /**
@@ -26,10 +40,12 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   const all = series.flatMap((s) => s.points);
   const xs = all.map((p) => p.x);
   const ys = all.map((p) => p.y);
-  const xTicks = spanTicks(Math.min(...xs), Math.max(...xs), 4);
+  const logx = spec.logx === true;
+  const xTicks = logx ? logTicks(Math.min(...xs), Math.max(...xs)) : spanTicks(Math.min(...xs), Math.max(...xs), 4);
   const yTicks = spanTicks(Math.min(...ys), Math.max(...ys), 6);
-  const minX = xTicks[0];
-  const maxX = xTicks[xTicks.length - 1];
+  // 对数轴:量程取数据本身(刻度只是参考线,不能把最远的点切掉)
+  const minX = logx ? Math.min(...xs) : xTicks[0];
+  const maxX = logx ? Math.max(...xs) : xTicks[xTicks.length - 1];
   const minY = yTicks[0];
   const maxY = yTicks[yTicks.length - 1];
   let peakS = 0;
@@ -50,8 +66,15 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   const top = Math.round(height * 0.184);
   const tickY = Math.round(height * 0.906);
 
-  const px = (x: number): number =>
-    maxX === minX ? (left + right) / 2 : left + ((x - minX) / (maxX - minX)) * (right - left);
+  // 对数轴:x 先取 log10 再线性映射(刻度按 1/2/5×10^k 排)
+  const px = (x: number): number => {
+    if (maxX === minX) return (left + right) / 2;
+    if (!logx) return left + ((x - minX) / (maxX - minX)) * (right - left);
+    const lx = Math.log10(x);
+    const lo = Math.log10(minX);
+    const hi = Math.log10(maxX);
+    return left + ((lx - lo) / (hi - lo)) * (right - left);
+  };
   const py = (y: number): number =>
     maxY === minY ? (top + bottom) / 2 : bottom - ((y - minY) / (maxY - minY)) * (bottom - top);
 
@@ -71,8 +94,8 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   parts.push(`<line x1="${left}" y1="${r2(bottom)}" x2="${right}" y2="${r2(bottom)}" stroke="var(--d-baseline)" stroke-width="1"/>`);
   // 轴标题:画布太小则省(会与刻度挤在一起)
   if (showTitles) {
-    parts.push(`<text x="${r2((left + right) / 2)}" y="${r2(height * 0.959)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(spec.unit ?? 'X value')}</text>`);
-    parts.push(`<text x="${r2(width * 0.024)}" y="${r2(height / 2)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" transform="rotate(-90 ${r2(width * 0.024)} ${r2(height / 2)})">Y value</text>`);
+    parts.push(`<text x="${r2((left + right) / 2)}" y="${r2(height * 0.959)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(spec.xname ?? spec.unit ?? 'X value')}</text>`);
+    parts.push(`<text x="${r2(width * 0.024)}" y="${r2(height / 2)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" transform="rotate(-90 ${r2(width * 0.024)} ${r2(height / 2)})">${esc(spec.yname ?? 'Y value')}</text>`);
   }
 
   // 数据点:每系列一色,点径交替(每 4 个大点),半透明+白描边
@@ -95,6 +118,46 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     reserveBands(placer, left, right, top, bottom, tickY, spec.series ?? [], right, 24 + 14);
     reserveEdges(placer, width, height);
     pushLineLabelsAllOrNothing(parts, placer, numItems);
+  }
+
+  // 点旁边的名字(榜单类散点:名字是信息本身)。放不下就不画 —— 宁可少一个名字,不可叠字。
+  const labelled = series.flatMap((sr, si) => sr.points.map((p, pi) => ({ p, si, pi })))
+    .filter((it) => !!it.p.label);
+  if (labelled.length) {
+    const placer = new LabelPlacer();
+    reserveBands(placer, left, right, top, bottom, tickY, spec.series ?? [], right, 24 + 14);
+    reserveEdges(placer, width, height);
+    // 点本身占位:名字不能压在别的点上
+    series.forEach((sr) => sr.points.forEach((p) => {
+      placer.reserve(px(p.x) - 8, py(p.y) - 8, 16, 16);
+    }));
+    for (const it of labelled) {
+      const lines = (it.p.label as string).split('\n');
+      const tw = Math.max(...lines.map((l) => textW(l, 11)));
+      const th = lines.length * 13;
+      const cx = px(it.p.x);
+      const cy = py(it.p.y);
+      // 候选位:先右后左,再上/下 —— 挨着的点多了就往空的一边挪
+      const cands: [number, number, 'start' | 'end'][] = [
+        [cx + 10, cy - th / 2, 'start'],
+        [cx - 12 - tw, cy - th / 2, 'end'],
+        [cx - tw / 2, cy - 10 - th, 'start'],
+        [cx - tw / 2, cy + 10, 'start'],
+        [cx + 10, cy - th - 10, 'start'],
+        [cx - 12 - tw, cy - th - 10, 'end'],
+        [cx + 10, cy + 6, 'start'],
+        [cx - 12 - tw, cy + 6, 'end'],
+      ];
+      for (const [lx, by, anchor] of cands) {
+        // 候选位给的是文字的左边缘;占位框按左边缘算,画的时候再按对齐方式收口
+        if (!placer.fits(lx, by, tw + 4, th + 2)) continue;
+        const tx = anchor === 'end' ? lx + tw : lx;
+        lines.forEach((l, li) => {
+          parts.push(`<text x="${r2(tx)}" y="${r2(by + 10 + li * 13)}" text-anchor="${anchor}" font-size="11" fill="var(--d-text)" style="${TAB}">${esc(l)}</text>`);
+        });
+        break;
+      }
+    }
   }
 
   // 多系列:右上圆点图例(坐标题基线,与 Edit 角标同排,向左让出角标宽度 #27)

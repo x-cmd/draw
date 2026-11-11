@@ -596,6 +596,58 @@ describe('scatter', () => {
     expect(svg).toContain('>4<');
     expect(svg).toContain('>9<');
   });
+
+  it('names= 给每个点起名字(榜单类散点)', () => {
+    const spec = parseScatterSpec(scatterSpecFromParams(new URLSearchParams('x=1,2&y=4,5&names=codex,claude-code')));
+    expect(spec.points).toEqual([{ x: 1, y: 4, label: 'codex' }, { x: 2, y: 5, label: 'claude-code' }]);
+    const svg = renderScatter(spec, { ...O, width: 560, height: 360, skin: resolveSkin('scatter', null, 'light') });
+    expect(svg).toContain('>codex<');
+    expect(svg).toContain('>claude-code<');
+  });
+
+  it('names 的个数与点数对不上就报错', () => {
+    expect(() => parseScatterSpec(scatterSpecFromParams(new URLSearchParams('x=1,2&y=4,5&names=a')))).toThrowError(/names/);
+  });
+
+  it('xname/yname 给两条轴起名', () => {
+    const spec = parseScatterSpec(scatterSpecFromParams(new URLSearchParams('x=1,2&y=4,5&xname=Cost%20per%20task&yname=Pass%20rate')));
+    expect(spec.xname).toBe('Cost per task');
+    expect(spec.yname).toBe('Pass rate');
+    const svg = renderScatter(spec, { ...O, width: 560, height: 360, skin: resolveSkin('scatter', null, 'light') });
+    expect(svg).toContain('Cost per task');
+    expect(svg).toContain('Pass rate');
+  });
+
+  it('logx=1:X 轴取对数(量级差得远时),x 必须为正', () => {
+    const spec = parseScatterSpec(scatterSpecFromParams(new URLSearchParams('x=1,10,100&y=4,5,6&logx=1')));
+    expect(spec.logx).toBe(true);
+    const svg = renderScatter(spec, { ...O, width: 560, height: 360, skin: resolveSkin('scatter', null, 'light') });
+    expect(svg).toContain('>10<');
+    expect(svg).toContain('>100<');
+    // x=0 不能取对数
+    expect(() => parseScatterSpec(scatterSpecFromParams(new URLSearchParams('x=0,10&y=4,5&logx=1')))).toThrowError(/logx/);
+  });
+
+  it('点旁边的名字互不重叠(放不下就不画,不叠字)', () => {
+    // 挤在一起的点:名字必须各占各的地方
+    const pts = [
+      { x: 1, y: 1, label: 'aaaaaaaaaa' },
+      { x: 1.01, y: 1.01, label: 'bbbbbbbbbb' },
+      { x: 1.02, y: 1.02, label: 'cccccccccc' },
+    ];
+    const svg = renderScatter({ points: pts }, { ...O, width: 560, height: 360, skin: resolveSkin('scatter', null, 'light') });
+    const boxes = [...svg.matchAll(/<text x="([\d.]+)" y="([\d.]+)"[^>]*font-size="11"[^>]*>([^<]*)</g)]
+      .map((m) => ({ x: Number(m[1]), y: Number(m[2]), t: m[3] }));
+    expect(boxes.length).toBeGreaterThan(0);
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i];
+        const b = boxes[j];
+        const overlap = a.x < b.x + 60 && b.x < a.x + 60 && a.y < b.y + 13 && b.y < a.y + 13;
+        expect(overlap, `${a.t} vs ${b.t}`).toBe(false);
+      }
+    }
+  });
 });
 
 describe('combo', () => {
