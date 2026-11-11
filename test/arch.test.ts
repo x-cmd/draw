@@ -60,6 +60,44 @@ describe('arch v2 rendering', () => {
     for (const d of paths) expect(d.split('L').length).toBeGreaterThan(2);
   });
 
+  it('走一条公共的横向通道(总线),且不横穿中间的盒子', () => {
+    const nodes = [
+      'n=h;be;Handler;r0c1',
+      'n=a;be;Left;r1c0',
+      'n=b;db;Middle;r1c1',
+      'n=c;fe;Right;r1c2',
+    ];
+    const edges = ['e=h;a', 'e=h;b', 'e=h;c'];
+    const url = new URL('https://x-cmd.com/draw/arch2?' + [...nodes, ...edges].join('&'));
+    const body = renderArchFromUrl(url).svg.replace(/<defs>.*?<\/defs>/s, '');
+    const paths = [...body.matchAll(/<path d="([^"]+)"[^>]*stroke="var\(--d-muted\)"/g)].map((m) => m[1]);
+    const pts = paths.map((d) => d.split(/[ML]/).filter(Boolean).map((p) => p.trim().split(' ').map(Number)));
+    // 每条边都要有一段水平的通道,而且三条边共用同一条
+    const channel = pts.map((p) => {
+      for (let i = 1; i < p.length; i++) if (p[i][1] === p[i - 1][1]) return p[i][1];
+      return null;
+    });
+    expect(channel.every((y) => y !== null)).toBe(true);
+    expect(new Set(channel).size).toBe(1);
+    // 盒子(rx=12 的是节点框)
+    const boxes = [...body.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="12"/g)]
+      .map((m) => ({ x: +m[1], y: +m[2], w: +m[3], h: +m[4] }));
+    expect(boxes.length).toBe(4);
+    // 任何一段线都不得穿过盒子(端点贴着边不算)
+    for (const p of pts) {
+      for (let i = 1; i < p.length; i++) {
+        const [x1, y1] = p[i - 1];
+        const [x2, y2] = p[i];
+        for (const b of boxes) {
+          const cross = y1 === y2
+            ? y1 > b.y && y1 < b.y + b.h && Math.max(x1, x2) > b.x && Math.min(x1, x2) < b.x + b.w
+            : x1 > b.x && x1 < b.x + b.w && Math.max(y1, y2) > b.y && Math.min(y1, y2) < b.y + b.h;
+          expect(cross, `segment ${x1},${y1} → ${x2},${y2} crosses a box`).toBe(false);
+        }
+      }
+    }
+  });
+
   it('leaves the old /draw/archmap output untouched', () => {
     const q = 'n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&e=user;cdn;https&b=Data%20Layer;user%20cdn&title=Web%20App';
     const old = renderArchmapFromUrl(new URL('https://x-cmd.com/draw/archmap?' + q)).svg;

@@ -362,9 +362,8 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
   edges.forEach((e, i) => {
     const a = byId.get(e.from)!.box;
     const b = byId.get(e.to)!.box;
-    const sameRow = Math.abs(cy(b) - cy(a)) < 8;
-    const below = cy(b) > cy(a) + 8;
-    if (!sameRow || !below) return;
+    // 目标在源的下面(目标彼此在同一行 —— 由 key 归组)
+    if (cy(b) <= cy(a) + 8) return;
     const key = `${e.from}|${Math.round(cy(b))}`;
     const g = groups.get(key) ?? [];
     g.push(i);
