@@ -69,17 +69,28 @@ export const CLOUD_TYPES: HouseTypes = { ...ARCH_TYPES, icons: 'big' };
 const sVar = (i: number): string => `var(--d-s${i + 1})`;
 
 /** v2 的节点尺寸:更宽更松,标题 14px;副标题多行时按行数长高 */
-const ICON_BIG = 64;      // 大图标节点的图标边长
-const ICON_LABEL_H = 20;  // 图标下面那行名字
+// 大图标节点的排版:图标 → 名字 → 副标题,每一步都留够空当
+// (图标底到名字的字头 10px;名字的伸部到副标题的字头 7px)
+const ICON_BIG = 64;      // 图标边长
+const ICON_GAP = 10;      // 图标底 → 名字字头
+const CAP = (fs: number): number => fs * 0.72;   // 字头高
+const DESC = (fs: number): number => fs * 0.22;  // 伸部高
+const ICON_NAME_DY = ICON_BIG + ICON_GAP + CAP(14);   // 名字基线(相对框顶)
+const ICON_SUB_DY = ICON_NAME_DY + DESC(14) + 7 + CAP(11.5); // 副标题基线
+
+/** 节点副标题可以多行(用 \n 分隔)—— ERD 的字段表、class 的成员表靠它 */
+const linesOf = (n: { sub?: string }): string[] =>
+  n.sub ? n.sub.split('\n').filter((l) => l !== '') : [];
 
 const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
   if (types.rows === 'fields') return fieldsSize(n);
   // 大图标节点:图标占一块,名字在下面 —— 宽度由名字决定(图标不会更宽)
-  if (types.icons === 'big' && n.icon) {
-    const w = Math.max(ICON_BIG, textW(n.label, LABEL_FS) + 10);
-    return { w, h: ICON_BIG + ICON_LABEL_H };
-  }
   const lines = linesOf(n);
+  if (types.icons === 'big') {
+    const w = Math.max(ICON_BIG, textW(n.label, LABEL_FS) + 8, ...lines.map((l) => textW(l, SUB_FS) + 8));
+    const h = n.sub ? ICON_SUB_DY + DESC(11.5) + 4 : ICON_NAME_DY + DESC(14) + 4;
+    return { w, h };
+  }
   const w = Math.max(
     NODE_MIN_W,
     textW(n.label, LABEL_FS) + 52,
@@ -88,10 +99,6 @@ const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
   const h = lines.length > 1 ? 34 + lines.length * 17 : n.sub ? 62 : 48;
   return { w: Math.min(w, 420), h };
 };
-
-/** 节点副标题可以多行(用 \n 分隔)—— ERD 的字段表、class 的成员表靠它 */
-const linesOf = (n: { sub?: string }): string[] =>
-  n.sub ? n.sub.split('\n').filter((l) => l !== '') : [];
 
 /* ---------------------------------------------------------------- 字段表
    ERD 的字段、class 的成员 —— 一行一项:键标记 + 名字(左)+ 类型(右)。 */
@@ -220,11 +227,18 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
   // 大图标模式(diagrams + 那种云架构海报):图标就是节点,名字在下面
   if (types.icons === 'big' && icon) {
     const ix = b.x + (b.w - ICON_BIG) / 2;
+    const name = trunc(n.label, 22);
+    const sub = n.sub ? trunc(n.sub, 26) : '';
+    // 名字垫一块画布色:竖着下来的连线会从名字后面过,垫一下字才读得清
+    const cw = Math.max(textW(name, LABEL_FS), sub ? textW(sub, SUB_FS) : 0) + 10;
+    const chip = (y: number, h: number): string =>
+      `<rect x="${r2(b.x + b.w / 2 - cw / 2)}" y="${r2(y)}" width="${r2(cw)}" height="${r2(h)}" rx="4" fill="var(--d-card)"/>`;
     return (
       `<g${ia}>` +
       `<image href="${icon}" x="${r2(ix)}" y="${r2(b.y)}" width="${ICON_BIG}" height="${ICON_BIG}" preserveAspectRatio="xMidYMid meet"/>` +
-      `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_BIG + 14)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(trunc(n.label, 22))}</text>` +
-      (n.sub ? `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_BIG + 30)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(trunc(n.sub, 26))}</text>` : '') +
+      chip(b.y + ICON_NAME_DY - 11, 15) +
+      `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_NAME_DY)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(name)}</text>` +
+      (sub ? chip(b.y + ICON_SUB_DY - 9, 13) + `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_SUB_DY)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(sub)}</text>` : '') +
       `</g>`
     );
   }
@@ -980,9 +994,12 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   if (types.crows === 'erd') placeErdByRelation(o.nodes, o.edges);
   // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
   const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
-  packGrid(o.nodes, o.gridCols, { gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf });
+  // 大图标的节点窄(64px 的图标),列与列之间要多留一点空当,不然挤成一坨
+  const gapX = types.icons === 'big' ? 52 : GAP_X;
+  const gapY = types.icons === 'big' ? 40 : GAP_Y;
+  packGrid(o.nodes, o.gridCols, { gapX, gapY, pad: PAD, sizeOf });
   const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
-    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
+    gapX, gapY, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
   });
   const titleH = o.title ? 46 : 0;
   let width = Math.max(W, 320);
