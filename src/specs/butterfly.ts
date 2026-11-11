@@ -54,6 +54,8 @@ export interface ButterflySpec {
   title?: string;
   unit?: string;
   dir: 'lr' | 'tb';
+  /** 两侧的标尺:shared(默认,长度可比)或 each(两侧各自一套 —— 两侧单位不同时用) */
+  scale?: 'shared' | 'each';
   labels: string[];
   left?: BflySide;
   right?: BflySide;
@@ -159,6 +161,11 @@ export function butterflySpecFromParams(params: URLSearchParams): string | null 
     throw new ApiError(400, `"dir" must be "lr" (left-right) or "tb" (top-bottom). Got: ${JSON.stringify(dir)}`);
   }
   spec.dir = dir;
+  const scale = (params.get('scale') ?? 'shared').toLowerCase();
+  if (scale !== 'shared' && scale !== 'each') {
+    throw new ApiError(400, `"scale" must be "shared" (one scale for both sides) or "each". Got: ${JSON.stringify(scale)}`);
+  }
+  if (scale === 'each') spec.scale = 'each';
   const title = params.get('title');
   if (title) spec.title = title;
   const unit = params.get('unit');
@@ -202,7 +209,12 @@ export function parseButterflySpec(raw: string): ButterflySpec {
   if (dir !== 'lr' && dir !== 'tb') {
     throw new ApiError(400, `"dir" must be "lr" or "tb". Got: ${JSON.stringify(obj.dir)}`);
   }
+  const scale = typeof obj.scale === 'string' ? obj.scale.toLowerCase() : 'shared';
+  if (scale !== 'shared' && scale !== 'each') {
+    throw new ApiError(400, `"scale" must be "shared" or "each". Got: ${JSON.stringify(obj.scale)}`);
+  }
   const spec: ButterflySpec = { dir, labels };
+  if (scale === 'each') spec.scale = 'each';
   if (typeof obj.title === 'string') spec.title = obj.title;
   if (typeof obj.unit === 'string') spec.unit = obj.unit;
   if (left) spec.left = left;
