@@ -113,7 +113,9 @@ n=id;type;label[;sublabel][;position]
   `p40,80,120x48` for an exact box.
 
 Leave the position out and the engine packs the boxes itself, in the order
-you gave them.
+you gave them (`/draw/arch2` does better: it lays the graph out in layers —
+ranked by dependency, few crossings — see
+[diagram URLs](../../1-overview/06-diagram-urls/en.md)).
 
 ## 4. The edge line
 

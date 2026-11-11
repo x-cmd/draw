@@ -12,10 +12,11 @@ core_features:
   - `n=id;type;label[;sub][;pos]` — id is the handle used in `e=` and `b=`; type picks colour/badge/shape; sub is a second line; pos is optional
   - `e=from;to[;label][;variant]` — both ids must exist; variant is `main` / `dash` (seq uses a trailing `dash` for replies; uc uses `<<include>>` labels)
   - `b=label;id id …` — groups existing nodes under a label; repeatable
-  - Positions: grid cell `r0c1`, span `r0c1w2` / `r1c0h2`, or pixels `p40,80[,120x48]`. Omit and the engine packs the nodes
+  - Positions: grid cell `r0c1`, span `r0c1w2` / `r1c0h2`, or pixels `p40,80[,120x48]`. Omit and the engine lays the graph out in layers (ranked by dependency, crossings reduced, nodes aligned with their neighbours)
   - Trailing semicolons in `n=` are ignored
   - Multi-line text: `%0A` inside the `sub` field (ERD field lists, class member lists)
   - Per-kind vocabulary: archmap/arch2/seq use `fe be db cloud sec bus svc ext`; uc uses `actor uc`; dataflow uses `process store source sink`; lifecycle uses `state decision terminal`; erd uses `table view`; class uses `class iface enum`
+  - Automatic layout: `dir=lr` (default, layers side by side) or `dir=tb` (layers stacked); `grid=N` forces the grid instead (N per row); partially positioned nodes leave the rest next to their neighbours
   - Three kinds use their own syntax: `/draw/mindmap` (`n=Root/Child`), `/draw/mermaid` (`m=`), `/draw/gantt` and `/draw/gantt2` (`m=`)
 
 # Key Information

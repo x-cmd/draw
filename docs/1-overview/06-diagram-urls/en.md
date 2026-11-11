@@ -39,7 +39,7 @@ b=label;id id …                  one group    (repeat it)
 | `type` | yes | what the node *is* — decides its colour, badge and shape. Each kind has its own vocabulary (§3) |
 | `label` | yes | the text on the node |
 | `sub` | no | a smaller second line. `%0A` inside it makes more lines — that is how an ERD table lists its fields |
-| `pos` | no | where it goes. A grid cell `r0c1`, a span `r0c1w2`, or pixels `p40,80[,120x48]`. Leave it out and the engine packs the nodes itself |
+| `pos` | no | where it goes. A grid cell `r0c1`, a span `r0c1w2`, or pixels `p40,80[,120x48]`. Leave it out and the engine lays the graph out in layers (§2) |
 
 ```text
 n=api;be;API Gateway;auth;r1c0w2
@@ -103,9 +103,24 @@ surrounds.
 | `p40,80` | 40 pixels from the left, 80 from the top |
 | `p40,80,120x48` | the same, with an exact 120×48 box |
 
-Grid cells are counted from zero. Two nodes in the same cell is a 400. A
-node without a position is packed by the engine, in the order you wrote it,
-into the first free cell.
+Grid cells are counted from zero. Two nodes in the same cell is a 400.
+
+**Leave the position out** and the engine places the nodes itself — for the
+architecture, lifecycle, data-flow and class faces that means a **layered
+layout**: ranked by dependency (sources first, sinks last), ordered inside a
+layer to keep edges from crossing, and aligned with their neighbours. A
+diagram with no position at all is still readable:
+
+```text
+https://x-cmd.com/draw/arch2?n=web;fe;Browser&n=gw;be;API%20Gateway&n=auth;be;Auth%20Service&n=db;db;Postgres&e=web;gw&e=gw;auth&e=auth;db
+```
+
+- `dir=lr` (the default) puts the layers side by side — an architecture reads
+  left to right.
+- `dir=tb` stacks them — a state machine reads top to bottom.
+- `grid=N` asks for the grid instead: N per row, in the order you wrote them.
+- Give positions to only some nodes and the rest land next to their
+  neighbours, not in the top-left corner.
 
 In a **sequence diagram** the position is the column the participant stands
 in (`r0c0`, `r0c1`, … — one row, many columns). In a **use case diagram**
@@ -226,6 +241,7 @@ the diagram as a link, not a picture of one.
 |---|---|
 | `legend=0` | no legend at the bottom |
 | `paper=1` | lay a faint grid of squares under the diagram — it gives a big diagram a "sheet of paper" to sit on |
+| `dir=lr\|tb` | the direction of the automatic layout: layers side by side (default) or stacked |
 | `title=` | the diagram's title |
 | `w=` / `h=` | minimum width / height |
 | `v=N` | freeze the response at a version |

@@ -28,11 +28,13 @@ data:
         answer:
           en: >
             With the optional last field of `n=`: a grid cell `r0c1`, a span `r0c1w2` or `r1c0h2`,
-            or exact pixels `p40,80` / `p40,80,120x48`. Leave it out and the engine packs the nodes
-            itself, in the order you wrote them.
+            or exact pixels `p40,80` / `p40,80,120x48`. Leave it out and the engine lays the graph
+            out in layers — ranked by dependency, crossings reduced, nodes aligned with their
+            neighbours. `dir=tb` stacks the layers instead of putting them side by side.
           cn: >
             写在 `n=` 的最后一段(可省):格子 `r0c1`、跨格 `r0c1w2` 或 `r1c0h2`,或者精确像素
-            `p40,80` / `p40,80,120x48`。不写就由引擎按你写的顺序自己排。
+            `p40,80` / `p40,80,120x48`。不写就由引擎分层排 —— 按依赖分层、层内少交叉、节点跟
+            邻居对齐。`dir=tb` 让层往下叠,默认是往右排。
         confidence: 9
         reference:
           - docs/1-overview/06-diagram-urls/en.md
