@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:chart-gantt
+<text>:
+  en: Schedule
+  zh: 日程与排布
+  cs: Harmonogram
+  de: Zeitplan
+  es: Planificación
+  fr: Planning
+  id: Jadwal
+  it: Pianificazione
+  ja: スケジュール
+  ko: 일정
+  pl: Harmonogram
+  ro: Planificare
+  ru: Расписание
+  th: กำหนดการ
+  tr: Zaman planı
+  uk: Розклад
+  vi: Lịch trình
+  pt-br: Cronograma
+  pt-pt: Cronograma

@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:gallery-horizontal-end
+<text>:
+  en: Showcases
+  zh: 场景用例
+  cs: Scénáře použití
+  de: Anwendungsszenarien
+  es: Casos de uso
+  fr: Cas d'usage
+  id: Skenario penggunaan
+  it: Casi d'uso
+  ja: 活用事例
+  ko: 활용 사례
+  pl: Scenariusze użycia
+  ro: Scenarii de utilizare
+  ru: Сценарии использования
+  th: ตัวอย่างการใช้งาน
+  tr: Kullanım senaryoları
+  uk: Сценарії використання
+  vi: Tình huống sử dụng
+  pt-br: Cenários de uso
+  pt-pt: Cenários de utilização

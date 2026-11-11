@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:compass
+<text>:
+  en: Strategy and decision
+  zh: 战略与决策
+  cs: Strategie a rozhodování
+  de: Strategie und Entscheidung
+  es: Estrategia y decisión
+  fr: Stratégie et décision
+  id: Strategi dan keputusan
+  it: Strategia e decisione
+  ja: 戦略と意思決定
+  ko: 전략과 의사결정
+  pl: Strategia i decyzje
+  ro: Strategie și decizii
+  ru: Стратегия и решения
+  th: กลยุทธ์และการตัดสินใจ
+  tr: Strateji ve karar
+  uk: Стратегія та рішення
+  vi: Chiến lược và quyết định
+  pt-br: Estratégia e decisão
+  pt-pt: Estratégia e decisão

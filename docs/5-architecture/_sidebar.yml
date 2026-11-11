@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:blocks
+<text>:
+  en: Architecture
+  zh: 架构图
+  cs: Architektura
+  de: Architektur
+  es: Arquitectura
+  fr: Architecture
+  id: Arsitektur
+  it: Architettura
+  ja: アーキテクチャ
+  ko: 아키텍처
+  pl: Architektura
+  ro: Arhitectură
+  ru: Архитектура
+  th: สถาปัตยกรรม
+  tr: Mimari
+  uk: Архітектура
+  vi: Kiến trúc
+  pt-br: Arquitetura
+  pt-pt: Arquitetura

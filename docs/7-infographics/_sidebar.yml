@@ -1,0 +1,26 @@
+# Website sidebar group config for this directory. Nested groups use their own _sidebar.yml.
+# @property {string} <icon> - Required. UnoCSS icon class, e.g. i-lucide:store.
+#   - Lucide icon names: curl -fsSL https://cdn.jsdelivr.net/npm/lucide-static@latest/icon-nodes.json | jq -r 'keys[]'
+# @property {Record<string, string>} <text> - Required. Localized group names (plain text).
+
+<icon>: i-lucide:qr-code
+<text>:
+  en: Infographics
+  zh: 信息图
+  cs: Infografika
+  de: Infografiken
+  es: Infografías
+  fr: Infographies
+  id: Infografis
+  it: Infografiche
+  ja: インフォグラフィック
+  ko: 인포그래픽
+  pl: Infografiki
+  ro: Infografice
+  ru: Инфографика
+  th: อินโฟกราฟิก
+  tr: İnfografikler
+  uk: Інфографіка
+  vi: Đồ họa thông tin
+  pt-br: Infográficos
+  pt-pt: Infografias
