@@ -47,8 +47,9 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   const lineYMax = lineTicks[lineTicks.length - 1];
   const yLine = (v: number): number => bottom - (v / lineYMax) * (bottom - contentTop);
 
+  // 卡片垫底(标题压在卡片之上)
+  const bg = card(width, height);
   const parts: string[] = [
-    card(width, height),
     topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 14),
   ];
   for (const t of ticks) {
@@ -206,7 +207,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'combo', version, spec.title ?? 'combo chart', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'combo', version, spec.title ?? 'combo chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
 }
 
 // 混合图 1 · Evil 柱线组合(规范 combo-1,960×500):

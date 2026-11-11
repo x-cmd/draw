@@ -118,7 +118,8 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   const pts = spec.data.map((d, i) => [xs(i), y(d.value)] as [number, number]);
   const path = rules.smooth ? smoothPath(pts) : `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
 
-  const parts: string[] = [card(width, height, rules.canvas === 'plain')];
+  const bg = card(width, height, rules.canvas === 'plain');
+  const parts: string[] = [];
   parts.push(
     `<defs><linearGradient id="dg-area" x1="0" y1="0" x2="0" y2="1">` +
     `<stop offset="0" stop-color="var(--d-s1)" stop-opacity="${rules.areaTop}"/>` +
@@ -175,7 +176,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.data.map((d) => d.label), xs, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, headSvg + parts.join(''));
+  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, bg + headSvg + parts.join(''));
 }
 
 // 多系列面积(area-1):三遍绘制(面积 → 虚线描边 → 点)
@@ -201,7 +202,8 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   const pathOf = (pts: [number, number][]): string =>
     rules.smooth ? smoothPath(pts) : `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
 
-  const parts: string[] = [card(width, height, rules.canvas === 'plain')];
+  const bg = card(width, height, rules.canvas === 'plain');
+  const parts: string[] = [];
   parts.push(
     `<defs>${spec.series.map((_, i) =>
       `<linearGradient id="dg-area-${i}" x1="0" y1="0" x2="0" y2="1">` +
@@ -251,7 +253,7 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, xs, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, headSvg + parts.join(''));
+  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, bg + headSvg + parts.join(''));
 }
 
 // 手绘风面积图(area-2):xkcd 滤镜 + Handlee 手写字体 + 端点标注

@@ -563,6 +563,17 @@ describe('gauge', () => {
   });
 });
 
+describe('chart title', () => {
+  it('卡片背景不能盖住标题(标题要画在卡片之上)', () => {
+    const skin = resolveSkin('hbar', 'base', 'light');
+    const svg = renderHBar({ title: 'Throughput', data: [{ label: 'A', value: 1 }] }, { ...O, width: 560, height: 300, skin });
+    const cardAt = svg.indexOf('fill="var(--d-card)"');
+    const titleAt = svg.indexOf('>Throughput<'); // 标题文字本身(metadata 里也有 title)
+    expect(cardAt).toBeGreaterThan(-1);      // 这一版确实有卡片
+    expect(titleAt).toBeGreaterThan(cardAt);  // 标题在卡片之后(画在上面)
+  });
+});
+
 describe('scatter', () => {
   it('parses from flat x/y params', () => {
     const p = new URLSearchParams('x=1,2,3&y=4,5,6&title=T');

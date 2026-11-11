@@ -27,7 +27,9 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const xMax = ticks[ticks.length - 1];
   const x = (v: number): number => left + (v / xMax) * (right - left);
 
-  const parts: string[] = [card(width, height)];
+  // 卡片垫底(标题在卡片之上 —— 顺序反了,标题会被卡片盖住)
+  const bg = card(width, height);
+  const parts: string[] = [];
 
   // 竖向网格 + 底部刻度
   for (const t of ticks) {
@@ -61,5 +63,5 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const defs =
     `<defs><linearGradient id="dg-bar" x1="0" y1="0" x2="1" y2="0">` +
     `<stop offset="0" stop-color="var(--d-ramp-b)"/><stop offset="1" stop-color="var(--d-ramp-a)"/></linearGradient></defs>`;
-  return svgDoc(width, height, 'hbar', version, spec.title ?? 'horizontal bar chart', spec, skin, titleBlock(spec.title) + defs + parts.join(''));
+  return svgDoc(width, height, 'hbar', version, spec.title ?? 'horizontal bar chart', spec, skin, bg + titleBlock(spec.title) + defs + parts.join(''));
 }

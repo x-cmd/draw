@@ -82,8 +82,9 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     return out;
   });
 
+  // 卡片垫底(标题压在卡片之上)
+  const bg = card(width, height);
   const parts: string[] = [
-    card(width, height),
     topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i], ...(o.interactive ? { index: i } : {}) })), width - pad, pad + 14),
   ];
   if (pctMode) {
@@ -151,5 +152,5 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
 }

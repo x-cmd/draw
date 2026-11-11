@@ -41,8 +41,9 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const yMax = ticks[ticks.length - 1];
   const y = (v: number): number => bottom - (v / yMax) * (bottom - contentTop);
 
+  // 卡片垫底(标题压在卡片之上)
+  const bg = card(width, height);
   const parts: string[] = [
-    card(width, height),
     // 柱体渐变(顶部亮 → 底部深)
     `<defs><linearGradient id="dg-bar" x1="0" y1="0" x2="0" y2="1">` +
       `<stop offset="0" stop-color="var(--d-ramp-a)"/><stop offset="1" stop-color="var(--d-ramp-b)"/></linearGradient></defs>`,
@@ -85,5 +86,5 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.data.map((d) => d.label), (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
 }
