@@ -232,8 +232,11 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
   } else {
     /* ---- 上下版:类别是列,柱自中轴往上/往下长 */
     const labelH = 22;
+    // 往下长的柱子,数值写在柱底外侧 → 底下要给数值留一条带,
+    // 否则最长的那根柱(数值到头)会和类目标签叠在一起
+    const valueBand = 18;
     const plotTop = contentTop + VALUE_W;
-    const plotBottom = height - PAD - labelH;
+    const plotBottom = height - PAD - labelH - valueBand;
     const centreY = (plotTop + plotBottom) / 2;
     const half = (plotBottom - plotTop) / 2;
     const slotW = (width - PAD * 2) / Math.max(n, 1);

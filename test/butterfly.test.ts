@@ -77,6 +77,18 @@ describe('butterfly(双翼条形图)', () => {
     expect(nGrid(scale)).toBeGreaterThan(0);
   });
 
+  it('dir=tb:数值不和类目标签叠在一起(最长的那根柱也不叠)', () => {
+    const { svg } = renderFromUrl(url('type=butterfly&dir=tb&labels=0-19,20-39,40-59,60-79&left=Male:51,48,42,35&right=Female:49,52,58,65'));
+    const els = [...svg.matchAll(/<text ([^>]*)>/g)].map((m) => m[1]);
+    const yOf = (a: string): number => Number(/y="([\d.]+)"/.exec(a)![1]);
+    // 柱端的数值(粗体)与类目标签(居中、ink 色)
+    const valY = els.filter((a) => /font-weight="600"/.test(a)).map(yOf);
+    const catY = els.filter((a) => /text-anchor="middle"/.test(a) && /fill="var\(--d-ink\)"/.test(a)).map(yOf);
+    expect(valY.length).toBeGreaterThan(0);
+    expect(catY.length).toBeGreaterThan(0);
+    expect(Math.max(...valY)).toBeLessThan(Math.min(...catY) - 10);
+  });
+
   it('metadata 带全量数据(AI 能原样重建,角标链接也靠它)', () => {
     const { svg } = renderFromUrl(url('type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6'));
     const m = /&quot;left&quot;:\{[^}]*&quot;values&quot;:\[7,8\]/.exec(svg);
