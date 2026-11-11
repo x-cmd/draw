@@ -98,6 +98,20 @@ describe('arch v2 rendering', () => {
     }
   });
 
+  it('边界的小牌子不压住标题', () => {
+    // 边界框比它的成员高一圈,牌子又探出边界框 9px —— 顶到画布上就会盖住标题
+    const nodes = ['n=a;ext;A;;r0c0', 'n=b;be;B;;r0c1', 'n=c;be;C;;r1c1'];
+    const url = new URL('https://x-cmd.com/draw/arch2?' + [...nodes, 'e=a;b', 'b=Top;a b', 'title=Inside draw'].join('&'));
+    const { svg } = renderArchFromUrl(url);
+    const dy = Number(/<g id="am" transform="translate\(0 ([\d.]+)\)"/.exec(svg)![1]);
+    const titleY = Number(/<text x="44" y="([\d.]+)"[^>]*font-size="19"/.exec(svg)![1]);
+    // 牌子:20 高、圆角 6 的小矩形(边标签的垫片是圆角 4)
+    const chip = /<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="20" rx="6" fill="var\(--d-card\)"/.exec(svg);
+    expect(chip).toBeTruthy();
+    const chipTop = Number(chip![1]) + dy;
+    expect(chipTop).toBeGreaterThan(titleY + 6);   // 牌子的顶在标题的字底之下
+  });
+
   it('leaves the old /draw/archmap output untouched', () => {
     const q = 'n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&e=user;cdn;https&b=Data%20Layer;user%20cdn&title=Web%20App';
     const old = renderArchmapFromUrl(new URL('https://x-cmd.com/draw/archmap?' + q)).svg;

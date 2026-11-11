@@ -945,7 +945,14 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     bodyH = Math.max(bodyH, s.y - EDGE_FS - 1 + h + PAD);
   }
   width = Math.max(width, o.minW ?? 0);
-  const height = Math.max(bodyH + titleH + legend.h, o.minH ?? 0);
+  // 边界的小牌子探出边界框 9px;标题的字底也在这一带 —— 身子要让开,
+  // 不然牌子会压在标题上(「Inside draw」那张就压住了)。
+  const bTop = o.boundaries.length
+    ? Math.min(...o.boundaries.map((bd) => boundaryBoxV2(byId, bd).y - 9))
+    : 0;
+  const titleBottom = o.title ? PAD + 26 : 0;   // 标题的字底(含下伸部)
+  const headH = o.boundaries.length ? Math.max(titleH, titleBottom - bTop) : titleH;
+  const height = Math.max(bodyH + headH + legend.h, o.minH ?? 0);
   const degree = new Map<string, number>();
   if (o.interactive) for (const e of o.edges) {
     degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
@@ -977,8 +984,9 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   const legendSvg = legend.svg
     ? `<g transform="translate(0 ${r2(bodyH + 14)})">${legend.svg}</g>`
     : '';
-  const dy = titleH + Math.max(0, (height - titleH - legend.h - bodyH) / 2);
+  const dy = headH + Math.max(0, (height - headH - legend.h - bodyH) / 2);
   const children = paperSvg + titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
+  // 身子被往下推了,画布也得跟着长(不然底下的图例会被切掉)
   const spec = { type: 'arch', title: o.title, nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
   const svg = svgDoc(width, height, o.template ?? 'arch2', o.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children, o.tagQuery, o.template ?? 'arch2');
   return { svg, version: o.version, cacheControl: o.cacheControl };
