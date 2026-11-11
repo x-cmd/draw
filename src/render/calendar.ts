@@ -184,7 +184,8 @@ function monthGrid(
         items.slice(0, maxRows).forEach((it, i) => {
           const ey = cy + 32 + i * 15;
           parts.push(`<circle cx="${r2(cx + 9)}" cy="${r2(ey - 4)}" r="3" fill="${ctx.colorOf(it.kind)}"/>`);
-          const label = it.time ? `${it.time} ${it.label}` : it.label;
+          // 月历不写时间(苹果的月视图也不写)—— 格子窄,时间会把名字挤没
+          const label = it.label;
           parts.push(`<text x="${r2(cx + 16)}" y="${r2(ey)}" font-size="${EV_FS}" fill="var(--d-text)">${esc(fitText(label, room, EV_FS))}</text>`);
         });
         if (items.length > maxRows) {
