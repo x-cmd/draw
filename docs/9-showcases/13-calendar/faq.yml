@@ -1,0 +1,35 @@
+id: x-draw-9-showcases-13-calendar
+
+data:
+  - name:
+      en: Ten calendar cases
+      cn: 十个日历场景
+    qa:
+      - id: real
+        question:
+          en: "Is the data real?"
+          cn: "这些数据是真的吗?"
+        answer:
+          en: >
+            The 2026 holidays come from the State Council's notice of 2025-11-04,
+            makeup workdays included. The timetable and the schedules follow how
+            school and work actually run. The team's month is a plausible month
+            with thirty-seven things in it — dense, not toy data.
+        confidence: 9
+        reference:
+          - docs/9-showcases/13-calendar/en.md
+          - docs/9-showcases/13-calendar/cn.md
+      - id: one-kind
+        question:
+          en: "Why is a timetable and a Gantt the same chart?"
+          cn: "为什么课程表和甘特图是同一个图种?"
+        answer:
+          en: >
+            Both are "a span of time × a cell". The timetable's rows are periods
+            and the columns are weekdays; the schedule board's rows are items and
+            the columns are days. Same grid, different axes — which is why one
+            `layout=` parameter and one URL grammar cover all seven shapes.
+        confidence: 9
+        reference:
+          - docs/9-showcases/13-calendar/en.md
+          - docs/9-showcases/13-calendar/cn.md

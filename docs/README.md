@@ -37,6 +37,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [09 combo](2-data-charts/09-combo/en.md) | bars + line | two measures at once |
 | [10 tokei](2-data-charts/10-tokei/en.md) | code composition | code, comments and blanks per language |
 | [11 butterfly](2-data-charts/11-butterfly/en.md) | butterfly chart | two series back to back, each side stackable, either side can carry a line |
+| [12 calendar](2-data-charts/12-calendar/en.md) | calendar | month / week / year / two- and three-month views, course timetable, schedule board |
 
 ## 3 · Relations 关系图
 
@@ -102,3 +103,4 @@ Real scenarios, each one a set of ready URLs.
 | [10 logistics](9-showcases/10-logistics/en.md) | logistics — throughput, warehouse fill, the fulfilment network |
 | [11 ai-coding era](9-showcases/11-ai-coding-era/en.md) | the AI-coding era — one person, the whole picture: composition, files, architecture, plan |
 | [12 reference charts](9-showcases/12-reference-examples/en.md) | seven reference charts checked one by one — agent leaderboard, home network, CI pipeline, character network |
+| [13 calendar](9-showcases/13-calendar/en.md) | ten calendar cases — course timetable, release schedule, on-call roster, team month, personal month, week, October holidays, the year 2026, two months, three months |

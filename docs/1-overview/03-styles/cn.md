@@ -37,6 +37,7 @@ x-json-ld:
 | `combo` | `evil` | — | [combo](../../2-data-charts/09-combo/cn.md) |
 | `sankey` | `evil` | — | [sankey](../../3-relations/01-sankey/cn.md) |
 | `butterfly` | `base`(干净:无底纹、无竖线) | `track`(加底纹)`grid`(加竖线刻度)`scale`(两个都加) | [butterfly](../../2-data-charts/11-butterfly/cn.md) |
+| `calendar` | `base`(苹果风:白底、细线、今天是红底白字) | `mono`(墨水风,适合印) | [calendar](../../2-data-charts/12-calendar/cn.md) |
 | `qr` | 默认黑底白图案 | `invert=1` 反色 | [qr](../../7-infographics/01-qr/cn.md) |
 
 ---

@@ -37,6 +37,7 @@ Each chart has its own default style and available `t=` list. See dedicated arti
 | `combo` | `evil` | — | [combo](../../2-data-charts/09-combo/en.md) |
 | `sankey` | `evil` | — | [sankey](../../3-relations/01-sankey/en.md) |
 | `butterfly` | `base` (clean: no track, no vertical lines) | `track` (adds the track) `grid` (adds the tick lines) `scale` (both) | [butterfly](../../2-data-charts/11-butterfly/en.md) |
+| `calendar` | `base` (Apple-like: white card, hairline rules, today in a red disc) | `mono` (greyscale, for print) | [calendar](../../2-data-charts/12-calendar/en.md) |
 | `qr` | default black-on-white | `invert=1` flips | [qr](../../7-infographics/01-qr/en.md) |
 
 ---

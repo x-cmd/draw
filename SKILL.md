@@ -32,6 +32,7 @@ explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)
 | 流向 | `sankey` | `type=sankey&labels=Ads,Web,Buy&links=Ads>Buy:30;Web>Buy:20` |
 | 二维码 | `qr` | `type=qr&d=https://x-cmd.com` |
 | 两个系列背靠背 | `butterfly` | `type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6` |
+| 日历 / 课程表 / 排期表 | `calendar` | `type=calendar&layout=month&start=2026-11-02&ev=2026-11-03;meeting;需求评审;14:00` |
 
 ## 每图种要点
 

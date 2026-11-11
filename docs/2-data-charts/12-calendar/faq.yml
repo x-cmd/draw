@@ -1,0 +1,47 @@
+id: x-draw-2-data-charts-12-calendar
+
+data:
+  - name:
+      en: The calendar
+      cn: 日历
+    qa:
+      - id: layouts
+        question:
+          en: "What shapes can it draw?"
+          cn: "能画哪几种?"
+        answer:
+          en: >
+            Seven: month, week, year, two months, three months, a course timetable and a schedule
+            board. The first five are "date × date" grids, the last two are "period × day"
+            grids — the same machinery, different axes.
+        confidence: 9
+        reference:
+          - docs/2-data-charts/12-calendar/en.md
+          - docs/2-data-charts/12-calendar/cn.md
+      - id: url
+        question:
+          en: "How do holidays and events get in?"
+          cn: "节假日和事件怎么进去?"
+        answer:
+          en: >
+            Through the URL, like the diagram kinds. `ev=` carries one event
+            (`date;kind;label[;time]`), `day=` marks a day as a workday, a rest day
+            or a holiday, `note=` pins a note to a day or a month. Change the link,
+            change the calendar.
+        confidence: 9
+        reference:
+          - docs/2-data-charts/12-calendar/en.md
+          - docs/2-data-charts/12-calendar/cn.md
+      - id: dense
+        question:
+          en: "Why do the two- and three-month views only show dots?"
+          cn: "双月历、三月历为什么只有小圆点?"
+        answer:
+          en: >
+            Because a cell in those views is about fifty pixels wide — a name would
+            not fit and would spill into the neighbouring cell. The dots say which
+            days have something; the names live in the week view and in the notes.
+        confidence: 8
+        reference:
+          - docs/2-data-charts/12-calendar/en.md
+          - docs/2-data-charts/12-calendar/cn.md
