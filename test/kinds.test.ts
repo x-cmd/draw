@@ -109,6 +109,22 @@ describe('new diagram kinds', () => {
     expect(straight, '有一条直线').toBeTruthy();
   });
 
+  it('ERD:没写位置的表按外键关系分层(被引用的在左)', () => {
+    const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + [
+      'n=users;table;users;id:int (pk)',
+      // 故意把 items 写在 orders 前面:按顺序排的话关系就断了
+      'n=items;table;items;id:int (pk)%0Aorder_id:int (fk)',
+      'n=orders;table;orders;id:int (pk)%0Auser_id:int (fk)',
+      'e=users;orders;1:N',
+      'e=orders;items;1:N',
+    ].join('&')));
+    // users 在最左,orders 在中间,items 在最右 —— x 坐标递增
+    const xs = [...svg.matchAll(/<text x="([\d.]+)"[^>]*font-weight="600"[^>]*>(users|orders|items)</g)].map((m) => [m[2], +m[1]]);
+    const at = (n: string): number => xs.find((x) => x[0] === n)![1];
+    expect(at('users')).toBeLessThan(at('orders'));
+    expect(at('orders')).toBeLessThan(at('items'));
+  });
+
   it('gives each kind its own vocabulary and rejects the others', () => {
     expect(() => renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?n=x;state;S;r0c0'))).toThrow(/process/);
     expect(() => renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?n=x;class;C;r0c0'))).toThrow(/table/);

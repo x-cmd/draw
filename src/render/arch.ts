@@ -899,8 +899,59 @@ function labelGaps(nodes: ArchNode[], edges: ArchEdge[]): number[] {
 /**
  * 渲染 v2 架构图。
  */
+/**
+ * ERD 的自动摆位:按外键关系分层。
+ *
+ * 一张真实的表有十几张,按作者写的顺序往网格里塞,读者看不出谁引谁 ——
+ * 把「被引用的表」放左边、「引用别人的表」放右边,关系就顺下来了。
+ * 深度 = 从根表(没人引用它)算起最长的一条引用链。
+ */
+function placeErdByRelation(nodes: ArchNode[], edges: ArchEdge[]): void {
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const depth = new Map<string, number>();
+  const calc = (id: string, seen: Set<string>): number => {
+    const cached = depth.get(id);
+    if (cached !== undefined) return cached;
+    if (seen.has(id)) return 0;   // 环:兜底,别无限递归
+    seen.add(id);
+    const parents = edges.filter((e) => e.to === id).map((e) => e.from).filter((p) => byId.has(p));
+    const d = parents.length ? Math.max(...parents.map((p) => calc(p, seen))) + 1 : 0;
+    depth.set(id, d);
+    return d;
+  };
+  for (const n of nodes) calc(n.id, new Set());
+  // 已经占掉的格子(作者自己写了位置的)
+  const taken = new Set<string>();
+  for (const n of nodes) {
+    if (!n.grid) continue;
+    for (let r = n.grid.row; r < n.grid.row + n.grid.h; r++)
+      for (let c = n.grid.col; c < n.grid.col + n.grid.w; c++) taken.add(`${r},${c}`);
+  }
+  const byDepth = new Map<number, string[]>();
+  for (const n of nodes) {
+    const d = depth.get(n.id) ?? 0;
+    byDepth.set(d, [...(byDepth.get(d) ?? []), n.id]);
+  }
+  for (const d of [...byDepth.keys()].sort((a, b) => a - b)) {
+    (byDepth.get(d) ?? []).forEach((id, i) => {
+      const n = byId.get(id)!;
+      if (n.grid || n.px) return;
+      let r = i;
+      let c = d;
+      while (taken.has(`${r},${c}`)) {
+        r++;
+        if (r > 60) { r = 0; c++; }
+      }
+      n.grid = { row: r, col: c, w: 1, h: 1 };
+      taken.add(`${r},${c}`);
+    });
+  }
+}
+
 export function renderArchCore(o: ArchOpts): DrawResult {
   const types = o.types ?? ARCH_TYPES;
+  // ERD:没写位置的表按关系摆 —— 被引用的在左,引用别人的在右(按外键深度分层)
+  if (types.crows === 'erd') placeErdByRelation(o.nodes, o.edges);
   // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
   const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
   packGrid(o.nodes, o.gridCols, { gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf });
