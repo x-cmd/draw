@@ -13,7 +13,7 @@ import type { ArchBoundary, ArchEdge, ArchNode } from './archmap.js';
 import { GRID_POS_RE, ID_RE, PX_POS_RE, parseBoundaries, parseEdges, splitFields } from './archmap.js';
 import { renderArchCore, type HouseTypes } from './arch.js';
 import { resolveSkin } from '../styles/index.js';
-import { clampInt, schemeParam, type DrawResult } from './query.js';
+import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
 
 /* ---------------------------------------------------------------- 词汇 */
 const DATAFLOW: HouseTypes = {
@@ -165,6 +165,8 @@ export function renderKindFromUrl(kind: string, url: URL, interactive = false): 
     template: kind, tagQuery: url.search,
     title: params.get('title')?.trim() || undefined,
     gridCols: clampInt(params, 'grid', 0, 1, 12),
+    gridForced: clampInt(params, 'grid', 0, 1, 12) > 0,
+    dir: dirParam(params),
     legend: params.get('legend') !== '0',
     paper: params.get('paper') === '1' || params.get('paper') === 'true',
     interactive,

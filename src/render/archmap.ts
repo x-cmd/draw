@@ -18,7 +18,7 @@ import { clampInt, schemeParam, type DrawResult } from './query.js';
 const TYPES = ['ext', 'fe', 'be', 'db', 'cloud', 'sec', 'bus', 'svc'] as const;
 type NodeType = (typeof TYPES)[number];
 // 语义类型 → 系列色序号(ext 无色,走中性虚线框)
-const TYPE_COLOR: Partial<Record<NodeType, number>> = {
+export const TYPE_COLOR: Partial<Record<NodeType, number>> = {
   fe: 0, be: 1, db: 2, cloud: 3, sec: 4, bus: 5, svc: 6,
 };
 type EdgeVariant = 'plain' | 'main' | 'dash';
@@ -179,6 +179,8 @@ export interface GridOpts {
   sizeOf?: (n: ArchNode) => { w: number; h: number };
   /** 某一列之后的额外间距(下标=列号):给太宽的边标签腾地方;没给的列用 gapX */
   gapAfter?: number[];
+  /** 连线:没写位置的节点会尽量落在邻居旁边(用得上就用) */
+  edges?: ArchEdge[];
 }
 
 export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {}): { placed: Placed[]; W: number; H: number } {
@@ -198,16 +200,45 @@ export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {
       }
   };
   for (const n of nodes) if (n.grid) mark(n as ArchNode & { grid: NonNullable<ArchNode['grid']> });
-  for (const n of nodes) {
-    if (n.grid || n.px) continue;
-    search: for (let r = 0; r < 64; r++) for (let c = 0; c < 12; c++) {
-      const k = `${r},${c}`;
-      if (!cell.has(k)) {
-        n.grid = { row: r, col: c, w: 1, h: 1 };
-        cell.set(k, n.id);
-        break search;
+  // 没写位置的节点:落在邻居旁边(离邻居最近的空格);没邻居就按给的顺序排。
+  // grid= 给了列数 → 每行几格就按几格换行(文档里「强制分成 N 列」是这个意思)。
+  const wrap = gridCols > 0 ? gridCols : 12;
+  const cellOf = new Map<string, { row: number; col: number }>();
+  for (const n of nodes) if (n.grid) cellOf.set(n.id, { row: n.grid.row, col: n.grid.col });
+  const freeCell = (want: { row: number; col: number } | null): { row: number; col: number } => {
+    let best: { row: number; col: number } | null = null;
+    let bestD = Infinity;
+    for (let r = 0; r < 64; r++) {
+      for (let c = 0; c < wrap; c++) {
+        if (cell.has(`${r},${c}`)) continue;
+        // 目标格子附近的最优;没有目标就取最靠前的空格(行优先)
+        const d = want ? Math.abs(r - want.row) + Math.abs(c - want.col) : 0;
+        const key = d * 100000 + r * 100 + c;
+        if (key < bestD) {
+          bestD = key;
+          best = { row: r, col: c };
+        }
       }
     }
+    return best ?? { row: 0, col: 0 };
+  };
+  for (const n of nodes) {
+    if (n.grid || n.px) continue;
+    // 邻居(已经定下位置的)格子的中位数 —— 没写位置的节点往那儿靠
+    const nb = (opts.edges ?? [])
+      .filter((e) => e.from === n.id || e.to === n.id)
+      .map((e) => cellOf.get(e.from === n.id ? e.to : e.from))
+      .filter((g): g is { row: number; col: number } => !!g);
+    const want = nb.length
+      ? {
+          row: Math.round(nb.reduce((a, g) => a + g.row, 0) / nb.length),
+          col: Math.round(nb.reduce((a, g) => a + g.col, 0) / nb.length),
+        }
+      : null;
+    const g = freeCell(want);
+    n.grid = { row: g.row, col: g.col, w: 1, h: 1 };
+    cell.set(`${g.row},${g.col}`, n.id);
+    cellOf.set(n.id, g);
   }
   const gridNodes = nodes.filter(n => n.grid) as (ArchNode & { grid: NonNullable<ArchNode['grid']> })[];
   const rows = Math.max(0, ...gridNodes.map(n => n.grid.row + n.grid.h));

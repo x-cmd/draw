@@ -87,6 +87,16 @@ export function clampInt(params: URLSearchParams, key: string, def: number, min:
   return Math.round(Math.min(max, Math.max(min, n)));
 }
 
+/** 自动布局的方向:lr = 层往右走(默认),tb = 层往下走;不给 = 用默认 */
+export function dirParam(params: URLSearchParams): 'LR' | 'TB' | undefined {
+  const raw = params.get('dir');
+  if (raw === null || raw === '') return undefined;
+  const v = raw.trim().toLowerCase();
+  if (v === 'lr') return 'LR';
+  if (v === 'tb') return 'TB';
+  throw new ApiError(400, `"dir" must be one of: lr, tb. Got: ${JSON.stringify(raw)}`);
+}
+
 export function stackParam(params: URLSearchParams): boolean {
   const raw = params.get('stack');
   if (raw === null || raw === '' || raw === '0' || raw === 'false') return false;

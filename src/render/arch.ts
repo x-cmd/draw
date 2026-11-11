@@ -13,10 +13,11 @@ import { ApiError } from '../specs/index.js';
 import type { ArchBoundary, ArchEdge, ArchNode } from './archmap.js';
 import {
   boundaryBox, packGrid, parseBoundaries, parseEdges, parseNodes, port, step,
-  type Box, type Placed, type Side,
+  TYPE_COLOR, type Box, type Placed, type Side,
 } from './archmap.js';
+import { layeredLayout } from './layout.js';
 import { resolveSkin } from '../styles/index.js';
-import { clampInt, schemeParam, type DrawResult } from './query.js';
+import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, svgDoc, textW, trunc} from './svg.js';
 import { iconOf } from './icons.js';
 
@@ -1142,6 +1143,10 @@ export interface ArchOpts {
   tagQuery?: string;
   title?: string;
   gridCols: number;
+  /** grid= 明确指定了列数 → 走格子布局,不用自动分层 */
+  gridForced?: boolean;
+  /** 自动布局的方向:LR = 层往右走(默认),TB = 层往下走 */
+  dir?: 'LR' | 'TB';
   legend: boolean;
   /** 画布纸:底下铺一层很淡的方格(默认关) */
   paper: boolean;
@@ -1232,18 +1237,51 @@ function placeErdByRelation(nodes: ArchNode[], edges: ArchEdge[]): void {
 
 export function renderArchCore(o: ArchOpts): DrawResult {
   const types = o.types ?? ARCH_TYPES;
-  // ERD:没写位置的表按关系摆 —— 被引用的在左,引用别人的在右(按外键深度分层)
-  if (types.crows === 'erd') placeErdByRelation(o.nodes, o.edges);
-  // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
   const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
   // 大图标的节点窄(64px 的图标),列与列之间要多留一点空当,不然挤成一坨
   const gapX = types.icons === 'big' ? 52 : GAP_X;
   // 行与行之间:图标模式下要给边界框的小牌子留位置(两个边界挨着,牌子会压到对方的框线上)
   const gapY = types.icons === 'big' ? 58 : GAP_Y;
-  packGrid(o.nodes, o.gridCols, { gapX, gapY, pad: PAD, sizeOf });
-  const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
-    gapX, gapY, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
-  });
+  // 没人写位置 → 分层自动布局(按依赖分层、层内少交叉);
+  // 写了位置 → 照旧按格子摆(作者说了算);grid= 明确要格子也走格子
+  const explicit = o.nodes.some((n) => n.grid || n.px);
+  const layered = !explicit && types.crows !== 'erd' && !o.gridForced;
+  let placed: Placed[];
+  let W: number;
+  let H: number;
+  if (layered) {
+    const res = layeredLayout({
+      nodes: o.nodes.map((n) => ({ id: n.id, ...sizeOf(n) })),
+      // 边标签横着躺在层与层之间 → 那段间距要给它留够(标签宽 + 两头接线头)
+      edges: o.edges.map((e) => ({
+        from: e.from,
+        to: e.to,
+        labelW: e.label ? textW(e.label, EDGE_FS) + 44 : 0,
+      })),
+      dir: o.dir ?? 'LR',
+      layerGap: gapX,
+      nodeGap: gapY,
+      pad: PAD,
+    });
+    placed = o.nodes.map((n) => ({
+      ...n,
+      box: res.boxes.get(n.id)!,
+      color: TYPE_COLOR[n.type] ?? -1,
+    }));
+    W = res.W;
+    H = res.H;
+  } else {
+    // ERD:没写位置的表按关系摆 —— 被引用的在左,引用别人的在右(按外键深度分层)
+    if (types.crows === 'erd') placeErdByRelation(o.nodes, o.edges);
+    // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
+    packGrid(o.nodes, o.gridCols, { gapX, gapY, pad: PAD, sizeOf, edges: o.edges });
+    const r = packGrid(o.nodes, o.gridCols, {
+      gapX, gapY, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
+    });
+    placed = r.placed;
+    W = r.W;
+    H = r.H;
+  }
   const titleH = o.title ? 46 : 0;
   let width = Math.max(W, 320);
   let bodyH = H;
@@ -1359,6 +1397,7 @@ export function renderArchFromUrl(url: URL, interactive = false, types: HouseTyp
   const boundaries = parseBoundaries(params.getAll('b'), seen);
   const title = params.get('title')?.trim() || undefined;
   const gridCols = clampInt(params, 'grid', 0, 1, 12);
+  const dir = dirParam(params);
   const legendRaw = params.get('legend');
   const legend = legendRaw === null || legendRaw === '' ? true : legendRaw !== '0' && legendRaw !== 'false';
   const paperRaw = params.get('paper');
@@ -1368,6 +1407,8 @@ export function renderArchFromUrl(url: URL, interactive = false, types: HouseTyp
   return renderArchCore({
     nodes, edges, boundaries, title, gridCols, legend, paper, interactive,
     types,
+    gridForced: gridCols > 0,
+    dir,
     template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',
