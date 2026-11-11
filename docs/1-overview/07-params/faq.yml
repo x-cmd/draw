@@ -1,0 +1,49 @@
+id: x-draw-1-overview-07-params
+
+data:
+  - name:
+      en: Parameters
+      cn: 参数
+    qa:
+      - id: three-entries
+        question:
+          en: "URL, CLI or npm — are the parameters different?"
+          cn: "URL、CLI、npm —— 参数一样吗?"
+        answer:
+          en: >
+            Yes, identical: the same names, the same semantics, the same output.
+            The CLI's long flags are the query parameter names (`--theme` is `t=`,
+            `--width` is `w=`), and the npm `draw()` takes the query parameters as
+            an object. Switching entry point costs no translation.
+        confidence: 9
+        reference:
+          - docs/1-overview/07-params/en.md
+          - docs/1-overview/07-params/cn.md
+      - id: encoding
+        question:
+          en: "When do I have to percent-encode?"
+          cn: "什么时候要百分号编码?"
+        answer:
+          en: >
+            A space is `%20` — never `+`, because a `+` in a query string reads as a
+            space. A real plus sign is `%2B`. `&`, `=`, `#`, `<` and `>` must be
+            escaped inside a value. `;` `=` `,` `:` `/` `@` never need it — the
+            architecture syntax depends on them.
+        confidence: 9
+        reference:
+          - docs/1-overview/07-params/en.md
+          - docs/1-overview/07-params/cn.md
+      - id: two-links
+        question:
+          en: "/draw or /draw/explore?"
+          cn: "该用 /draw 还是 /draw/explore?"
+        answer:
+          en: >
+            `/draw?…` is the image — paste it into a README or a PR. `/draw/explore?…`
+            is the editor — the chart beside a table, change a cell and it
+            redraws, then copy the image URL from there. Every card on the demo page
+            has a "Copy image URL" button that copies the first one.
+        confidence: 9
+        reference:
+          - docs/1-overview/07-params/en.md
+          - docs/1-overview/07-params/cn.md

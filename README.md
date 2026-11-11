@@ -439,7 +439,7 @@ Reference pages live in [`docs/`](docs/README.md), grouped the same way this REA
 
 | section | pages |
 |---|---|
-| 1 · Overview | [What is draw](docs/1-overview/01-what-is-draw/en.md) · [Quick start](docs/1-overview/02-quick-start/en.md) · [Style families](docs/1-overview/03-styles/en.md) · [Data formats](docs/1-overview/04-data-and-api/en.md) · [Deploy it yourself](docs/1-overview/05-self-hosting/en.md) |
+| 1 · Overview | [What is draw](docs/1-overview/01-what-is-draw/en.md) · [Quick start](docs/1-overview/02-quick-start/en.md) · [Style families](docs/1-overview/03-styles/en.md) · [Data formats](docs/1-overview/04-data-and-api/en.md) · [Deploy it yourself](docs/1-overview/05-self-hosting/en.md) · [Parameters](docs/1-overview/07-params/en.md) |
 | 2 · Data charts | [pie](docs/2-data-charts/01-pie/en.md) · [bar](docs/2-data-charts/02-bar/en.md) · [hbar](docs/2-data-charts/03-hbar/en.md) · [line](docs/2-data-charts/04-line/en.md) · [area](docs/2-data-charts/05-area/en.md) · [radar](docs/2-data-charts/06-radar/en.md) · [gauge](docs/2-data-charts/07-gauge/en.md) · [scatter](docs/2-data-charts/08-scatter/en.md) · [combo](docs/2-data-charts/09-combo/en.md) · [tokei](docs/2-data-charts/10-tokei/en.md) · [butterfly](docs/2-data-charts/11-butterfly/en.md) | · [calendar](docs/2-data-charts/12-calendar/en.md) |
 | 3 · Relations | [sankey](docs/3-relations/01-sankey/en.md) · [dataflow](docs/3-relations/02-dataflow/en.md) |
 | 4 · Strategy and decision | [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) · [use case](docs/4-strategy/03-uc/en.md) · [lifecycle](docs/4-strategy/04-lifecycle/en.md) |
