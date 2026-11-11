@@ -996,7 +996,8 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
   // 大图标的节点窄(64px 的图标),列与列之间要多留一点空当,不然挤成一坨
   const gapX = types.icons === 'big' ? 52 : GAP_X;
-  const gapY = types.icons === 'big' ? 40 : GAP_Y;
+  // 行与行之间:图标模式下要给边界框的小牌子留位置(两个边界挨着,牌子会压到对方的框线上)
+  const gapY = types.icons === 'big' ? 58 : GAP_Y;
   packGrid(o.nodes, o.gridCols, { gapX, gapY, pad: PAD, sizeOf });
   const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
     gapX, gapY, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
@@ -1052,7 +1053,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     : 0;
   const titleBottom = o.title ? PAD + 26 : 0;   // 标题的字底(含下伸部)
   const headH = o.boundaries.length ? Math.max(titleH, titleBottom - bTop) : titleH;
-  const height = Math.max(bodyH + headH + legend.h, o.minH ?? 0);
+  const height = Math.max(bodyH + headH + legend.h + 14, o.minH ?? 0);
   const degree = new Map<string, number>();
   if (o.interactive) for (const e of o.edges) {
     degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
@@ -1081,10 +1082,12 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     + drawEdgeLabelsV2(spots, o.interactive)
     + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
     + drawBoundaryLabelsV2(placed, o.boundaries, bColors);
-  const legendSvg = legend.svg
-    ? `<g transform="translate(0 ${r2(bodyH + 14)})">${legend.svg}</g>`
-    : '';
+  // 图例在身子下面 —— 要跟着身子一起往下挪(dy),不然身子一被推下去,
+  // 图例就留在原地、压进身子里面
   const dy = headH + Math.max(0, (height - headH - legend.h - bodyH) / 2);
+  const legendSvg = legend.svg
+    ? `<g transform="translate(0 ${r2(dy + bodyH + 14)})">${legend.svg}</g>`
+    : '';
   const children = paperSvg + titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
   // 身子被往下推了,画布也得跟着长(不然底下的图例会被切掉)
   const spec = { type: 'arch', title: o.title, nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
