@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { handleRequest } from '../src/handler.js';
-import { renderArchFromUrl } from '../src/render/arch.js';
+import { renderArchFromUrl, renderCloudFromUrl } from '../src/render/arch.js';
 import { renderArchmapFromUrl } from '../src/render/archmap.js';
 
 // /draw/arch2:架构图 v2 —— 和 /draw/archmap 同一套 URL 模型(data + 布局都在 URL 里),
@@ -135,6 +135,23 @@ describe('arch v2 rendering', () => {
     const c = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;be;A;sub;r0c0;aws:ec2')).svg;
     expect(c).toContain('sub');
     expect(c).toContain('data:image/png;base64,');
+  });
+
+  it('大图标版(/draw/cloud):节点就是图标,名字在下面', () => {
+    const url = new URL('https://x-cmd.com/draw/cloud?' + [
+      'n=api;be;API;;r0c0;aws:ecs',
+      'n=db;db;RDS;;r1c0;aws:rds',
+      'e=api;db;查询',
+    ].join('&'));
+    const { svg } = renderCloudFromUrl(url);
+    // 图标是大块(64px),名字在下面
+    expect(svg).toContain('width="64" height="64"');
+    expect(svg).toContain('data:image/png;base64,');
+    // 普通架构图不是这样(角标 20px 的方块)
+    const plain = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + [
+      'n=api;be;API;;r0c0;aws:ecs',
+    ].join('&'))).svg;
+    expect(plain).not.toContain('width="64" height="64"');
   });
 
   it('leaves the old /draw/archmap output untouched', () => {

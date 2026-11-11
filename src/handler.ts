@@ -17,7 +17,7 @@ import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from 
 import { renderEchartsFromUrl } from './render/echarts-ssr.js';
 import { svgToPng } from './render/png.js';
 import { renderArchmapFromUrl } from './render/archmap.js';
-import { renderArchFromUrl } from './render/arch.js';
+import { renderArchFromUrl, renderCloudFromUrl} from './render/arch.js';
 import { renderSeqFromUrl } from './render/seq.js';
 import { renderUcFromUrl } from './render/uc.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
@@ -285,6 +285,13 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<sub>][;<r0c1>]`, { allow: 'GET' });
     }
     return chartResponse(url, renderArchFromUrl(url));
+  }
+  // /draw/cloud 云架构(大图标版):同一套 n=/e=/b= 模型,节点画成大图标(diagrams + 那种海报)
+  if (sub === '/cloud') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<icon>]`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderCloudFromUrl(url));
   }
   // /draw/seq 时序图:参与方在上一行,消息按 URL 顺序往下走
   if (sub === '/seq') {

@@ -17,7 +17,7 @@ import {
 } from './archmap.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
-import { esc, r2, svgDoc, textW } from './svg.js';
+import { esc, r2, svgDoc, textW, trunc} from './svg.js';
 import { iconOf } from './icons.js';
 
 /* ---------------------------------------------------------------- 视觉常量 */
@@ -44,6 +44,8 @@ export interface HouseTypes {
   crows?: 'erd';
   /** 边按 UML 记号画:标签写 extends / implements 时用空心三角 */
   uml?: boolean;
+  /** 节点画成大图标(diagrams + 那种云架构海报):图标在上,名字在下 */
+  icons?: 'big';
 }
 
 /** 语义类型 → (展示名, 角标字母) */
@@ -61,12 +63,22 @@ const TYPE_ORDER = ['fe', 'be', 'db', 'cloud', 'sec', 'bus', 'svc', 'ext'] as co
 
 /** 架构图这套词汇(别的图种传自己的一套进来) */
 export const ARCH_TYPES: HouseTypes = { meta: TYPE_META, order: [...TYPE_ORDER] };
+/** 云架构(大图标版):节点就是图标,名字在下面 —— diagrams + 那种海报的画法 */
+export const CLOUD_TYPES: HouseTypes = { ...ARCH_TYPES, icons: 'big' };
 
 const sVar = (i: number): string => `var(--d-s${i + 1})`;
 
 /** v2 的节点尺寸:更宽更松,标题 14px;副标题多行时按行数长高 */
+const ICON_BIG = 64;      // 大图标节点的图标边长
+const ICON_LABEL_H = 20;  // 图标下面那行名字
+
 const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
   if (types.rows === 'fields') return fieldsSize(n);
+  // 大图标节点:图标占一块,名字在下面 —— 宽度由名字决定(图标不会更宽)
+  if (types.icons === 'big' && n.icon) {
+    const w = Math.max(ICON_BIG, textW(n.label, LABEL_FS) + 10);
+    return { w, h: ICON_BIG + ICON_LABEL_H };
+  }
   const lines = linesOf(n);
   const w = Math.max(
     NODE_MIN_W,
@@ -157,6 +169,7 @@ function fieldsSize(n: ArchNode): { w: number; h: number } {
 /* ---------------------------------------------------------------- 节点 */
 function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: HouseTypes): string {
   const b = n.box;
+  const icon = n.icon ? iconOf(n.icon) : undefined;
   const meta = types.meta[n.type] ?? { name: n.type, badge: '?', color: -1 };
   const neutral = meta.color < 0;
   const color = neutral ? 'var(--d-muted)' : sVar(meta.color);
@@ -204,8 +217,18 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
   if (types.rows === 'fields') {
     return drawFieldNodeV2(n, frame, badgeFill, color, neutral, meta, ia, titleW, badgeRight);
   }
+  // 大图标模式(diagrams + 那种云架构海报):图标就是节点,名字在下面
+  if (types.icons === 'big' && icon) {
+    const ix = b.x + (b.w - ICON_BIG) / 2;
+    return (
+      `<g${ia}>` +
+      `<image href="${icon}" x="${r2(ix)}" y="${r2(b.y)}" width="${ICON_BIG}" height="${ICON_BIG}" preserveAspectRatio="xMidYMid meet"/>` +
+      `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_BIG + 14)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(trunc(n.label, 22))}</text>` +
+      (n.sub ? `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_BIG + 30)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(trunc(n.sub, 26))}</text>` : '') +
+      `</g>`
+    );
+  }
   // 角标:有图标(diagrams 图标库)就用图标,没有才画类型字母
-  const icon = n.icon ? iconOf(n.icon) : undefined;
   const badge = icon
     ? `<image href="${icon}" x="${r2(bx - 2)}" y="${r2(by - 2)}" width="${r2(BADGE + 4)}" height="${r2(BADGE + 4)}" preserveAspectRatio="xMidYMid meet"/>`
     : `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
@@ -386,7 +409,10 @@ function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
   return best;
 }
 
-function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []): V2Routed[] {
+function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = [], iconsBig = false): V2Routed[] {
+  // 大图标节点:连线只接图标那块(名字在图标下面,别从名字里穿过去)
+  const portBoxOf = (p: Placed): Box =>
+    iconsBig && p.icon ? { x: p.box.x, y: p.box.y, w: p.box.w, h: ICON_BIG } : p.box;
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
   const cx = (b: Box) => b.x + b.w / 2;
@@ -512,15 +538,15 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
     const bus = busOf.get(i);
     if (bus) {
       // 总线:从源底边下来 → 走到目标的横向位置 → 落进目标顶边
-      const p0 = port(a.box, 'bottom', exitAt[i], bus.n);
-      const p4 = port(b.box, 'top', entryAt[i], bus.n);
+      const p0 = port(portBoxOf(a), 'bottom', exitAt[i], bus.n);
+      const p4 = port(portBoxOf(b), 'top', entryAt[i], bus.n);
       routed.push({ e, pts: [p0, [p0[0], bus.channelY], [p4[0], bus.channelY], p4], ...style } as V2Routed & { stroke: string; width: number });
       return;
     }
 
     const { exit, entry } = sides[i];
-    const p0 = portAt(a.box, exit, exitOff[i]);
-    const p4 = portAt(b.box, entry, entryOff[i]);
+    const p0 = portAt(portBoxOf(a), exit, exitOff[i]);
+    const p4 = portAt(portBoxOf(b), entry, entryOff[i]);
     const p1 = step(p0, exit, OUT);
     const p3 = step(p4, entry, OUT);
     const others = boxes.filter((x) => x !== a.box && x !== b.box);
@@ -976,7 +1002,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
 
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
-  const routed = computeRoutesV2(placed, o.edges, o.boundaries.map((bd) => boundaryBoxV2(byId, bd)));
+  const routed = computeRoutesV2(placed, o.edges, o.boundaries.map((bd) => boundaryBoxV2(byId, bd)), types.icons === 'big');
   const avoid: Box[] = [
     ...boxes.map((b) => ({ x: b.x - 2, y: b.y - 2, w: b.w + 4, h: b.h + 4 })),
     ...o.boundaries.map((bd) => {
@@ -1052,7 +1078,12 @@ export function renderArchCore(o: ArchOpts): DrawResult {
 /**
  * `/draw/arch` 入口:GET ?n=…&e=…&b=…(和 /draw/archmap 同一套参数)。
  */
-export function renderArchFromUrl(url: URL, interactive = false): DrawResult {
+/** /draw/cloud —— 大图标版的架构图(节点就是图标) */
+export function renderCloudFromUrl(url: URL, interactive = false): DrawResult {
+  return renderArchFromUrl(url, interactive, CLOUD_TYPES);
+}
+
+export function renderArchFromUrl(url: URL, interactive = false, types: HouseTypes = ARCH_TYPES): DrawResult {
   const params = url.searchParams;
   const nRaw = params.getAll('n');
   if (!nRaw.length) throw new ApiError(400, `at least one node is required. Example: /draw/arch?n=api;be;API Gateway;auth;r1c0w2`);
@@ -1074,6 +1105,7 @@ export function renderArchFromUrl(url: URL, interactive = false): DrawResult {
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderArchCore({
     nodes, edges, boundaries, title, gridCols, legend, paper, interactive,
+    types,
     template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',

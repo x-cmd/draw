@@ -119,7 +119,7 @@ describe('new diagram kinds', () => {
       'e=orders;items;1:N',
     ].join('&')));
     // users 在最左,orders 在中间,items 在最右 —— x 坐标递增
-    const xs = [...svg.matchAll(/<text x="([\d.]+)"[^>]*font-weight="600"[^>]*>(users|orders|items)</g)].map((m) => [m[2], +m[1]]);
+    const xs = [...svg.matchAll(/<text x="([\d.]+)"[^>]*font-weight="600"[^>]*>(users|orders|items)</g)].map((m) => [m[2], +m[1]] as [string, number]);
     const at = (n: string): number => xs.find((x) => x[0] === n)![1];
     expect(at('users')).toBeLessThan(at('orders'));
     expect(at('orders')).toBeLessThan(at('items'));
