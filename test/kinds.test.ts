@@ -125,6 +125,45 @@ describe('new diagram kinds', () => {
     expect(at('orders')).toBeLessThan(at('items'));
   });
 
+  it('边与边不交叉(绕远的那条从外面绕)', () => {
+    const { svg } = renderKindFromUrl('lifecycle', new URL('https://x-cmd.com/draw/lifecycle?' + [
+      'n=open;state;Open;;r0c0',
+      'n=review;state;In review;;r1c0',
+      'n=ci;decision;CI green?;;r1c1',
+      'n=merged;terminal;Merged;;r2c0',
+      'n=closed;terminal;Closed;;r2c2',
+      'e=open;review;opened',
+      'e=review;ci',
+      'e=ci;merged;pass',
+      'e=ci;closed;fail',
+      'e=closed;open;reopen',
+    ].join('&')));
+    // 每条边的折点(去掉 <defs> —— 里面的箭头记号也是 path)
+    const body = svg.replace(/<defs>[\s\S]*?<\/defs>/g, '');
+    const routes = [...body.matchAll(/<path d="(M[^"]+)"/g)]
+      .map((m) => m[1].split(/[ML]/).filter(Boolean).map((p) => p.trim().split(' ').map(Number)))
+      .filter((pts) => pts.length > 1);
+    expect(routes.length).toBe(5);
+    // 两条边不许真交叉(共线、端点相接不算)
+    const cross = (a: number[], b: number[], c: number[], d: number[]): boolean => {
+      const o = (p: number[], q: number[], r: number[]): number =>
+        (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
+      return o(c, d, a) * o(c, d, b) < 0 && o(a, b, c) * o(a, b, d) < 0;
+    };
+    for (let i = 0; i < routes.length; i++) {
+      for (let j = i + 1; j < routes.length; j++) {
+        for (let x = 1; x < routes[i].length; x++) {
+          for (let y = 1; y < routes[j].length; y++) {
+            expect(
+              cross(routes[i][x - 1], routes[i][x], routes[j][y - 1], routes[j][y]),
+              `边 ${i} 与 边 ${j} 交叉了`,
+            ).toBe(false);
+          }
+        }
+      }
+    }
+  });
+
   it('gives each kind its own vocabulary and rejects the others', () => {
     expect(() => renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?n=x;state;S;r0c0'))).toThrow(/process/);
     expect(() => renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?n=x;class;C;r0c0'))).toThrow(/table/);

@@ -423,6 +423,20 @@ function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
   return best;
 }
 
+/** 两段线是否真交叉(共线、端点相接不算) */
+function segsCross(
+  p1: [number, number], p2: [number, number],
+  p3: [number, number], p4: [number, number],
+): boolean {
+  const d = (a: [number, number], b: [number, number], c: [number, number]): number =>
+    (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  const d1 = d(p3, p4, p1);
+  const d2 = d(p3, p4, p2);
+  const d3 = d(p1, p2, p3);
+  const d4 = d(p1, p2, p4);
+  return d1 * d2 < 0 && d3 * d4 < 0;
+}
+
 function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = [], iconsBig = false): V2Routed[] {
   // 大图标节点:连线只接图标那块(名字在图标下面,别从名字里穿过去)
   const portBoxOf = (p: Placed): Box =>
@@ -532,6 +546,17 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
   const OUT = 16;
   const routed: V2Routed[] = [];
   const busOf = new Map<number, { channelY: number; n: number }>();
+  // 已经画过的线段 —— 后画的线要避开它们
+  const drawn: number[][] = [];
+  // 图的外框:绕外面走的时候用
+  const ob: Box = boxes.length
+    ? {
+        x: Math.min(...boxes.map((b) => b.x)),
+        y: Math.min(...boxes.map((b) => b.y)),
+        w: Math.max(...boxes.map((b) => b.x + b.w)) - Math.min(...boxes.map((b) => b.x)),
+        h: Math.max(...boxes.map((b) => b.y + b.h)) - Math.min(...boxes.map((b) => b.y)),
+      }
+    : { x: 0, y: 0, w: 0, h: 0 };
 
   for (const [key, idxs] of groups) {
     if (idxs.length < 2) continue;
@@ -554,7 +579,9 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
       // 总线:从源底边下来 → 走到目标的横向位置 → 落进目标顶边
       const p0 = port(portBoxOf(a), 'bottom', exitAt[i], bus.n);
       const p4 = port(portBoxOf(b), 'top', entryAt[i], bus.n);
-      routed.push({ e, pts: [p0, [p0[0], bus.channelY], [p4[0], bus.channelY], p4], ...style } as V2Routed & { stroke: string; width: number });
+      const busPts: [number, number][] = [p0, [p0[0], bus.channelY], [p4[0], bus.channelY], p4];
+      routed.push({ e, pts: busPts, ...style } as V2Routed & { stroke: string; width: number });
+      for (let i = 1; i < busPts.length; i++) drawn.push([busPts[i - 1][0], busPts[i - 1][1], busPts[i][0], busPts[i][1]]);
       return;
     }
 
@@ -564,29 +591,57 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
     const p1 = step(p0, exit, OUT);
     const p3 = step(p4, entry, OUT);
     const others = boxes.filter((x) => x !== a.box && x !== b.box);
-    let pts: [number, number][];
-    if (exit === 'left' || exit === 'right') {
-      // 横向:中间那段若横穿别人的盒子,改走下方(或上方)的通道
-      if (hitBox(Math.min(p1[0], p3[0]), p1[1], Math.max(p1[0], p3[0]), p1[1], others)) {
-        const dy = detourY(a.box, b.box, p1[0], p3[0], others, enclosingBoundary(a.box, b.box, bounds));
-        pts = [p0, p1, [p1[0], dy], [p3[0], dy], p3, p4];
-      } else {
+    // 候选路线:先直连;直连会撞到盒子或别的线,就绕图的外面走一圈
+    const direct: [number, number][] = (() => {
+      if (exit === 'left' || exit === 'right') {
+        // 横向:中间那段若横穿别人的盒子,改走下方(或上方)的通道
+        if (hitBox(Math.min(p1[0], p3[0]), p1[1], Math.max(p1[0], p3[0]), p1[1], others)) {
+          const dy = detourY(a.box, b.box, p1[0], p3[0], others, enclosingBoundary(a.box, b.box, bounds));
+          return [p0, p1, [p1[0], dy], [p3[0], dy], p3, p4];
+        }
         // 竖着的那一段贴着目标走(落在目标端口的正上方/下方)——
         // 放在两端的中间,会从中间的盒子上横穿过去(看着像接到了别的框上)
         const vx = p3[0];
         if (!hitBox(vx, Math.min(p1[1], p3[1]), vx, Math.max(p1[1], p3[1]), others)) {
-          pts = [p0, p1, [vx, p1[1]], [vx, p3[1]], p3, p4];
-        } else {
-          const ch = freeChannelX(p1[0], p3[0], p1[1], p3[1], others, p3[0]);
-          const cx = ch ?? (p1[0] + p3[0]) / 2;
-          pts = [p0, p1, [cx, p1[1]], [cx, p3[1]], p3, p4];
+          return [p0, p1, [vx, p1[1]], [vx, p3[1]], p3, p4];
+        }
+        const ch = freeChannelX(p1[0], p3[0], p1[1], p3[1], others, p3[0]);
+        const cx = ch ?? (p1[0] + p3[0]) / 2;
+        return [p0, p1, [cx, p1[1]], [cx, p3[1]], p3, p4];
+      }
+      const mid = (p1[1] + p3[1]) / 2;
+      return [p0, p1, [p1[0], mid], [p3[0], mid], p3, p4];
+    })();
+
+    // 绕外面:从另一侧出去,沿着图的外面走,再从同一侧进来
+    const around: [number, number][] | null = (() => {
+      const flip = exit === 'left' || exit === 'right' ? (exit === 'right' ? 'left' : 'right') : (exit === 'bottom' ? 'top' : 'bottom');
+      const q0 = portAt(portBoxOf(a), flip, exitOff[i]);
+      const q4 = portAt(portBoxOf(b), flip, entryOff[i]);
+      const q1 = step(q0, flip, OUT);
+      if (flip === 'left' || flip === 'right') {
+        const ch = flip === 'right' ? ob.x + ob.w + OUT : ob.x - OUT;
+        return [q0, q1, [ch, q1[1]], [ch, q4[1]], q4];
+      }
+      const ch = flip === 'bottom' ? ob.y + ob.h + OUT : ob.y - OUT;
+      return [q0, q1, [q1[0], ch], [q4[0], ch], q4];
+    })();
+
+    const hits = (route: [number, number][]): boolean => {
+      for (let i = 1; i < route.length; i++) {
+        const s1 = route[i - 1];
+        const s2 = route[i];
+        if (hitBox(Math.min(s1[0], s2[0]), Math.min(s1[1], s2[1]), Math.max(s1[0], s2[0]), Math.max(s1[1], s2[1]), others)) return true;
+        for (const seg of drawn) {
+          if (segsCross(s1, s2, [seg[0], seg[1]], [seg[2], seg[3]])) return true;
         }
       }
-    } else {
-      const mid = (p1[1] + p3[1]) / 2;
-      pts = [p0, p1, [p1[0], mid], [p3[0], mid], p3, p4];
-    }
+      return false;
+    };
+    let pts: [number, number][] = direct;
+    if (hits(direct) && around && !hits(around)) pts = around;
     routed.push({ e, pts, ...style } as V2Routed & { stroke: string; width: number });
+    for (let i = 1; i < pts.length; i++) drawn.push([pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1]]);
   });
   return routed;
 }
