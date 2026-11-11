@@ -112,6 +112,31 @@ describe('arch v2 rendering', () => {
     expect(chipTop).toBeGreaterThan(titleY + 6);   // 牌子的顶在标题的字底之下
   });
 
+  it('节点可以带云厂商图标(有图标就没有类型字母)', () => {
+    const url = new URL('https://x-cmd.com/draw/arch2?' + [
+      'n=api;be;API;ECS;r0c0;aws:ecs',
+      'n=db;db;RDS;;r1c0;aws:rds',
+      'n=plain;be;No icon;;r2c0',
+    ].join('&'));
+    const { svg } = renderArchFromUrl(url);
+    // 图标是内嵌的 data URI(不外链)
+    expect(svg).toContain('data:image/png;base64,');
+    expect((svg.match(/<image /g) ?? []).length).toBe(2);
+    // 没图标的节点还是类型字母
+    expect((svg.match(/font-weight="700" fill="var\(--d-[^"]+\)">B</g) ?? []).length).toBe(1);
+  });
+
+  it('图标字段的位置随便放(认形状不认顺序)', () => {
+    const a = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;be;A;aws:ec2;r0c0')).svg;
+    const b = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;be;A;r0c0;aws:ec2')).svg;
+    expect(a).toContain('data:image/png;base64,');
+    expect(b).toContain('data:image/png;base64,');
+    // 副标题还在
+    const c = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;be;A;sub;r0c0;aws:ec2')).svg;
+    expect(c).toContain('sub');
+    expect(c).toContain('data:image/png;base64,');
+  });
+
   it('leaves the old /draw/archmap output untouched', () => {
     const q = 'n=user;ext;User;;r0c0&n=cdn;cloud;CDN;;r0c1&e=user;cdn;https&b=Data%20Layer;user%20cdn&title=Web%20App';
     const old = renderArchmapFromUrl(new URL('https://x-cmd.com/draw/archmap?' + q)).svg;
