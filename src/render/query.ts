@@ -6,6 +6,7 @@ import {
   parseScatterSpec, scatterSpecFromParams, parseComboSpec, comboSpecFromParams,
   parseQuadrantSpec, quadrantSpecFromParams, parseCompassSpec, compassSpecFromParams,
   parseButterflySpec, butterflySpecFromParams,
+  parseCalendarSpec, calendarSpecFromParams,
   clip, type ChartInput,
 } from '../specs/index.js';
 import { resolveVersion, CURRENT_VERSION, type VersionInfo } from '../version.js';
@@ -28,6 +29,7 @@ import { renderSankey } from './sankey.js';
 import { renderQuadrant } from './quadrant.js';
 import { renderCompass } from './compass.js';
 import { renderButterfly } from './butterfly.js';
+import { renderCalendar } from './calendar.js';
 import { parseSankeySpec, sankeySpecFromParams } from '../specs/sankey.js';
 import { renderStored } from './dispatch.js';
 import { renderArchmapFromUrl } from './archmap.js';
@@ -61,6 +63,7 @@ const SIZE: Record<ChartTemplate, [number, number]> = {
   quadrant: [760, 520],
   compass: [560, 460],
   butterfly: [640, 420],
+  calendar: [760, 520],
 };
 
 function svgResult(svg: string, v: VersionInfo): DrawResult {
@@ -197,6 +200,15 @@ export function renderFromUrl(url: URL): DrawResult {
     const width = clampInt(url.searchParams, 'w', bw, 200, 1600);
     const height = clampInt(url.searchParams, 'h', bh, 140, 1200);
     return svgResult(renderButterfly(spec, { width, height, version: v.version, skin }), v);
+  }
+  if (kind === 'calendar') {
+    const spec = parseCalendarSpec(calendarSpecFromParams(url.searchParams) ?? '{}');
+    const v = resolveVersion(url.searchParams.get('v'));
+    const skin = resolveSkin('calendar', url.searchParams.get('t'), schemeParam(url.searchParams));
+    const [cw3, ch3] = skin.size ?? SIZE.calendar;
+    const width = clampInt(url.searchParams, 'w', cw3, 200, 2000);
+    const height = clampInt(url.searchParams, 'h', ch3, 140, 1600);
+    return svgResult(renderCalendar(spec, { width, height, version: v.version, skin }), v);
   }
   if (kind === 'gauge') {
     const spec = parseGaugeSpec(gaugeSpecFromParams(url.searchParams));

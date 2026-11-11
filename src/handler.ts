@@ -10,6 +10,7 @@ import { parseSankeySpec } from './specs/sankey.js';
 import { parseQuadrantSpec } from './specs/quadrant.js';
 import { parseCompassSpec } from './specs/compass.js';
 import { parseButterflySpec } from './specs/butterfly.js';
+import { parseCalendarSpec } from './specs/calendar.js';
 import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
@@ -207,6 +208,8 @@ async function createHandler(request: Request, env: DrawEnv, platform: Platform,
       throw new ApiError(400, `multi-series is not supported for type=${template}; use bar, line, area, radar or hbar (t=xcmd-issue/rank)`);
     }
     normalizedSpec = parseSeriesSpec(specJson, template === 'line' || template === 'area' || template === 'radar' ? 'line' : 'bar');
+  } else if (template === 'calendar') {
+    normalizedSpec = parseCalendarSpec(specJson);
   } else {
     normalizedSpec = parseChartSpec(specJson, template);
   }

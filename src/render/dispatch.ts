@@ -22,7 +22,9 @@ import { parseSankeySpec } from '../specs/sankey.js';
 import { parseQuadrantSpec } from '../specs/quadrant.js';
 import { parseCompassSpec } from '../specs/compass.js';
 import { parseButterflySpec } from '../specs/butterfly.js';
+import { parseCalendarSpec } from '../specs/calendar.js';
 import { renderButterfly } from './butterfly.js';
+import { renderCalendar } from './calendar.js';
 import type { RenderOpts } from './svg.js';
 import type { ChartTemplate, StoredChart } from '../store.js';
 
@@ -72,6 +74,7 @@ export function renderStored(doc: StoredChart, o: RenderOpts): string {
   if (doc.template === 'quadrant') return renderQuadrant(parseQuadrantSpec(specJson), o);
   if (doc.template === 'compass') return renderCompass(parseCompassSpec(specJson), o);
   if (doc.template === 'butterfly') return renderButterfly(parseButterflySpec(specJson), o);
+  if (doc.template === 'calendar') return renderCalendar(parseCalendarSpec(specJson), o);
   const input: ChartInput = looksMultiSeries(specJson)
     ? { multi: true, spec: parseSeriesSpec(specJson, doc.template === 'line' || doc.template === 'area' ? 'line' : 'bar') }
     : { multi: false, spec: parseChartSpec(specJson, doc.template) };
