@@ -9,6 +9,7 @@ import {
 import { parseSankeySpec } from './specs/sankey.js';
 import { parseQuadrantSpec } from './specs/quadrant.js';
 import { parseCompassSpec } from './specs/compass.js';
+import { parseButterflySpec } from './specs/butterfly.js';
 import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
@@ -188,6 +189,8 @@ async function createHandler(request: Request, env: DrawEnv, platform: Platform,
     normalizedSpec = parseQuadrantSpec(specJson);
   } else if (template === 'compass') {
     normalizedSpec = parseCompassSpec(specJson);
+  } else if (template === 'butterfly') {
+    normalizedSpec = parseButterflySpec(specJson);
   } else if (looksMultiSeries(specJson) || (template === 'hbar' && (theme === 'xcmd-issue' || theme === 'rank'))) {
     // hbar 双系列仅 xcmd-issue/rank 支持,且这两个风格强制恰好 2 系列——
     // body 单系列 + t=rank 会在渲染层 400,创建时拦下防永久坏链(同 radar 维度校验)
