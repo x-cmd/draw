@@ -544,27 +544,53 @@ function routeOrthogonal(
   const gy = (j: number): number => ys[j];
 
   // 起点/终点本身在障碍边上(不算在里面)✓
-  const open: number[] = [];
+  // 优先队列:二叉堆(线性扫一遍找最小是 O(V²) —— 状态数本身是 O(n²),那样就成 O(n⁴) 了)
+  const heap: number[] = [];
+  const heapPush = (v: number): void => {
+    heap.push(v);
+    let i = heap.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (cost[heap[p]] <= cost[heap[i]]) break;
+      [heap[p], heap[i]] = [heap[i], heap[p]];
+      i = p;
+    }
+  };
+  const heapPop = (): number | undefined => {
+    if (!heap.length) return undefined;
+    const top = heap[0];
+    const last = heap.pop()!;
+    if (heap.length) {
+      heap[0] = last;
+      let i = 0;
+      for (;;) {
+        const l = i * 2 + 1;
+        const r = l + 1;
+        let m = i;
+        if (l < heap.length && cost[heap[l]] < cost[heap[m]]) m = l;
+        if (r < heap.length && cost[heap[r]] < cost[heap[m]]) m = r;
+        if (m === i) break;
+        [heap[m], heap[i]] = [heap[i], heap[m]];
+        i = m;
+      }
+    }
+    return top;
+  };
+  const closed = new Set<number>();
   for (let d = 0; d < 4; d++) {
     const idx = startIdx(si, sj, d);
     cost[idx] = 0;
-    open.push(idx);
+    heapPush(idx);
   }
   const goal = (i: number, j: number): boolean => i === ti && j === tj;
 
   let guard = 0;
-  while (open.length && guard++ < W * H * 8) {
-    // 取代价最小的(网格小,直接线性扫)。
+  while (heap.length && guard++ < W * H * 8) {
     // 用 Dijkstra 而不是 A*:拐弯惩罚让「曼哈顿距离」这个启发式不再一致,
     // A* 会提前把终点弹出来、给出次优的路线 —— 这里要的就是最优路线。
-    let bestAt = 0;
-    let bestF = Infinity;
-    for (let k = 0; k < open.length; k++) {
-      const idx = open[k];
-      const f = cost[idx];
-      if (f < bestF) { bestF = f; bestAt = k; }
-    }
-    const idx = open.splice(bestAt, 1)[0];
+    const idx = heapPop()!;
+    if (closed.has(idx)) continue;
+    closed.add(idx);
     const d = idx % 4;
     const cell = (idx - d) / 4;
     const j = Math.floor(cell / W);
@@ -610,9 +636,10 @@ function routeOrthogonal(
       const bend = nd === d ? 0 : ROUTE_BEND;
       const nc = cost[idx] + step + bend + cross * ROUTE_CROSS;
       if (nc < cost[nIdx]) {
+        const wasNew = cost[nIdx] === Infinity;
         cost[nIdx] = nc;
         prev[nIdx] = idx;
-        if (!open.includes(nIdx)) open.push(nIdx);
+        if (wasNew) heapPush(nIdx);
       }
     }
   }
