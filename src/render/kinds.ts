@@ -12,6 +12,7 @@ import { ApiError } from '../specs/index.js';
 import type { ArchBoundary, ArchEdge, ArchNode } from './archmap.js';
 import { GRID_POS_RE, ID_RE, PX_POS_RE, parseBoundaries, parseEdges, splitFields } from './archmap.js';
 import { renderArchCore, type HouseTypes } from './arch.js';
+import type { LayoutEngine } from './layout.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
 
@@ -136,7 +137,12 @@ const KINDS: Record<string, KindSpec> = {
 /**
  * 画一种图:解析 n=/e=/b=,套上那套词汇。
  */
-export function renderKindFromUrl(kind: string, url: URL, interactive = false): DrawResult {
+export function renderKindFromUrl(
+  kind: string,
+  url: URL,
+  interactive = false,
+  opts: { layout?: LayoutEngine } = {},
+): DrawResult {
   const spec = KINDS[kind];
   if (!spec) throw new ApiError(400, `unknown diagram kind "${kind}"`);
   const params = url.searchParams;
@@ -167,6 +173,7 @@ export function renderKindFromUrl(kind: string, url: URL, interactive = false): 
     gridCols: clampInt(params, 'grid', 0, 1, 12),
     gridForced: clampInt(params, 'grid', 0, 1, 12) > 0,
     dir: dirParam(params),
+    layout: opts.layout,
     legend: params.get('legend') !== '0',
     paper: params.get('paper') === '1' || params.get('paper') === 'true',
     interactive,

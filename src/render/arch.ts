@@ -15,7 +15,7 @@ import {
   boundaryBox, packGrid, parseBoundaries, parseEdges, parseNodes, port, step,
   TYPE_COLOR, type Box, type Placed, type Side,
 } from './archmap.js';
-import { layeredLayout } from './layout.js';
+import { gridLayout, labelGaps, type LayoutEngine } from './layout.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, svgDoc, textW, trunc} from './svg.js';
@@ -1147,6 +1147,11 @@ export interface ArchOpts {
   gridForced?: boolean;
   /** 自动布局的方向:LR = 层往右走(默认),TB = 层往下走 */
   dir?: 'LR' | 'TB';
+  /**
+   * 摆位引擎(没写位置的节点怎么摆)。
+   * 不给就用库里那个通用的;站上装的是更好的那个 —— 调用方的事,URL 里不暴露。
+   */
+  layout?: LayoutEngine;
   legend: boolean;
   /** 画布纸:底下铺一层很淡的方格(默认关) */
   paper: boolean;
@@ -1157,30 +1162,6 @@ export interface ArchOpts {
   minW?: number;
   minH?: number;
   aria?: string;
-}
-
-/**
- * 边标签比两个节点之间的空档还宽时,把那一列撑开 —— 让标签有地方放,
- * 而不是压在节点的角标上。同一行、相邻两列的横边才需要(横着走的那一段最短)。
- */
-function labelGaps(nodes: ArchNode[], edges: ArchEdge[]): number[] {
-  const colOf = new Map<string, { col: number; row: number }>();
-  for (const n of nodes) if (n.grid) colOf.set(n.id, n.grid);
-  const need = new Map<number, number>();
-  for (const e of edges) {
-    if (!e.label) continue;
-    const a = colOf.get(e.from);
-    const b = colOf.get(e.to);
-    if (!a || !b || a.row !== b.row) continue;
-    const [c1, c2] = a.col < b.col ? [a.col, b.col] : [b.col, a.col];
-    if (c2 !== c1 + 1) continue; // 隔了列的边,横向那一段本来就够长
-    // 两端各留 16px 的接线头,再加标签自身的宽度
-    const w = textW(e.label, EDGE_FS) + 12 + 32;
-    need.set(c1, Math.max(need.get(c1) ?? 0, Math.min(w, 300)));
-  }
-  const out: number[] = [];
-  for (const [c, v] of need) out[c] = v;
-  return out;
 }
 
 /**
@@ -1242,26 +1223,27 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   const gapX = types.icons === 'big' ? 52 : GAP_X;
   // 行与行之间:图标模式下要给边界框的小牌子留位置(两个边界挨着,牌子会压到对方的框线上)
   const gapY = types.icons === 'big' ? 58 : GAP_Y;
-  // 没人写位置 → 分层自动布局(按依赖分层、层内少交叉);
+  // 边标签有多宽(渲染层按字体量好,引擎不碰字体)
+  const labelW = (e: ArchEdge): number => (e.label ? textW(e.label, EDGE_FS) + 44 : 0);
+  // 没人写位置 → 交给摆位引擎(站上装的是更好的那个;库里是通用的);
   // 写了位置 → 照旧按格子摆(作者说了算);grid= 明确要格子也走格子
   const explicit = o.nodes.some((n) => n.grid || n.px);
-  const layered = !explicit && types.crows !== 'erd' && !o.gridForced;
+  const auto = !explicit && types.crows !== 'erd' && !o.gridForced;
   let placed: Placed[];
   let W: number;
   let H: number;
-  if (layered) {
-    const res = layeredLayout({
-      nodes: o.nodes.map((n) => ({ id: n.id, ...sizeOf(n) })),
-      // 边标签横着躺在层与层之间 → 那段间距要给它留够(标签宽 + 两头接线头)
-      edges: o.edges.map((e) => ({
-        from: e.from,
-        to: e.to,
-        labelW: e.label ? textW(e.label, EDGE_FS) + 44 : 0,
-      })),
-      dir: o.dir ?? 'LR',
-      layerGap: gapX,
-      nodeGap: gapY,
+  if (auto) {
+    const engine = o.layout ?? gridLayout;
+    const res = engine({
+      nodes: o.nodes,
+      edges: o.edges,
+      boundaries: o.boundaries,
+      sizeOf,
+      gapX,
+      gapY,
       pad: PAD,
+      dir: o.dir ?? 'LR',
+      labelW,
     });
     placed = o.nodes.map((n) => ({
       ...n,
@@ -1276,7 +1258,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
     packGrid(o.nodes, o.gridCols, { gapX, gapY, pad: PAD, sizeOf, edges: o.edges });
     const r = packGrid(o.nodes, o.gridCols, {
-      gapX, gapY, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
+      gapX, gapY, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges, labelW),
     });
     placed = r.placed;
     W = r.W;
@@ -1378,12 +1360,23 @@ export function renderArchCore(o: ArchOpts): DrawResult {
 /**
  * `/draw/arch` 入口:GET ?n=…&e=…&b=…(和 /draw/archmap 同一套参数)。
  */
-/** /draw/cloud —— 大图标版的架构图(节点就是图标) */
-export function renderCloudFromUrl(url: URL, interactive = false): DrawResult {
-  return renderArchFromUrl(url, interactive, CLOUD_TYPES);
+/** URL 入口的额外选项(不是 URL 参数 —— 是调用方的事) */
+export interface ArchUrlOpts {
+  /** 摆位引擎(见 LayoutEngine):没写位置的节点怎么摆 */
+  layout?: LayoutEngine;
 }
 
-export function renderArchFromUrl(url: URL, interactive = false, types: HouseTypes = ARCH_TYPES): DrawResult {
+/** /draw/cloud —— 大图标版的架构图(节点就是图标) */
+export function renderCloudFromUrl(url: URL, interactive = false, opts: ArchUrlOpts = {}): DrawResult {
+  return renderArchFromUrl(url, interactive, CLOUD_TYPES, opts);
+}
+
+export function renderArchFromUrl(
+  url: URL,
+  interactive = false,
+  types: HouseTypes = ARCH_TYPES,
+  opts: ArchUrlOpts = {},
+): DrawResult {
   const params = url.searchParams;
   const nRaw = params.getAll('n');
   if (!nRaw.length) throw new ApiError(400, `at least one node is required. Example: /draw/arch?n=api;be;API Gateway;auth;r1c0w2`);
@@ -1409,6 +1402,7 @@ export function renderArchFromUrl(url: URL, interactive = false, types: HouseTyp
     types,
     gridForced: gridCols > 0,
     dir,
+    layout: opts.layout,
     template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',
