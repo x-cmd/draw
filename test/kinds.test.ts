@@ -47,6 +47,68 @@ describe('new diagram kinds', () => {
     });
   }
 
+  it('拐弯的那一段不横穿中间的盒子(竖段贴着目标走)', () => {
+    // 源在右下、目标在左上,中间横着一个判断框:
+    // 竖着的那一段若落在两端中间,就会从判断框上穿过去
+    const params = [
+      'n=t;terminal;Target;;r1c0',
+      'n=d;decision;Mid;;r1c1',
+      'n=s;state;Source;;r3c2',
+      'e=s;t',
+    ];
+    const { svg } = renderKindFromUrl('lifecycle', new URL('https://x-cmd.com/draw/lifecycle?' + params.join('&')));
+    const body = svg.replace(/<defs>.*?<\/defs>/s, '');
+    // 盒子:节点框是大圆角矩形(角标只有 20 宽,按宽度滤掉),判断是四点多边形
+    const boxes: { x: number; y: number; w: number; h: number }[] = [];
+    for (const m of body.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="(\d+)" fill="([^"]+)"/g)) {
+      if (+m[3] < 60) continue;                 // 角标只有 20 宽
+      if (m[6] === 'var(--d-link)') continue;   // Edit 角标不是节点
+      boxes.push({ x: +m[1], y: +m[2], w: +m[3], h: +m[4] });
+    }
+    for (const m of body.matchAll(/<polygon points="([\d.]+),([\d.]+) ([\d.]+),([\d.]+) ([\d.]+),([\d.]+) ([\d.]+),([\d.]+)"/g)) {
+      const xs = [1, 3, 5, 7].map((i) => +m[i]);
+      const ys = [2, 4, 6, 8].map((i) => +m[i]);
+      boxes.push({ x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) });
+    }
+    expect(boxes.length).toBe(3);
+    // 边:折线的每一段都不得穿过盒子(端点贴着边不算)
+    const paths = [...body.matchAll(/<path d="(M[^"]+)"[^>]*stroke="var\(--d-muted\)"/g)].map((m) => m[1]);
+    expect(paths.length).toBe(1);
+    const pts = paths[0].split(/[ML]/).filter(Boolean).map((p) => p.trim().split(' ').map(Number));
+    for (let i = 1; i < pts.length; i++) {
+      const [x1, y1] = pts[i - 1];
+      const [x2, y2] = pts[i];
+      for (const b of boxes) {
+        const cross = y1 === y2
+          ? y1 > b.y && y1 < b.y + b.h && Math.max(x1, x2) > b.x && Math.min(x1, x2) < b.x + b.w
+          : x1 > b.x && x1 < b.x + b.w && Math.max(y1, y2) > b.y && Math.min(y1, y2) < b.y + b.h;
+        expect(cross, `segment ${x1},${y1} → ${x2},${y2} crosses a box`).toBe(false);
+      }
+    }
+  });
+
+  it('直着来的那条线走正中(不为了别的线让出位置)', () => {
+    // 两条线进同一个框的同一侧:一条是直着来的(同一行),一条是绕过来的。
+    // 直着来的那条不该被顶歪 —— 读者看到的是「没必要的一折」。
+    const params = [
+      'n=t;terminal;Target;;r1c0',
+      'n=d;decision;Mid;;r1c1',
+      'n=s;state;Source;;r3c3',
+      'e=s;t;绕远',
+      'e=d;t;直着来',
+    ];
+    const { svg } = renderKindFromUrl('lifecycle', new URL('https://x-cmd.com/draw/lifecycle?' + params.join('&')));
+    const body = svg.replace(/<defs>.*?<\/defs>/s, '');
+    const paths = [...body.matchAll(/<path d="(M[^"]+)"[^>]*stroke="var\(--d-muted\)"/g)].map((m) => m[1]);
+    // 直着来的那条:所有点的 y 相同(没有折)
+    const ysOf = (d: string): number[] => [...d.matchAll(/[ML]([\d.]+) ([\d.]+)/g)].map((m) => Number(m[2]));
+    const straight = paths.find((d) => {
+      const ys = ysOf(d);
+      return ys.length > 1 && new Set(ys).size === 1;
+    });
+    expect(straight, '有一条直线').toBeTruthy();
+  });
+
   it('gives each kind its own vocabulary and rejects the others', () => {
     expect(() => renderKindFromUrl('dataflow', new URL('https://x-cmd.com/draw/dataflow?n=x;state;S;r0c0'))).toThrow(/process/);
     expect(() => renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?n=x;class;C;r0c0'))).toThrow(/table/);

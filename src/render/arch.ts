@@ -323,6 +323,51 @@ function detourY(a: Box, b: Box, x1: number, x2: number, boxes: Box[], inside?: 
   return cands[0];
 }
 
+/** 竖着的那一段被挡住了 → 在两端之间找一条空通道(从目标那侧往外扫) */
+function freeChannelX(
+  fromX: number,
+  toX: number,
+  y1: number,
+  y2: number,
+  boxes: Box[],
+  targetX: number,
+): number | null {
+  const lo = Math.min(fromX, toX);
+  const hi = Math.max(fromX, toX);
+  const yTop = Math.min(y1, y2);
+  const yBot = Math.max(y1, y2);
+  const order: number[] = [];
+  if (targetX <= (lo + hi) / 2) {
+    for (let x = targetX; x <= hi; x += 2) order.push(x);
+  } else {
+    for (let x = targetX; x >= lo; x -= 2) order.push(x);
+  }
+  for (const x of order) {
+    if (hitBox(x, yTop, x, yBot, boxes)) continue;                                  // 竖着的那段
+    if (hitBox(Math.min(fromX, x), y1, Math.max(fromX, x), y1, boxes)) continue;   // 源那侧的横段
+    if (hitBox(Math.min(toX, x), y2, Math.max(toX, x), y2, boxes)) continue;       // 目标那侧的横段
+    return x;
+  }
+  return null;
+}
+
+/** 端口位置:偏移由调用方给(0 = 正中)—— 直着来的那条走正中,绕过来的往边上让 */
+function portAt(b: Box, side: Side, off: number): [number, number] {
+  const cx = b.x + b.w / 2;
+  const cy = b.y + b.h / 2;
+  switch (side) {
+    case 'left': return [b.x, cy + off];
+    case 'right': return [b.x + b.w, cy + off];
+    case 'top': return [cx + off, b.y];
+    case 'bottom': return [cx + off, b.y + b.h];
+  }
+}
+
+/** 一侧上第 i 个端口的默认偏移(n 个端口均分这一侧) */
+function portOffset(len: number, i: number, n: number): number {
+  return ((i + 1) / (n + 1) - 0.5) * len;
+}
+
 /** 两端都在哪个边界里(取最小的那个)—— 绕行时别跑出这个框 */
 function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
   let best: Box | undefined;
@@ -383,6 +428,61 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
     entrySeen.set(rk, entryAt[i] + 1);
   });
 
+  // 端口偏移:同一侧上有几条线,谁走正中?
+  // 「直着来的」—— 源和目标在同一行(左右两侧)/同一列(上下两侧)—— 走正中,
+  // 别的线往边上让。不这样处理的话,一条绕远路的线会把本来笔直的线顶歪
+  // (读者看到的是「没必要的一折」)。
+  const exitOff: number[] = [];
+  const entryOff: number[] = [];
+  // 出口偏移
+  {
+    const groups = new Map<string, number[]>();
+    edges.forEach((e, i) => {
+      const k = `${e.from}|${sides[i].exit}`;
+      groups.set(k, [...(groups.get(k) ?? []), i]);
+    });
+    for (const [k, idxs] of groups) {
+      const side = sides[idxs[0]].exit;
+      const box = byId.get(edges[idxs[0]].from)!.box;
+      const len = side === 'left' || side === 'right' ? box.h : box.w;
+      const aligned = idxs.filter((i) => {
+        const src = byId.get(edges[i].from)!.box;
+        const dst = byId.get(edges[i].to)!.box;
+        return side === 'left' || side === 'right'
+          ? Math.abs(src.y + src.h / 2 - (dst.y + dst.h / 2)) < 8
+          : Math.abs(src.x + src.w / 2 - (dst.x + dst.w / 2)) < 8;
+      });
+      idxs.forEach((i) => {
+        const slot = idxs.indexOf(i);
+        exitOff[i] = aligned.length === 1 && aligned[0] === i ? 0 : portOffset(len, slot, idxs.length);
+      });
+    }
+  }
+  // 入口偏移
+  {
+    const groups = new Map<string, number[]>();
+    edges.forEach((e, i) => {
+      const k = `${e.to}|${sides[i].entry}`;
+      groups.set(k, [...(groups.get(k) ?? []), i]);
+    });
+    for (const [k, idxs] of groups) {
+      const side = sides[idxs[0]].entry;
+      const box = byId.get(edges[idxs[0]].to)!.box;
+      const len = side === 'left' || side === 'right' ? box.h : box.w;
+      const aligned = idxs.filter((i) => {
+        const src = byId.get(edges[i].from)!.box;
+        const dst = byId.get(edges[i].to)!.box;
+        return side === 'left' || side === 'right'
+          ? Math.abs(src.y + src.h / 2 - (dst.y + dst.h / 2)) < 8
+          : Math.abs(src.x + src.w / 2 - (dst.x + dst.w / 2)) < 8;
+      });
+      idxs.forEach((i) => {
+        const slot = idxs.indexOf(i);
+        entryOff[i] = aligned.length === 1 && aligned[0] === i ? 0 : portOffset(len, slot, idxs.length);
+      });
+    }
+  }
+
   const OUT = 16;
   const routed: V2Routed[] = [];
   const busOf = new Map<number, { channelY: number; n: number }>();
@@ -413,8 +513,8 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
     }
 
     const { exit, entry } = sides[i];
-    const p0 = port(a.box, exit, exitAt[i], exitSeen.get(`${e.from}|${exit}`) ?? 1);
-    const p4 = port(b.box, entry, entryAt[i], entrySeen.get(`${e.to}|${entry}`) ?? 1);
+    const p0 = portAt(a.box, exit, exitOff[i]);
+    const p4 = portAt(b.box, entry, entryOff[i]);
     const p1 = step(p0, exit, OUT);
     const p3 = step(p4, entry, OUT);
     const others = boxes.filter((x) => x !== a.box && x !== b.box);
@@ -425,8 +525,16 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
         const dy = detourY(a.box, b.box, p1[0], p3[0], others, enclosingBoundary(a.box, b.box, bounds));
         pts = [p0, p1, [p1[0], dy], [p3[0], dy], p3, p4];
       } else {
-        const mid = (p1[0] + p3[0]) / 2;
-        pts = [p0, p1, [mid, p1[1]], [mid, p3[1]], p3, p4];
+        // 竖着的那一段贴着目标走(落在目标端口的正上方/下方)——
+        // 放在两端的中间,会从中间的盒子上横穿过去(看着像接到了别的框上)
+        const vx = p3[0];
+        if (!hitBox(vx, Math.min(p1[1], p3[1]), vx, Math.max(p1[1], p3[1]), others)) {
+          pts = [p0, p1, [vx, p1[1]], [vx, p3[1]], p3, p4];
+        } else {
+          const ch = freeChannelX(p1[0], p3[0], p1[1], p3[1], others, p3[0]);
+          const cx = ch ?? (p1[0] + p3[0]) / 2;
+          pts = [p0, p1, [cx, p1[1]], [cx, p3[1]], p3, p4];
+        }
       }
     } else {
       const mid = (p1[1] + p3[1]) / 2;
