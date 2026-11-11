@@ -280,6 +280,11 @@ b=label;id id …                  group  (a boundary or a swim lane)
 https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Cloudflare Worker;r0c1&e=web;api;GET /draw?type=pie
 ```
 
+Leave the position out and the engine lays the graph out **in layers** — ranked by
+dependency (sources first, sinks last), ordered inside a layer to keep edges
+from crossing, aligned with their neighbours. `dir=tb` stacks the layers instead
+of putting them side by side; `grid=N` asks for the plain grid instead.
+
 Full manual — positions, multi-line text, encoding rules, per-kind table: [Diagram URLs](docs/1-overview/06-diagram-urls/en.md).
 
 Common parameters:

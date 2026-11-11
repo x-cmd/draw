@@ -40,6 +40,9 @@ export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
 export { renderArchmapFromUrl } from './render/archmap.js';
 export { renderArchFromUrl, renderArchCore, renderCloudFromUrl, CLOUD_TYPES } from './render/arch.js';
+// 分层布局(Sugiyama):不写位置时 arch2 那几张脸自动摆位用的引擎 ——
+// 库用户想自己算坐标时也能直接用
+export { layeredLayout, type LayeredOptions, type LayeredResult, type LayoutNode } from './render/layout.js';
 // mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';
