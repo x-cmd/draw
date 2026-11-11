@@ -662,7 +662,12 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
     const b = byId.get(e.to)!.box;
     // 目标(或源)横跨在自己的正下方/正上方 → 竖着走,别从侧面绕
     const stacked = (b.x <= cx(a) && cx(a) <= b.x + b.w) || (a.x <= cx(b) && cx(b) <= a.x + a.w);
-    const horiz = !stacked && Math.abs(cx(b) - cx(a)) >= Math.abs(cy(b) - cy(a));
+    // 比的是两个框**之间留出多远**,不是中心差多少 ——
+    // 宽框(比如一整列宽的标题块)中心离得远,照中心算会把线甩到侧面绕一大圈,
+    // 明明上下就隔一条线。
+    const gapX = Math.max(0, Math.max(a.x, b.x) - Math.min(a.x + a.w, b.x + b.w));
+    const gapY = Math.max(0, Math.max(a.y, b.y) - Math.min(a.y + a.h, b.y + b.h));
+    const horiz = !stacked && gapX >= gapY;
     const toRight = cx(b) >= cx(a);
     const down = cy(b) >= cy(a);
     return {
@@ -971,19 +976,26 @@ function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = fa
     let place: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
     let best: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
     let bestCost = Infinity;
-    // 候选位置:沿着线多试几个点 —— 挤在一起时挪一挪,别都堆在中点上
+    // 候选位置:沿着线多试几个点,再沿线往旁边挪几格 ——
+    // 挤在一起时挪一挪,别都堆在中点上(两个标签叠着,谁也看不清)
     for (const t of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82, 0.12, 0.88, 0.08, 0.92]) {
       const at = polyAt(rt.pts, t);
       for (const mirror of [false, true]) {
-        const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(at.p, at.horiz, mirror), b), 0);
-        if (cost === 0) {
-          place = { ...at, mirror };
-          break;
+        for (const shift of [0, 1, -1]) {
+          // 挪的方向是竖直的:横线上的标签上下挪,竖线上的标签沿着线挪 ——
+          // 标签始终贴着它那条线,读者还认得出这是哪条边的说明
+          const p: [number, number] = [at.p[0], at.p[1] + shift * (h + 3)];
+          const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(p, at.horiz, mirror), b), 0);
+          if (cost === 0) {
+            place = { p, horiz: at.horiz, mirror };
+            break;
+          }
+          if (cost < bestCost) {
+            bestCost = cost;
+            best = { p, horiz: at.horiz, mirror };
+          }
         }
-        if (cost < bestCost) {
-          bestCost = cost;
-          best = { ...at, mirror };
-        }
+        if (place) break;
       }
       if (place) break;
     }
