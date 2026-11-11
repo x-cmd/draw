@@ -230,6 +230,12 @@ the diagram as a link, not a picture of one.
 | `w=` / `h=` | minimum width / height |
 | `v=N` | freeze the response at a version |
 
+**Where the title goes.** Every chart type — the core ones and the ECharts
+overlay alike — puts its title at the **top left**, and reserves the band under
+it so the plot never starts underneath. In the ECharts layer the title
+position is yours to override (`title.left` / `title.top`); if you do, the band
+is reserved from wherever you put it.
+
 ## 9. Other kinds, other grammars
 
 Three diagram paths do not use the property table, because they have a
