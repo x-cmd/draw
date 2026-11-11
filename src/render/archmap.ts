@@ -85,14 +85,18 @@ export function parseNodes(raw: string[]): ArchNode[] {
     const where = `"n=${v}" (#${i + 1})`;
     if (f.length < 3 || f.length > 6) bad(`${where}: expected id;type;label[;sublabel][;pos][;icon] fields`);
     const [id, type, label] = f;
+    // 图标按形状认(provider:name),拿掉之后剩下的还是「副标题 + 位置」的老规矩
+    const icon = f.slice(3).find((seg) => ICON_FIELD_RE.test(seg));
+    const rest = f.slice(3).filter((seg) => !ICON_FIELD_RE.test(seg));
     let sub: string | undefined;
     let pos: string | undefined;
-    let icon: string | undefined;
-    // 剩下的段按形状认:图标(aws:ec2) / 格位(r0c1) / 像素(p40,80) / 副标题
-    for (const seg of f.slice(3)) {
-      if (icon === undefined && ICON_FIELD_RE.test(seg)) icon = seg;
-      else if (pos === undefined && (GRID_POS_RE.test(seg) || PX_POS_RE.test(seg))) pos = seg;
-      else if (sub === undefined) sub = seg;
+    if (rest.length === 1) {
+      // 一段:像格位/像素坐标 → pos,否则视作 sublabel
+      if (GRID_POS_RE.test(rest[0]) || PX_POS_RE.test(rest[0])) pos = rest[0];
+      else sub = rest[0];
+    } else if (rest.length >= 2) {
+      sub = rest[0];
+      pos = rest[1];
     }
     if (!ID_RE.test(id)) bad(`${where}: id must be alnum/dot/dash/underscore, not starting with a digit-punct`);
     if (!(TYPES as readonly string[]).includes(type)) bad(`${where}: unknown type "${type}" (one of ${TYPES.join('/')})`);
