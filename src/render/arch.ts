@@ -954,6 +954,40 @@ const overlapArea = (a: Box, b: Box): number => {
   return w > 0 && h > 0 ? w * h : 0;
 };
 
+/**
+ * 边标签往哪儿放 —— 一套办法,不是一堆补丁:
+ *
+ * 1. **槽位**:折线的每一段都提供几个位置(段中 + 段的两侧偏一点),
+ *    每个位置有「线的两侧」两种方向。标签只落在槽位上 —— 它永远贴着
+ *    自己那条线,读者一眼认得出这是哪条边的说明。
+ * 2. **代价**:槽位压住多少东西(节点框、分组的框线、已经放下的标签)。
+ *    代价 = 重叠面积之和。
+ * 3. **挑**:第一个代价为 0 的槽位直接用;都没有就挑代价最小的
+ *    (标签比两个节点之间的空档还宽时,只能压着点,挑最不糟的)。
+ *
+ * 放下的标签占住位置,后面的标签要避开 —— 两段线挨着时,标签不会叠在一起。
+ */
+function labelSlots(pts: [number, number][]): { p: [number, number]; horiz: boolean }[] {
+  const out: { p: [number, number]; horiz: boolean }[] = [];
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1];
+    const b = pts[i];
+    const horiz = Math.abs(b[0] - a[0]) >= Math.abs(b[1] - a[1]);
+    const len = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
+    if (len < 1) continue;
+    // 太短的段落放不下标签,跳过(免得标签骑在拐角上)
+    if (horiz && len < 40) continue;
+    if (!horiz && len < 24) continue;
+    for (const f of [0.5, 0.3, 0.7]) {
+      out.push({
+        p: [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f],
+        horiz,
+      });
+    }
+  }
+  return out;
+}
+
 function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = false): Spot[] {
   const out: Spot[] = [];
   // 已经放下的标签 —— 后面的标签要避开它们(不然两个标签会叠在一起)
@@ -968,6 +1002,7 @@ function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = fa
     }
     const w = textW(text, EDGE_FS) + 12;
     const h = EDGE_FS + 8;
+    // 标签的框:横线上的压在线的上方/下方,竖线上的放在线的左/右
     const rectOf = (p: [number, number], horiz: boolean, mirror: boolean): Box =>
       horiz
         ? { x: p[0] - w / 2, y: mirror ? p[1] + 3 : p[1] - 3 - h, w, h }
@@ -976,31 +1011,25 @@ function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = fa
     let place: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
     let best: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
     let bestCost = Infinity;
-    // 候选位置:沿着线多试几个点,再沿线往旁边挪几格 ——
-    // 挤在一起时挪一挪,别都堆在中点上(两个标签叠着,谁也看不清)
-    for (const t of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82, 0.12, 0.88, 0.08, 0.92]) {
-      const at = polyAt(rt.pts, t);
+    for (const slot of labelSlots(rt.pts)) {
       for (const mirror of [false, true]) {
-        for (const shift of [0, 1, -1]) {
-          // 挪的方向是竖直的:横线上的标签上下挪,竖线上的标签沿着线挪 ——
-          // 标签始终贴着它那条线,读者还认得出这是哪条边的说明
-          const p: [number, number] = [at.p[0], at.p[1] + shift * (h + 3)];
-          const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(p, at.horiz, mirror), b), 0);
-          if (cost === 0) {
-            place = { p, horiz: at.horiz, mirror };
-            break;
-          }
-          if (cost < bestCost) {
-            bestCost = cost;
-            best = { p, horiz: at.horiz, mirror };
-          }
+        const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(slot.p, slot.horiz, mirror), b), 0);
+        if (cost === 0) {
+          place = { ...slot, mirror };
+          break;
         }
-        if (place) break;
+        if (cost < bestCost) {
+          bestCost = cost;
+          best = { ...slot, mirror };
+        }
       }
       if (place) break;
     }
     // 实在没地方放(标签比两个节点之间的空档还宽),挑压得最少的那个
-    if (!place) place = best ?? { ...polyAt(rt.pts, 0.5), mirror: false };
+    if (!place) {
+      const mid = labelSlots(rt.pts)[0] ?? { p: rt.pts[0], horiz: true };
+      place = best ?? { ...mid, mirror: false };
+    }
     const p = place.p;
     const x = place.horiz ? p[0] : p[0] + (place.mirror ? -8 : 8);
     const y = place.horiz ? p[1] + (place.mirror ? 15 : -7) : p[1] + 4;
@@ -1014,7 +1043,6 @@ function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = fa
   }
   return out;
 }
-
 function drawEdgeLabelsV2(spots: Spot[], interactive: boolean): string {
   return spots.map((s) => {
     const w = textW(s.text, EDGE_FS) + 12;
