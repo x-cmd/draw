@@ -1,0 +1,48 @@
+id: x-draw-9-showcases-12-reference-examples
+
+data:
+  - name:
+      en: Reference charts
+      cn: 参考图
+    qa:
+      - id: why
+        question:
+          en: "Why check other people's charts?"
+          cn: "为什么要对别人家的图?"
+        answer:
+          en: >
+            Because "could we draw that?" is the question that decides whether draw is useful.
+            A reference is a question first and a style second — the agent leaderboard is a
+            question draw can answer, the character network needs the ECharts overlay, and the
+            animated illustration is not draw's question at all.
+        confidence: 9
+        reference:
+          - docs/9-showcases/12-reference-examples/en.md
+          - docs/9-showcases/12-reference-examples/cn.md
+      - id: data
+        question:
+          en: "Is the data in these charts real?"
+          cn: "这些图的数据是真的吗?"
+        answer:
+          en: >
+            Yes. The leaderboard uses FrontierHarness' published evaluation results — twelve
+            harnesses with their pass rate and median cost per task — and the character network
+            uses the co-occurrence dataset from the novels. Toy data always looks better than
+            real data, which is exactly why it proves less.
+        confidence: 9
+        reference:
+          - docs/9-showcases/12-reference-examples/en.md
+          - docs/9-showcases/12-reference-examples/cn.md
+      - id: url-length
+        question:
+          en: "Why does the character network only have eight people?"
+          cn: "人物关系图为什么只有八个人?"
+        answer:
+          en: >
+            Because the URL carries the data and GitHub's Camo proxy rejects image URLs over
+            about 2.7KB with a 414. Eight characters keep it under that; a bigger graph has to
+            live on a short link.
+        confidence: 8
+        reference:
+          - docs/9-showcases/12-reference-examples/en.md
+          - docs/9-showcases/12-reference-examples/cn.md
