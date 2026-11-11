@@ -81,3 +81,43 @@ describe('布局引擎挂载点', () => {
     expect(tb.svg).toContain('<svg');
   });
 });
+
+describe('分组(b=)的显示样式', () => {
+  const Q = 'n=a;be;A&n=b;db;B&e=a;b&b=Group;a%20b';
+  const dashed = (svg: string): number =>
+    (svg.match(/stroke-dasharray="7 5"/g) ?? []).length;
+
+  it('默认是虚线框', () => {
+    const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}`));
+    expect(dashed(svg)).toBe(1);
+  });
+
+  it('bstyle=faint:更虚更淡的边', () => {
+    const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=faint`));
+    expect(dashed(svg)).toBe(0);
+    expect(svg).toContain('stroke-dasharray="3 5"');
+  });
+
+  it('bstyle=glow:荧光线(几层叠出光晕)', () => {
+    const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=glow`));
+    expect(svg).toContain('stroke-width="7"');
+    expect(svg).toContain('stroke-width="3.5"');
+  });
+
+  it('bstyle=tint:区域底色', () => {
+    const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=tint`));
+    expect(svg).toMatch(/fill="var\(--d-s\d+\)" fill-opacity="0.07"/);
+  });
+
+  it('bstyle=plain:不画框', () => {
+    const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=plain`));
+    expect(dashed(svg)).toBe(0);
+    expect(svg).not.toContain('stroke-width="1.4" stroke-dasharray');
+  });
+
+  it('写错就 400(把候选列出来)', () => {
+    expect(() =>
+      renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=neon`)),
+    ).toThrow(/bstyle/);
+  });
+});

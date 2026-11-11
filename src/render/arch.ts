@@ -1060,33 +1060,87 @@ function boundaryBoxV2(byId: Map<string, Placed>, bd: ArchBoundary): Box {
   };
 }
 
-function drawBoundariesV2(placed: Placed[], boundaries: ArchBoundary[], interactive: boolean, colors: string[]): string {
+/**
+ * 分组(b=)的显示样式:
+ * - `dash`  虚线框(默认)
+ * - `faint` 更虚更淡的边 —— 线多的时候不抢戏
+ * - `glow`  荧光线(几层叠出来的光晕)
+ * - `tint`  区域底色(淡色块 + 极淡的边)
+ * - `plain` 不画框,只留小牌子
+ */
+export type BoundaryStyle = 'dash' | 'faint' | 'glow' | 'tint' | 'plain';
+export const BOUNDARY_STYLES: BoundaryStyle[] = ['dash', 'faint', 'glow', 'tint', 'plain'];
+
+/** bstyle= —— 分组怎么画;不写就是默认那套虚线框 */
+export function boundaryStyleParam(params: URLSearchParams): BoundaryStyle | undefined {
+  const raw = params.get('bstyle');
+  if (raw === null || raw === '') return undefined;
+  const v = raw.trim().toLowerCase();
+  if ((BOUNDARY_STYLES as string[]).includes(v)) return v as BoundaryStyle;
+  throw new ApiError(400, `"bstyle" must be one of: ${BOUNDARY_STYLES.join(', ')}. Got: ${JSON.stringify(raw)}`);
+}
+
+function drawBoundariesV2(
+  placed: Placed[],
+  boundaries: ArchBoundary[],
+  interactive: boolean,
+  colors: string[],
+  style: BoundaryStyle = 'dash',
+): string {
   const byId = new Map(placed.map((p) => [p.id, p]));
   return boundaries.map((bd, i) => {
     const box = boundaryBoxV2(byId, bd);
     const ia = interactive ? ` data-boundary="${esc(bd.ids.join(' '))}"` : '';
     const c = colors[i];
-    return (
-      `<g${ia}>` +
-      `<rect x="${r2(box.x)}" y="${r2(box.y)}" width="${r2(box.w)}" height="${r2(box.h)}" rx="14"` +
-      ` fill="none" stroke="${c}" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="7 5"/>` +
-      `</g>`
-    );
+    const rect =
+      `<rect x="${r2(box.x)}" y="${r2(box.y)}" width="${r2(box.w)}" height="${r2(box.h)}" rx="14"`;
+    let body: string;
+    switch (style) {
+      case 'faint':
+        body = `${rect} fill="none" stroke="${c}" stroke-opacity="0.28" stroke-width="1" stroke-dasharray="3 5"/>`;
+        break;
+      case 'glow':
+        // 荧光线:宽而淡的几层叠出光晕,底下那几层不吃字
+        body =
+          `${rect} fill="none" stroke="${c}" stroke-opacity="0.10" stroke-width="7"/>` +
+          `${rect} fill="none" stroke="${c}" stroke-opacity="0.16" stroke-width="3.5"/>` +
+          `${rect} fill="none" stroke="${c}" stroke-opacity="0.85" stroke-width="1.4"/>`;
+        break;
+      case 'tint':
+        body =
+          `${rect} fill="${c}" fill-opacity="0.07" stroke="${c}" stroke-opacity="0.22" stroke-width="1"/>`;
+        break;
+      case 'plain':
+        body = '';
+        break;
+      default:
+        body = `${rect} fill="none" stroke="${c}" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="7 5"/>`;
+    }
+    return `<g${ia}>${body}</g>`;
   }).join('');
 }
 
 /** 边界的标签胶囊:画在走线之上,线不会压在字上 */
-function drawBoundaryLabelsV2(placed: Placed[], boundaries: ArchBoundary[], colors: string[]): string {
+function drawBoundaryLabelsV2(
+  placed: Placed[],
+  boundaries: ArchBoundary[],
+  colors: string[],
+  style: BoundaryStyle = 'dash',
+): string {
   const byId = new Map(placed.map((p) => [p.id, p]));
   return boundaries.map((bd, i) => {
     const box = boundaryBoxV2(byId, bd);
     const label = bd.label.toUpperCase();
     const w = textW(label, 10) + bd.label.length * 1.2 + 20;
     const c = colors[i];
+    // 区域底色那套:牌子直接用底色垫,不再垫画布色(否则白方块浮在色块上)
+    const chip = style === 'tint'
+      ? `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="${c}" fill-opacity="0.14"/>`
+      : `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="var(--d-card)"/>` +
+        `<rect x="${r2(box.x + 15)}" y="${r2(box.y - 8)}" width="${r2(w - 2)}" height="18" rx="5" fill="${c}" fill-opacity="0.16"/>`;
     return (
       `<g>` +
-      `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="var(--d-card)"/>` +
-      `<rect x="${r2(box.x + 15)}" y="${r2(box.y - 8)}" width="${r2(w - 2)}" height="18" rx="5" fill="${c}" fill-opacity="0.16"/>` +
+      chip +
       `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(box.y + 4)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
       `</g>`
     );
@@ -1152,6 +1206,8 @@ export interface ArchOpts {
    * 不给就用库里那个通用的;站上装的是更好的那个 —— 调用方的事,URL 里不暴露。
    */
   layout?: LayoutEngine;
+  /** 分组(b=)的显示样式 */
+  boundaryStyle?: BoundaryStyle;
   legend: boolean;
   /** 画布纸:底下铺一层很淡的方格(默认关) */
   paper: boolean;
@@ -1339,11 +1395,11 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     ? `<rect x="0" y="0" width="${r2(width)}" height="${r2(height)}" fill="url(#am-paper)"/>`
     : '';
   const body = iStyle + DEFS
-    + drawBoundariesV2(placed, o.boundaries, o.interactive, bColors)
+    + drawBoundariesV2(placed, o.boundaries, o.interactive, bColors, o.boundaryStyle)
     + drawRoutesV2(routed, o.interactive, types)
     + drawEdgeLabelsV2(spots, o.interactive)
     + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
-    + drawBoundaryLabelsV2(placed, o.boundaries, bColors);
+    + drawBoundaryLabelsV2(placed, o.boundaries, bColors, o.boundaryStyle);
   // 图例在身子下面 —— 要跟着身子一起往下挪(dy),不然身子一被推下去,
   // 图例就留在原地、压进身子里面
   const dy = headH + Math.max(0, (height - headH - legend.h - bodyH) / 2);
@@ -1391,6 +1447,7 @@ export function renderArchFromUrl(
   const title = params.get('title')?.trim() || undefined;
   const gridCols = clampInt(params, 'grid', 0, 1, 12);
   const dir = dirParam(params);
+  const boundaryStyle = boundaryStyleParam(params);
   const legendRaw = params.get('legend');
   const legend = legendRaw === null || legendRaw === '' ? true : legendRaw !== '0' && legendRaw !== 'false';
   const paperRaw = params.get('paper');
@@ -1402,6 +1459,7 @@ export function renderArchFromUrl(
     types,
     gridForced: gridCols > 0,
     dir,
+    boundaryStyle,
     layout: opts.layout,
     template: 'arch2', tagQuery: url.search,
     version: v,
