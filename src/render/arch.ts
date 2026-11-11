@@ -437,6 +437,188 @@ function segsCross(
   return d1 * d2 < 0 && d3 * d4 < 0;
 }
 
+/* ---------------------------------------------------------------- 布线
+   正交布线:Hanan 网格 + A*(带拐弯惩罚)。
+
+   为什么不是「先横再竖」:那种写法只能处理几种摆法,碰上绕远的边就只能猜。
+   这里的做法(KiCad / libavoid 那一类)是正经的:
+
+   1. **Hanan 网格** —— 候选坐标只有两拨:每个障碍框的左右边、上下边。
+      路径的每一段只可能落在这些坐标上(正交路径的最优解一定如此)✓
+   2. **A\*** —— 在网格上找一条总代价最低的路。代价 = 长度 + **拐弯惩罚**
+      (拐一次弯贵一点,所以路会尽量直)+ **压别的线的惩罚**(软约束)✓
+   3. 框都往外胀一点(MARGIN),路就不会贴着框走 ✓
+
+   找不到路(被框堵死)就退回老路 —— 宁可交叉,也不能没有线。 */
+
+const ROUTE_MARGIN = 8;      // 障碍胀开的距离:路不贴着框
+const ROUTE_BEND = 30;       // 拐一次弯的代价(像素当量)
+const ROUTE_CROSS = 5000;    // 压到别的线的代价 —— 大到「除非没别的路,否则不压」
+
+/** 端口朝外的方向 */
+const OUT_DIR: Record<Side, [number, number]> = {
+  left: [-1, 0], right: [1, 0], top: [0, -1], bottom: [0, 1],
+};
+
+/**
+ * 一条线段是否穿过某个框。
+ * 贴着框边走不算 —— 那些格子正是路径要用的(不然网格上就没有能走的线了)。
+ */
+function segInBox(a: [number, number], b: [number, number], box: Box): boolean {
+  const EPS = 0.01;
+  const x0 = Math.min(a[0], b[0]);
+  const x1 = Math.max(a[0], b[0]);
+  const y0 = Math.min(a[1], b[1]);
+  const y1 = Math.max(a[1], b[1]);
+  if (a[1] === b[1]) {
+    // 横线:整条都在框的上下沿之间,且横向有重叠
+    if (!(a[1] > box.y + EPS && a[1] < box.y + box.h - EPS)) return false;
+    return x0 < box.x + box.w - EPS && x1 > box.x + EPS;
+  }
+  // 竖线
+  if (!(a[0] > box.x + EPS && a[0] < box.x + box.w - EPS)) return false;
+  return y0 < box.y + box.h - EPS && y1 > box.y + EPS;
+}
+
+/**
+ * 正交布线:Hanan 网格 + A*(长度 + 拐弯惩罚 + 压线惩罚)。
+ *
+ * @param p0 起点端口 @param side0 起点在哪一侧
+ * @param p4 终点端口 @param side4 终点在哪一侧
+ * @param boxes 障碍(其它节点的框)
+ * @param drawn 已经画好的线段(软约束:压上去要加钱,不是禁止)
+ * @returns 折点(从 p0 到 p4),无路可走时返回 null
+ */
+function routeOrthogonal(
+  p0: [number, number], side0: Side,
+  p4: [number, number], side4: Side,
+  boxes: Box[],
+  drawn: number[][],
+  outer: Box,
+): [number, number][] | null {
+  // 障碍:往外胀一点,路就不会贴着框
+  const obs: Box[] = boxes.map((b) => ({
+    x: b.x - ROUTE_MARGIN, y: b.y - ROUTE_MARGIN,
+    w: b.w + ROUTE_MARGIN * 2, h: b.h + ROUTE_MARGIN * 2,
+  }));
+  // 端口往外伸一小段(起点和终点)
+  const d0 = OUT_DIR[side0];
+  const d4 = OUT_DIR[side4];
+  const s: [number, number] = [p0[0] + d0[0] * ROUTE_MARGIN, p0[1] + d0[1] * ROUTE_MARGIN];
+  const t: [number, number] = [p4[0] + d4[0] * ROUTE_MARGIN, p4[1] + d4[1] * ROUTE_MARGIN];
+
+  // Hanan 网格:候选坐标 = 障碍的边 + 两端
+  const xsSet = new Set<number>([s[0], t[0]]);
+  const ysSet = new Set<number>([s[1], t[1]]);
+  for (const b of obs) {
+    xsSet.add(b.x); xsSet.add(b.x + b.w);
+    ysSet.add(b.y); ysSet.add(b.y + b.h);
+  }
+  // 图的外框也算候选 —— 绕远的那条边要能从图的外面绕过去
+  xsSet.add(outer.x); xsSet.add(outer.x + outer.w);
+  ysSet.add(outer.y); ysSet.add(outer.y + outer.h);
+  const xs = [...xsSet].sort((a, b) => a - b);
+  const ys = [...ysSet].sort((a, b) => a - b);
+  const xi = (x: number): number => xs.indexOf(x);
+  const yi = (y: number): number => ys.indexOf(y);
+  const si = xi(s[0]);
+  const sj = yi(s[1]);
+  const ti = xi(t[0]);
+  const tj = yi(t[1]);
+  if (si < 0 || sj < 0 || ti < 0 || tj < 0) return null;
+
+  const blocked = (i: number, j: number): boolean => {
+    const x = xs[i];
+    const y = ys[j];
+    return obs.some((b) => x > b.x && x < b.x + b.w && y > b.y && y < b.y + b.h);
+  };
+
+  // A*(状态 = 网格点 × 方向,方向用来算拐弯惩罚)
+  const W = xs.length;
+  const H = ys.length;
+  const DIRS: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  const cost = new Float64Array(W * H * 4).fill(Infinity);
+  const prev = new Int32Array(W * H * 4).fill(-1);
+  const startIdx = (i: number, j: number, d: number): number => ((j * W + i) * 4 + d);
+  const gx = (i: number): number => xs[i];
+  const gy = (j: number): number => ys[j];
+
+  // 起点/终点本身在障碍边上(不算在里面)✓
+  const open: number[] = [];
+  for (let d = 0; d < 4; d++) {
+    const idx = startIdx(si, sj, d);
+    cost[idx] = 0;
+    open.push(idx);
+  }
+  const goal = (i: number, j: number): boolean => i === ti && j === tj;
+
+  let guard = 0;
+  while (open.length && guard++ < W * H * 8) {
+    // 取代价最小的(网格小,直接线性扫)。
+    // 用 Dijkstra 而不是 A*:拐弯惩罚让「曼哈顿距离」这个启发式不再一致,
+    // A* 会提前把终点弹出来、给出次优的路线 —— 这里要的就是最优路线。
+    let bestAt = 0;
+    let bestF = Infinity;
+    for (let k = 0; k < open.length; k++) {
+      const idx = open[k];
+      const f = cost[idx];
+      if (f < bestF) { bestF = f; bestAt = k; }
+    }
+    const idx = open.splice(bestAt, 1)[0];
+    const d = idx % 4;
+    const cell = (idx - d) / 4;
+    const j = Math.floor(cell / W);
+    const i = cell % W;
+    if (goal(i, j)) {
+      // 回溯
+      const path: [number, number][] = [];
+      let cur = idx;
+      while (cur >= 0) {
+        const dd = cur % 4;
+        const cc = (cur - dd) / 4;
+        const jj = Math.floor(cc / W);
+        const ii = cc % W;
+        path.push([gx(ii), gy(jj)]);
+        cur = prev[cur];
+      }
+      path.reverse();
+      // 去掉重复点
+      const clean: [number, number][] = [];
+      for (const p of path) {
+        const last = clean[clean.length - 1];
+        if (!last || last[0] !== p[0] || last[1] !== p[1]) clean.push(p);
+      }
+      return [[p0[0], p0[1]], ...clean, [p4[0], p4[1]]];
+    }
+    const [dx, dy] = DIRS[d];
+    const ni = i + dx;
+    const nj = j + dy;
+    if (ni < 0 || nj < 0 || ni >= W || nj >= H) continue;
+    if (blocked(ni, nj)) continue;
+    // 这一段会不会从别的框里穿过去(网格点不在线段中间 ✓)
+    const a: [number, number] = [gx(i), gy(j)];
+    const b: [number, number] = [gx(ni), gy(nj)];
+    if (obs.some((box) => segInBox(a, b, box))) continue;
+    // 压到别的线:加钱(软约束)✓
+    let cross = 0;
+    for (const seg of drawn) {
+      if (segsCross(a, b, [seg[0], seg[1]], [seg[2], seg[3]])) { cross++; break; }
+    }
+    const step = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
+    for (let nd = 0; nd < 4; nd++) {
+      const nIdx = startIdx(ni, nj, nd);
+      const bend = nd === d ? 0 : ROUTE_BEND;
+      const nc = cost[idx] + step + bend + cross * ROUTE_CROSS;
+      if (nc < cost[nIdx]) {
+        cost[nIdx] = nc;
+        prev[nIdx] = idx;
+        if (!open.includes(nIdx)) open.push(nIdx);
+      }
+    }
+  }
+  return null;
+}
+
 function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = [], iconsBig = false): V2Routed[] {
   // 大图标节点:连线只接图标那块(名字在图标下面,别从名字里穿过去)
   const portBoxOf = (p: Placed): Box =>
@@ -548,13 +730,13 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
   const busOf = new Map<number, { channelY: number; n: number }>();
   // 已经画过的线段 —— 后画的线要避开它们
   const drawn: number[][] = [];
-  // 图的外框:绕外面走的时候用
+  // 图的外框:绕外面走的时候用(比节点框再胀开一点,留出走线的位置)
   const ob: Box = boxes.length
     ? {
-        x: Math.min(...boxes.map((b) => b.x)),
-        y: Math.min(...boxes.map((b) => b.y)),
-        w: Math.max(...boxes.map((b) => b.x + b.w)) - Math.min(...boxes.map((b) => b.x)),
-        h: Math.max(...boxes.map((b) => b.y + b.h)) - Math.min(...boxes.map((b) => b.y)),
+        x: Math.min(...boxes.map((b) => b.x)) - ROUTE_MARGIN,
+        y: Math.min(...boxes.map((b) => b.y)) - ROUTE_MARGIN,
+        w: Math.max(...boxes.map((b) => b.x + b.w)) + ROUTE_MARGIN * 2 - (Math.min(...boxes.map((b) => b.x)) - ROUTE_MARGIN),
+        h: Math.max(...boxes.map((b) => b.y + b.h)) + ROUTE_MARGIN * 2 - (Math.min(...boxes.map((b) => b.y)) - ROUTE_MARGIN),
       }
     : { x: 0, y: 0, w: 0, h: 0 };
 
@@ -613,33 +795,11 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
       return [p0, p1, [p1[0], mid], [p3[0], mid], p3, p4];
     })();
 
-    // 绕外面:从另一侧出去,沿着图的外面走,再从同一侧进来
-    const around: [number, number][] | null = (() => {
-      const flip = exit === 'left' || exit === 'right' ? (exit === 'right' ? 'left' : 'right') : (exit === 'bottom' ? 'top' : 'bottom');
-      const q0 = portAt(portBoxOf(a), flip, exitOff[i]);
-      const q4 = portAt(portBoxOf(b), flip, entryOff[i]);
-      const q1 = step(q0, flip, OUT);
-      if (flip === 'left' || flip === 'right') {
-        const ch = flip === 'right' ? ob.x + ob.w + OUT : ob.x - OUT;
-        return [q0, q1, [ch, q1[1]], [ch, q4[1]], q4];
-      }
-      const ch = flip === 'bottom' ? ob.y + ob.h + OUT : ob.y - OUT;
-      return [q0, q1, [q1[0], ch], [q4[0], ch], q4];
-    })();
-
-    const hits = (route: [number, number][]): boolean => {
-      for (let i = 1; i < route.length; i++) {
-        const s1 = route[i - 1];
-        const s2 = route[i];
-        if (hitBox(Math.min(s1[0], s2[0]), Math.min(s1[1], s2[1]), Math.max(s1[0], s2[0]), Math.max(s1[1], s2[1]), others)) return true;
-        for (const seg of drawn) {
-          if (segsCross(s1, s2, [seg[0], seg[1]], [seg[2], seg[3]])) return true;
-        }
-      }
-      return false;
-    };
-    let pts: [number, number][] = direct;
-    if (hits(direct) && around && !hits(around)) pts = around;
+    // 正交布线(Hanan 网格 + A*)—— 找不到路才退回老路
+    // 障碍是全部的框(含源和目标 —— 线不能从自己的框里穿过去)
+    let pts: [number, number][] | null =
+      routeOrthogonal(p0, exit, p4, entry, boxes, drawn, ob);
+    if (!pts) pts = direct;
     routed.push({ e, pts, ...style } as V2Routed & { stroke: string; width: number });
     for (let i = 1; i < pts.length; i++) drawn.push([pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1]]);
   });
