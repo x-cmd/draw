@@ -19,50 +19,50 @@ x-json-ld:
 ### 可用性 —— 挂在墙上的那个数
 
 ```text
-https://x-cmd.com/draw?type=gauge&t=reliability&title=Uptime%20SLA&value=99.95&max=100
+https://x-cmd.com/draw?type=gauge&t=reliability&title=%E5%8F%AF%E7%94%A8%E6%80%A7%20SLA&value=99.95&max=100
 ```
 
-[![Uptime SLA](https://x-cmd.com/draw?type=gauge&t=reliability&title=Uptime%20SLA&value=99.95&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=Uptime%20SLA&value=99.95&max=100)
+[![Uptime SLA](https://x-cmd.com/draw?type=gauge&t=reliability&title=%E5%8F%AF%E7%94%A8%E6%80%A7%20SLA&value=99.95&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=reliability&title=%E5%8F%AF%E7%94%A8%E6%80%A7%20SLA&value=99.95&max=100)
 
 reliability 风格:分区环加刻度,99.95 不会看着像 100。
 
 ### 存储 —— 用了多少
 
 ```text
-https://x-cmd.com/draw?type=gauge&t=gradient&title=Storage%20used&value=68&max=100
+https://x-cmd.com/draw?type=gauge&t=gradient&title=%E5%AD%98%E5%82%A8%E7%94%A8%E9%87%8F&value=68&max=100
 ```
 
-[![Storage used](https://x-cmd.com/draw?type=gauge&t=gradient&title=Storage%20used&value=68&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=Storage%20used&value=68&max=100)
+[![Storage used](https://x-cmd.com/draw?type=gauge&t=gradient&title=%E5%AD%98%E5%82%A8%E7%94%A8%E9%87%8F&value=68&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=%E5%AD%98%E5%82%A8%E7%94%A8%E9%87%8F&value=68&max=100)
 
 渐变环,数字越大填得越满。
 
 ### 集群 —— 谁和谁通信
 
 ```text
-https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560
+https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw%3Bfe%3BWeb%20%E7%95%8C%E9%9D%A2%3Br0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%3Bp1%20p2&title=Kubernetes%20%E6%8B%93%E6%89%91&w=560
 ```
 
-[![Kubernetes topology](https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560)](https://x-cmd.com/draw/explore/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560)
+[![Kubernetes topology](https://x-cmd.com/draw/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw%3Bfe%3BWeb%20%E7%95%8C%E9%9D%A2%3Br0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%3Bp1%20p2&title=Kubernetes%20%E6%8B%93%E6%89%91&w=560)](https://x-cmd.com/draw/explore/archmap?n=ing;cloud;Ingress;r0c0&n=svc;cloud;Service;r0c1&n=p1;be;Pod%20api-a;r1c0&n=p2;be;Pod%20api-b;r1c1&n=db;db;StatefulSet;r2c0&n=tw;fe;Web%20UI;r0c2&e=tw;svc&e=ing;svc&e=svc;p1&e=svc;p2&e=p1;db&e=p2;db&b=Namespace;p1%20p2&title=Kubernetes%20topology&w=560)
 
 入口、服务、Pod 和有状态服务,命名空间把 Pod 框在一起。
 
 ### 登录路径 —— 一棵决策树
 
 ```text
-https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560
+https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5B%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%5D%20--%3E%20MFA%7B%E5%BC%80%E5%90%AF%20MFA%3F%7D%0A%20%20MFA%20--%3E%7C%E6%98%AF%7C%20Code%5B%E5%8F%91%E9%80%81%E9%AA%8C%E8%AF%81%E7%A0%81%5D%0A%20%20Code%20--%3E%20Verify%5B%E6%A0%A1%E9%AA%8C%5D%0A%20%20Verify%20--%3E%7C%E9%80%9A%E8%BF%87%7C%20Session%5B%E7%AD%BE%E5%8F%91%E4%BC%9A%E8%AF%9D%5D%0A%20%20Verify%20--%3E%7C%E5%A4%B1%E8%B4%A5%7C%20Lock%5B%E9%94%81%E5%AE%9A%E8%B4%A6%E6%88%B7%5D%0A%20%20MFA%20--%3E%7C%E5%90%A6%7C%20Session&t=mono&title=%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B&w=560
 ```
 
-[![Login flow](https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560)
+[![Login flow](https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5B%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%5D%20--%3E%20MFA%7B%E5%BC%80%E5%90%AF%20MFA%3F%7D%0A%20%20MFA%20--%3E%7C%E6%98%AF%7C%20Code%5B%E5%8F%91%E9%80%81%E9%AA%8C%E8%AF%81%E7%A0%81%5D%0A%20%20Code%20--%3E%20Verify%5B%E6%A0%A1%E9%AA%8C%5D%0A%20%20Verify%20--%3E%7C%E9%80%9A%E8%BF%87%7C%20Session%5B%E7%AD%BE%E5%8F%91%E4%BC%9A%E8%AF%9D%5D%0A%20%20Verify%20--%3E%7C%E5%A4%B1%E8%B4%A5%7C%20Lock%5B%E9%94%81%E5%AE%9A%E8%B4%A6%E6%88%B7%5D%0A%20%20MFA%20--%3E%7C%E5%90%A6%7C%20Session&t=mono&title=%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560)
 
 写 Mermaid、出图:MFA 开不开、验证码过不过。
 
 ### 活跃用户 —— 两个端
 
 ```text
-https://x-cmd.com/draw?type=line&t=opendata&labels=W1,W2,W3,W4,W5,W6,W7,W8&series=App:120,145,138,170,165,198,210,230&series=Web:80,95,110,140,170,190,220,250&title=Weekly%20active%20users
+https://x-cmd.com/draw?type=line&t=opendata&labels=W1,W2,W3,W4,W5,W6,W7,W8&series=App:120,145,138,170,165,198,210,230&series=Web:80,95,110,140,170,190,220,250&title=%E5%91%A8%E6%B4%BB%E8%B7%83%E7%94%A8%E6%88%B7
 ```
 
-[![Weekly active users](https://x-cmd.com/draw?type=line&t=opendata&labels=W1,W2,W3,W4,W5,W6,W7,W8&series=App:120,145,138,170,165,198,210,230&series=Web:80,95,110,140,170,190,220,250&title=Weekly%20active%20users)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=W1,W2,W3,W4,W5,W6,W7,W8&series=App:120,145,138,170,165,198,210,230&series=Web:80,95,110,140,170,190,220,250&title=Weekly%20active%20users)
+[![Weekly active users](https://x-cmd.com/draw?type=line&t=opendata&labels=W1,W2,W3,W4,W5,W6,W7,W8&series=App:120,145,138,170,165,198,210,230&series=Web:80,95,110,140,170,190,220,250&title=%E5%91%A8%E6%B4%BB%E8%B7%83%E7%94%A8%E6%88%B7)](https://x-cmd.com/draw/explore?type=line&t=opendata&labels=W1,W2,W3,W4,W5,W6,W7,W8&series=App:120,145,138,170,165,198,210,230&series=Web:80,95,110,140,170,190,220,250&title=%E5%91%A8%E6%B4%BB%E8%B7%83%E7%94%A8%E6%88%B7)
 
 八周两条线;opendata 风格是其中最素净的一个。
 

@@ -21,20 +21,20 @@ x-json-ld:
 ### 登录决策流程
 
 ```text
-https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560
+https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5B%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%5D%20--%3E%20MFA%7B%E5%BC%80%E5%90%AF%20MFA%3F%7D%0A%20%20MFA%20--%3E%7C%E6%98%AF%7C%20Code%5B%E5%8F%91%E9%80%81%E9%AA%8C%E8%AF%81%E7%A0%81%5D%0A%20%20Code%20--%3E%20Verify%5B%E6%A0%A1%E9%AA%8C%5D%0A%20%20Verify%20--%3E%7C%E9%80%9A%E8%BF%87%7C%20Session%5B%E7%AD%BE%E5%8F%91%E4%BC%9A%E8%AF%9D%5D%0A%20%20Verify%20--%3E%7C%E5%A4%B1%E8%B4%A5%7C%20Lock%5B%E9%94%81%E5%AE%9A%E8%B4%A6%E6%88%B7%5D%0A%20%20MFA%20--%3E%7C%E5%90%A6%7C%20Session&t=mono&title=%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B&w=560
 ```
 
-[![登录流程](https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560)
+[![登录流程](https://x-cmd.com/draw/mermaid?m=graph%20TD%0A%20%20Login%5B%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%5D%20--%3E%20MFA%7B%E5%BC%80%E5%90%AF%20MFA%3F%7D%0A%20%20MFA%20--%3E%7C%E6%98%AF%7C%20Code%5B%E5%8F%91%E9%80%81%E9%AA%8C%E8%AF%81%E7%A0%81%5D%0A%20%20Code%20--%3E%20Verify%5B%E6%A0%A1%E9%AA%8C%5D%0A%20%20Verify%20--%3E%7C%E9%80%9A%E8%BF%87%7C%20Session%5B%E7%AD%BE%E5%8F%91%E4%BC%9A%E8%AF%9D%5D%0A%20%20Verify%20--%3E%7C%E5%A4%B1%E8%B4%A5%7C%20Lock%5B%E9%94%81%E5%AE%9A%E8%B4%A6%E6%88%B7%5D%0A%20%20MFA%20--%3E%7C%E5%90%A6%7C%20Session&t=mono&title=%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20TD%0A%20%20Login%5BUser%20login%5D%20--%3E%20MFA%7BMFA%20enabled%3F%7D%0A%20%20MFA%20--%3E%7Cyes%7C%20Code%5BSend%20code%5D%0A%20%20Code%20--%3E%20Verify%5BVerify%5D%0A%20%20Verify%20--%3E%7Cpass%7C%20Session%5BIssue%20session%5D%0A%20%20Verify%20--%3E%7Cfail%7C%20Lock%5BLock%20account%5D%0A%20%20MFA%20--%3E%7Cno%7C%20Session&t=mono&title=Login%20flow&w=560)
 
 `{MFA enabled?}` 是判断框,`[Send code]` 是普通框,`|yes|` 是线上的文字。
 
 ### 订单流程
 
 ```text
-https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20--%3E%20Pay%7BPayment%20ok%3F%7D%0A%20%20Pay%20--%3E%7Cyes%7C%20Pack%5BPack%20%26%20ship%5D%0A%20%20Pay%20--%3E%7Cno%7C%20Retry%5BRetry%20later%5D%0A%20%20Pack%20--%3E%20Track%5BTracking%20sent%5D&w=560
+https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5B%E4%B8%8B%E5%8D%95%5D%20--%3E%20Pay%7B%E6%94%AF%E4%BB%98%E6%88%90%E5%8A%9F%3F%7D%0A%20%20Pay%20--%3E%7C%E6%98%AF%7C%20Pack%5B%E6%89%93%E5%8C%85%E5%8F%91%E8%B4%A7%5D%0A%20%20Pay%20--%3E%7C%E5%90%A6%7C%20Retry%5B%E7%A8%8D%E5%90%8E%E9%87%8D%E8%AF%95%5D%0A%20%20Pack%20--%3E%20Track%5B%E5%B7%B2%E5%8F%91%E7%89%A9%E6%B5%81%E5%8D%95%E5%8F%B7%5D&w=560
 ```
 
-[![订单流程](https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20--%3E%20Pay%7BPayment%20ok%3F%7D%0A%20%20Pay%20--%3E%7Cyes%7C%20Pack%5BPack%20%26%20ship%5D%0A%20%20Pay%20--%3E%7Cno%7C%20Retry%5BRetry%20later%5D%0A%20%20Pack%20--%3E%20Track%5BTracking%20sent%5D&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20--%3E%20Pay%7BPayment%20ok%3F%7D%0A%20%20Pay%20--%3E%7Cyes%7C%20Pack%5BPack%20%26%20ship%5D%0A%20%20Pay%20--%3E%7Cno%7C%20Retry%5BRetry%20later%5D%0A%20%20Pack%20--%3E%20Track%5BTracking%20sent%5D&w=560)
+[![订单流程](https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5B%E4%B8%8B%E5%8D%95%5D%20--%3E%20Pay%7B%E6%94%AF%E4%BB%98%E6%88%90%E5%8A%9F%3F%7D%0A%20%20Pay%20--%3E%7C%E6%98%AF%7C%20Pack%5B%E6%89%93%E5%8C%85%E5%8F%91%E8%B4%A7%5D%0A%20%20Pay%20--%3E%7C%E5%90%A6%7C%20Retry%5B%E7%A8%8D%E5%90%8E%E9%87%8D%E8%AF%95%5D%0A%20%20Pack%20--%3E%20Track%5B%E5%B7%B2%E5%8F%91%E7%89%A9%E6%B5%81%E5%8D%95%E5%8F%B7%5D&w=560)](https://x-cmd.com/draw/explore/mermaid?m=graph%20LR%0A%20%20Order%5BOrder%20placed%5D%20--%3E%20Pay%7BPayment%20ok%3F%7D%0A%20%20Pay%20--%3E%7Cyes%7C%20Pack%5BPack%20%26%20ship%5D%0A%20%20Pay%20--%3E%7Cno%7C%20Retry%5BRetry%20later%5D%0A%20%20Pack%20--%3E%20Track%5BTracking%20sent%5D&w=560)
 
 ## 一、参数
 

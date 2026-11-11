@@ -70,10 +70,10 @@ A single falling line is the most persuasive slide in a growth review.
 ### Segments — value against cost of service
 
 ```text
-https://x-cmd.com/draw?type=quadrant&frame=cross&title=%E5%AE%A2%E6%88%B7%E5%88%86%E5%B1%82&ylabel=%E6%88%90%E6%9C%AC&xlabel=%E8%A1%8C%E5%8A%A8%E6%88%90%E6%9C%AC&ylow=%E4%BD%8E&yhigh=%E9%AB%98&xlow=%E4%BD%8E&xhigh=%E9%AB%98&items=%E9%87%8D%E5%A4%8D%E8%B4%AD%E4%B9%B0%400.32%2C0.78%3B%E6%96%B0%E5%AE%A2%400.22%2C0.35%3B%E5%A4%A7%E5%AE%A2%E6%88%B7%400.82%2C0.44%3B%E6%88%90%E7%86%9F%E5%AE%A2%400.55%2C0.88
+https://x-cmd.com/draw?type=quadrant&frame=cross&title=Customer%20tiers&ylabel=Cost&xlabel=Cost%20to%20act&ylow=Low&yhigh=High&xlow=Low&xhigh=High&items=Repeat%20buyers%400.32%2C0.78%3BNew%20customers%400.22%2C0.35%3BKey%20accounts%400.82%2C0.44%3BEstablished%20customers%400.55%2C0.88
 ```
 
-[![Customer segments](https://x-cmd.com/draw?type=quadrant&frame=cross&title=%E5%AE%A2%E6%88%B7%E5%88%86%E5%B1%82&ylabel=%E6%88%90%E6%9C%AC&xlabel=%E8%A1%8C%E5%8A%A8%E6%88%90%E6%9C%AC&ylow=%E4%BD%8E&yhigh=%E9%AB%98&xlow=%E4%BD%8E&xhigh=%E9%AB%98&items=%E9%87%8D%E5%A4%8D%E8%B4%AD%E4%B9%B0%400.32%2C0.78%3B%E6%96%B0%E5%AE%A2%400.22%2C0.35%3B%E5%A4%A7%E5%AE%A2%E6%88%B7%400.82%2C0.44%3B%E6%88%90%E7%86%9F%E5%AE%A2%400.55%2C0.88)](https://x-cmd.com/draw/explore?type=quadrant&frame=cross&title=%E5%AE%A2%E6%88%B7%E5%88%86%E5%B1%82&ylabel=%E6%88%90%E6%9C%AC&xlabel=%E8%A1%8C%E5%8A%A8%E6%88%90%E6%9C%AC&ylow=%E4%BD%8E&yhigh=%E9%AB%98&xlow=%E4%BD%8E&xhigh=%E9%AB%98&items=%E9%87%8D%E5%A4%8D%E8%B4%AD%E4%B9%B0%400.32%2C0.78%3B%E6%96%B0%E5%AE%A2%400.22%2C0.35%3B%E5%A4%A7%E5%AE%A2%E6%88%B7%400.82%2C0.44%3B%E6%88%90%E7%86%9F%E5%AE%A2%400.55%2C0.88)
+[![Customer segments](https://x-cmd.com/draw?type=quadrant&frame=cross&title=Customer%20tiers&ylabel=Cost&xlabel=Cost%20to%20act&ylow=Low&yhigh=High&xlow=Low&xhigh=High&items=Repeat%20buyers%400.32%2C0.78%3BNew%20customers%400.22%2C0.35%3BKey%20accounts%400.82%2C0.44%3BEstablished%20customers%400.55%2C0.88)](https://x-cmd.com/draw/explore?type=quadrant&frame=cross&title=Customer%20tiers&ylabel=Cost&xlabel=Cost%20to%20act&ylow=Low&yhigh=High&xlow=Low&xhigh=High&items=Repeat%20buyers%400.32%2C0.78%3BNew%20customers%400.22%2C0.35%3BKey%20accounts%400.82%2C0.44%3BEstablished%20customers%400.55%2C0.88)
 
 The cross frame: two axes, one point per segment, no boxes to fill in.
 

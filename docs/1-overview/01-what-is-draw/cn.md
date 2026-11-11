@@ -142,7 +142,7 @@ POST 短链适合：
 curl "https://x-cmd.com/draw?type=pie&labels=A,B,C&values=10,20,30"
 
 # 折线图
-curl "https://x-cmd.com/draw?type=line&x=Jan,Feb,Mar&y=10,20,15"
+curl "https://x-cmd.com/draw?type=line&x=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88&y=10,20,15"
 
 # 二维码
 curl "https://x-cmd.com/draw?type=qr&data=https://x-cmd.com"

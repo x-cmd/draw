@@ -19,26 +19,26 @@ x-json-ld:
 **CPU 使用率**
 
 ```text
-https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load
+https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B4%9F%E8%BD%BD
 ```
 
-[![CPU 使用率](https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load)](https://x-cmd.com/draw/explore?type=gauge&value=72&max=100&label=CPU%25&title=Server%20load)
+[![CPU 使用率](https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B4%9F%E8%BD%BD)](https://x-cmd.com/draw/explore?type=gauge&value=72&max=100&label=CPU%25&title=%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B4%9F%E8%BD%BD)
 
 **内存**
 
 ```text
-https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage
+https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=内存%20%28GB%29&title=内存用量
 ```
 
-[![内存](https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)](https://x-cmd.com/draw/explore?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)
+[![内存](https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=内存%20%28GB%29&title=内存用量)](https://x-cmd.com/draw/explore?type=gauge&value=4.2&max=8&label=内存%20%28GB%29&title=内存用量)
 
 **进度**
 
 ```text
-https://x-cmd.com/draw?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint
+https://x-cmd.com/draw?type=gauge&value=340&max=500&label=%E5%B7%B2%E5%A4%84%E7%90%86%E5%B7%A5%E5%8D%95&title=%E5%86%B2%E5%88%BA%E8%BF%9B%E5%BA%A6
 ```
 
-[![进度](https://x-cmd.com/draw?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint)](https://x-cmd.com/draw/explore?type=gauge&value=340&max=500&label=Tickets%20resolved&title=Sprint)
+[![进度](https://x-cmd.com/draw?type=gauge&value=340&max=500&label=%E5%B7%B2%E5%A4%84%E7%90%86%E5%B7%A5%E5%8D%95&title=%E5%86%B2%E5%88%BA%E8%BF%9B%E5%BA%A6)](https://x-cmd.com/draw/explore?type=gauge&value=340&max=500&label=%E5%B7%B2%E5%A4%84%E7%90%86%E5%B7%A5%E5%8D%95&title=%E5%86%B2%E5%88%BA%E8%BF%9B%E5%BA%A6)
 
 **SLA**
 
@@ -51,18 +51,18 @@ https://x-cmd.com/draw?type=gauge&value=99.95&max=100&label=SLA%25&unit=%25
 **多环（labels+values）**
 
 ```text
-https://x-cmd.com/draw?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health
+https://x-cmd.com/draw?type=gauge&labels=CPU%2C%E5%86%85%E5%AD%98%2CIO&values=72,58,40&max=100&title=%E8%8A%82%E7%82%B9%E5%81%A5%E5%BA%B7%E5%BA%A6
 ```
 
-[![多环（labels+values）](https://x-cmd.com/draw?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health)](https://x-cmd.com/draw/explore?type=gauge&labels=cpu,mem,io&values=72,58,40&max=100&title=Node%20health)
+[![多环（labels+values）](https://x-cmd.com/draw?type=gauge&labels=CPU%2C%E5%86%85%E5%AD%98%2CIO&values=72,58,40&max=100&title=%E8%8A%82%E7%82%B9%E5%81%A5%E5%BA%B7%E5%BA%A6)](https://x-cmd.com/draw/explore?type=gauge&labels=CPU%2C%E5%86%85%E5%AD%98%2CIO&values=72,58,40&max=100&title=%E8%8A%82%E7%82%B9%E5%81%A5%E5%BA%B7%E5%BA%A6)
 
 **渐变（t=gradient）**
 
 ```text
-https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100
+https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20%E9%80%9A%E8%BF%87%E7%8E%87&value=87&max=100
 ```
 
-[![渐变（t=gradient）](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=CI%20pass%20rate&value=87&max=100)
+[![渐变（t=gradient）](https://x-cmd.com/draw?type=gauge&t=gradient&title=CI%20%E9%80%9A%E8%BF%87%E7%8E%87&value=87&max=100)](https://x-cmd.com/draw/explore?type=gauge&t=gradient&title=CI%20%E9%80%9A%E8%BF%87%E7%8E%87&value=87&max=100)
 
 单值的"进度仪表"。**典型用法**：CPU / 内存 / SLA / 完成率 / 当前值 vs 目标。
 

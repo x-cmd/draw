@@ -19,40 +19,40 @@ x-json-ld:
 ### 资产配置 —— 怎么分
 
 ```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Asset%20allocation&labels=Equities,Bonds,Cash,Real%20estate,Commodities&values=42,28,12,10,8&unit=%25
+https://x-cmd.com/draw?type=pie&t=market-mono&title=%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE&labels=%E8%82%A1%E7%A5%A8%2C%E5%80%BA%E5%88%B8%2C%E7%8E%B0%E9%87%91%2C%E6%88%BF%E4%BA%A7%2C%E5%A4%A7%E5%AE%97%E5%95%86%E5%93%81&values=42,28,12,10,8&unit=%25
 ```
 
-[![Asset allocation](https://x-cmd.com/draw?type=pie&t=market-mono&title=Asset%20allocation&labels=Equities,Bonds,Cash,Real%20estate,Commodities&values=42,28,12,10,8&unit=%25)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Asset%20allocation&labels=Equities,Bonds,Cash,Real%20estate,Commodities&values=42,28,12,10,8&unit=%25)
+[![Asset allocation](https://x-cmd.com/draw?type=pie&t=market-mono&title=%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE&labels=%E8%82%A1%E7%A5%A8%2C%E5%80%BA%E5%88%B8%2C%E7%8E%B0%E9%87%91%2C%E6%88%BF%E4%BA%A7%2C%E5%A4%A7%E5%AE%97%E5%95%86%E5%93%81&values=42,28,12,10,8&unit=%25)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE&labels=%E8%82%A1%E7%A5%A8%2C%E5%80%BA%E5%88%B8%2C%E7%8E%B0%E9%87%91%2C%E6%88%BF%E4%BA%A7%2C%E5%A4%A7%E5%AE%97%E5%95%86%E5%93%81&values=42,28,12,10,8&unit=%25)
 
 一个环,五个格子;灰阶风格印得出来。
 
 ### 月度收益对基准
 
 ```text
-https://x-cmd.com/draw?type=line&title=Cumulative%20return%20vs%20benchmark&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=portfolio:100,102,105,106,109,108,110,113,112,115,117,120&series=benchmark:100,101,104,105,107,106,107,109,109,111,112,114&unit=index
+https://x-cmd.com/draw?type=line&title=%E7%B4%AF%E8%AE%A1%E6%94%B6%E7%9B%8A%E5%AF%B9%E6%AF%94%E5%9F%BA%E5%87%86&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88%2C6%E6%9C%88%2C7%E6%9C%88%2C8%E6%9C%88%2C9%E6%9C%88%2C10%E6%9C%88%2C11%E6%9C%88%2C12%E6%9C%88&series=portfolio:100,102,105,106,109,108,110,113,112,115,117,120&series=benchmark:100,101,104,105,107,106,107,109,109,111,112,114&unit=index
 ```
 
-[![Cumulative return vs benchmark](https://x-cmd.com/draw?type=line&title=Cumulative%20return%20vs%20benchmark&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=portfolio:100,102,105,106,109,108,110,113,112,115,117,120&series=benchmark:100,101,104,105,107,106,107,109,109,111,112,114&unit=index)](https://x-cmd.com/draw/explore?type=line&title=Cumulative%20return%20vs%20benchmark&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=portfolio:100,102,105,106,109,108,110,113,112,115,117,120&series=benchmark:100,101,104,105,107,106,107,109,109,111,112,114&unit=index)
+[![Cumulative return vs benchmark](https://x-cmd.com/draw?type=line&title=%E7%B4%AF%E8%AE%A1%E6%94%B6%E7%9B%8A%E5%AF%B9%E6%AF%94%E5%9F%BA%E5%87%86&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88%2C6%E6%9C%88%2C7%E6%9C%88%2C8%E6%9C%88%2C9%E6%9C%88%2C10%E6%9C%88%2C11%E6%9C%88%2C12%E6%9C%88&series=portfolio:100,102,105,106,109,108,110,113,112,115,117,120&series=benchmark:100,101,104,105,107,106,107,109,109,111,112,114&unit=index)](https://x-cmd.com/draw/explore?type=line&title=%E7%B4%AF%E8%AE%A1%E6%94%B6%E7%9B%8A%E5%AF%B9%E6%AF%94%E5%9F%BA%E5%87%86&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88%2C6%E6%9C%88%2C7%E6%9C%88%2C8%E6%9C%88%2C9%E6%9C%88%2C10%E6%9C%88%2C11%E6%9C%88%2C12%E6%9C%88&series=portfolio:100,102,105,106,109,108,110,113,112,115,117,120&series=benchmark:100,101,104,105,107,106,107,109,109,111,112,114&unit=index)
 
 两条线基本重合 —— 组合多出来一点点。
 
 ### 收益对风险 —— 有效边界在哪
 
 ```text
-https://x-cmd.com/draw?type=scatter&title=Return%20vs%20volatility&x=6,8,11,14,17,21,25,29&y=3,5,9,12,18,24,31,38&title=Return%20against%20risk
+https://x-cmd.com/draw?type=scatter&title=%E6%94%B6%E7%9B%8A%E4%B8%8E%E6%B3%A2%E5%8A%A8&x=6,8,11,14,17,21,25,29&y=3,5,9,12,18,24,31,38&title=Return%20against%20risk
 ```
 
-[![Return vs risk](https://x-cmd.com/draw?type=scatter&title=Return%20vs%20volatility&x=6,8,11,14,17,21,25,29&y=3,5,9,12,18,24,31,38&title=Return%20against%20risk)](https://x-cmd.com/draw/explore?type=scatter&title=Return%20vs%20volatility&x=6,8,11,14,17,21,25,29&y=3,5,9,12,18,24,31,38&title=Return%20against%20risk)
+[![Return vs risk](https://x-cmd.com/draw?type=scatter&title=%E6%94%B6%E7%9B%8A%E4%B8%8E%E6%B3%A2%E5%8A%A8&x=6,8,11,14,17,21,25,29&y=3,5,9,12,18,24,31,38&title=Return%20against%20risk)](https://x-cmd.com/draw/explore?type=scatter&title=%E6%94%B6%E7%9B%8A%E4%B8%8E%E6%B3%A2%E5%8A%A8&x=6,8,11,14,17,21,25,29&y=3,5,9,12,18,24,31,38&title=Return%20against%20risk)
 
 一个点一个组合;左上角那几个是有效前沿上的。
 
 ### 收入与利润率 —— 董事会要看的那一对
 
 ```text
-https://x-cmd.com/draw?type=combo&t=evil&title=Revenue%20%26%20margin&labels=Q1,Q2,Q3,Q4&series=revenue:1200,1800,1500,2400&line=margin:5,8,6,12
+https://x-cmd.com/draw?type=combo&t=evil&title=%E8%90%A5%E6%94%B6%E4%B8%8E%E5%88%A9%E6%B6%A6%E7%8E%87&labels=Q1,Q2,Q3,Q4&series=%E8%90%A5%E6%94%B6%3A1200%2C1800%2C1500%2C2400&line=margin:5,8,6,12
 ```
 
-[![Revenue and margin](https://x-cmd.com/draw?type=combo&t=evil&title=Revenue%20%26%20margin&labels=Q1,Q2,Q3,Q4&series=revenue:1200,1800,1500,2400&line=margin:5,8,6,12)](https://x-cmd.com/draw/explore?type=combo&t=evil&title=Revenue%20%26%20margin&labels=Q1,Q2,Q3,Q4&series=revenue:1200,1800,1500,2400&line=margin:5,8,6,12)
+[![Revenue and margin](https://x-cmd.com/draw?type=combo&t=evil&title=%E8%90%A5%E6%94%B6%E4%B8%8E%E5%88%A9%E6%B6%A6%E7%8E%87&labels=Q1,Q2,Q3,Q4&series=%E8%90%A5%E6%94%B6%3A1200%2C1800%2C1500%2C2400&line=margin:5,8,6,12)](https://x-cmd.com/draw/explore?type=combo&t=evil&title=%E8%90%A5%E6%94%B6%E4%B8%8E%E5%88%A9%E6%B6%A6%E7%8E%87&labels=Q1,Q2,Q3,Q4&series=%E8%90%A5%E6%94%B6%3A1200%2C1800%2C1500%2C2400&line=margin:5,8,6,12)
 
 柱子是收入,折线是利润率。
 
@@ -69,10 +69,10 @@ https://x-cmd.com/draw?type=compass&title=%E4%B8%9A%E5%8A%A1%E5%8D%95%E5%85%83%E
 ### 交易漏斗 —— 漏在哪
 
 ```text
-https://x-cmd.com/draw?type=sankey&t=fund&title=Deal%20funnel&labels=Leads,Qualified,Pitch,DueDiligence,Closed&links=Leads>Qualified:180;Leads>Pitch:40;Qualified>Pitch:90;Pitch>DueDiligence:45;DueDiligence>Closed:22
+https://x-cmd.com/draw?type=sankey&t=fund&title=%E4%BA%A4%E6%98%93%E6%BC%8F%E6%96%97&labels=%E7%BA%BF%E7%B4%A2%2C%E5%90%88%E6%A0%BC%2C%E8%B7%AF%E6%BC%94%2C%E5%B0%BD%E8%B0%83%2CClosed&links=%E7%BA%BF%E7%B4%A2%3E%E5%90%88%E6%A0%BC%3A180%3B%E7%BA%BF%E7%B4%A2%3E%E8%B7%AF%E6%BC%94%3A40%3B%E5%90%88%E6%A0%BC%3E%E8%B7%AF%E6%BC%94%3A90%3B%E8%B7%AF%E6%BC%94%3E%E5%B0%BD%E8%B0%83%3A45%3B%E5%B0%BD%E8%B0%83%3EClosed%3A22
 ```
 
-[![Deal funnel](https://x-cmd.com/draw?type=sankey&t=fund&title=Deal%20funnel&labels=Leads,Qualified,Pitch,DueDiligence,Closed&links=Leads>Qualified:180;Leads>Pitch:40;Qualified>Pitch:90;Pitch>DueDiligence:45;DueDiligence>Closed:22)](https://x-cmd.com/draw/explore?type=sankey&t=fund&title=Deal%20funnel&labels=Leads,Qualified,Pitch,DueDiligence,Closed&links=Leads>Qualified:180;Leads>Pitch:40;Qualified>Pitch:90;Pitch>DueDiligence:45;DueDiligence>Closed:22)
+[![Deal funnel](https://x-cmd.com/draw?type=sankey&t=fund&title=%E4%BA%A4%E6%98%93%E6%BC%8F%E6%96%97&labels=%E7%BA%BF%E7%B4%A2%2C%E5%90%88%E6%A0%BC%2C%E8%B7%AF%E6%BC%94%2C%E5%B0%BD%E8%B0%83%2CClosed&links=%E7%BA%BF%E7%B4%A2%3E%E5%90%88%E6%A0%BC%3A180%3B%E7%BA%BF%E7%B4%A2%3E%E8%B7%AF%E6%BC%94%3A40%3B%E5%90%88%E6%A0%BC%3E%E8%B7%AF%E6%BC%94%3A90%3B%E8%B7%AF%E6%BC%94%3E%E5%B0%BD%E8%B0%83%3A45%3B%E5%B0%BD%E8%B0%83%3EClosed%3A22)](https://x-cmd.com/draw/explore?type=sankey&t=fund&title=%E4%BA%A4%E6%98%93%E6%BC%8F%E6%96%97&labels=%E7%BA%BF%E7%B4%A2%2C%E5%90%88%E6%A0%BC%2C%E8%B7%AF%E6%BC%94%2C%E5%B0%BD%E8%B0%83%2CClosed&links=%E7%BA%BF%E7%B4%A2%3E%E5%90%88%E6%A0%BC%3A180%3B%E7%BA%BF%E7%B4%A2%3E%E8%B7%AF%E6%BC%94%3A40%3B%E5%90%88%E6%A0%BC%3E%E8%B7%AF%E6%BC%94%3A90%3B%E8%B7%AF%E6%BC%94%3E%E5%B0%BD%E8%B0%83%3A45%3B%E5%B0%BD%E8%B0%83%3EClosed%3A22)
 
 管道在哪一段变窄,窄了多少。
 

@@ -27,10 +27,10 @@ https://x-cmd.com/draw?type=gauge&value=72&max=100&label=CPU%25&title=Server%20l
 **Memory**
 
 ```text
-https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage
+https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20%28GB%29&title=Memory%20usage
 ```
 
-[![Memory](https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)](https://x-cmd.com/draw/explore?type=gauge&value=4.2&max=8&label=Memory%20(GB)&title=Memory%20usage)
+[![Memory](https://x-cmd.com/draw?type=gauge&value=4.2&max=8&label=Memory%20%28GB%29&title=Memory%20usage)](https://x-cmd.com/draw/explore?type=gauge&value=4.2&max=8&label=Memory%20%28GB%29&title=Memory%20usage)
 
 **Progress**
 

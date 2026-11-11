@@ -19,34 +19,34 @@ x-json-ld:
 **单系列**
 
 ```text
-https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latency
+https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E5%BB%B6%E8%BF%9F
 ```
 
-[![单系列](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latency)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latency)
+[![单系列](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E5%BB%B6%E8%BF%9F)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E5%BB%B6%E8%BF%9F)
 
 **负值坐标**
 
 ```text
-https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Drift
+https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E6%BC%82%E7%A7%BB
 ```
 
-[![负值坐标](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Drift)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=Drift)
+[![负值坐标](https://x-cmd.com/draw?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E6%BC%82%E7%A7%BB)](https://x-cmd.com/draw/explore?type=scatter&x=-3,-1,0,1,3&y=2,-2,3,-3,1&title=%E6%BC%82%E7%A7%BB)
 
 **多系列（重复 x=/y=）**
 
 ```text
-https://x-cmd.com/draw?type=scatter&x=1,2,3&y=4,5,6&x=4,5,6&y=1,2,3&title=Groups
+https://x-cmd.com/draw?type=scatter&x=1,2,3&y=4,5,6&x=4,5,6&y=1,2,3&title=%E5%88%86%E7%BB%84
 ```
 
-[![多系列（重复 x=/y=）](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=4,5,6&x=4,5,6&y=1,2,3&title=Groups)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=4,5,6&x=4,5,6&y=1,2,3&title=Groups)
+[![多系列（重复 x=/y=）](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=4,5,6&x=4,5,6&y=1,2,3&title=%E5%88%86%E7%BB%84)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=4,5,6&x=4,5,6&y=1,2,3&title=%E5%88%86%E7%BB%84)
 
 **数值全标（num=all）**
 
 ```text
-https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Small%20set
+https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E5%B0%8F%E6%A0%B7%E6%9C%AC
 ```
 
-[![数值全标（num=all）](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Small%20set)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Small%20set)
+[![数值全标（num=all）](https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E5%B0%8F%E6%A0%B7%E6%9C%AC)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3&y=2,4,3&num=all&title=%E5%B0%8F%E6%A0%B7%E6%9C%AC)
 
 两维关联分析。**典型用法**：身高 vs 体重 / 价格 vs 销量 / 年龄 vs 收入。
 
@@ -56,18 +56,18 @@ https://x-cmd.com/draw?type=scatter&x=1,2,3&y=2,4,3&num=all&title=Small%20set
 **趋势散点**
 
 ```text
-https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5,6,7,8&y=2,4,3,6,5,7,4,8&title=Trend
+https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5,6,7,8&y=2,4,3,6,5,7,4,8&title=%E8%B6%8B%E5%8A%BF
 ```
 
-[![趋势散点](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5,6,7,8&y=2,4,3,6,5,7,4,8&title=Trend)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5,6,7,8&y=2,4,3,6,5,7,4,8&title=Trend)
+[![趋势散点](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5,6,7,8&y=2,4,3,6,5,7,4,8&title=%E8%B6%8B%E5%8A%BF)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5,6,7,8&y=2,4,3,6,5,7,4,8&title=%E8%B6%8B%E5%8A%BF)
 
 **峰值标注（num=peak）**
 
 ```text
-https://x-cmd.com/draw?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=Peak
+https://x-cmd.com/draw?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=%E5%B3%B0%E5%80%BC
 ```
 
-[![峰值标注（num=peak）](https://x-cmd.com/draw?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=Peak)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=Peak)
+[![峰值标注（num=peak）](https://x-cmd.com/draw?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=%E5%B3%B0%E5%80%BC)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4&y=5,3,8,6&num=peak&title=%E5%B3%B0%E5%80%BC)
 
 ## 参数
 

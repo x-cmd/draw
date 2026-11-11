@@ -19,40 +19,40 @@ x-json-ld:
 ### 产品地图 —— 有什么、在哪
 
 ```text
-https://x-cmd.com/draw/mindmap?n=Product/Features/Speed&n=Product/Features/Privacy&n=Product/Features/Integrations&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Pricing/Free&n=Product/Pricing/Pro&style=bubble&title=Product%20map&w=560
+https://x-cmd.com/draw/mindmap?n=Product/Features/Speed&n=Product/Features/Privacy&n=Product/Features/Integrations&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Pricing/Free&n=Product/Pricing/Pro&style=bubble&title=%E4%BA%A7%E5%93%81%E5%9C%B0%E5%9B%BE&w=560
 ```
 
-[![Product map](https://x-cmd.com/draw/mindmap?n=Product/Features/Speed&n=Product/Features/Privacy&n=Product/Features/Integrations&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Pricing/Free&n=Product/Pricing/Pro&style=bubble&title=Product%20map&w=560)](https://x-cmd.com/draw/explore/mindmap?n=Product/Features/Speed&n=Product/Features/Privacy&n=Product/Features/Integrations&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Pricing/Free&n=Product/Pricing/Pro&style=bubble&title=Product%20map&w=560)
+[![Product map](https://x-cmd.com/draw/mindmap?n=Product/Features/Speed&n=Product/Features/Privacy&n=Product/Features/Integrations&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Pricing/Free&n=Product/Pricing/Pro&style=bubble&title=%E4%BA%A7%E5%93%81%E5%9C%B0%E5%9B%BE&w=560)](https://x-cmd.com/draw/explore/mindmap?n=Product/Features/Speed&n=Product/Features/Privacy&n=Product/Features/Integrations&n=Product/Markets/EU&n=Product/Markets/US&n=Product/Pricing/Free&n=Product/Pricing/Pro&style=bubble&title=Product%20map&w=560)
 
 功能、市场、定价画成一棵树 —— 标签都短,用 bubble 形态最合适。
 
 ### 上线检查清单 —— 谁负责什么
 
 ```text
-https://x-cmd.com/draw/mindmap?n=Launch/Legal/Privacy%20check&n=Launch/Eng/Tests&n=Launch/Eng/Perf&n=Launch/Docs/Changelog&n=Launch/Docs/Post%20copy&style=tree&title=Launch%20checklist&w=560
+https://x-cmd.com/draw/mindmap?n=Launch/Legal/Privacy%20check&n=Launch/Eng/Tests&n=Launch/Eng/Perf&n=Launch/Docs/Changelog&n=Launch/Docs/Post%20copy&style=tree&title=%E5%8F%91%E5%B8%83%E6%B8%85%E5%8D%95&w=560
 ```
 
-[![Launch checklist](https://x-cmd.com/draw/mindmap?n=Launch/Legal/Privacy%20check&n=Launch/Eng/Tests&n=Launch/Eng/Perf&n=Launch/Docs/Changelog&n=Launch/Docs/Post%20copy&style=tree&title=Launch%20checklist&w=560)](https://x-cmd.com/draw/explore/mindmap?n=Launch/Legal/Privacy%20check&n=Launch/Eng/Tests&n=Launch/Eng/Perf&n=Launch/Docs/Changelog&n=Launch/Docs/Post%20copy&style=tree&title=Launch%20checklist&w=560)
+[![Launch checklist](https://x-cmd.com/draw/mindmap?n=Launch/Legal/Privacy%20check&n=Launch/Eng/Tests&n=Launch/Eng/Perf&n=Launch/Docs/Changelog&n=Launch/Docs/Post%20copy&style=tree&title=%E5%8F%91%E5%B8%83%E6%B8%85%E5%8D%95&w=560)](https://x-cmd.com/draw/explore/mindmap?n=Launch/Legal/Privacy%20check&n=Launch/Eng/Tests&n=Launch/Eng/Perf&n=Launch/Docs/Changelog&n=Launch/Docs/Post%20copy&style=tree&title=Launch%20checklist&w=560)
 
 同一个引擎,换 tree 形态:任务按团队分组。
 
 ### 迭代计划 —— 排期
 
 ```text
-https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560
+https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20%E5%BC%80%E5%8F%91%0A%20%20%E8%AE%BE%E8%AE%A1%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20%E6%9E%84%E5%BB%BA%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20%E5%8F%91%E5%B8%83%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20%E6%B5%8B%E8%AF%95%0A%20%20%E5%9B%9E%E5%BD%92%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=%E5%86%B2%E5%88%BA%E8%AE%A1%E5%88%92&w=560
 ```
 
-[![Sprint plan](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)
+[![Sprint plan](https://x-cmd.com/draw/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20%E5%BC%80%E5%8F%91%0A%20%20%E8%AE%BE%E8%AE%A1%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20%E6%9E%84%E5%BB%BA%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20%E5%8F%91%E5%B8%83%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20%E6%B5%8B%E8%AF%95%0A%20%20%E5%9B%9E%E5%BD%92%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=%E5%86%B2%E5%88%BA%E8%AE%A1%E5%88%92&w=560)](https://x-cmd.com/draw/explore/gantt?m=dateFormat%20YYYY-MM-DD%0A%20%20section%20Dev%0A%20%20Design%20%3Adone%2C%20a1%2C%202026-11-01%2C%203d%0A%20%20Build%20%3Aactive%2C%20a2%2C%20after%20a1%2C%205d%0A%20%20Ship%20%3Amilestone%2C%20m1%2C%202026-11-10%2C%200d%0A%20%20section%20QA%0A%20%20Regression%20%3Acrit%2C%20b1%2C%20after%20a2%2C%203d&title=Sprint%20plan&w=560)
 
 分段、任务、依赖和一个里程碑 —— 一共六行文本。
 
 ### 按季度的路线图 —— 已交付对计划中
 
 ```text
-https://x-cmd.com/draw?type=bar&labels=Q1,Q2,Q3,Q4&series=shipped:12,18,9,15&series=planned:20,22,14,10&stack=1&title=Roadmap%20by%20quarter
+https://x-cmd.com/draw?type=bar&labels=Q1,Q2,Q3,Q4&series=%E5%B7%B2%E5%8F%91%E5%B8%83%3A12%2C18%2C9%2C15&series=planned:20,22,14,10&stack=1&title=%E6%8C%89%E5%AD%A3%E5%BA%A6%E7%9A%84%E8%B7%AF%E7%BA%BF%E5%9B%BE
 ```
 
-[![Roadmap by quarter](https://x-cmd.com/draw?type=bar&labels=Q1,Q2,Q3,Q4&series=shipped:12,18,9,15&series=planned:20,22,14,10&stack=1&title=Roadmap%20by%20quarter)](https://x-cmd.com/draw/explore?type=bar&labels=Q1,Q2,Q3,Q4&series=shipped:12,18,9,15&series=planned:20,22,14,10&stack=1&title=Roadmap%20by%20quarter)
+[![Roadmap by quarter](https://x-cmd.com/draw?type=bar&labels=Q1,Q2,Q3,Q4&series=%E5%B7%B2%E5%8F%91%E5%B8%83%3A12%2C18%2C9%2C15&series=planned:20,22,14,10&stack=1&title=%E6%8C%89%E5%AD%A3%E5%BA%A6%E7%9A%84%E8%B7%AF%E7%BA%BF%E5%9B%BE)](https://x-cmd.com/draw/explore?type=bar&labels=Q1,Q2,Q3,Q4&series=%E5%B7%B2%E5%8F%91%E5%B8%83%3A12%2C18%2C9%2C15&series=planned:20,22,14,10&stack=1&title=%E6%8C%89%E5%AD%A3%E5%BA%A6%E7%9A%84%E8%B7%AF%E7%BA%BF%E5%9B%BE)
 
 堆叠柱:已经发出去的,和还在计划里的。
 

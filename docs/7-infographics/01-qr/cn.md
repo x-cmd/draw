@@ -19,42 +19,42 @@ x-json-ld:
 **URL（扫码直达）**
 
 ```text
-https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me
+https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=%E6%89%AB%E6%88%91
 ```
 
-[![URL（扫码直达）](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scan%20me)
+[![URL（扫码直达）](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=%E6%89%AB%E6%88%91)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=%E6%89%AB%E6%88%91)
 
 **WiFi 配置（手机扫就连）**
 
 ```text
-https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi
+https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=WiFi
 ```
 
-[![WiFi 配置（手机扫就连）](https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)](https://x-cmd.com/draw/explore?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=wifi)
+[![WiFi 配置（手机扫就连）](https://x-cmd.com/draw?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=WiFi)](https://x-cmd.com/draw/explore?type=qr&d=WIFI:S:MyWiFi;T:WPA;P:password123;;&title=WiFi)
 
 **vCard 联系人**
 
 ```text
-https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact
+https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F
 ```
 
-[![vCard 联系人](https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)](https://x-cmd.com/draw/explore?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=contact)
+[![vCard 联系人](https://x-cmd.com/draw?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F)](https://x-cmd.com/draw/explore?type=qr&d=BEGIN:VCARD%0AVERSION:3.0%0AFN:Alice%0AORG:x-cmd%0AEND:VCARD&title=%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F)
 
 **普通文本**
 
 ```text
-https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello
+https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=%E4%BD%A0%E5%A5%BD
 ```
 
-[![普通文本](https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=hello)](https://x-cmd.com/draw/explore?type=qr&d=Hello%20from%20x-cmd&title=hello)
+[![普通文本](https://x-cmd.com/draw?type=qr&d=Hello%20from%20x-cmd&title=%E4%BD%A0%E5%A5%BD)](https://x-cmd.com/draw/explore?type=qr&d=Hello%20from%20x-cmd&title=%E4%BD%A0%E5%A5%BD)
 
 **配色（fg/bg + 标注）**
 
 ```text
-https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs
+https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=%E4%BB%BD
 ```
 
-[![配色（fg/bg + 标注）](https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)](https://x-cmd.com/draw/explore?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=docs)
+[![配色（fg/bg + 标注）](https://x-cmd.com/draw?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=%E4%BB%BD)](https://x-cmd.com/draw/explore?type=qr&d=https://x-cmd.com&fg=%236366f1&bg=%230f0f12&title=x-cmd&unit=%E4%BB%BD)
 
 生成任何内容（URL、文本、WiFi 配置、vCard）的二维码。返回的 SVG 可以直接 print / embed。
 

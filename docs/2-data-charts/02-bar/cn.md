@@ -19,42 +19,42 @@ x-json-ld:
 **单系列**
 
 ```text
-https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200
+https://x-cmd.com/draw?type=bar&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88&values=100,150,120,180,200
 ```
 
-[![单系列](https://x-cmd.com/draw?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)](https://x-cmd.com/draw/explore?type=bar&labels=Jan,Feb,Mar,Apr,May&values=100,150,120,180,200)
+[![单系列](https://x-cmd.com/draw?type=bar&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88&values=100,150,120,180,200)](https://x-cmd.com/draw/explore?type=bar&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88&values=100,150,120,180,200)
 
 **evil 默认（12 个月）**
 
 ```text
-https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14
+https://x-cmd.com/draw?type=bar&t=evil&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88%2C6%E6%9C%88%2C7%E6%9C%88%2C8%E6%9C%88%2C9%E6%9C%88%2C10%E6%9C%88%2C11%E6%9C%88%2C12%E6%9C%88&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14
 ```
 
-[![evil 默认（12 个月）](https://x-cmd.com/draw?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)](https://x-cmd.com/draw/explore?type=bar&t=evil&labels=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)
+[![evil 默认（12 个月）](https://x-cmd.com/draw?type=bar&t=evil&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88%2C6%E6%9C%88%2C7%E6%9C%88%2C8%E6%9C%88%2C9%E6%9C%88%2C10%E6%9C%88%2C11%E6%9C%88%2C12%E6%9C%88&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)](https://x-cmd.com/draw/explore?type=bar&t=evil&labels=1%E6%9C%88%2C2%E6%9C%88%2C3%E6%9C%88%2C4%E6%9C%88%2C5%E6%9C%88%2C6%E6%9C%88%2C7%E6%9C%88%2C8%E6%9C%88%2C9%E6%9C%88%2C10%E6%9C%88%2C11%E6%9C%88%2C12%E6%9C%88&series=Desktop:34,87,51,63,45,78,39,92,65,53,80,27&series=Mobile:18,49,29,39,31,45,23,56,37,36,51,14)
 
 **分组双系列**
 
 ```text
-https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6
+https://x-cmd.com/draw?type=bar&labels=%E5%91%A8%E4%B8%80%2C%E5%91%A8%E4%BA%8C%2C%E5%91%A8%E4%B8%89&series=%E5%BC%80%E5%8F%91%3A12%2C18%2C9&series=ci:8,11,6
 ```
 
-[![分组双系列](https://x-cmd.com/draw?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)](https://x-cmd.com/draw/explore?type=bar&labels=Mon,Tue,Wed&series=dev:12,18,9&series=ci:8,11,6)
+[![分组双系列](https://x-cmd.com/draw?type=bar&labels=%E5%91%A8%E4%B8%80%2C%E5%91%A8%E4%BA%8C%2C%E5%91%A8%E4%B8%89&series=%E5%BC%80%E5%8F%91%3A12%2C18%2C9&series=ci:8,11,6)](https://x-cmd.com/draw/explore?type=bar&labels=%E5%91%A8%E4%B8%80%2C%E5%91%A8%E4%BA%8C%2C%E5%91%A8%E4%B8%89&series=%E5%BC%80%E5%8F%91%3A12%2C18%2C9&series=ci:8,11,6)
 
 **堆叠（stack=1）**
 
 ```text
-https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9
+https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=%E7%BD%91%E7%AB%99%3A30%2C42%2C55&series=cli:12,18,9
 ```
 
-[![堆叠（stack=1）](https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=Q1,Q2,Q3&series=web:30,42,55&series=cli:12,18,9)
+[![堆叠（stack=1）](https://x-cmd.com/draw?type=bar&stack=1&labels=Q1,Q2,Q3&series=%E7%BD%91%E7%AB%99%3A30%2C42%2C55&series=cli:12,18,9)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=Q1,Q2,Q3&series=%E7%BD%91%E7%AB%99%3A30%2C42%2C55&series=cli:12,18,9)
 
 **表格柱（t=grid）**
 
 ```text
-https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210
+https://x-cmd.com/draw?type=bar&t=grid&labels=%E5%91%A8%E4%B8%80%2C%E5%91%A8%E4%BA%8C%2C%E5%91%A8%E4%B8%89%2C%E5%91%A8%E5%9B%9B&values=120,180,150,210
 ```
 
-[![表格柱（t=grid）](https://x-cmd.com/draw?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)](https://x-cmd.com/draw/explore?type=bar&t=grid&labels=Mon,Tue,Wed,Thu&values=120,180,150,210)
+[![表格柱（t=grid）](https://x-cmd.com/draw?type=bar&t=grid&labels=%E5%91%A8%E4%B8%80%2C%E5%91%A8%E4%BA%8C%2C%E5%91%A8%E4%B8%89%2C%E5%91%A8%E5%9B%9B&values=120,180,150,210)](https://x-cmd.com/draw/explore?type=bar&t=grid&labels=%E5%91%A8%E4%B8%80%2C%E5%91%A8%E4%BA%8C%2C%E5%91%A8%E4%B8%89%2C%E5%91%A8%E5%9B%9B&values=120,180,150,210)
 
 ---
 
