@@ -698,57 +698,49 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
     entrySeen.set(rk, entryAt[i] + 1);
   });
 
-  // 端口偏移:同一侧上有几条线,谁走正中?
+  // 端口偏移:同一张脸上有几条线,谁走正中?
   // 「直着来的」—— 源和目标在同一行(左右两侧)/同一列(上下两侧)—— 走正中,
   // 别的线往边上让。不这样处理的话,一条绕远路的线会把本来笔直的线顶歪
   // (读者看到的是「没必要的一折」)。
+  //
+  // **进和出一起排**:同一个节点的同一张脸,进来的线跟出去的线如果落在同一个点,
+  // 看着就像一根线穿过了这个节点(两条边共用一段)。所以按「节点+脸」分组,
+  // 不分进出 —— 出去的线互相让开(扇出),进来的线跟出去的线也互相让开。
   const exitOff: number[] = [];
   const entryOff: number[] = [];
-  // 出口偏移
   {
-    const groups = new Map<string, number[]>();
-    edges.forEach((e, i) => {
-      const k = `${e.from}|${sides[i].exit}`;
-      groups.set(k, [...(groups.get(k) ?? []), i]);
-    });
-    for (const [k, idxs] of groups) {
-      const side = sides[idxs[0]].exit;
-      const box = byId.get(edges[idxs[0]].from)!.box;
+    const groups = new Map<string, { i: number; out: boolean }[]>();
+    const put = (k: string, i: number, out: boolean): void => {
+      groups.set(k, [...(groups.get(k) ?? []), { i, out }]);
+    };
+    edges.forEach((e, i) => put(`${e.from}|${sides[i].exit}`, i, true));
+    edges.forEach((e, i) => put(`${e.to}|${sides[i].entry}`, i, false));
+    for (const [k, members] of groups) {
+      const sep = k.lastIndexOf('|');
+      const nodeId = k.slice(0, sep);
+      const side = k.slice(sep + 1) as Side;
+      const box = byId.get(nodeId)!.box;
       const len = side === 'left' || side === 'right' ? box.h : box.w;
-      const aligned = idxs.filter((i) => {
-        const src = byId.get(edges[i].from)!.box;
-        const dst = byId.get(edges[i].to)!.box;
+      const aligned = members.filter((m) => {
+        const src = byId.get(edges[m.i].from)!.box;
+        const dst = byId.get(edges[m.i].to)!.box;
         return side === 'left' || side === 'right'
           ? Math.abs(src.y + src.h / 2 - (dst.y + dst.h / 2)) < 8
           : Math.abs(src.x + src.w / 2 - (dst.x + dst.w / 2)) < 8;
       });
-      idxs.forEach((i) => {
-        const slot = idxs.indexOf(i);
-        exitOff[i] = aligned.length === 1 && aligned[0] === i ? 0 : portOffset(len, slot, idxs.length);
-      });
-    }
-  }
-  // 入口偏移
-  {
-    const groups = new Map<string, number[]>();
-    edges.forEach((e, i) => {
-      const k = `${e.to}|${sides[i].entry}`;
-      groups.set(k, [...(groups.get(k) ?? []), i]);
-    });
-    for (const [k, idxs] of groups) {
-      const side = sides[idxs[0]].entry;
-      const box = byId.get(edges[idxs[0]].to)!.box;
-      const len = side === 'left' || side === 'right' ? box.h : box.w;
-      const aligned = idxs.filter((i) => {
-        const src = byId.get(edges[i].from)!.box;
-        const dst = byId.get(edges[i].to)!.box;
-        return side === 'left' || side === 'right'
-          ? Math.abs(src.y + src.h / 2 - (dst.y + dst.h / 2)) < 8
-          : Math.abs(src.x + src.w / 2 - (dst.x + dst.w / 2)) < 8;
-      });
-      idxs.forEach((i) => {
-        const slot = idxs.indexOf(i);
-        entryOff[i] = aligned.length === 1 && aligned[0] === i ? 0 : portOffset(len, slot, idxs.length);
+      // 「直着来/直着走」的那条走正中,别的分到两边 —— 分完还得跟它错开,
+      // 否则中间的槽位正好也是 0,两条线又撞在一个点上
+      const ai = aligned.length === 1 ? members.findIndex((m) => m.i === aligned[0].i) : -1;
+      const above = ai >= 0 ? ai : 0;
+      const below = ai >= 0 ? members.length - ai - 1 : 0;
+      members.forEach((m, slot) => {
+        let off: number;
+        if (ai < 0) off = portOffset(len, slot, members.length);
+        else if (slot < ai) off = -len / 2 + ((slot + 0.5) / above) * (len / 2);
+        else if (slot === ai) off = 0;
+        else off = ((slot - ai - 0.5) / below) * (len / 2);
+        if (m.out) exitOff[m.i] = off;
+        else entryOff[m.i] = off;
       });
     }
   }
@@ -979,7 +971,8 @@ function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = fa
     let place: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
     let best: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
     let bestCost = Infinity;
-    for (const t of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82]) {
+    // 候选位置:沿着线多试几个点 —— 挤在一起时挪一挪,别都堆在中点上
+    for (const t of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82, 0.12, 0.88, 0.08, 0.92]) {
       const at = polyAt(rt.pts, t);
       for (const mirror of [false, true]) {
         const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(at.p, at.horiz, mirror), b), 0);
@@ -1345,6 +1338,17 @@ export function renderArchCore(o: ArchOpts): DrawResult {
       const bb = boundaryBoxV2(byId, bd);
       const w = textW(bd.label.toUpperCase(), 10) + bd.label.length * 1.2 + 20;
       return { x: bb.x + 14, y: bb.y - 12, w, h: 22 };
+    }),
+    // 分组的框线:只挡「边框那一圈」—— 框里的标签是正常的,压在框线上才是压线
+    ...o.boundaries.flatMap((bd) => {
+      const bb = boundaryBoxV2(byId, bd);
+      const t = 4;
+      return [
+        { x: bb.x - t, y: bb.y - t, w: bb.w + t * 2, h: t * 2 },
+        { x: bb.x - t, y: bb.y + bb.h - t, w: bb.w + t * 2, h: t * 2 },
+        { x: bb.x - t, y: bb.y + t, w: t * 2, h: bb.h - t * 2 },
+        { x: bb.x + bb.w - t, y: bb.y + t, w: t * 2, h: bb.h - t * 2 },
+      ];
     }),
   ];
   const spots = placeEdgeLabels(routed, avoid, types.crows === 'erd');

@@ -178,3 +178,46 @@ describe('arch v2 rendering', () => {
     expect(res.headers.get('content-type')).toContain('image/svg+xml');
   });
 });
+
+describe('端口与走线', () => {
+  /** 每条边的折点 */
+  const routesOf = (svg: string): [number, number][][] =>
+    [...svg.replace(/<defs>[\s\S]*?<\/defs>/g, '').matchAll(/<path d="(M[^"]+)"/g)]
+      .map((m) => m[1].split(/[ML]/).filter(Boolean).map((p) => p.trim().split(' ').map(Number) as [number, number]));
+
+  it('进来的线跟出去的线不落在同一个端口(不然看着像一根线穿过节点)', () => {
+    // etl 在 rs 的右上:etl→rs 从右边进,rs→qs 从右边出
+    const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + [
+      'n=etl;be;ETL;r0c1',
+      'n=rs;db;RS;r1c0',
+      'n=qs;fe;QS;r1c1',
+      'e=etl;rs;in',
+      'e=rs;qs;out',
+    ].join('&')));
+    const routes = routesOf(svg);
+    expect(routes.length).toBe(2);
+    const inRoute = routes[0];   // etl → rs
+    const outRoute = routes[1];  // rs → qs
+    // 两个端口不是同一个点(是同一个点的话,看着像一根线穿过了节点)
+    expect(inRoute[inRoute.length - 1]).not.toEqual(outRoute[0]);
+  });
+
+  it('扇出可以共用一段(从一个源分出去的几条线,起点同一边)', () => {
+    // switch → 三个目标:共用源那一侧是好事(读者一眼看出是同一个源)
+    const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + [
+      'n=sw;svc;Switch;r0c0',
+      'n=a;db;A;r1c0',
+      'n=b;db;B;r1c1',
+      'n=c;db;C;r2c0',
+      'e=sw;a',
+      'e=sw;b',
+      'e=sw;c',
+    ].join('&')));
+    const routes = routesOf(svg);
+    expect(routes.length).toBe(3);
+    // 三条线都从 sw 的同一条边(下边)出来 → y 相同,x 散开
+    const ys = routes.map((r) => r[0][1]);
+    expect(new Set(ys).size).toBe(1);
+    expect(new Set(routes.map((r) => r[0][0])).size).toBeGreaterThan(1);
+  });
+});
