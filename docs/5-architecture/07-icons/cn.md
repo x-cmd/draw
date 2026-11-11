@@ -57,6 +57,20 @@ https://x-cmd.com/draw/arch2?n=cf;cloud;CloudFront;CDN;r0c0;aws:cloudfront&n=s3;
 
 更多例子在场景页:[云上架构 —— 五个真的落地的架构](https://cn.x-cmd.com/draw/docs/cloud-architecture)。
 
+## 大图标版:`/draw/cloud`
+
+想要 [diagrams](https://github.com/mingrammer/diagrams) 那种**海报式**的云架构图 ——
+节点不是方块,就是图标本身 —— 用另一个端点:
+
+```text
+https://x-cmd.com/draw/cloud?n=cf;cloud;CloudFront;CDN;r0c0;aws:cloudfront&n=alb;cloud;ALB;HTTPS 443;r1c0;aws:alb&n=api;be;API;ECS Fargate;r2c0;aws:ecs&n=rds;db;RDS;PostgreSQL;r3c0;aws:rds&e=cf;alb;转发&e=alb;api&e=api;rds;查询&b=Public subnet;cf alb&b=Private subnet;api rds&title=Three-tier on AWS&w=760
+```
+
+![云架构(大图标)](https://x-cmd.com/draw/cloud?n=cf;cloud;CloudFront;CDN;r0c0;aws:cloudfront&n=alb;cloud;ALB;HTTPS 443;r1c0;aws:alb&n=api;be;API;ECS Fargate;r2c0;aws:ecs&n=rds;db;RDS;PostgreSQL;r3c0;aws:rds&e=cf;alb;转发&e=alb;api&e=api;rds;查询&b=Public subnet;cf alb&b=Private subnet;api rds&title=Three-tier on AWS&w=760)
+
+和 `/draw/arch2` 的区别只有两处:节点画成 64px 的图标(名字在下面),
+连线只接图标那块(不穿名字)。`n=` `e=` `b=` 的写法完全一样。
+
 ## 取舍
 
 - **收 62 个,不是两千个。** 图标库有几千个服务图标,全收进来仓库就撑不住了;

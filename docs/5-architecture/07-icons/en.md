@@ -64,6 +64,22 @@ https://x-cmd.com/draw/arch2?n=cf;cloud;CloudFront;CDN;r0c0;aws:cloudfront&n=s3;
 
 More in the showcase: [Cloud architecture — five real designs](https://www.x-cmd.com/draw/docs/cloud-architecture).
 
+## The big-icon version: `/draw/cloud`
+
+For the poster-style cloud architecture diagrams that
+[diagrams](https://github.com/mingrammer/diagrams) made famous — where the node
+is the icon, not a box — use the other endpoint:
+
+```text
+https://x-cmd.com/draw/cloud?n=cf;cloud;CloudFront;CDN;r0c0;aws:cloudfront&n=alb;cloud;ALB;HTTPS 443;r1c0;aws:alb&n=api;be;API;ECS Fargate;r2c0;aws:ecs&n=rds;db;RDS;PostgreSQL;r3c0;aws:rds&e=cf;alb;Forward&e=alb;api&e=api;rds;Query&b=Public subnet;cf alb&b=Private subnet;api rds&title=Three-tier on AWS&w=760
+```
+
+![Cloud architecture, big icons](https://x-cmd.com/draw/cloud?n=cf;cloud;CloudFront;CDN;r0c0;aws:cloudfront&n=alb;cloud;ALB;HTTPS 443;r1c0;aws:alb&n=api;be;API;ECS Fargate;r2c0;aws:ecs&n=rds;db;RDS;PostgreSQL;r3c0;aws:rds&e=cf;alb;Forward&e=alb;api&e=api;rds;Query&b=Public subnet;cf alb&b=Private subnet;api rds&title=Three-tier on AWS&w=760)
+
+Two differences from `/draw/arch2`: the node is a 64px icon with the name below,
+and the edges attach to the icon (so they never cross a name). The `n=` `e=` `b=`
+syntax is identical.
+
 ## Trade-offs
 
 - **62 icons, not two thousand.** The library has thousands of service icons;
