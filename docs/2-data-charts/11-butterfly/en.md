@@ -72,6 +72,7 @@ https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time
 | `unit=` | unit, shown in the legend | — |
 | `w=` / `h=` | canvas size | 640 × 420 |
 | `scheme=` | `dark` / `light` | auto |
+| `t=` | style family: `base` (a faint track behind each bar) or `bare` (bars only — the empty track reads as data otherwise) | `base` |
 | `d=` | the JSON form (below) | — |
 
 **The JSON form** — for anything the short form cannot say:

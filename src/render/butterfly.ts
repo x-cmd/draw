@@ -48,6 +48,8 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
   const { version, skin } = o;
   const n = spec.labels.length;
   const tb = spec.dir === 'tb';
+  // 底纹轨道:默认画;t=bare 不画(空着的底纹容易被当成数据的一部分)
+  const track = skin.rules.butterflyMode !== 'bare';
   const unit = spec.unit?.trim();
   const left = paintSide(spec.left, 'Left', 0, unit);
   const right = paintSide(spec.right, 'Right', left.length, unit);
@@ -137,8 +139,10 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
         if (!segs.length) return;
         const sideMax = dir < 0 ? leftMax : rightMax;
         const totalLen = (totals[i] / sideMax) * half;
-        // 轨道:整条到底
-        parts.push(`<rect x="${r2(dir < 0 ? centre - half : centre)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="${TRACK}" fill-opacity="0.35"/>`);
+        // 轨道:整条到底(bare 风格不画 —— 底纹是空的,读者容易当成数据)
+        if (track) {
+          parts.push(`<rect x="${r2(dir < 0 ? centre - half : centre)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="${TRACK}" fill-opacity="0.35"/>`);
+        }
         let acc = 0;
         for (const seg of segs) {
           const len = (seg.values[i] ?? 0) / sideMax * half;
@@ -268,7 +272,9 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
         if (!segs.length) return;
         const sideMax = dir < 0 ? leftMax : rightMax;
         const totalLen = (totals[i] / sideMax) * half;
-        parts.push(`<rect x="${r2(x)}" y="${r2(dir < 0 ? centreY - half : centreY)}" width="${r2(barW)}" height="${r2(half)}" rx="4" fill="${TRACK}" fill-opacity="0.35"/>`);
+        if (track) {
+          parts.push(`<rect x="${r2(x)}" y="${r2(dir < 0 ? centreY - half : centreY)}" width="${r2(barW)}" height="${r2(half)}" rx="4" fill="${TRACK}" fill-opacity="0.35"/>`);
+        }
         let acc = 0;
         for (const seg of segs) {
           const len = (seg.values[i] ?? 0) / sideMax * half;
@@ -330,7 +336,18 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
     ? topLegend(legendItems, PAD, PAD + titleH + 12, 'left', 'square')
     : '';
 
-  const meta = { type: 'butterfly', title: spec.title, dir: spec.dir, labels: spec.labels };
+  // metadata 带全量 spec —— AI 读它能把图原样重建(角标的 explore 链接也靠它)
+  const meta = {
+    type: 'butterfly',
+    title: spec.title,
+    unit: spec.unit,
+    dir: spec.dir,
+    ...(spec.scale ? { scale: spec.scale } : {}),
+    labels: spec.labels,
+    ...(spec.left ? { left: spec.left } : {}),
+    ...(spec.right ? { right: spec.right } : {}),
+    ...(spec.line ? { line: spec.line } : {}),
+  };
   const svg = svgDoc(
     width, height, 'butterfly', version,
     spec.title ?? `butterfly chart, ${n} categories`,

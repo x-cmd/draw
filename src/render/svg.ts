@@ -132,7 +132,7 @@ export function topLegend(
 // Edit @X-CMD 角标宽度预留(#27):右对齐图例向左让出此宽度,标签独占右上角
 export const TAG_RESERVE = 150;
 // explore 的 ?d= 直收 spec JSON 的图种(角标链接目标,qr 的 d= 是纯文本另算)
-const EXPLORE_D_KINDS = new Set(['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey']);
+const EXPLORE_D_KINDS = new Set(['pie', 'bar', 'hbar', 'line', 'area', 'radar', 'gauge', 'scatter', 'combo', 'sankey', 'butterfly']);
 
 export const EDIT_TAG_TEXT = 'Edit @X-CMD';
 /** 剥离角标的正则源(onepage/explore 内联/gantt 前端换图共用;rect 段可选兼容旧纯文本形) */

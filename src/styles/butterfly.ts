@@ -22,4 +22,24 @@ export const BUTTERFLY_VARIANTS: Variant[] = [
       num: 'none',
     },
   }),
+  // 不画底纹轨道:只有柱 —— 底纹是空的,读者容易当成数据的一部分
+  makeVariant({
+    family: 'bare',
+    label: '双翼条形图(无底纹)',
+    series: [
+      duo(C_sankey['blue']),
+      duo(C_sankey['cyan']),
+      duo(C_sankey['green']),
+      duo(C_sankey['purple']),
+      duo(C_sankey['orange']),
+      duo(C_sankey['rose']),
+    ],
+    neutrals: { grid: duo('#E4E4E7', '#27272A') },
+    size: [640, 420],
+    rules: {
+      canvas: 'plain',
+      num: 'none',
+      butterflyMode: 'bare',
+    },
+  }),
 ];

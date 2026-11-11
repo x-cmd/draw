@@ -36,6 +36,7 @@ Each chart has its own default style and available `t=` list. See dedicated arti
 | `scatter` | `evil` | — | [scatter](../../2-data-charts/08-scatter/en.md) |
 | `combo` | `evil` | — | [combo](../../2-data-charts/09-combo/en.md) |
 | `sankey` | `evil` | — | [sankey](../../3-relations/01-sankey/en.md) |
+| `butterfly` | `base` (faint track behind each bar) | `bare` (bars only, no track) | [butterfly](../../2-data-charts/11-butterfly/en.md) |
 | `qr` | default black-on-white | `invert=1` flips | [qr](../../7-infographics/01-qr/en.md) |
 
 ---

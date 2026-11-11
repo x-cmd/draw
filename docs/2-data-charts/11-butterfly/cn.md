@@ -69,6 +69,7 @@ https://x-cmd.com/draw?type=butterfly&title=Memory,%20disk%20and%20report%20time
 | `unit=` | 单位,显示在图例里 | — |
 | `w=` / `h=` | 画布尺寸 | 640 × 420 |
 | `scheme=` | `dark` / `light` | auto |
+| `t=` | 风格家族:`base`(每根柱后面一层淡底纹)或 `bare`(只画柱 —— 空着的底纹容易被当成数据) | `base` |
 | `d=` | JSON 形态(见下) | — |
 
 **JSON 形态** —— 短形态说不清的时候用:

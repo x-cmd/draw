@@ -36,6 +36,7 @@ x-json-ld:
 | `scatter` | `evil` | — | [scatter](../../2-data-charts/08-scatter/cn.md) |
 | `combo` | `evil` | — | [combo](../../2-data-charts/09-combo/cn.md) |
 | `sankey` | `evil` | — | [sankey](../../3-relations/01-sankey/cn.md) |
+| `butterfly` | `base`(每根柱后面有一层淡底纹) | `bare`(只画柱,没有底纹) | [butterfly](../../2-data-charts/11-butterfly/cn.md) |
 | `qr` | 默认黑底白图案 | `invert=1` 反色 | [qr](../../7-infographics/01-qr/cn.md) |
 
 ---

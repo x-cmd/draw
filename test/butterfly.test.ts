@@ -49,6 +49,24 @@ describe('butterfly(双翼条形图)', () => {
     expect(texts(svg)).toContain('49,178');
   });
 
+  it('t=bare:不画底纹(空着的底纹会被当成数据)', () => {
+    const q = 'type=butterfly&labels=A&left=Opened:7&right=Closed:5';
+    const withTrack = renderFromUrl(url(q)).svg;
+    const bare = renderFromUrl(url(q + '&t=bare')).svg;
+    // 底纹是一层很淡的灰(var(--d-faint) + 0.35)
+    const track = withTrack.match(/fill="var\(--d-faint\)" fill-opacity="0\.35"/g) ?? [];
+    const noTrack = bare.match(/fill="var\(--d-faint\)" fill-opacity="0\.35"/g) ?? [];
+    expect(track.length).toBe(2);   // 两侧各一条
+    expect(noTrack.length).toBe(0);
+  });
+
+  it('metadata 带全量数据(AI 能原样重建,角标链接也靠它)', () => {
+    const { svg } = renderFromUrl(url('type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6'));
+    const m = /&quot;left&quot;:\{[^}]*&quot;values&quot;:\[7,8\]/.exec(svg);
+    expect(m).toBeTruthy();
+    expect(svg).toContain('/draw/explore?type=butterfly');
+  });
+
   it('JSON 形态也能画', () => {
     const spec = { labels: ['a'], left: { name: 'L', values: [1] }, right: { name: 'R', values: [2] } };
     const { svg } = renderFromUrl(url('type=butterfly&d=' + encodeURIComponent(JSON.stringify(spec))));
