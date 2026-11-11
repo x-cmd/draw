@@ -79,7 +79,11 @@ https://x-cmd.com/draw/arch2?n=api;be;API%20Gateway;auth;r1c0w2
 ```
 
 `/draw/archmap` is unchanged and stays where it is; `/draw/arch2` is the one
-to reach for when the diagram is going in front of people.
+to reach for when the diagram is going in front of people. In v2 the boundary
+frames are coloured — pick one with an optional third field
+(`b=AWS Region;cdn lb api;9`), or let draw choose a colour the node types
+are not using. Edges that have to go around a box stay inside the frame they
+belong to.
 
 ## 3. The node line
 

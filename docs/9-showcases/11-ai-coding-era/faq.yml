@@ -1,0 +1,59 @@
+id: x-draw-9-showcases-11-ai-coding-era
+
+data:
+  - name:
+      en: The AI-coding era
+      cn: AI-coding 时代
+    qa:
+      - id: macro
+        question:
+          en: "Why charts, when the agent writes the code?"
+          cn: "agent 都写代码了,还要图表干什么?"
+        answer:
+          en: >
+            Because the code is no longer what you hold in your head. You wrote three hundred lines
+            yesterday and the shape of the project is gone — and nobody else is holding it either. The
+            chart hands the macro view back: what the project is made of, how the parts fit together,
+            what the last change actually touched.
+          cn: >
+            因为代码已经不是你脑子里的那件事了。昨天你写了三百行,项目的形状就没了 —— 而且也没有别人
+            替你拿着。图把全局交还给你:项目由什么组成、各部分怎么拼起来、这次改动到底碰了什么。
+        confidence: 9
+        reference:
+          - docs/9-showcases/11-ai-coding-era/en.md
+          - docs/9-showcases/11-ai-coding-era/cn.md
+      - id: urls
+        question:
+          en: "Is this a page of pictures or a page of URLs?"
+          cn: "这是一页图片,还是一页 URL?"
+        answer:
+          en: >
+            URLs. Every picture is a link you can paste into an issue, a release note or a README — and
+            every one is built from draw's own repository, so the numbers are real.
+          cn: >
+            是 URL。每一张图都是一个能粘进 issue、release note 或 README 的链接 —— 而且全都用 draw
+            自己的仓库搭的,数字是真的。
+        confidence: 9
+        reference:
+          - docs/9-showcases/11-ai-coding-era/en.md
+          - docs/9-showcases/11-ai-coding-era/cn.md
+  - name:
+      en: Files against lines
+      cn: 文件数与行数
+    qa:
+      - id: two-measures
+        question:
+          en: "How do you show file counts and line counts together?"
+          cn: "文件数和行数怎么放在一起?"
+        answer:
+          en: >
+            As two sides with two scales — `tokei?layout=files` puts the file counts on the left and the
+            line counts on the right. They are different measures, so they do not share an axis; a line
+            with its own axis is the other way to do it.
+          cn: >
+            两侧各一套标尺 —— `tokei?layout=files` 左边文件数、右边行数。它们是两个量,不放同一根轴上;
+            另一种做法是给其中一条线一根自己的轴。
+        confidence: 9
+        reference:
+          - docs/9-showcases/11-ai-coding-era/en.md
+          - docs/9-showcases/11-ai-coding-era/cn.md

@@ -1,6 +1,6 @@
 ---
 x-title: draw — SVG chart endpoint quick reference (13 chart types + common params + data formats)
-x-desc: 'x-cmd/draw is a single-endpoint SVG chart service: GET /draw?type=... returns SVG. Supports 13 chart types: pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr / quadrant / compass. Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON.'
+x-desc: 'x-cmd/draw is a single-endpoint SVG chart service: GET /draw?type=... returns SVG. Supports 14 chart types: pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr / quadrant / compass. Common params: t= (style), scheme=dark|light, num=all|peak|none, v=1, w/h=. Two data formats: flat params vs ?d= JSON.'
 x-sidebar: draw overview
 x-keywords: draw, svg, chart, pie chart, bar chart, line chart, radar chart, gauge, scatter, sankey, qr code, svg endpoint, x-cmd/draw
 x-json-ld:
@@ -27,7 +27,7 @@ POST /draw?type=<chart-type>&...     # creates permanent short URL
 
 Returned SVG embeds a `<metadata>` node — **pure text, not binary**. Greppable, diffable, version-controllable.
 
-Supports 13 chart types:
+Supports 14 chart types:
 
 | type | chart | detail |
 | --- | --- | --- |
@@ -43,6 +43,7 @@ Supports 13 chart types:
 | `sankey` | sankey diagram | see [sankey](../../3-relations/01-sankey/en.md) |
 | `qr` | QR code | see [qr](../../7-infographics/01-qr/en.md) |
 | `quadrant` | 2×2 decision matrix | see [quadrant](../../4-strategy/01-quadrant/en.md) |
+| `butterfly` | butterfly chart — two series back to back | see [butterfly](../../2-data-charts/11-butterfly/en.md) |
 | `compass` | four-arrow compass | see [compass](../../4-strategy/02-compass/en.md) |
 
 Beyond the `type=` charts, the same service draws the diagram kinds — each on its own path:

@@ -23,9 +23,9 @@ const TYPE_COLOR: Partial<Record<NodeType, number>> = {
 };
 type EdgeVariant = 'plain' | 'main' | 'dash';
 
-const ID_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/;
-const GRID_POS_RE = /^r(\d+)c(\d+)(?:w([1-3]))?(?:h([1-3]))?$/;
-const PX_POS_RE = /^p(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)(?:,(\d+)x(\d+))?$/;
+export const ID_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/;
+export const GRID_POS_RE = /^r(\d+)c(\d+)(?:w([1-3]))?(?:h([1-3]))?$/;
+export const PX_POS_RE = /^p(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)(?:,(\d+)x(\d+))?$/;
 
 const GAP_X = 30;
 const GAP_Y = 34;
@@ -46,7 +46,12 @@ export interface ArchNode {
   px?: { x: number; y: number; w?: number; h?: number };
 }
 export interface ArchEdge { from: string; to: string; label?: string; variant: EdgeVariant }
-export interface ArchBoundary { label: string; ids: string[] }
+export interface ArchBoundary {
+  label: string;
+  ids: string[];
+  /** 可选的色板编号(1–10):b=名称;id id…;9 —— v2 用它给边界上色,v1 不用 */
+  color?: number;
+}
 interface ArchSpec {
   type: 'archmap';
   title?: string;
@@ -59,9 +64,19 @@ function bad(detail: string): never {
   throw new ApiError(400, `${detail} Example: ${N_EXAMPLE}`);
 }
 
+/**
+ * 切节点字段:末尾的空段丢掉(至少留 id;type;label 三段)。
+ * 这样 `n=id;type;label;;` 和 `n=id;type;label` 一样,不用作者数分号。
+ */
+export function splitFields(v: string): string[] {
+  const f = v.split(';');
+  while (f.length > 3 && f[f.length - 1].trim() === '') f.pop();
+  return f;
+}
+
 export function parseNodes(raw: string[]): ArchNode[] {
   return raw.map((v, i) => {
-    const f = v.split(';');
+    const f = splitFields(v);
     const where = `"n=${v}" (#${i + 1})`;
     if (f.length < 3 || f.length > 5) bad(`${where}: expected id;type;label[;sublabel][;pos] fields`);
     const [id, type, label] = f;
@@ -112,10 +127,23 @@ export function parseBoundaries(raw: string[], ids: Set<string>): ArchBoundary[]
     const sep = v.indexOf(';');
     if (sep < 1) bad(`"b=${v}" (#${i + 1}): expected <label>;<id> <id> ...`);
     const label = v.slice(0, sep).trim();
-    const members = v.slice(sep + 1).trim().split(/\s+/).filter(Boolean);
+    let rest = v.slice(sep + 1).trim();
+    // 可选的第三段:色板编号 1–10(b=名称;id id…;9)
+    let color: number | undefined;
+    const csep = rest.lastIndexOf(';');
+    if (csep > 0) {
+      const tail = rest.slice(csep + 1).trim();
+      if (/^\d{1,2}$/.test(tail)) {
+        const n = Number(tail);
+        if (n < 1 || n > 10) bad(`"b=${v}": colour must be a palette number 1-10, got "${tail}"`);
+        color = n;
+        rest = rest.slice(0, csep).trim();
+      }
+    }
+    const members = rest.split(/\s+/).filter(Boolean);
     if (!label || !members.length) bad(`"b=${v}" (#${i + 1}): label and at least one member id required`);
     for (const m of members) if (!ids.has(m)) bad(`"b=${v}": unknown node "${m}"`);
-    return { label, ids: members };
+    return { label, ids: members, ...(color ? { color } : {}) };
   });
 }
 
@@ -138,6 +166,8 @@ export interface GridOpts {
   pad?: number;
   /** 节点尺寸的量尺(默认 naturalSize) */
   sizeOf?: (n: ArchNode) => { w: number; h: number };
+  /** 某一列之后的额外间距(下标=列号):给太宽的边标签腾地方;没给的列用 gapX */
+  gapAfter?: number[];
 }
 
 export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {}): { placed: Placed[]; W: number; H: number } {
@@ -196,7 +226,7 @@ export function packGrid(nodes: ArchNode[], gridCols: number, opts: GridOpts = {
     trackX = new Array<number>(cols);
     trackY = new Array<number>(rows);
     let x = pad;
-    for (let c = 0; c < cols; c++) { trackX[c] = x; x += colW[c] + gapX; }
+    for (let c = 0; c < cols; c++) { trackX[c] = x; x += colW[c] + (opts.gapAfter?.[c] ?? gapX); }
     let y = pad;
     for (let r = 0; r < rows; r++) { trackY[r] = y; y += rowH[r] + gapY; }
   }
@@ -432,7 +462,16 @@ function drawEdgeLabels(routed: Routed[], avoid: Box[], interactive = false): st
     const attrs = place.horiz
       ? `x="${r2(place.p[0])}" y="${r2(place.p[1] + (place.mirror ? 14 : -6))}" text-anchor="middle"`
       : `x="${r2(place.p[0] + (place.mirror ? -6 : 6))}" y="${r2(place.p[1] + 3.5)}" text-anchor="${place.mirror ? 'end' : 'start'}"`;
-    out.push(`<text${ia} ${attrs} font-size="11" fill="var(--d-text)">${esc(text)}</text>`);
+    // 底衬:标签比两个节点之间的空档还宽时会压到节点上,给个画布色的胶囊,
+    // 线从底下过、字浮在上面 —— 和 v2 的边标签一个样。
+    const tx = place.horiz ? place.p[0] : place.p[0] + (place.mirror ? -6 : 6);
+    const ty = place.horiz ? place.p[1] + (place.mirror ? 14 : -6) : place.p[1] + 3.5;
+    const chipX = place.horiz ? tx - w / 2 : place.mirror ? tx - w : tx;
+    const chipY = place.horiz ? ty - 12 : ty - 11;
+    out.push(
+      `<rect x="${r2(chipX)}" y="${r2(chipY)}" width="${r2(w)}" height="15" rx="4" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
+      `<text${ia} ${attrs} font-size="11" fill="var(--d-text)">${esc(text)}</text>`,
+    );
   }
   return out.join('');
 }
@@ -622,10 +661,18 @@ export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
     width = Math.max(width, p.box.x + p.box.w + PAD);
     bodyH = Math.max(bodyH, p.box.y + p.box.h + PAD);
   }
-  width = Math.max(width, o.minW ?? 0);
-  const height = Math.max(bodyH + titleH, o.minH ?? 0);
   // 管线:路由 → 边界标签选角(避开走线) → 边标签避让(节点盒 ∪ 边界标签区)
   const routed = o.edgeMode === 'straight' ? straightRoutes(placed, o.edges, o.straightDir ?? 'TB') : computeRoutes(placed, o.edges);
+  // 画布要盖住走线:反向边绕到节点外面(U 形),边标签又贴在走线上 ——
+  // 只按节点盒算尺寸,那一段会被裁掉(字看不全)。
+  for (const rt of routed) {
+    for (const p of rt.pts) {
+      width = Math.max(width, p[0] + PAD);
+      bodyH = Math.max(bodyH, p[1] + PAD);
+    }
+  }
+  width = Math.max(width, o.minW ?? 0);
+  const height = Math.max(bodyH + titleH, o.minH ?? 0);
   const byId = new Map(placed.map(p => [p.id, p]));
   const boxes = placed.map(p => p.box);
   const corners = o.boundaries.map(bd => boundaryLabelCorner(boundaryBox(byId, bd), bd.label.toUpperCase(), routed, boxes));
@@ -661,8 +708,9 @@ export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
   const body = iStyle + DEFS
     + drawBoundaries(placed, o.boundaries, corners, o.interactive)
     + drawRoutes(routed, o.interactive, o.style, byId)
-    + drawEdgeLabels(routed, avoid, o.interactive)
-    + placed.map(p => drawNode(p, o.interactive, degree.get(p.id) ?? 0, o.style)).join('');
+    + placed.map(p => drawNode(p, o.interactive, degree.get(p.id) ?? 0, o.style)).join('')
+    // 边标签画在节点之上:标签比空档宽时会伸进节点里,压在节点下面就看不见了
+    + drawEdgeLabels(routed, avoid, o.interactive);
   // 标题占位下移 + h 垫高的剩余空间上下均分(内容垂直居中,标题仍在顶部)
   const dy = titleH + (height - titleH - bodyH) / 2;
   const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">` + body + `</g>`;

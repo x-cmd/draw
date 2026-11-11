@@ -30,6 +30,32 @@ describe('mermaid flowchart', () => {
     const r = renderMermaidFromUrl(url(src));
     expect(r.svg).toContain('Edge');
   });
+
+  it('画布盖得住绕到节点下面的反向边(以前那一段被裁掉,字看不全)', () => {
+    // 反向边走出 U 形绕到节点下面 —— 画布只按节点盒算高度就会裁掉它
+    const src = 'graph LR\n  App[Your app] -->|GET /draw?type=pie| Edge[Edge worker]\n  Edge -->|200 OK| App';
+    const { svg } = renderMermaidFromUrl(url(src));
+    const h = Number(/height="([0-9.]+)"/.exec(svg)![1]);
+    // 走线最低点在画布内:折线的每个 y 都要小于画布高
+    const ys = [...svg.matchAll(/<path d="M([^"]+)"/g)].flatMap((m) =>
+      [...m[1].matchAll(/[ML](-?[0-9.]+) (-?[0-9.]+)/g)].map((p) => Number(p[2])),
+    );
+    expect(ys.length).toBeGreaterThan(0);
+    for (const y of ys) expect(y).toBeLessThan(h);
+    // 回信的标签画出来了
+    expect(svg).toContain('200 OK');
+  });
+
+  it('边标签压在节点上时也有底衬,字不会被节点盖住', () => {
+    const src = 'graph LR\n  A[App] -->|GET /draw?type=pie| B[Edge worker]';
+    const { svg } = renderMermaidFromUrl(url(src));
+    // 标签画在节点之后(层序靠后)且带底衬
+    // (metadata 里也有这个字符串,取最后一次出现 —— 那才是画在图上的)
+    const label = svg.lastIndexOf('GET /draw?type=pie');
+    const node = svg.indexOf('>App<');
+    expect(label).toBeGreaterThan(node);
+    expect(svg).toContain(`rx="4" fill="var(--d-card)" stroke="var(--d-border)"`);
+  });
 });
 
 describe('gantt source parsing', () => {

@@ -1,0 +1,87 @@
+id: x-draw-2-data-charts-11-butterfly
+
+data:
+  - name:
+      en: Butterfly chart
+      cn: 双翼条形图
+    qa:
+      - id: what
+        question:
+          en: "What is this chart called?"
+          cn: "这种图叫什么名字?"
+        answer:
+          en: >
+            A butterfly chart — two bar series mirrored around a shared centre axis. The same construction is called a
+            tornado chart when the categories are ranked by magnitude, a population pyramid for age × sex, and more
+            generally a diverging bar chart.
+          cn: >
+            双翼条形图 —— 两个柱系列共用一根中轴、往两侧长。同一个形状:类别按大小排序时叫龙卷风图,
+            年龄 × 性别时叫人口金字塔,更宽泛的说法是双向柱状图。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/11-butterfly/en.md
+          - docs/2-data-charts/11-butterfly/cn.md
+      - id: scales
+        question:
+          en: "Do the two sides share one scale?"
+          cn: "两侧共用一把标尺吗?"
+        answer:
+          en: >
+            The bars do — that is the point of the chart: the lengths are comparable. A line always gets its own scale,
+            because its unit usually differs (GB against milliseconds).
+          cn: >
+            柱共用 —— 这正是这张图的意义:长度可比。折线永远是自己的标尺,因为单位通常不一样
+            (GB 对毫秒)。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/11-butterfly/en.md
+          - docs/2-data-charts/11-butterfly/cn.md
+      - id: unit
+        question:
+          en: "Where does the unit go?"
+          cn: "单位写在哪?"
+        answer:
+          en: >
+            In the legend, in the series name — `left=peak memory (GB):…`. Not on the axis: a reader who finds "1k"
+            under an axis has no way to know it means megabytes, and the legend is the only place they look.
+          cn: >
+            写在图例的名字里 —— `left=peak memory (GB):…`。不要放轴上:读者在轴上看到「1k」根本不知道
+            那是 MB,而图例是他唯一会看的地方。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/11-butterfly/en.md
+          - docs/2-data-charts/11-butterfly/cn.md
+  - name:
+      en: Variants
+      cn: 变体
+    qa:
+      - id: variants
+        question:
+          en: "Can the bars be stacked? Can the chart stand up?"
+          cn: "柱能堆叠吗?图能站起来吗?"
+        answer:
+          en: >
+            Both. `left=code:1,2;comments:3,4` stacks segments on a side (semicolon between them); `dir=tb` turns the
+            chart on its side so the bars grow up and down instead of left and right.
+          cn: >
+            都能。`left=code:1,2;comments:3,4` 让一侧堆叠(段与段之间用分号);`dir=tb` 把图转过来,
+            柱自中轴往上/往下长,而不是往左右。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/11-butterfly/en.md
+          - docs/2-data-charts/11-butterfly/cn.md
+      - id: line
+        question:
+          en: "Can one side be a line instead of bars?"
+          cn: "一侧能不能是折线而不是柱?"
+        answer:
+          en: >
+            Yes — `line=Name:v,v,v&lineside=right`, and leave that side's bars out. You can also keep the bars and lay
+            the line over them; the line then has its own scale.
+          cn: >
+            能 —— `line=名字:v,v,v&lineside=right`,那一侧就别给柱了。也可以柱照留、折线叠在上面,
+            折线有自己的标尺。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/11-butterfly/en.md
+          - docs/2-data-charts/11-butterfly/cn.md

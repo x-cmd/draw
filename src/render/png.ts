@@ -10,7 +10,9 @@
 // Workers 由入口(src/index.ts)静态 import 拿 WebAssembly.Module 后注入 —— 两种
 // 来源 initWasm 通吃。字体喂仓内 base64 TTF 子集(Inter + 手绘 Handlee;fontdb
 // 不认 woff2,故用 fonts-ttf.ts 的解压版,家族名同源),不读系统字体(wasm 沙盒内
-// 本就无系统字体;子集外字符——如 CJK——PNG 中无回退,见 #24 已知边界)。
+// 本就无系统字体)。中文另有 Noto Sans SC 子集(GB2312 一级 3755 字 + 中文标点,
+// 见 fonts-cjk.ts):SVG 里出现 CJK 才挂载 —— 拉丁图表的 PNG 不付那 2.3MB;
+// 子集外的生僻字仍无字形(#24 已知边界)。
 import { ApiError } from '../specs/index.js';
 import { INTER_TTF_B64, HANDEE_TTF_B64 } from '../styles/fonts-ttf.js';
 import { FONT_FILES_B64 } from '../styles/fonts-banner.js';

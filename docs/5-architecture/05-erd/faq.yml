@@ -1,0 +1,37 @@
+id: x-draw-5-architecture-05-erd
+
+data:
+  - name:
+      en: ERD
+      cn: 实体关系图
+    qa:
+      - id: fields
+        question:
+          en: "How do I write the field list?"
+          cn: "字段表怎么写?"
+        answer:
+          en: >
+            As the node's fourth field, lines separated by %0A (a newline): `id:int (pk)%0Aname:text`. Mark keys yourself — `(pk)` and `(fk)` are just text draw leaves alone.
+          cn: >
+            节点的第四个字段,行之间用 %0A(换行):`id:int (pk)%0Aname:text`。键自己标 —— `(pk)` `(fk)` 只是文字,draw 不改。
+        confidence: 9
+        reference:
+          - docs/5-architecture/05-erd/en.md
+          - docs/5-architecture/05-erd/cn.md
+  - name:
+      en: ERD
+      cn: 实体关系图
+    qa:
+      - id: relation
+        question:
+          en: "Does draw work out the relationships?"
+          cn: "关系是 draw 推出来的吗?"
+        answer:
+          en: >
+            No. Put the relationship on the edge: `e=repos;charts;1:N`. The fields are drawn as written.
+          cn: >
+            不是。关系写在边上:`e=repos;charts;1:N`。字段就按写的画。
+        confidence: 9
+        reference:
+          - docs/5-architecture/05-erd/en.md
+          - docs/5-architecture/05-erd/cn.md

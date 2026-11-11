@@ -1,0 +1,37 @@
+id: x-draw-5-architecture-06-class
+
+data:
+  - name:
+      en: Class diagram
+      cn: 类图
+    qa:
+      - id: members
+        question:
+          en: "How do I write the members?"
+          cn: "成员表怎么写?"
+        answer:
+          en: >
+            As the node's fourth field, one per line, separated by %0A: `spec: object%0Areturns: DrawResult`. Methods read like code — `greet(): void`.
+          cn: >
+            节点的第四个字段,一行一个,之间用 %0A:`spec: object%0Areturns: DrawResult`。方法就按代码写 —— `greet(): void`。
+        confidence: 9
+        reference:
+          - docs/5-architecture/06-class/en.md
+          - docs/5-architecture/06-class/cn.md
+  - name:
+      en: Class diagram
+      cn: 类图
+    qa:
+      - id: relations
+        question:
+          en: "Which relations can I draw?"
+          cn: "能画哪些关系?"
+        answer:
+          en: >
+            Any edge you like — `e=user;repo;implements`, `e=a;b;extends`. The label is your text; draw draws the line.
+          cn: >
+            随便哪种边 —— `e=user;repo;implements`、`e=a;b;extends`。文字你自己写,draw 负责画线。
+        confidence: 9
+        reference:
+          - docs/5-architecture/06-class/en.md
+          - docs/5-architecture/06-class/cn.md

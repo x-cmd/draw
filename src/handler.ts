@@ -9,6 +9,7 @@ import {
 import { parseSankeySpec } from './specs/sankey.js';
 import { parseQuadrantSpec } from './specs/quadrant.js';
 import { parseCompassSpec } from './specs/compass.js';
+import { parseButterflySpec } from './specs/butterfly.js';
 import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
@@ -21,6 +22,8 @@ import { renderUcFromUrl } from './render/uc.js';
 import { renderMindmapFromUrl } from './render/mindmap.js';
 import { renderGanttFromUrl } from './render/gantt.js';
 import { renderTokeiFromUrl } from './render/tokei.js';
+import { renderGantt2FromUrl } from './render/gantt2.js';
+import { renderKindFromUrl, KIND_NAMES } from './render/kinds.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
 import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub, fetchSrcDoc } from './render/onepage.js';
 import { renderOnesvg } from './render/onesvg.js';
@@ -186,6 +189,8 @@ async function createHandler(request: Request, env: DrawEnv, platform: Platform,
     normalizedSpec = parseQuadrantSpec(specJson);
   } else if (template === 'compass') {
     normalizedSpec = parseCompassSpec(specJson);
+  } else if (template === 'butterfly') {
+    normalizedSpec = parseButterflySpec(specJson);
   } else if (looksMultiSeries(specJson) || (template === 'hbar' && (theme === 'xcmd-issue' || theme === 'rank'))) {
     // hbar 双系列仅 xcmd-issue/rank 支持,且这两个风格强制恰好 2 系列——
     // body 单系列 + t=rank 会在渲染层 400,创建时拦下防永久坏链(同 radar 维度校验)
@@ -291,6 +296,21 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;actor|label or <id>;uc|label`, { allow: 'GET' });
     }
     return chartResponse(url, renderUcFromUrl(url));
+  }
+  // /draw/gantt2 甘特图 v2:同一份 mermaid 甘特源码,架构图 v2 那张脸
+  if (sub === '/gantt2') {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?m=<gantt source>`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderGantt2FromUrl(url));
+  }
+  // /draw/dataflow /draw/lifecycle /draw/erd /draw/class —— 四种新图种,
+  // 同一套引擎(架构图 v2),各带一套语义类型词汇
+  if ((KIND_NAMES as string[]).includes(sub.slice(1))) {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<sub>][;<pos>]`, { allow: 'GET' });
+    }
+    return chartResponse(url, renderKindFromUrl(sub.slice(1), url));
   }
   // /draw/mindmap 树形导图(x-cmd-hub/draw#17/#20):n=<根/枝/叶 路径>,树→自动布局
   if (sub === '/mindmap') {

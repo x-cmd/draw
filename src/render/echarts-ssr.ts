@@ -102,7 +102,8 @@ export function mapLayout(o: {
 //   绘图区顶 = max(用户写的, 图例底 + legendGap / 标题带底 + legendGap)
 // 浏览器端(explore 页重画)用同一套数 —— 见 HEAD_RULES。
 export const HEAD_RULES = {
-  titleTop: 15,   // echarts 标题缺省 top
+  titleTop: 24,   // echarts 标题缺省 top(与核心层同一条基线)
+  titleLeft: 19,  // echarts 标题缺省 left(减去 padding,文字左边与核心层对齐)
   titleFont: 18,  // 标题缺省字号
   titlePad: 5,    // 标题缺省 padding(上下各 5)
   subFont: 12,    // 副标题缺省字号
@@ -123,12 +124,29 @@ function firstObj(v: unknown): Obj | undefined {
  * 把标题带、图例、绘图区排开:图例在顶部且会压到标题时往下推,
  * 绘图区被压到时也往下推。只往下推 —— 用户给的空间永远算数。
  * 就地改 option(调用方先拷好 title/legend/grid)。
+ *
+ * **自包含**:这个函数不引用模块外的任何东西(HEAD_RULES 除外,那个由调用方
+ * 注入)—— 浏览器端(explore 页重画)直接跑同一份源码,两边不会走偏。
+ * hub 那边用 `headLayout.toString()` 把源码塞进页面脚本。
  */
 export function headLayout(option: Obj): void {
   const R = HEAD_RULES;
+  const isObj = (v: unknown): v is Obj => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const firstObj = (v: unknown): Obj | undefined => {
+    const a = Array.isArray(v) ? v[0] : v;
+    return isObj(a) ? a : undefined;
+  };
   const title = firstObj(option.title);
   const legend = firstObj(option.legend);
   const grid = firstObj(option.grid);
+  // 有笛卡尔系列(=用 grid 定位)吗?饼/雷达/仪表没有 grid,推不动
+  const isCartesian = (): boolean => {
+    const CARTESIAN = new Set(['bar', 'line', 'scatter', 'effectScatter', 'boxplot', 'candlestick', 'heatmap', 'pictorialBar', 'custom']);
+    const series = Array.isArray(option.series) ? option.series : isObj(option.series) ? [option.series] : [];
+    if (series.some((s) => isObj(s) && typeof s.type === 'string' && CARTESIAN.has(s.type))) return true;
+    // 没写 series 类型但写了 xAxis/yAxis —— 也按笛卡尔算
+    return option.xAxis !== undefined || option.yAxis !== undefined;
+  };
 
   // 标题带:标题在底部(bottom)时不占顶部
   const titleText = title && typeof title.text === 'string' ? title.text.trim() : '';
@@ -141,6 +159,12 @@ export function headLayout(option: Obj): void {
   // 标题带高度按 max(实际字号, 18) 算:浏览器端(explore 页重画)的标题字号与
   // 服务端可能不同(16 vs 18),取下限才能让两端算出同一个图例位置。
   const bandH = Math.max(fontSize, R.titleFont) + pad * 2;
+  // 标题靠左上角:和核心层(以及其余所有图种)一个位置 —— echarts 缺省是居中,
+  // 居中的话标题会压在图上(饼图尤其明显)。用户自己写了 left/top 就不动。
+  if (titleText && !titleAtBottom && title) {
+    if (title.left === undefined) title.left = R.titleLeft;
+    if (title.top === undefined) title.top = R.titleTop;
+  }
   const titleBottom = titleText && !titleAtBottom ? titleTop + bandH + subH : 0;
 
   // 图例:只在**顶部**时参与这一层(缺省在底部,不与标题冲突)
@@ -164,11 +188,19 @@ export function headLayout(option: Obj): void {
     titleBottom ? titleBottom + R.legendGap : 0,
     legendBottom ? legendBottom + R.legendGap : 0,
   );
-  if (grid && need > 0) {
-    const gridTop = typeof grid.top === 'number' ? grid.top : R.gridTop;
-    if (gridTop < need) grid.top = need;
+  if (need > 0) {
+    if (grid) {
+      const gridTop = typeof grid.top === 'number' ? grid.top : R.gridTop;
+      if (gridTop < need) grid.top = need;
+    } else if (isCartesian()) {
+      // 用户没写 grid 时 echarts 用缺省 top(60)—— 标题带没被让开,
+      // 副标题就压在 y 轴刻度上(「2026」和「400」叠成「2026400」)。
+      // 补一个只带 top 的 grid,其余仍走 echarts 缺省。
+      option.grid = { top: need };
+    }
   }
 }
+
 
 function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number): EChartsOption {
   const option: Obj = {
@@ -183,7 +215,7 @@ function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number):
   }
   // spread 会整体覆盖子对象,用户的半成品 textStyle 也要补齐字体/文字色缺省
   if (isObj(option.textStyle)) fillDefaults(option.textStyle, { fontFamily: FONT, color: 'var(--d-text)' });
-  if (isObj(option.title)) fillDefaults(option.title, { textStyle: { color: 'var(--d-ink)' }, subtextStyle: { color: 'var(--d-muted)' } });
+  if (isObj(option.title)) fillDefaults(option.title, { textStyle: { color: 'var(--d-ink)', fontWeight: 500 }, subtextStyle: { color: 'var(--d-muted)' } });
   if (isObj(option.legend)) fillDefaults(option.legend, { textStyle: { color: 'var(--d-muted)' } });
   // 标题带/图例/绘图区排开:图例在顶部时不能压住标题(仓库硬规则:文字不得重叠)
   headLayout(option);

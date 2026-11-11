@@ -35,18 +35,57 @@ https://x-cmd.com/draw?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,M
 
 [![代码构成 · bar](https://x-cmd.com/draw?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,Markdown,JSON&series=%E4%BB%A3%E7%A0%81%3A4820%2C1687%2C640%2C210%2C180%2C95&series=comments:1180,298,120,40,760,0&series=blanks:940,71,88,35,120,12&title=%E4%BB%A3%E7%A0%81%E6%9E%84%E6%88%90%20%C2%B7%20v0.3.0&w=760&h=440)](https://x-cmd.com/draw/explore?type=bar&stack=1&labels=TypeScript,JavaScript,Shell,CSS,Markdown,JSON&series=%E4%BB%A3%E7%A0%81%3A4820%2C1687%2C640%2C210%2C180%2C95&series=comments:1180,298,120,40,760,0&series=blanks:940,71,88,35,120,12&title=%E4%BB%A3%E7%A0%81%E6%9E%84%E6%88%90%20%C2%B7%20v0.3.0&w=760&h=440)
 
-## 一、参数
+## 一、两种给数的方式
+
+**短的那种 —— `langs=`,我们主推这个:**
+
+```text
+https://x-cmd.com/draw/tokei?langs=TypeScript:4820:1180:940,JavaScript:1687:298:71
+```
+
+每一项是 `语言:代码:注释:空行[:文件数]`,逗号分隔;后三个可以不写。比 JSON 形态短
+八倍左右,而且人(或 agent)不用解转义就能读。第四个数是**文件数** ——
+文件数折线和 `files` 摆法都要用它。
+
+**机器的那种 —— `d=`,tokei --output json 的原样:**
+
+```text
+https://x-cmd.com/draw/tokei?d={"TypeScript":{"code":4820,"comments":1180,"blanks":940},…}
+```
+
+两种形态出同一张图。JSON 形态可以直接吃 tokei 的原样输出(含每个文件的明细:
+`reports` 的条数就是文件数,跑一次完整的 tokei 就白得文件数折线);property 形态
+是放进 README 用的。
+
+## 二、四种摆法
+
+`?layout=` 选形状。缺省是堆叠柱;另外三种按[双翼条形图](../11-butterfly/cn.md)的办法把数据摊开。
+
+| `layout=` | 画出来是什么 |
+|---|---|
+| `bar`(缺省) | 每门语言一根堆叠柱 —— 代码、注释、空行;输入里带文件数时,再叠一条**文件数折线(自己的右轴)**(文件数和行数不是一个量级,放同一根轴上会骗人) |
+| `butterfly` | 左代码、右注释+空行(同一把标尺,长度可比),文件数作为折线叠在左侧 |
+| `files` | 左文件数、右三项行数 —— 两侧各一套标尺(单位不一样) |
+| `tb` | 同一份数据站起来:柱自中轴往上/往下长 |
+
+```
+https://x-cmd.com/draw/tokei?layout=butterfly&langs=TypeScript:4820:1180:940:45,JavaScript:1687:298:71:12
+```
+
+## 三、参数
 
 | 参数 | 含义 | 默认 |
 |---|---|---|
-| `d=` | tokei 的 JSON(整份输出,或裁剪过的子集) | — |
+| `langs=` | 短形态:`语言:代码:注释:空行[:文件数]`,逗号分隔 | — |
+| `layout=` | `bar`(缺省)、`butterfly`、`files` 或 `tb` | `bar` |
+| `d=` | JSON 形态(tokei 的输出,或裁剪过的子集) | — |
 | `title=` | 图标题 | — |
 | `unit=` | 数值旁的单位 | — |
 | `w=` / `h=` | 画布尺寸 | 760 × 440 |
 | `t=` | 皮肤(柱状图那几族) | — |
 | `scheme=` | `dark` / `light` | 自动 |
 
-## 二、输入长什么样
+## 四、输入长什么样
 
 `tokei --output json` 按语言打印一个对象:
 
@@ -63,7 +102,7 @@ URL 短的时候用这个。
 - tokei 多加的 `Total` 行**不会**画成一根柱;
 - 语言按总量**从大到小**排。
 
-## 三、POST 直接接 tokei
+## 五、POST 直接接 tokei
 
 POST 的 body 就是那份 JSON,整件事一个管道:
 
@@ -71,7 +110,7 @@ POST 的 body 就是那份 JSON,整件事一个管道:
 tokei --output json | curl -X POST --data-binary @- https://x-cmd.com/draw/tokei
 ```
 
-## 四、只看 PR 改动的部分
+## 六、只看 PR 改动的部分
 
 pull request 就把 tokei 跑在这次改动碰到的文件上:
 
@@ -82,7 +121,7 @@ git diff --name-only origin/main… | xargs tokei --output json
 再 POST 进去。画出来的是**增量**而不是整个仓库 —— 这才是 reviewer 真正想看的数。
 同样的招数也能给出「这个 release 相对上一个 tag 改了什么」。
 
-## 五、踩坑
+## 七、踩坑
 
 - **输入必须是 tokei 的形状** —— 一个「语言 → {code, comments, blanks}」的对象。
   不像样会 400,报错里带着该长什么样。

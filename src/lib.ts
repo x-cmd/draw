@@ -23,6 +23,7 @@ export { renderQR } from './render/qr.js';
 export { renderSankey } from './render/sankey.js';
 export { renderQuadrant } from './render/quadrant.js';
 export { renderCompass } from './render/compass.js';
+export { renderButterfly } from './render/butterfly.js';
 export { renderStored } from './render/dispatch.js';
 // Small helpers that page builders (and the x-cmd-hosted worker) reuse:
 export { esc, fmtFull, fmtNum, textW, EDIT_TAG_STRIP_SRC } from './render/svg.js';
@@ -42,6 +43,9 @@ export { renderArchFromUrl, renderArchCore } from './render/arch.js';
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';
 export { parseTokei, renderTokeiFromUrl } from './render/tokei.js';
+export { renderGantt2FromUrl, renderGantt2Core } from './render/gantt2.js';
+export { renderKindFromUrl, KIND_NAMES } from './render/kinds.js';
+export { ARCH_TYPES, type HouseTypes } from './render/arch.js';
 export { renderSeqFromUrl, renderSeqCore } from './render/seq.js';
 export { renderUcFromUrl, renderUcCore } from './render/uc.js';
 // mindmap 树形导图:同步,与 GET /draw/mindmap 同参同输出

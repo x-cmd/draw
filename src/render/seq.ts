@@ -3,12 +3,13 @@
 // 模型(和 archmap 同一套 n= 语法;e= 里的边按 URL 里的顺序就是时间顺序):
 //   n=id;type;label[;sub][;pos]   参与方(位置一般写 r0c0 / r0c1 / …)
 //   e=from;to[;label][;dash]       一条消息;URL 里的先后就是发生的先后
+//   b=label;id id …                框:把一组参与方圈成一条「泳道」(可写多次)
 //
 // 画法:参与方一行,下面拖出生命线;每条消息在下一行,从发方生命线画一条箭头到收方,
 // 收方在这段时间画一根激活条(细竖条)。回信写 dash → 虚线箭头。
 import { ApiError } from '../specs/index.js';
-import type { ArchNode } from './archmap.js';
-import { packGrid, parseNodes } from './archmap.js';
+import type { ArchBoundary, ArchNode } from './archmap.js';
+import { packGrid, parseBoundaries, parseNodes } from './archmap.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, svgDoc, textW } from './svg.js';
@@ -18,6 +19,7 @@ const HEADER_H = 56;      // 参与方标题盒高
 const MSG_GAP = 78;       // 两条消息之间的行距(要给分支框的标签留位置)
 const ARROW = 10;         // 箭头长度
 const LABEL_FS = 12;
+const LANE_TOP = 30;      // 有 b= 时,给泳道标签留出来的那一行
 
 interface Msg { from: string; to: string; label?: string; dash: boolean }
 
@@ -78,6 +80,10 @@ export interface SeqOpts {
   nodes: ArchNode[];
   msgs: Msg[];
   frags: Frag[];
+  /** b= 画出来的泳道(可以有多条) */
+  boundaries: ArchBoundary[];
+  /** 原始 URL 查询串:角标直链 explore 落地页用 */
+  tagQuery?: string;
   title?: string;
   interactive: boolean;
   version: number;
@@ -97,6 +103,8 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
   } });
   const titleH = o.title ? 40 : 0;
   if (titleH) for (const p of placed) p.box.y += titleH; // 有标题就往下挪一格,别压住
+  // 有泳道就整体往下挪一行,给泳道标签腾地方(所有参与方一起挪,标题行才对齐)
+  if (o.boundaries.length) for (const p of placed) p.box.y += LANE_TOP;
   const byId = new Map(placed.map((p) => [p.id, p]));
   for (const m of o.msgs) {
     if (!byId.has(m.from)) throw new ApiError(400, `message references unknown participant "${m.from}"`);
@@ -119,6 +127,37 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
 
   // 生命线:从标题盒底到最后一条消息
   const lastY = o.msgs.length ? rowY(o.msgs.length - 1) : headerBottom;
+
+  // 泳道(b=):把一组参与方圈起来 —— 虚线框 + 框内左上角的标签。
+  // 框从参与方标题盒上面开始(那一行留给标签),一直到生命线底下。
+  // 颜色和架构图的边界一个规矩:用「节点类型没占用的颜色」,不跟盒子撞色。
+  const laneSvg = (): string => {
+    const out: string[] = [];
+    // 架构图那八种类型占了 s1–s7,泳道用 s8/s9/s10
+    const LANE_COLORS = ['var(--d-s8)', 'var(--d-s9)', 'var(--d-s10)'];
+    o.boundaries.forEach((b, i) => {
+      const ms = b.ids.map((id) => byId.get(id)!).filter(Boolean);
+      if (!ms.length) return;
+      const c = b.color ? `var(--d-s${b.color})` : LANE_COLORS[i % LANE_COLORS.length];
+      const x0 = Math.min(...ms.map((m) => m.box.x)) - 16;
+      const x1 = Math.max(...ms.map((m) => m.box.x + m.box.w)) + 16;
+      const y0 = Math.min(...ms.map((m) => m.box.y)) - LANE_TOP;
+      const y1 = Math.max(lastY + 18, ...ms.map((m) => m.box.y + m.box.h));
+      const label = b.label.toUpperCase();
+      const lw = textW(label, 10) + b.label.length * 1.2 + 20;
+      out.push(
+        `<g data-boundary="${esc(b.ids.join(' '))}">` +
+        `<rect x="${r2(x0)}" y="${r2(y0)}" width="${r2(x1 - x0)}" height="${r2(y1 - y0)}" rx="12" fill="none" stroke="${c}" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="7 5"/>` +
+        `<rect x="${r2(x0 + 10)}" y="${r2(y0 + 5)}" width="${r2(lw)}" height="19" rx="6" fill="var(--d-card)"/>` +
+        `<rect x="${r2(x0 + 11)}" y="${r2(y0 + 6)}" width="${r2(lw - 2)}" height="17" rx="5" fill="${c}" fill-opacity="0.16"/>` +
+        `<text x="${r2(x0 + 10 + lw / 2)}" y="${r2(y0 + 18)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
+        `</g>`,
+      );
+    });
+    return out.join('');
+  };
+  parts.push(laneSvg());
+
   for (const p of placed) {
     const x = cxOf(p.id);
     parts.push(
@@ -152,7 +191,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
       const w = textW(m.label, LABEL_FS) + 14;
       const lx = (x1 + x2) / 2;
       parts.push(
-        `<rect x="${r2(lx - w / 2)}" y="${r2(y - LABEL_FS - 12)}" width="${r2(w)}" height="${LABEL_FS + 7}" rx="5" fill="var(--d-bg)" fill-opacity="0.92"/>`,
+        `<rect x="${r2(lx - w / 2)}" y="${r2(y - LABEL_FS - 12)}" width="${r2(w)}" height="${LABEL_FS + 7}" rx="5" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
         `<text x="${r2(lx)}" y="${r2(y - 7)}" text-anchor="middle" font-size="${LABEL_FS}" fill="var(--d-text)">${esc(m.label)}</text>`,
       );
     }
@@ -205,7 +244,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
           );
         }
         out.push(
-          `<rect x="${r2(lx - 6)}" y="${r2(ly - 11)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-bg)" fill-opacity="0.95"/>`,
+          `<rect x="${r2(lx - 6)}" y="${r2(ly - 11)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
           `<text x="${r2(lx)}" y="${r2(ly + 1)}" font-size="10.5" font-weight="600" letter-spacing="0.4" fill="var(--d-muted)">${esc(text)}</text>`,
         );
       });
@@ -223,6 +262,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
     o.title ?? `sequence diagram, ${o.msgs.length} messages`,
     spec, o.skin,
     titleSvg + headSvg + fragSvg() + parts.join(''),
+    o.tagQuery, 'seq',
   );
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
@@ -244,10 +284,11 @@ export function renderSeqFromUrl(url: URL, interactive = false): DrawResult {
   }
   const msgs = parseMessages(params.getAll('e'));
   const frags = parseFrags(params.getAll('f'), msgs.length);
+  const boundaries = parseBoundaries(params.getAll('b'), seen);
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderSeqCore({
-    nodes, msgs, frags,
+    nodes, msgs, frags, boundaries, tagQuery: url.search,
     title: params.get('title')?.trim() || undefined,
     interactive,
     version: v,

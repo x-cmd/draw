@@ -1,6 +1,6 @@
 ---
 x-title: draw —— SVG chart endpoint 速查（13 种图表 + 通用参数 + 数据格式）
-x-desc: x-cmd/draw 是单端点 SVG 图表服务：`GET /draw?type=...` 返 SVG。支持 pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr / quadrant / compass 共 13 种图表，通用参数含 `t=` 风格、`scheme=dark|light`、`num=all|peak|none`、`v=1`、`w/h=`。两种数据写法：扁平参数 vs `?d=` JSON。
+x-desc: x-cmd/draw 是单端点 SVG 图表服务：`GET /draw?type=...` 返 SVG。支持 pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr / quadrant / compass / butterfly 共 14 种图表，通用参数含 `t=` 风格、`scheme=dark|light`、`num=all|peak|none`、`v=1`、`w/h=`。两种数据写法：扁平参数 vs `?d=` JSON。
 x-sidebar: draw 总览
 x-keywords: draw, svg, chart, 图表, 饼图, 柱状图, 折线图, 雷达图, 仪表盘, 散点图, 桑基图, 二维码, svg endpoint, x-cmd/draw
 x-json-ld:
@@ -43,6 +43,7 @@ POST /draw?type=<chart-type>&...     # 创永久短链
 | `sankey` | 桑基图 | 见 [sankey](../../3-relations/01-sankey/cn.md) |
 | `qr` | 二维码 | 见 [qr](../../7-infographics/01-qr/cn.md) |
 | `quadrant` | 四象限决策矩阵 | 见 [quadrant](../../4-strategy/01-quadrant/cn.md) |
+| `butterfly` | 双翼条形图 —— 两个系列背靠背 | 见 [butterfly](../../2-data-charts/11-butterfly/cn.md) |
 | `compass` | 四向箭头 | 见 [compass](../../4-strategy/02-compass/cn.md) |
 
 `type=` 图表之外,同一个服务还有几个图形入口,各自一个路径:

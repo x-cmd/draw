@@ -31,6 +31,7 @@ explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)
 | 柱+线混合 | `combo` | `type=combo&labels=Mon,Tue&series=dl:120,180&line=growth:5,8` |
 | 流向 | `sankey` | `type=sankey&labels=Ads,Web,Buy&links=Ads>Buy:30;Web>Buy:20` |
 | 二维码 | `qr` | `type=qr&d=https://x-cmd.com` |
+| 两个系列背靠背 | `butterfly` | `type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6` |
 
 ## 每图种要点
 
@@ -45,13 +46,51 @@ explore 与 `/draw` 同参数(echarts 层为 `/draw/explore/echarts?d=<option>`)
 - **sankey**:≤24 节点/60 链接,`links=A>B:30` 分号分隔,禁止环
 - **qr**:`d=` 文本 ≤1000 字符;`fg`/`bg` 六位 hex(`#` 写成 `%23`);`title`/`unit` 为码下标注
 
+## 图:一套语法,八种图
+
+架构图、时序图、用例图、数据流、生命周期、ERD、类图读的是**同样三行参数** —— 只需学一遍:
+
+```
+n=id;type;label[;sub][;pos]     节点(可重复)
+e=from;to[;label][;variant]      边(可重复)
+b=label;id id …                  分组/边界(可重复)
+```
+
+- **id** —— 字母数字点横线下划线,不能以标点开头;`e=`、`b=` 里用它指代
+- **type** —— 每种图各一套词汇(下表),决定颜色、角标和形状;用错了是 400,错误里带着它认识的那几个
+- **label** —— 大字;**sub** —— 小字,`%0A` 断行(ERD 字段表、类图成员表靠它)
+- **pos** —— 可省。格子 `r0c1`、跨格 `r0c1w2` / `r1c0h2`;像素 `p40,80[,120x48]`。不写就由引擎按你写的顺序自己排
+- **variant** —— archmap/arch2 与四种新图种用 `main`(主流程)/`dash`(次要);seq 用结尾一段 `dash` 表示回信;uc 用 `<<include>>` 标签表示虚线依赖
+- **b=** 把已有的 id 框成一组(系统边界、泳道),可写多次;它不替你建节点
+
+| 路径 | 节点类型 |
+|---|---|
+| `/draw/arch2` `/draw/archmap` `/draw/seq` | `fe` `be` `db` `cloud` `sec` `bus` `svc` `ext` |
+| `/draw/uc` | `actor` `uc` |
+| `/draw/dataflow` | `process` `store` `source` `sink` |
+| `/draw/lifecycle` | `state` `decision` `terminal` |
+| `/draw/erd` | `table` `view` |
+| `/draw/class` | `class` `iface` `enum` |
+
+架构图那八种:`fe` 前端、`be` 后端、`db` 数据库、`cloud` 云服务、`sec` 安全、`bus` 消息、`svc` 通用服务、`ext` 外部系统。
+
+```
+https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Cloudflare Worker;r0c1&e=web;api;GET /draw?type=pie
+```
+
+转义:空格 `%20`(裸 `+` 会被当成空格)、真的加号 `%2B`、`&` `%26`、`#` `%23`、`<` `>` `%3C` `%3E`、换行 `%0A`;分隔符 `;` `=` `,` `:` `/` `@` 保持原样。
+
+另外三种图用自己的语法:`/draw/mindmap`(`n=根/子/孙`)、`/draw/mermaid`(`m=`)、`/draw/gantt` 与 `/draw/gantt2`(`m=`,同一份源码两张脸)。
+
+**在浏览器里试**:每种图都有交互页 `/draw/explore/<图种>?n=…`,右边是可改的参数表 —— 改一格图立刻重画,加行/删行就是加节点/删节点,复制按钮给的是改完的 URL。
+
 ## 通用参数
 
 - `t` 风格(见下)/ `scheme=light|dark|auto` / `title=` / `unit=`
 - `w=` / `h=` 尺寸(缺省用该风格规范画布,数据密集时自动微调;范围 200–1600 / 140–1200,短链 w 可至 120,qr 为 120–1000)
 - `num=all|peak|none` 数值标注(pie/bar/hbar/line/area/scatter/combo;radar/gauge/sankey/qr 忽略)
 - `v=N` 钉住版本,缓存 1 天(N 为 1..当前版本);不带 = 最新版(短缓存 300s)
-- `format=png` 输出位图(配 `scale=1–3` 倍率;scheme 固化,缺省 light;仅内嵌拉丁字体子集,中文在 PNG 中无字形)
+- `format=png` 输出位图(配 `scale=1–3` 倍率;scheme 固化,缺省 light;中文已内置 Noto Sans SC 子集(GB2312 一级 3755 字 + 中文标点),SVG 里出现中文才挂载,常用字都能显示;子集外的生僻字仍无字形)
 
 ## 风格家族(可选 `t=`)
 

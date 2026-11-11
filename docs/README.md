@@ -20,6 +20,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [Style families](1-overview/03-styles/en.md) | the `t=` catalog, dark and light |
 | [Data formats](1-overview/04-data-and-api/en.md) | flat parameters versus `?d=` JSON, per-type schemas |
 | [Deploy it yourself](1-overview/05-self-hosting/en.md) | Cloudflare Workers, a local Node server, the npm library, short links |
+| [Diagram URLs](1-overview/06-diagram-urls/en.md) | one grammar for the diagrams — `n=` / `e=` / `b=`, positions, the type table per kind |
 
 ## 2 · Data charts 数据图
 
@@ -35,12 +36,14 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [08 scatter](2-data-charts/08-scatter/en.md) | points | correlation |
 | [09 combo](2-data-charts/09-combo/en.md) | bars + line | two measures at once |
 | [10 tokei](2-data-charts/10-tokei/en.md) | code composition | code, comments and blanks per language |
+| [11 butterfly](2-data-charts/11-butterfly/en.md) | butterfly chart | two series back to back, each side stackable, either side can carry a line |
 
 ## 3 · Relations 关系图
 
 | page | chart | good for |
 |---|---|---|
 | [01 sankey](3-relations/01-sankey/en.md) | flow | where things go |
+| [02 dataflow](3-relations/02-dataflow/en.md) | data flow | processes, stores, what flows between |
 
 ## 4 · Strategy and decision 战略与决策
 
@@ -49,6 +52,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [01 quadrant](4-strategy/01-quadrant/en.md) | 2×2 decision matrix | prioritisation, retro, portfolio |
 | [02 compass](4-strategy/02-compass/en.md) | four-arrow compass | directions radiating from a centre |
 | [03 uc](4-strategy/03-uc/en.md) | use case diagram | who uses it, and for what |
+| [04 lifecycle](4-strategy/04-lifecycle/en.md) | lifecycle diagram | the states, and the moves between them |
 
 ## 5 · Architecture 架构图
 
@@ -58,12 +62,15 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [02 mindmap](5-architecture/02-mindmap/en.md) | mind map | feature maps, checklists |
 | [03 mermaid](5-architecture/03-mermaid/en.md) | flowchart from Mermaid | decision flows, pipelines |
 | [04 seq](5-architecture/04-seq/en.md) | sequence diagram | who talks to whom, in what order |
+| [05 erd](5-architecture/05-erd/en.md) | ERD | the tables, their fields, how they relate |
+| [06 class](5-architecture/06-class/en.md) | class diagram | the types, and how they hang together |
 
 ## 6 · Schedule 日程与排布
 
 | page | chart | good for |
 |---|---|---|
 | [01 gantt](6-schedule/01-gantt/en.md) | Gantt chart | sprint plans, timelines, milestones |
+| [02 gantt2](6-schedule/02-gantt2/en.md) | Gantt chart v2 | the same source, the house style |
 
 ## 7 · Infographics 信息图
 
@@ -93,3 +100,4 @@ Real scenarios, each one a set of ready URLs.
 | [08 healthcare](9-showcases/08-healthcare/en.md) | healthcare — waiting times, bed occupancy, case mix, patient pathways |
 | [09 finance](9-showcases/09-finance/en.md) | finance — allocation, return against risk, the deal funnel |
 | [10 logistics](9-showcases/10-logistics/en.md) | logistics — throughput, warehouse fill, the fulfilment network |
+| [11 ai-coding era](9-showcases/11-ai-coding-era/en.md) | the AI-coding era — one person, the whole picture: composition, files, architecture, plan |

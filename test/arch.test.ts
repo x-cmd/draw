@@ -53,7 +53,9 @@ describe('arch v2 rendering', () => {
     const url = new URL('https://x-cmd.com/draw/arch2?' + [...nodes, ...edges].join('&'));
     const { svg } = renderArchFromUrl(url);
     // 每条边都是折线(至少 4 个点),中间有一段是横着走的通道
-    const paths = [...svg.matchAll(/<path d="([^"]+)"[^>]*stroke="var\(--d-muted\)"/g)].map((m) => m[1]);
+    // (先去掉 <defs> —— 里面的箭头记号也是 muted 色的 path,不是边)
+    const body = svg.replace(/<defs>.*?<\/defs>/s, '');
+    const paths = [...body.matchAll(/<path d="([^"]+)"[^>]*stroke="var\(--d-muted\)"/g)].map((m) => m[1]);
     expect(paths.length).toBe(3);
     for (const d of paths) expect(d.split('L').length).toBeGreaterThan(2);
   });

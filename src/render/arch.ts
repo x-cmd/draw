@@ -31,8 +31,22 @@ const LABEL_FS = 14;     // 节点标题字号
 const SUB_FS = 11.5;     // 节点副标题字号
 const EDGE_FS = 11.5;    // 边标签字号
 
+/** 一套语义类型词汇:类型 → (展示名, 角标字母, 颜色序号);图种换词汇,引擎不变 */
+export interface HouseTypes {
+  meta: Record<string, { name: string; badge: string; color: number }>;
+  order: string[];
+  /** 类型 → 形状(rect / round / cylinder / diamond) */
+  shape?: Record<string, 'rect' | 'round' | 'cylinder' | 'diamond'>;
+  /** 节点里的多行内容按「字段表」画:键标记 + 名字(左)+ 类型(右) */
+  rows?: 'fields';
+  /** 边按 ERD 记号画:标签写 1:N 时,两端画「一」与「多」 */
+  crows?: 'erd';
+  /** 边按 UML 记号画:标签写 extends / implements 时用空心三角 */
+  uml?: boolean;
+}
+
 /** 语义类型 → (展示名, 角标字母) */
-const TYPE_META: Record<string, { name: string; badge: string; color: number }> = {
+export const TYPE_META: Record<string, { name: string; badge: string; color: number }> = {
   fe: { name: 'Frontend', badge: 'F', color: 0 },
   be: { name: 'Backend', badge: 'B', color: 1 },
   db: { name: 'Database', badge: 'D', color: 2 },
@@ -44,22 +58,105 @@ const TYPE_META: Record<string, { name: string; badge: string; color: number }> 
 };
 const TYPE_ORDER = ['fe', 'be', 'db', 'cloud', 'sec', 'bus', 'svc', 'ext'] as const;
 
+/** 架构图这套词汇(别的图种传自己的一套进来) */
+export const ARCH_TYPES: HouseTypes = { meta: TYPE_META, order: [...TYPE_ORDER] };
+
 const sVar = (i: number): string => `var(--d-s${i + 1})`;
 
-/** v2 的节点尺寸:更宽更松,标题 14px */
-const v2Size = (n: ArchNode): { w: number; h: number } => {
+/** v2 的节点尺寸:更宽更松,标题 14px;副标题多行时按行数长高 */
+const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
+  if (types.rows === 'fields') return fieldsSize(n);
+  const lines = linesOf(n);
   const w = Math.max(
     NODE_MIN_W,
     textW(n.label, LABEL_FS) + 52,
-    n.sub ? textW(n.sub, SUB_FS) + 52 : 0,
+    ...lines.map((l) => textW(l, SUB_FS) + 52),
   );
-  return { w: Math.min(w, 420), h: n.sub ? 62 : 48 };
+  const h = lines.length > 1 ? 34 + lines.length * 17 : n.sub ? 62 : 48;
+  return { w: Math.min(w, 420), h };
 };
 
+/** 节点副标题可以多行(用 \n 分隔)—— ERD 的字段表、class 的成员表靠它 */
+const linesOf = (n: { sub?: string }): string[] =>
+  n.sub ? n.sub.split('\n').filter((l) => l !== '') : [];
+
+/* ---------------------------------------------------------------- 字段表
+   ERD 的字段、class 的成员 —— 一行一项:键标记 + 名字(左)+ 类型(右)。 */
+interface FieldRow {
+  name: string;
+  type?: string;
+  /** 主键 / 外键 / 唯一键 */
+  key?: 'pk' | 'fk' | 'uk';
+  /** UML 可见性:+ 公有 / - 私有 / # 保护 */
+  vis?: '+' | '-' | '#';
+}
+
+const KEY_MARK_RE = /\((pk|fk|uk)\)\s*$/i;
+const VIS_MARK_RE = /^([+\-#])\s+/;
+
+/**
+ * 解析字段表的一行:
+ *   id:int (pk)        → 名字 id,类型 int,主键
+ *   user_id:int (fk)   → 外键
+ *   + gateway: Payment → UML 公有成员
+ *   greet(): void      → 方法
+ *   charge(amount: Money): Result → 参数里的冒号不算,类型是 Result
+ */
+function parseFieldRow(line: string): FieldRow {
+  let s = line.trim();
+  const row: FieldRow = { name: s };
+  const vm = VIS_MARK_RE.exec(s);
+  if (vm) {
+    row.vis = vm[1] as '+' | '-' | '#';
+    s = s.slice(vm[0].length).trim();
+  }
+  const km = KEY_MARK_RE.exec(s);
+  if (km) {
+    row.key = km[1].toLowerCase() as 'pk' | 'fk' | 'uk';
+    s = s.slice(0, km.index).trim();
+  }
+  // 括号外的第一个冒号才是「名字 : 类型」的分界
+  let depth = 0;
+  let ci = -1;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === '(' || ch === '<' || ch === '[') depth++;
+    else if (ch === ')' || ch === '>' || ch === ']') depth--;
+    else if (ch === ':' && depth === 0) { ci = i; break; }
+  }
+  row.name = ci < 0 ? s : s.slice(0, ci).trim();
+  const type = ci < 0 ? '' : s.slice(ci + 1).trim();
+  if (type) row.type = type;
+  return row;
+}
+
+const fieldRowsOf = (n: { sub?: string }): FieldRow[] =>
+  n.sub ? n.sub.split('\n').filter((l) => l.trim() !== '').map(parseFieldRow) : [];
+
+const KEY_BADGE_W = 26;   // 键标记(PK/FK/UK)那一列的宽
+const VIS_W = 14;         // 可见性标记那一列的宽
+const ROW_H = 19;         // 一行字段的高
+const HEAD_H = 30;        // 标题条的高
+const COL_GAP = 18;       // 名字列与类型列之间的空档
+const ROW_TOP = HEAD_H + 16; // 第一行字段的基线:离标题条下沿留一口气(贴着看不清)
+
+/** 字段表模式的节点尺寸:名字左、类型右,两列都要放得下 */
+function fieldsSize(n: ArchNode): { w: number; h: number } {
+  const rows = fieldRowsOf(n);
+  const keyCol = rows.some((r) => r.key) ? KEY_BADGE_W : 0;
+  const visCol = rows.some((r) => r.vis) ? VIS_W : 0;
+  const nameW = Math.max(0, ...rows.map((r) => textW(r.name, SUB_FS)));
+  const typeW = Math.max(0, ...rows.map((r) => textW(r.type ?? '', SUB_FS)));
+  const bodyW = keyCol + visCol + nameW + (typeW ? COL_GAP + typeW : 0);
+  const w = Math.max(NODE_MIN_W, textW(n.label, LABEL_FS) + 52, bodyW + 26);
+  const h = rows.length ? ROW_TOP + (rows.length - 1) * ROW_H + 12 : HEAD_H + 24;
+  return { w: Math.min(w, 460), h };
+}
+
 /* ---------------------------------------------------------------- 节点 */
-function drawNodeV2(n: Placed, interactive: boolean, degree: number): string {
+function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: HouseTypes): string {
   const b = n.box;
-  const meta = TYPE_META[n.type] ?? { name: n.type, badge: '?', color: -1 };
+  const meta = types.meta[n.type] ?? { name: n.type, badge: '?', color: -1 };
   const neutral = meta.color < 0;
   const color = neutral ? 'var(--d-muted)' : sVar(meta.color);
   const fill = neutral ? 'var(--d-card)' : color;
@@ -78,26 +175,120 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number): string {
   } else if (tx - titleW / 2 < badgeRight + 6 && bx < b.x + b.w / 2) {
     tx = badgeRight + 6 + titleW / 2;
   }
+  const lines = linesOf(n);
   const titleY = n.sub ? b.y + 26 : b.y + b.h / 2 + 5;
-  const subY = b.y + 44;
-  const tip = `${n.label}${n.sub ? ` · ${n.sub}` : ''} · ${meta.name}${degree ? ` · ${degree} link${degree > 1 ? 's' : ''}` : ''}`;
+  const tip = `${n.label}${n.sub ? ` · ${n.sub.replace(/\n/g, ', ')}` : ''} · ${meta.name}${degree ? ` · ${degree} link${degree > 1 ? 's' : ''}` : ''}`;
   const ia = interactive
     ? ` data-node="${esc(n.id)}" data-tip="${esc(tip)}" tabindex="0"`
     : '';
   const badgeFill = neutral ? 'var(--d-muted)' : color;
+  const shape = types.shape?.[n.type] ?? 'rect';
+  const fillAttrs = ` fill="${fill}" fill-opacity="${fillOp}" stroke="${color}" stroke-opacity="${strokeOp}" stroke-width="1.3"${dash}`;
+  let frame: string;
+  if (shape === 'cylinder') {
+    const ry = 9;
+    frame =
+      `<path d="M${r2(b.x)} ${r2(b.y + ry)}A${r2(b.w / 2)} ${ry} 0 0 1 ${r2(b.x + b.w)} ${r2(b.y + ry)}V${r2(b.y + b.h - ry)}A${r2(b.w / 2)} ${ry} 0 0 1 ${r2(b.x)} ${r2(b.y + b.h - ry)}Z"${fillAttrs}/>` +
+      `<ellipse cx="${r2(b.x + b.w / 2)}" cy="${r2(b.y + ry)}" rx="${r2(b.w / 2)}" ry="${ry}" fill="none" stroke="${color}" stroke-opacity="${strokeOp}" stroke-width="1.3"/>`;
+  } else if (shape === 'diamond') {
+    const cx = b.x + b.w / 2;
+    const cy = b.y + b.h / 2;
+    frame = `<polygon points="${r2(cx)},${r2(b.y)} ${r2(b.x + b.w)},${r2(cy)} ${r2(cx)},${r2(b.y + b.h)} ${r2(b.x)},${r2(cy)}"${fillAttrs}/>`;
+  } else if (shape === 'round') {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${r2(b.h / 2)}"${fillAttrs}/>`;
+  } else {
+    frame = `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${NODE_R}"${fillAttrs}/>`;
+  }
+  // 字段表模式(ERD 的字段、class 的成员):标题条 + 一行一项
+  if (types.rows === 'fields') {
+    return drawFieldNodeV2(n, frame, badgeFill, color, neutral, meta, ia, titleW, badgeRight);
+  }
   return (
     `<g${ia}>` +
-    `<rect x="${r2(b.x)}" y="${r2(b.y)}" width="${r2(b.w)}" height="${r2(b.h)}" rx="${NODE_R}"` +
-    ` fill="${fill}" fill-opacity="${fillOp}" stroke="${color}" stroke-opacity="${strokeOp}" stroke-width="1.3"${dash}/>` +
+    frame +
     `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
     ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>` +
     `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>` +
     `<text x="${r2(tx)}" y="${r2(titleY)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(n.label)}</text>` +
     (n.sub
-      ? `<text x="${r2(b.x + b.w / 2)}" y="${r2(subY)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(n.sub)}</text>`
+      ? lines.length
+        ? lines.map((l, i) => `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + 44 + i * 17)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(l)}</text>`).join('')
+        : `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + 44)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(n.sub)}</text>`
       : '') +
     `</g>`
   );
+}
+
+/**
+ * 字段表节点(ERD 的表、class 的类):标题条 + 一行一项
+ * —— 键标记(PK/FK/UK)在最左,名字靠左,类型靠右(等宽字体,一眼能对上行)。
+ */
+function drawFieldNodeV2(
+  n: Placed,
+  frame: string,
+  badgeFill: string,
+  color: string,
+  neutral: boolean,
+  meta: { badge: string },
+  ia: string,
+  titleW: number,
+  badgeRight: number,
+): string {
+  const b = n.box;
+  const rows = fieldRowsOf(n);
+  const keyCol = rows.some((r) => r.key) ? KEY_BADGE_W : 0;
+  const visCol = rows.some((r) => r.vis) ? VIS_W : 0;
+  const nameX = b.x + 12 + keyCol + visCol;
+  const typeX = b.x + b.w - 12;
+  const parts: string[] = [];
+  // 标题条:上圆角、下直角,正好贴住盒子的上边
+  const barOp = neutral ? 0.1 : 0.16;
+  parts.push(
+    `<path d="M${r2(b.x)} ${r2(b.y + NODE_R)}A${NODE_R} ${NODE_R} 0 0 1 ${r2(b.x + NODE_R)} ${r2(b.y)}` +
+    `H${r2(b.x + b.w - NODE_R)}A${NODE_R} ${NODE_R} 0 0 1 ${r2(b.x + b.w)} ${r2(b.y + NODE_R)}` +
+    `V${r2(b.y + HEAD_H)}H${r2(b.x)}Z" fill="${color}" fill-opacity="${barOp}"/>`,
+  );
+  // 角标 + 标题(标题左对齐,跟在角标后面)
+  const bx = b.x + 12;
+  const by = b.y + (HEAD_H - BADGE) / 2;
+  parts.push(
+    `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
+    ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>`,
+    `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>`,
+    `<text x="${r2(badgeRight + 8)}" y="${r2(b.y + HEAD_H / 2 + 5)}" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(n.label)}</text>`,
+  );
+  // 字段行
+  rows.forEach((r, i) => {
+    const y = b.y + ROW_TOP + i * ROW_H;
+    let x = b.x + 12;
+    if (keyCol) {
+      if (r.key) {
+        const keyColor = r.key === 'pk' ? 'var(--d-s3)' : r.key === 'fk' ? 'var(--d-s5)' : 'var(--d-s4)';
+        parts.push(
+          `<rect x="${r2(x)}" y="${r2(y - 8)}" width="21" height="12" rx="4" fill="${keyColor}" fill-opacity="0.18" stroke="${keyColor}" stroke-opacity="0.5" stroke-width="1"/>`,
+          `<text x="${r2(x + 10.5)}" y="${r2(y + 1)}" text-anchor="middle" font-size="8" font-weight="700" letter-spacing="0.4" fill="${keyColor}">${esc(r.key.toUpperCase())}</text>`,
+        );
+      }
+      x += keyCol;
+    }
+    if (visCol) {
+      if (r.vis) {
+        parts.push(
+          `<text x="${r2(x + 8)}" y="${r2(y)}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--d-faint)">${esc(r.vis)}</text>`,
+        );
+      }
+      x += visCol;
+    }
+    parts.push(
+      `<text x="${r2(nameX)}" y="${r2(y)}" font-size="${SUB_FS}" fill="var(--d-ink)">${esc(r.name)}</text>`,
+    );
+    if (r.type) {
+      parts.push(
+        `<text x="${r2(typeX)}" y="${r2(y)}" text-anchor="end" font-size="${SUB_FS}" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="var(--d-muted)">${esc(r.type)}</text>`,
+      );
+    }
+  });
+  return `<g${ia}>` + frame + parts.join('') + `</g>`;
 }
 
 /* ---------------------------------------------------------------- 走线
@@ -114,22 +305,37 @@ const hitBox = (x1: number, y1: number, x2: number, y2: number, boxes: Box[]): b
   boxes.some((b) => segHits(x1, y1, x2, y2, b));
 
 /** 在 a/b 之外找一条横向通道:先往下找,再往上找,取第一条不撞盒子的 */
-function detourY(a: Box, b: Box, x1: number, x2: number, boxes: Box[]): number {
+/**
+ * 绕行通道:横向的线撞到挡路的盒子就换一条空通道走。
+ * `inside` = 两端共同所属的边界(有的话)—— 通道优先待在框里,
+ * 否则那条线看起来像是从「区域」里跑出去了。
+ */
+function detourY(a: Box, b: Box, x1: number, x2: number, boxes: Box[], inside?: Box): number {
   const lo = Math.min(x1, x2);
   const hi = Math.max(x1, x2);
-  const cands = [
-    Math.max(a.y + a.h, b.y + b.h) + 22,
-    Math.max(a.y + a.h, b.y + b.h) + 54,
-    Math.min(a.y, b.y) - 22,
-    Math.min(a.y, b.y) - 54,
-  ];
-  for (const y of cands) {
-    if (!hitBox(lo, y, hi, y, boxes)) return y;
-  }
+  const below = Math.max(a.y + a.h, b.y + b.h);
+  const above = Math.min(a.y, b.y);
+  const cands = [below + 20, below + 52, above - 20, above - 52];
+  const free = (y: number): boolean => !hitBox(lo, y, hi, y, boxes);
+  const fits = (y: number): boolean => !inside || (y > inside.y + 4 && y < inside.y + inside.h - 4);
+  for (const y of cands) if (fits(y) && free(y)) return y;
+  for (const y of cands) if (free(y)) return y;
   return cands[0];
 }
 
-function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
+/** 两端都在哪个边界里(取最小的那个)—— 绕行时别跑出这个框 */
+function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
+  let best: Box | undefined;
+  for (const bb of bounds) {
+    const holds = (o: Box): boolean =>
+      o.x >= bb.x - 1 && o.y >= bb.y - 1 && o.x + o.w <= bb.x + bb.w + 1 && o.y + o.h <= bb.y + bb.h + 1;
+    if (!holds(a) || !holds(b)) continue;
+    if (!best || bb.w * bb.h < best.w * best.h) best = bb;
+  }
+  return best;
+}
+
+function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []): V2Routed[] {
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
   const cx = (b: Box) => b.x + b.w / 2;
@@ -185,7 +391,7 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
   for (const [key, idxs] of groups) {
     if (idxs.length < 2) continue;
     const src = byId.get(edges[idxs[0]].from)!.box;
-    const channelY = src.y + src.h + 26;
+    const channelY = src.y + src.h + 20;
     idxs.forEach((i) => busOf.set(i, { channelY, n: idxs.length }));
   }
 
@@ -217,7 +423,7 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
     if (exit === 'left' || exit === 'right') {
       // 横向:中间那段若横穿别人的盒子,改走下方(或上方)的通道
       if (hitBox(Math.min(p1[0], p3[0]), p1[1], Math.max(p1[0], p3[0]), p1[1], others)) {
-        const dy = detourY(a.box, b.box, p1[0], p3[0], others);
+        const dy = detourY(a.box, b.box, p1[0], p3[0], others, enclosingBoundary(a.box, b.box, bounds));
         pts = [p0, p1, [p1[0], dy], [p3[0], dy], p3, p4];
       } else {
         const mid = (p1[0] + p3[0]) / 2;
@@ -233,13 +439,93 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[]): V2Routed[] {
 }
 
 /* ---------------------------------------------------------------- 边 */
-function drawRoutesV2(routed: V2Routed[], interactive: boolean): string {
+function drawRoutesV2(routed: V2Routed[], interactive: boolean, types: HouseTypes): string {
   return routed.map((rt) => {
     const d = rt.pts.map((p, j) => `${j === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('');
     const ia = interactive ? ` data-from="${esc(rt.e.from)}" data-to="${esc(rt.e.to)}"` : '';
     const s = rt as V2Routed & { stroke: string; width: number };
-    return `<path d="${d}"${ia} fill="none" stroke="${s.stroke}" stroke-width="${s.width}"${rt.dash} marker-end="url(#${rt.marker})"/>`;
+    const feet = types.crows === 'erd' ? crowFeetV2(rt, s.stroke) : '';
+    // UML 记号:extends 用实线空心三角,implements 用虚线空心三角
+    const uml = types.uml ? umlKind(rt.e.label) : undefined;
+    const marker = feet ? '' : ` marker-end="url(#${uml ? 'am-h' : rt.marker})"`;
+    const dash = uml === 'implements' ? ' stroke-dasharray="5 4"' : rt.dash;
+    return `<path d="${d}"${ia} fill="none" stroke="${s.stroke}" stroke-width="${s.width}"${dash}${marker}/>` + feet;
   }).join('');
+}
+
+/** 边的标签写的是什么,就画什么记号(继承=实线空心三角,实现=虚线空心三角) */
+function umlKind(label: string | undefined): 'extends' | 'implements' | undefined {
+  if (!label) return undefined;
+  const t = label.trim().toLowerCase();
+  if (/^(extends|inherit|inherits|继承)$/.test(t)) return 'extends';
+  if (/^(implements|realize|realizes|实现)$/.test(t)) return 'implements';
+  return undefined;
+}
+
+/* ---------------------------------------------------------------- 鱼尾符号
+   ERD 的基数记号:一端一根竖杠(「一」),另一端三根岔开的爪(「多」)。
+   基数写在边的标签上(1:N / N:1 / 1:1 / N:M),画在边上,不另设参数。 */
+// 基数可以在标签的前面,后面跟动词:「1:N」「1:N placed by」
+const CARD_RE = /^\s*(1|n|zero|many|\*)\s*[:/]\s*(1|n|zero|many|\*)\b/i;
+
+/**
+ * 边的标签是不是一个基数(1:N 这种)?是的话返回 [源端, 目标端]。
+ * 基数后面可以跟一个动词(「1:N placed by」)—— 动词留给标签,基数画鱼尾。
+ */
+function cardinalityOf(label: string | undefined): ('one' | 'many')[] | undefined {
+  if (!label) return undefined;
+  const m = CARD_RE.exec(label);
+  if (!m) return undefined;
+  const side = (s: string): 'one' | 'many' => (s === '1' || s.toLowerCase() === 'zero' ? 'one' : 'many');
+  return [side(m[1]), side(m[2])];
+}
+
+/** 标签里的基数部分(「1:N placed by」→「1:N」);没有基数就原样返回 */
+function cardinalityPart(label: string): string {
+  const m = CARD_RE.exec(label);
+  return m ? m[0].trim() : label;
+}
+
+/** 一端的记号:「一」是一根横杠,「多」是三根爪(爪尖落在实体边上,爪根在线上) */
+function footMarks(p: [number, number], into: [number, number], kind: 'one' | 'many', color: string): string {
+  const len = Math.hypot(into[0], into[1]) || 1;
+  const ux = into[0] / len;
+  const uy = into[1] / len;
+  const px = -uy;
+  const py = ux;
+  if (kind === 'one') {
+    // 横杠:垂直于线的方向,画在端点上
+    const h = 6;
+    return `<path d="M${r2(p[0] - px * h)} ${r2(p[1] - py * h)}L${r2(p[0] + px * h)} ${r2(p[1] + py * h)}" fill="none" stroke="${color}" stroke-width="1.5"/>`;
+  }
+  // 三根爪:爪根在线上(离实体边 12px),爪尖落在实体边上,中间那根与线重合
+  const L = 12;
+  const spread = 9;
+  const heel: [number, number] = [p[0] - ux * L, p[1] - uy * L];
+  const toes: [number, number][] = [
+    [p[0] + px * spread, p[1] + py * spread],
+    [p[0], p[1]],
+    [p[0] - px * spread, p[1] - py * spread],
+  ];
+  return toes
+    .map((t) => `<path d="M${r2(heel[0])} ${r2(heel[1])}L${r2(t[0])} ${r2(t[1])}" fill="none" stroke="${color}" stroke-width="1.5"/>`)
+    .join('');
+}
+
+/** 一条边两端的鱼尾:标签写 1:N,源端是「一」,目标端是「多」 */
+function crowFeetV2(rt: V2Routed, color: string): string {
+  const card = cardinalityOf(rt.e.label);
+  if (!card) return '';
+  const pts = rt.pts;
+  if (pts.length < 2) return '';
+  const p0 = pts[0];
+  const pN = pts[pts.length - 1];
+  const p1 = pts[1];
+  const pM = pts[pts.length - 2];
+  // 端点处「进入实体」的方向:源端是 p1→p0,目标端是 pM→pN
+  const d0: [number, number] = [p0[0] - p1[0], p0[1] - p1[1]];
+  const dN: [number, number] = [pN[0] - pM[0], pN[1] - pM[1]];
+  return footMarks(p0, d0, card[0], color) + footMarks(pN, dN, card[1], color);
 }
 
 /* ---------------------------------------------------------------- 边标签(带底衬) */
@@ -268,37 +554,59 @@ const polyAt = (pts: [number, number][], t: number): { p: [number, number]; hori
 const overlap = (a: Box, b: Box): boolean =>
   a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 
-function placeEdgeLabels(routed: V2Routed[], avoid: Box[]): Spot[] {
+/** 两个矩形压在一起的面积(用来挑「最不糟」的位置) */
+const overlapArea = (a: Box, b: Box): number => {
+  const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+  const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+  return w > 0 && h > 0 ? w * h : 0;
+};
+
+function placeEdgeLabels(routed: V2Routed[], avoid: Box[], splitCardinality = false): Spot[] {
   const out: Spot[] = [];
+  // 已经放下的标签 —— 后面的标签要避开它们(不然两个标签会叠在一起)
+  const taken: Box[] = [];
   for (const rt of routed) {
-    const text = rt.e.label;
+    let text = rt.e.label;
     if (!text) continue;
+    // ERD:标签写成「1:N placed by」时,基数画鱼尾,标签只留动词
+    if (splitCardinality) {
+      const card = cardinalityPart(text);
+      if (card !== text.trim()) text = text.slice(card.length).trim() || card;
+    }
     const w = textW(text, EDGE_FS) + 12;
     const h = EDGE_FS + 8;
     const rectOf = (p: [number, number], horiz: boolean, mirror: boolean): Box =>
       horiz
         ? { x: p[0] - w / 2, y: mirror ? p[1] + 3 : p[1] - 3 - h, w, h }
         : { x: mirror ? p[0] - 3 - w : p[0] + 3, y: p[1] - h / 2, w, h };
-    const avoidAll = [...avoid];
+    const blockers = [...avoid, ...taken];
     let place: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
-    for (const t of [0.5, 0.38, 0.62, 0.3, 0.7, 0.2, 0.8]) {
+    let best: { p: [number, number]; horiz: boolean; mirror: boolean } | undefined;
+    let bestCost = Infinity;
+    for (const t of [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82]) {
       const at = polyAt(rt.pts, t);
       for (const mirror of [false, true]) {
-        if (!avoidAll.some((r) => overlap(rectOf(at.p, at.horiz, mirror), r))) {
+        const cost = blockers.reduce((s, b) => s + overlapArea(rectOf(at.p, at.horiz, mirror), b), 0);
+        if (cost === 0) {
           place = { ...at, mirror };
           break;
+        }
+        if (cost < bestCost) {
+          bestCost = cost;
+          best = { ...at, mirror };
         }
       }
       if (place) break;
     }
-    if (!place) place = { ...polyAt(rt.pts, 0.5), mirror: false };
+    // 实在没地方放(标签比两个节点之间的空档还宽),挑压得最少的那个
+    if (!place) place = best ?? { ...polyAt(rt.pts, 0.5), mirror: false };
     const p = place.p;
     const x = place.horiz ? p[0] : p[0] + (place.mirror ? -8 : 8);
     const y = place.horiz ? p[1] + (place.mirror ? 15 : -7) : p[1] + 4;
     const anchor: Spot['anchor'] = place.horiz ? 'middle' : place.mirror ? 'end' : 'start';
     out.push({ text, x, y, anchor, horiz: place.horiz, edge: rt.e });
     // 这个标签占的位置,后面的标签也得避开
-    avoidAll.push({
+    taken.push({
       x: anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x,
       y: y - EDGE_FS - 3, w, h,
     });
@@ -315,7 +623,7 @@ function drawEdgeLabelsV2(spots: Spot[], interactive: boolean): string {
     const ia = interactive ? ` data-edge-label="${esc(s.edge.from)} ${esc(s.edge.to)}"` : '';
     return (
       `<g${ia}>` +
-      `<rect x="${r2(rx)}" y="${r2(ry)}" width="${r2(w)}" height="${r2(h)}" rx="5" fill="var(--d-bg)" fill-opacity="0.92"/>` +
+      `<rect x="${r2(rx)}" y="${r2(ry)}" width="${r2(w)}" height="${r2(h)}" rx="5" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>` +
       `<text x="${r2(s.x)}" y="${r2(s.y)}" text-anchor="${s.anchor}" font-size="${EDGE_FS}" fill="var(--d-text)">${esc(s.text)}</text>` +
       `</g>`
     );
@@ -323,47 +631,83 @@ function drawEdgeLabelsV2(spots: Spot[], interactive: boolean): string {
 }
 
 /* ---------------------------------------------------------------- 边界 */
-function drawBoundariesV2(placed: Placed[], boundaries: ArchBoundary[], interactive: boolean): string {
+/**
+ * 边界的颜色:
+ * - 作者在 b= 的第三段指定了色板编号就用它(b=名称;id id…;9)
+ * - 没指定就按顺序取「这套词汇里没被类型占用的颜色」——
+ *   边界是框,盒子是类型,两者撞色就分不清了。
+ */
+function boundaryColors(boundaries: ArchBoundary[], types: HouseTypes): string[] {
+  const used = new Set(Object.values(types.meta).map((m) => m.color).filter((c) => c >= 0));
+  const free: number[] = [];
+  for (let i = 0; i < 10; i++) if (!used.has(i)) free.push(i);
+  return boundaries.map((bd, i) => {
+    if (bd.color) return sVar(bd.color - 1);
+    if (!free.length) return 'var(--d-faint)';
+    return sVar(free[i % free.length]);
+  });
+}
+
+/**
+ * v2 的边界盒:比 v1 多留一圈 —— 边要从「区域」里绕行时,通道得待在框内,
+ * 否则那条线看起来像是跑出了这个区域。
+ */
+const BOUNDARY_PAD = 30;
+function boundaryBoxV2(byId: Map<string, Placed>, bd: ArchBoundary): Box {
+  const boxes = bd.ids.map((id) => byId.get(id)!.box);
+  const x = Math.min(...boxes.map((o) => o.x)) - BOUNDARY_PAD;
+  const y = Math.min(...boxes.map((o) => o.y)) - BOUNDARY_PAD;
+  return {
+    x, y,
+    w: Math.max(...boxes.map((o) => o.x + o.w)) + BOUNDARY_PAD - x,
+    h: Math.max(...boxes.map((o) => o.y + o.h)) + BOUNDARY_PAD - y,
+  };
+}
+
+function drawBoundariesV2(placed: Placed[], boundaries: ArchBoundary[], interactive: boolean, colors: string[]): string {
   const byId = new Map(placed.map((p) => [p.id, p]));
-  return boundaries.map((bd) => {
-    const box = boundaryBox(byId, bd);
+  return boundaries.map((bd, i) => {
+    const box = boundaryBoxV2(byId, bd);
     const ia = interactive ? ` data-boundary="${esc(bd.ids.join(' '))}"` : '';
+    const c = colors[i];
     return (
       `<g${ia}>` +
       `<rect x="${r2(box.x)}" y="${r2(box.y)}" width="${r2(box.w)}" height="${r2(box.h)}" rx="14"` +
-      ` fill="none" stroke="var(--d-border)" stroke-width="1.3" stroke-dasharray="7 5"/>` +
+      ` fill="none" stroke="${c}" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="7 5"/>` +
       `</g>`
     );
   }).join('');
 }
 
 /** 边界的标签胶囊:画在走线之上,线不会压在字上 */
-function drawBoundaryLabelsV2(placed: Placed[], boundaries: ArchBoundary[]): string {
+function drawBoundaryLabelsV2(placed: Placed[], boundaries: ArchBoundary[], colors: string[]): string {
   const byId = new Map(placed.map((p) => [p.id, p]));
-  return boundaries.map((bd) => {
-    const box = boundaryBox(byId, bd);
+  return boundaries.map((bd, i) => {
+    const box = boundaryBoxV2(byId, bd);
     const label = bd.label.toUpperCase();
     const w = textW(label, 10) + bd.label.length * 1.2 + 20;
+    const c = colors[i];
     return (
       `<g>` +
       `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="var(--d-card)"/>` +
-      `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(box.y + 4)}" text-anchor="middle" font-size="10" font-weight="600" letter-spacing="1.2" fill="var(--d-faint)">${esc(label)}</text>` +
+      `<rect x="${r2(box.x + 15)}" y="${r2(box.y - 8)}" width="${r2(w - 2)}" height="18" rx="5" fill="${c}" fill-opacity="0.16"/>` +
+      `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(box.y + 4)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
       `</g>`
     );
   }).join('');
 }
 
 /* ---------------------------------------------------------------- 图例 */
-function drawLegend(placed: Placed[]): { svg: string; h: number } {
+function drawLegend(placed: Placed[], vocab: HouseTypes): { svg: string; h: number } {
   const counts = new Map<string, number>();
   for (const p of placed) counts.set(p.type, (counts.get(p.type) ?? 0) + 1);
-  const types = TYPE_ORDER.filter((t) => counts.has(t));
+  const types = vocab.order.filter((t) => counts.has(t));
   if (!types.length) return { svg: '', h: 0 };
   let x = PAD;
   let y = 0;
   const parts: string[] = [];
   for (const t of types) {
-    const meta = TYPE_META[t];
+    const meta = vocab.meta[t];
     const neutral = meta.color < 0;
     const color = neutral ? 'var(--d-muted)' : sVar(meta.color);
     const n = counts.get(t) ?? 0;
@@ -385,15 +729,27 @@ const DEFS =
   `<marker id="am-p" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-muted)"/></marker>` +
   `<marker id="am-m" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-ink)"/></marker>` +
   `<marker id="am-d" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--d-faint)"/></marker>` +
+  // UML 记号:空心三角(继承用实线,实现用虚线)
+  `<marker id="am-h" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1.5 1.5L13 7L1.5 12.5z" fill="var(--d-card)" stroke="var(--d-muted)" stroke-width="1.6"/></marker>` +
+  // 画布纸:很淡的方格,让大图有个「纸」的感觉
+  `<pattern id="am-paper" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="var(--d-grid)" stroke-width="1"/></pattern>` +
   `</defs>`;
 
 export interface ArchOpts {
   nodes: ArchNode[];
   edges: ArchEdge[];
   boundaries: ArchBoundary[];
+  /** 语义类型词汇(默认架构图那套) */
+  types?: HouseTypes;
+  /** 图种名(进 metadata 与角标链接):arch2 / dataflow / lifecycle / erd / class */
+  template?: string;
+  /** 原始 URL 查询串:角标直链 explore 落地页用 */
+  tagQuery?: string;
   title?: string;
   gridCols: number;
   legend: boolean;
+  /** 画布纸:底下铺一层很淡的方格(默认关) */
+  paper: boolean;
   interactive: boolean;
   version: number;
   cacheControl: string;
@@ -404,11 +760,39 @@ export interface ArchOpts {
 }
 
 /**
+ * 边标签比两个节点之间的空档还宽时,把那一列撑开 —— 让标签有地方放,
+ * 而不是压在节点的角标上。同一行、相邻两列的横边才需要(横着走的那一段最短)。
+ */
+function labelGaps(nodes: ArchNode[], edges: ArchEdge[]): number[] {
+  const colOf = new Map<string, { col: number; row: number }>();
+  for (const n of nodes) if (n.grid) colOf.set(n.id, n.grid);
+  const need = new Map<number, number>();
+  for (const e of edges) {
+    if (!e.label) continue;
+    const a = colOf.get(e.from);
+    const b = colOf.get(e.to);
+    if (!a || !b || a.row !== b.row) continue;
+    const [c1, c2] = a.col < b.col ? [a.col, b.col] : [b.col, a.col];
+    if (c2 !== c1 + 1) continue; // 隔了列的边,横向那一段本来就够长
+    // 两端各留 16px 的接线头,再加标签自身的宽度
+    const w = textW(e.label, EDGE_FS) + 12 + 32;
+    need.set(c1, Math.max(need.get(c1) ?? 0, Math.min(w, 300)));
+  }
+  const out: number[] = [];
+  for (const [c, v] of need) out[c] = v;
+  return out;
+}
+
+/**
  * 渲染 v2 架构图。
  */
 export function renderArchCore(o: ArchOpts): DrawResult {
+  const types = o.types ?? ARCH_TYPES;
+  // 第一遍:定格子(没写位置的节点会被自动放进去);第二遍:按边标签把列撑开
+  const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
+  packGrid(o.nodes, o.gridCols, { gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf });
   const { placed, W, H } = packGrid(o.nodes, o.gridCols, {
-    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf: v2Size,
+    gapX: GAP_X, gapY: GAP_Y, pad: PAD, sizeOf, gapAfter: labelGaps(o.nodes, o.edges),
   });
   const titleH = o.title ? 46 : 0;
   let width = Math.max(W, 320);
@@ -420,26 +804,41 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   }
   // 边界框比它的成员大一圈:画布要给它留出位置,不然图例会压在边界上
   for (const bd of o.boundaries) {
-    const bb = boundaryBox(byIdEarly, bd);
+    const bb = boundaryBoxV2(byIdEarly, bd);
     width = Math.max(width, bb.x + bb.w + PAD);
     bodyH = Math.max(bodyH, bb.y + bb.h + PAD);
   }
-  const legend = o.legend ? drawLegend(placed) : { svg: '', h: 0 };
-  width = Math.max(width, o.minW ?? 0);
-  const height = Math.max(bodyH + titleH + legend.h, o.minH ?? 0);
+  const legend = o.legend ? drawLegend(placed, types) : { svg: '', h: 0 };
 
-  const routed = computeRoutesV2(placed, o.edges);
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
+  const routed = computeRoutesV2(placed, o.edges, o.boundaries.map((bd) => boundaryBoxV2(byId, bd)));
   const avoid: Box[] = [
     ...boxes.map((b) => ({ x: b.x - 2, y: b.y - 2, w: b.w + 4, h: b.h + 4 })),
     ...o.boundaries.map((bd) => {
-      const bb = boundaryBox(byId, bd);
+      const bb = boundaryBoxV2(byId, bd);
       const w = textW(bd.label.toUpperCase(), 10) + bd.label.length * 1.2 + 20;
       return { x: bb.x + 14, y: bb.y - 12, w, h: 22 };
     }),
   ];
-  const spots = placeEdgeLabels(routed, avoid);
+  const spots = placeEdgeLabels(routed, avoid, types.crows === 'erd');
+  // 画布要盖住走线和边标签:绕行的边会走到节点盒外面,标签又贴在走线上 ——
+  // 只按节点盒算尺寸,那一段就会被裁掉(字看不全)。
+  for (const rt of routed) {
+    for (const p of rt.pts) {
+      width = Math.max(width, p[0] + PAD);
+      bodyH = Math.max(bodyH, p[1] + PAD);
+    }
+  }
+  for (const s of spots) {
+    const w = textW(s.text, EDGE_FS) + 12;
+    const h = EDGE_FS + 8;
+    const rx = s.anchor === 'middle' ? s.x - w / 2 : s.anchor === 'end' ? s.x - w : s.x;
+    width = Math.max(width, rx + w + PAD);
+    bodyH = Math.max(bodyH, s.y - EDGE_FS - 1 + h + PAD);
+  }
+  width = Math.max(width, o.minW ?? 0);
+  const height = Math.max(bodyH + titleH + legend.h, o.minH ?? 0);
   const degree = new Map<string, number>();
   if (o.interactive) for (const e of o.edges) {
     degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
@@ -458,19 +857,23 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   const titleSvg = o.title
     ? `<text x="${PAD}" y="${PAD + 16}" font-size="19" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
     : '';
+  const bColors = boundaryColors(o.boundaries, types);
+  const paperSvg = o.paper
+    ? `<rect x="0" y="0" width="${r2(width)}" height="${r2(height)}" fill="url(#am-paper)"/>`
+    : '';
   const body = iStyle + DEFS
-    + drawBoundariesV2(placed, o.boundaries, o.interactive)
-    + drawRoutesV2(routed, o.interactive)
+    + drawBoundariesV2(placed, o.boundaries, o.interactive, bColors)
+    + drawRoutesV2(routed, o.interactive, types)
     + drawEdgeLabelsV2(spots, o.interactive)
-    + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0)).join('')
-    + drawBoundaryLabelsV2(placed, o.boundaries);
+    + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
+    + drawBoundaryLabelsV2(placed, o.boundaries, bColors);
   const legendSvg = legend.svg
     ? `<g transform="translate(0 ${r2(bodyH + 14)})">${legend.svg}</g>`
     : '';
   const dy = titleH + Math.max(0, (height - titleH - legend.h - bodyH) / 2);
-  const children = titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
+  const children = paperSvg + titleSvg + `<g id="am" transform="translate(0 ${r2(dy)})">${body}</g>` + legendSvg;
   const spec = { type: 'arch', title: o.title, nodes: o.nodes, edges: o.edges, boundaries: o.boundaries };
-  const svg = svgDoc(width, height, 'arch', o.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children);
+  const svg = svgDoc(width, height, o.template ?? 'arch2', o.version, o.aria ?? o.title ?? `architecture map, ${o.nodes.length} nodes`, spec, o.skin, children, o.tagQuery, o.template ?? 'arch2');
   return { svg, version: o.version, cacheControl: o.cacheControl };
 }
 
@@ -493,10 +896,13 @@ export function renderArchFromUrl(url: URL, interactive = false): DrawResult {
   const gridCols = clampInt(params, 'grid', 0, 1, 12);
   const legendRaw = params.get('legend');
   const legend = legendRaw === null || legendRaw === '' ? true : legendRaw !== '0' && legendRaw !== 'false';
+  const paperRaw = params.get('paper');
+  const paper = paperRaw !== null && paperRaw !== '' && paperRaw !== '0' && paperRaw !== 'false';
   const v = parseInt(params.get('v') ?? '1', 10) || 1;
   const skin = resolveSkin('sankey', params.get('t'), schemeParam(params));
   return renderArchCore({
-    nodes, edges, boundaries, title, gridCols, legend, interactive,
+    nodes, edges, boundaries, title, gridCols, legend, paper, interactive,
+    template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',
     skin,
