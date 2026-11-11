@@ -11,6 +11,31 @@ const OPT = encodeURIComponent(
 const url = (query: string): URL => new URL(`${BASE}/echarts?${query}`);
 
 describe('renderEchartsFromUrl', () => {
+  it('标题靠左上角(和核心层一个位置),不压在图上', async () => {
+    const opt = { title: { text: 'Traffic sources', subtext: 'last 30 days' }, legend: { bottom: 4 }, series: [{ type: 'pie', radius: ['46%', '72%'], center: ['50%', '46%'], data: [{ name: 'a', value: 1 }] }] };
+    const { svg } = await renderEchartsFromUrl(url(`d=${encodeURIComponent(JSON.stringify(opt))}`));
+    // 标题组的 x:靠左(24),不是居中(280)
+    const m = /<text[^>]*transform="translate\(([\d.]+) ([\d.]+)\)"[^>]*>Traffic sources</.exec(svg);
+    expect(m).toBeTruthy();
+    expect(Number(m![1])).toBeLessThan(60);
+  });
+
+  it('用户没写 grid 时,标题带照样把绘图区压下去(副标题不压 y 轴刻度)', async () => {
+    const opt = { title: { text: 'Monthly active users', subtext: '2026' }, xAxis: { type: 'category', data: ['Jan', 'Feb'] }, yAxis: {}, series: [{ type: 'bar', data: [220, 301] }] };
+    const { svg } = await renderEchartsFromUrl(url(`d=${encodeURIComponent(JSON.stringify(opt))}`));
+    // 第一条网格线的 y:在标题带之下(缺省 grid top 是 60,会被副标题压住)
+    const ys = [...svg.matchAll(/<path d="M[\d.]+ ([\d.]+)L/g)].map((m) => Number(m[1]));
+    expect(Math.min(...ys)).toBeGreaterThan(70);
+  });
+
+  it('用户自己写了 title.left/top 就不动', async () => {
+    const opt = { title: { text: 'T', left: 'center', top: 40 }, xAxis: { type: 'category', data: ['A'] }, yAxis: {}, series: [{ type: 'bar', data: [1] }] };
+    const { svg } = await renderEchartsFromUrl(url(`d=${encodeURIComponent(JSON.stringify(opt))}`));
+    const m = /<text[^>]*transform="translate\(([\d.]+) ([\d.]+)\)"[^>]*>T</.exec(svg);
+    expect(m).toBeTruthy();
+    expect(Number(m![2])).toBeGreaterThan(40); // top 写死了 40,标题就在那附近
+  });
+
   it('renders an echarts option to a skinned SVG', async () => {
     const { svg, version, cacheControl } = await renderEchartsFromUrl(url(`d=${OPT}`));
     expect(svg).toMatch(/^<svg role="img"/);

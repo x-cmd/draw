@@ -138,6 +138,7 @@ const VIS_W = 14;         // 可见性标记那一列的宽
 const ROW_H = 19;         // 一行字段的高
 const HEAD_H = 30;        // 标题条的高
 const COL_GAP = 18;       // 名字列与类型列之间的空档
+const ROW_TOP = HEAD_H + 16; // 第一行字段的基线:离标题条下沿留一口气(贴着看不清)
 
 /** 字段表模式的节点尺寸:名字左、类型右,两列都要放得下 */
 function fieldsSize(n: ArchNode): { w: number; h: number } {
@@ -148,7 +149,7 @@ function fieldsSize(n: ArchNode): { w: number; h: number } {
   const typeW = Math.max(0, ...rows.map((r) => textW(r.type ?? '', SUB_FS)));
   const bodyW = keyCol + visCol + nameW + (typeW ? COL_GAP + typeW : 0);
   const w = Math.max(NODE_MIN_W, textW(n.label, LABEL_FS) + 52, bodyW + 26);
-  const h = HEAD_H + rows.length * ROW_H + 10;
+  const h = rows.length ? ROW_TOP + (rows.length - 1) * ROW_H + 12 : HEAD_H + 24;
   return { w: Math.min(w, 460), h };
 }
 
@@ -258,7 +259,7 @@ function drawFieldNodeV2(
   );
   // 字段行
   rows.forEach((r, i) => {
-    const y = b.y + HEAD_H + 8 + i * ROW_H;
+    const y = b.y + ROW_TOP + i * ROW_H;
     let x = b.x + 12;
     if (keyCol) {
       if (r.key) {

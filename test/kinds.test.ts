@@ -82,6 +82,17 @@ describe('new diagram kinds', () => {
     expect(texts).toContain('-');
   });
 
+  it('ERD 字段行离标题条留出一口气(不贴着标题条下沿)', () => {
+    const q = 'n=a;table;A;owner:string (pk)%0Aname:text;r0c0';
+    const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + q));
+    const node = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="12"/.exec(svg)!;
+    const field = /<text x="[\d.]+" y="([\d.]+)"[^>]*>owner</.exec(svg)!;
+    expect(node).toBeTruthy();
+    expect(field).toBeTruthy();
+    // 标题条 30px 高,第一行字段的基线至少再往下 10px(贴着看不清)
+    expect(Number(field[1]) - Number(node[2])).toBeGreaterThanOrEqual(40);
+  });
+
   it('draws the crow\'s foot notation when the edge says 1:N', () => {
     const q = 'n=a;table;A;id:int (pk);r0c0&n=b;table;B;id:int (pk);r0c1&e=a;b;1:N';
     const { svg } = renderKindFromUrl('erd', new URL('https://x-cmd.com/draw/erd?' + q));
