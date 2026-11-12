@@ -87,8 +87,14 @@ describe('分组(b=)的显示样式', () => {
   const dashed = (svg: string): number =>
     (svg.match(/stroke-dasharray="7 5"/g) ?? []).length;
 
-  it('默认是虚线框', () => {
+  it('默认是区域底色(没有虚线框)', () => {
     const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}`));
+    expect(dashed(svg)).toBe(0);
+    expect(svg).toMatch(/fill="var\(--d-s\d+\)" fill-opacity="0\.07"/);
+  });
+
+  it('bstyle=dash:要虚线框就写 dash', () => {
+    const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=dash`));
     expect(dashed(svg)).toBe(1);
   });
 
@@ -104,9 +110,11 @@ describe('分组(b=)的显示样式', () => {
     expect(svg).toContain('stroke-width="3.5"');
   });
 
-  it('bstyle=tint:区域底色', () => {
+  it('bstyle=tint:区域底色,不要边', () => {
     const { svg } = renderArchFromUrl(new URL(`https://x-cmd.com/draw/arch2?${Q}&bstyle=tint`));
     expect(svg).toMatch(/fill="var\(--d-s\d+\)" fill-opacity="0.07"/);
+    // 没有边:区域底色不跟线打架
+    expect(svg).not.toMatch(/fill-opacity="0.07"[^/]*stroke=/);
   });
 
   it('bstyle=plain:不画框', () => {

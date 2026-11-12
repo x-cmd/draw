@@ -106,7 +106,7 @@ describe('arch v2 rendering', () => {
     const dy = Number(/<g id="am" transform="translate\(0 ([\d.]+)\)"/.exec(svg)![1]);
     const titleY = Number(/<text x="44" y="([\d.]+)"[^>]*font-size="19"/.exec(svg)![1]);
     // 牌子:20 高、圆角 6 的小矩形(边标签的垫片是圆角 4)
-    const chip = /<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="20" rx="6" fill="var\(--d-card\)"/.exec(svg);
+    const chip = /<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="20" rx="6" fill="var\(--d-s\d+\)"/.exec(svg);
     expect(chip).toBeTruthy();
     const chipTop = Number(chip![1]) + dy;
     expect(chipTop).toBeGreaterThan(titleY + 6);   // 牌子的顶在标题的字底之下
