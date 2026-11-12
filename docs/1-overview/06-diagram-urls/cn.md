@@ -223,7 +223,7 @@ lifecycle / archmap / mindmap 同理)。
 | `legend=0` | 不要底部图例 |
 | `paper=1` | 底下铺一层很淡的方格 —— 大图有了「纸」垫着,不那么空 |
 | `dir=lr\|tb` | 自动布局的方向:层往右走(默认)/ 往下走 |
-| `bstyle=dash\|faint\|glow\|tint\|plain` | 分组(`b=`)怎么画:虚线框(默认)/ 更虚的边 / 荧光线 / 区域底色 / 只留牌子 |
+| `bstyle=tint\|dash\|faint\|glow\|plain` | 分组(`b=`)怎么画:区域底色(默认,没有边)/ 虚线框 / 更虚的边 / 荧光线 / 只留牌子 |
 | `title=` | 图的标题 |
 | `w=` / `h=` | 最小宽 / 高 |
 | `v=N` | 钉住版本 |

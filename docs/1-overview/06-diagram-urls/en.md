@@ -249,7 +249,7 @@ the diagram as a link, not a picture of one.
 | `legend=0` | no legend at the bottom |
 | `paper=1` | lay a faint grid of squares under the diagram — it gives a big diagram a "sheet of paper" to sit on |
 | `dir=lr\|tb` | the direction of the automatic layout: layers side by side (default) or stacked |
-| `bstyle=dash\|faint\|glow\|tint\|plain` | how groups (`b=`) are drawn: dashed frame (default) / fainter dashes / glowing line / tinted region / label only |
+| `bstyle=tint\|dash\|faint\|glow\|plain` | how groups (`b=`) are drawn: tinted region (default, no border) / dashed frame / fainter dashes / glowing line / label only |
 | `title=` | the diagram's title |
 | `w=` / `h=` | minimum width / height |
 | `v=N` | freeze the response at a version |
