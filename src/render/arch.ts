@@ -261,8 +261,11 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
     );
   }
   // 角标:有图标(diagrams 图标库)就用图标,没有才画类型字母
+  // org: 前缀查不到 → 角标位画组图标(自绘的机构剪影),不是类型字母
   const badge = icon
     ? `<image href="${icon}" x="${r2(bx - 2)}" y="${r2(by - 2)}" width="${r2(BADGE + 4)}" height="${r2(BADGE + 4)}" preserveAspectRatio="xMidYMid meet"/>`
+    : orgFallback
+      ? groupIcon(bx, by, BADGE, color)
     : `<rect x="${r2(bx)}" y="${r2(by)}" width="${BADGE}" height="${BADGE}" rx="6"` +
       ` fill="${badgeFill}" fill-opacity="${neutral ? 0.18 : 0.2}" stroke="${badgeFill}" stroke-opacity="${neutral ? 0.5 : 0.55}" stroke-width="1"/>` +
       `<text x="${r2(bx + BADGE / 2)}" y="${r2(by + BADGE / 2 + 3.6)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${color}">${esc(meta.badge)}</text>`;

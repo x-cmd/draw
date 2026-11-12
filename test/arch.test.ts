@@ -247,11 +247,11 @@ describe('org: 公司图标(公开层)', () => {
     expect(svg).not.toContain(ORG);
   });
 
-  it('arch2 的角标位不塞组图标(20px 认不出,类型字母更有用)', () => {
+  it('arch2 的角标位画组图标(不是类型字母)', () => {
     const svg = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;ext;Verisign;org:verisign;r0c0')).svg;
-    expect(svg).not.toContain(ORG);
-    // 类型字母还在
-    expect(svg).toContain('>X<');
+    expect(svg).toContain(ORG);
+    // 类型字母让位给组图标:那格说的是"这是个机构",不是"这是外部依赖"
+    expect(svg).not.toContain('>X<');
   });
 
   it('不认识的云厂商图标照旧(类型字母),不换成组图标', () => {
