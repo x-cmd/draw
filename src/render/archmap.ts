@@ -42,6 +42,12 @@ export interface ArchNode {
   sub?: string;
   /** 图标(diagrams 图标库的名字,如 aws:ec2)—— 画在角标的位置 */
   icon?: string;
+  /**
+   * 图标解析结果(data URI 或 SVG 片段)。渲染前填一次:内置图标库命中就用它,
+   * 调用方注入的图标优先(见 ArchOpts.icons)。公开仓自己不带第三方素材 ——
+   * 公司/机构图标那族(org:)在私有仓里,由调用方注入;查不到就画组图标。
+   */
+  iconData?: string;
   /** mermaid 源形状:方/菱(判定)/圆柱(存储)/圆角胶囊;缺省 rect */
   shape?: 'rect' | 'diamond' | 'cylinder' | 'round';
   grid?: { row: number; col: number; w: number; h: number };
@@ -76,8 +82,13 @@ export function splitFields(v: string): string[] {
   return f;
 }
 
-/** 图标字段:provider:名字(aws:ec2 / azure:vm / gcp:gce) */
-export const ICON_FIELD_RE = /^(?:aws|azure|gcp):[a-z0-9][a-z0-9-]*$/;
+/**
+ * 图标字段:provider:名字(aws:ec2 / azure:vm / gcp:gce / org:verisign)
+ *
+ * `org:` 是公司/机构图标 —— 那一族住在私有仓的内部图库里(商标图形不能公开分发),
+ * 公开请求查不到就画组图标(见 render/orgicon.ts)。其余前缀是云服务图标,公开可用。
+ */
+export const ICON_FIELD_RE = /^(?:aws|azure|gcp|org):[a-z0-9][a-z0-9-]*$/;
 
 export function parseNodes(raw: string[]): ArchNode[] {
   return raw.map((v, i) => {

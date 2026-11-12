@@ -20,6 +20,15 @@ import { resolveSkin } from '../styles/index.js';
 import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, svgDoc, textW, trunc} from './svg.js';
 import { iconOf } from './icons.js';
+import { groupIcon } from './orgicon.js';
+
+/**
+ * `org:` 前缀 = 公司/机构图标。那族图标在私有仓的内部图库里(商标图形不能公开分发),
+ * 公开请求查不到 → 画组图标(自绘的通用机构剪影),不是"图片挂了"。
+ * 其余前缀(aws/azure/gcp)是云服务图标,公开可用,行为不变。
+ */
+const isOrgIcon = (name: string): boolean => name.startsWith('org:');
+
 
 /* ---------------------------------------------------------------- 视觉常量 */
 const PAD = 44;          // 画布留白
@@ -88,7 +97,8 @@ const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
   const lines = linesOf(n);
   // 大图标节点:图标占一块,名字在下面 —— 宽度由名字决定(图标不会更宽)
   // 图标库里没有这个图标 → 按普通节点算,别在顶上留一块空地(很难看)
-  if (types.icons === 'big' && n.icon && iconOf(n.icon)) {
+  // (org: 查不到也有图标 —— 画组图标,节点还是图标节点,不是普通方框)
+  if (types.icons === 'big' && n.icon && (n.iconData || isOrgIcon(n.icon))) {
     const w = Math.max(ICON_BIG, textW(n.label, LABEL_FS) + 8, ...lines.map((l) => textW(l, SUB_FS) + 8));
     const h = n.sub ? ICON_SUB_DY + DESC(11.5) + 4 : ICON_NAME_DY + DESC(14) + 4;
     return { w, h };
@@ -178,7 +188,9 @@ function fieldsSize(n: ArchNode): { w: number; h: number } {
 /* ---------------------------------------------------------------- 节点 */
 function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: HouseTypes): string {
   const b = n.box;
-  const icon = n.icon ? iconOf(n.icon) : undefined;
+  const icon = n.iconData;
+  // org: 前缀但图库里查不到 → 组图标(公开层的默认长相:这是个机构,但不给你看 mark)
+  const orgFallback = !!n.icon && !icon && isOrgIcon(n.icon);
   const meta = types.meta[n.type] ?? { name: n.type, badge: '?', color: -1 };
   const neutral = meta.color < 0;
   const color = neutral ? 'var(--d-muted)' : sVar(meta.color);
@@ -227,7 +239,7 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
     return drawFieldNodeV2(n, frame, badgeFill, color, neutral, meta, ia, titleW, badgeRight);
   }
   // 大图标模式(diagrams + 那种云架构海报):图标就是节点,名字在下面
-  if (types.icons === 'big' && icon) {
+  if (types.icons === 'big' && (icon || orgFallback)) {
     const ix = b.x + (b.w - ICON_BIG) / 2;
     const name = trunc(n.label, 22);
     const sub = n.sub ? trunc(n.sub, 26) : '';
@@ -235,9 +247,13 @@ function drawNodeV2(n: Placed, interactive: boolean, degree: number, types: Hous
     const cw = Math.max(textW(name, LABEL_FS), sub ? textW(sub, SUB_FS) : 0) + 10;
     const chip = (y: number, h: number): string =>
       `<rect x="${r2(b.x + b.w / 2 - cw / 2)}" y="${r2(y)}" width="${r2(cw)}" height="${r2(h)}" rx="4" fill="var(--d-card)"/>`;
+    // 没有真 logo → 组图标(自绘,跟节点的语义色走)
+    const graphic = icon
+      ? `<image href="${icon}" x="${r2(ix)}" y="${r2(b.y)}" width="${ICON_BIG}" height="${ICON_BIG}" preserveAspectRatio="xMidYMid meet"/>`
+      : groupIcon(ix, b.y, ICON_BIG, color);
     return (
       `<g${ia}>` +
-      `<image href="${icon}" x="${r2(ix)}" y="${r2(b.y)}" width="${ICON_BIG}" height="${ICON_BIG}" preserveAspectRatio="xMidYMid meet"/>` +
+      graphic +
       chip(b.y + ICON_NAME_DY - 11, 15) +
       `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_NAME_DY)}" text-anchor="middle" font-size="${LABEL_FS}" font-weight="600" fill="var(--d-ink)">${esc(name)}</text>` +
       (sub ? chip(b.y + ICON_SUB_DY - 9, 13) + `<text x="${r2(b.x + b.w / 2)}" y="${r2(b.y + ICON_SUB_DY)}" text-anchor="middle" font-size="${SUB_FS}" fill="var(--d-muted)">${esc(sub)}</text>` : '') +
@@ -651,7 +667,7 @@ function routeOrthogonal(
 function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = [], iconsBig = false): V2Routed[] {
   // 大图标节点:连线只接图标那块(名字在图标下面,别从名字里穿过去)
   const portBoxOf = (p: Placed): Box =>
-    iconsBig && p.icon && iconOf(p.icon) ? { x: p.box.x, y: p.box.y, w: p.box.w, h: ICON_BIG } : p.box;
+    iconsBig && p.iconData ? { x: p.box.x, y: p.box.y, w: p.box.w, h: ICON_BIG } : p.box;
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
   const cx = (b: Box) => b.x + b.w / 2;
@@ -1260,6 +1276,11 @@ export interface ArchOpts {
   template?: string;
   /** 原始 URL 查询串:角标直链 explore 落地页用 */
   tagQuery?: string;
+  /**
+   * 外部注入的图标:名字 → data URI(如 org:verisign)。优先于内置图标库。
+   * 公开仓自己不带第三方素材 —— 这一族图标在调用方(私有仓)手里,由它注入。
+   */
+  icons?: Record<string, string>;
   title?: string;
   gridCols: number;
   /** grid= 明确指定了列数 → 走格子布局,不用自动分层 */
@@ -1339,6 +1360,13 @@ function placeErdByRelation(nodes: ArchNode[], edges: ArchEdge[]): void {
 
 export function renderArchCore(o: ArchOpts): DrawResult {
   const types = o.types ?? ARCH_TYPES;
+  // 图标解析一次(渲染前填进节点):调用方注入的优先 —— 那是有权限的一方带进来的真 logo
+  // (比如私有仓里的公司图标库);否则查内置图标库。org: 前缀两处都没有 → 画组图标。
+  for (const n of o.nodes) {
+    if (!n.icon) continue;
+    const hit = o.icons?.[n.icon] || iconOf(n.icon);
+    if (hit) n.iconData = hit;
+  }
   const sizeOf = (n: ArchNode): { w: number; h: number } => v2Size(n, types);
   // 大图标的节点窄(64px 的图标),列与列之间要多留一点空当,不然挤成一坨
   const gapX = types.icons === 'big' ? 52 : GAP_X;
@@ -1494,6 +1522,8 @@ export function renderArchCore(o: ArchOpts): DrawResult {
 export interface ArchUrlOpts {
   /** 摆位引擎(见 LayoutEngine):没写位置的节点怎么摆 */
   layout?: LayoutEngine;
+  /** 外部注入的图标:名字 → data URI(优先于内置图标库) */
+  icons?: Record<string, string>;
 }
 
 /** /draw/cloud —— 大图标版的架构图(节点就是图标) */
@@ -1535,6 +1565,7 @@ export function renderArchFromUrl(
     dir,
     boundaryStyle,
     layout: opts.layout,
+    icons: opts.icons,
     template: 'arch2', tagQuery: url.search,
     version: v,
     cacheControl: 'public, max-age=300',
