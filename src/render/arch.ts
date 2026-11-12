@@ -458,6 +458,29 @@ function segsCross(
   return d1 * d2 < 0 && d3 * d4 < 0;
 }
 
+/**
+ * 共线且压在同一段上(两条线走同一条路)。
+ *
+ * 交叉判定抓不到这种:共线的两段,上面的 d3、d4 都是 0,判出来是「不相交」。
+ * 而「两条线叠在一起」比「两条线交叉」更难看 —— 看着像一根线,
+ * 读者分不清那是两条边。所以压线惩罚得把它也算进去。
+ */
+function segsOverlap(
+  p1: [number, number], p2: [number, number],
+  p3: [number, number], p4: [number, number],
+): boolean {
+  const EPS = 0.01;
+  const d = (a: [number, number], b: [number, number], c: [number, number]): number =>
+    (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  // 共线:两个端点都在另一条线的直线上
+  if (Math.abs(d(p1, p2, p3)) > EPS || Math.abs(d(p1, p2, p4)) > EPS) return false;
+  // 投影到主轴,区间有交集才算压上
+  const axis = Math.abs(p2[0] - p1[0]) >= Math.abs(p2[1] - p1[1]) ? 0 : 1;
+  const lo = Math.max(Math.min(p1[axis], p2[axis]), Math.min(p3[axis], p4[axis]));
+  const hi = Math.min(Math.max(p1[axis], p2[axis]), Math.max(p3[axis], p4[axis]));
+  return hi > lo + EPS;
+}
+
 /* ---------------------------------------------------------------- 布线
    正交布线:Hanan 网格 + A*(带拐弯惩罚)。
 
@@ -647,9 +670,12 @@ function routeOrthogonal(
     const b: [number, number] = [gx(ni), gy(nj)];
     if (obs.some((box) => segInBox(a, b, box))) continue;
     // 压到别的线:加钱(软约束)✓
+    // 交叉算,叠在一起(共线)也算 —— 叠着比交叉更难看
     let cross = 0;
     for (const seg of drawn) {
-      if (segsCross(a, b, [seg[0], seg[1]], [seg[2], seg[3]])) { cross++; break; }
+      const c = [seg[0], seg[1]] as [number, number];
+      const dd = [seg[2], seg[3]] as [number, number];
+      if (segsCross(a, b, c, dd) || segsOverlap(a, b, c, dd)) { cross++; break; }
     }
     const step = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
     for (let nd = 0; nd < 4; nd++) {
@@ -733,6 +759,37 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
   // 不分进出 —— 出去的线互相让开(扇出),进来的线跟出去的线也互相让开。
   const exitOff: number[] = [];
   const entryOff: number[] = [];
+  /**
+   * 这条边能不能「直着走」—— 两端面对面、坐标对齐、中间没别的盒子挡着。
+   *
+   * 这是「谁走正中」的判据:一条线正下方就是它的目标(中间空着)时,
+   * 它该走正中,那条线就是一根直线;要是中间隔着东西,那条线本来就得绕,
+   * 让它靠边 —— 不然它会把本来笔直的那条线顶歪(读者看到的是「没必要的一折」)。
+   */
+  const straightShot = (i: number): boolean => {
+    const e = edges[i];
+    const s0 = sides[i].exit;
+    const s4 = sides[i].entry;
+    const vertical = s0 === 'bottom' || s0 === 'top';
+    // 两端得面对面:底对顶、左对右
+    if (vertical) {
+      if (!((s0 === 'bottom' && s4 === 'top') || (s0 === 'top' && s4 === 'bottom'))) return false;
+    } else if (!((s0 === 'left' && s4 === 'right') || (s0 === 'right' && s4 === 'left'))) {
+      return false;
+    }
+    const a = portBoxOf(byId.get(e.from)!);
+    const b = portBoxOf(byId.get(e.to)!);
+    const p0 = portAt(a, s0, 0);
+    const p1 = portAt(b, s4, 0);
+    // 坐标得对齐(同一个 x / 同一个 y)
+    if (vertical ? Math.abs(p0[0] - p1[0]) > 0.5 : Math.abs(p0[1] - p1[1]) > 0.5) return false;
+    // 中间不能有盒子挡着
+    for (const p of placed) {
+      if (p.id === e.from || p.id === e.to) continue;
+      if (segInBox(p0, p1, p.box)) return false;
+    }
+    return true;
+  };
   {
     const groups = new Map<string, { i: number; out: boolean }[]>();
     const put = (k: string, i: number, out: boolean): void => {
@@ -755,7 +812,12 @@ function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = []
       });
       // 「直着来/直着走」的那条走正中,别的分到两边 —— 分完还得跟它错开,
       // 否则中间的槽位正好也是 0,两条线又撞在一个点上
-      const ai = aligned.length === 1 ? members.findIndex((m) => m.i === aligned[0].i) : -1;
+      //
+      // 好几条都「对齐」时(比如两个目标都在正下方),看哪条能真的直着走:
+      // 能的那条走正中,绕路的那条靠边 —— 不然本来笔直的一条被顶歪了。
+      const clear = aligned.filter((m) => straightShot(m.i));
+      const pick = clear.length === 1 ? clear[0].i : aligned.length === 1 ? aligned[0].i : -1;
+      const ai = pick >= 0 ? members.findIndex((m) => m.i === pick) : -1;
       const above = ai >= 0 ? ai : 0;
       const below = ai >= 0 ? members.length - ai - 1 : 0;
       members.forEach((m, slot) => {
@@ -1111,6 +1173,9 @@ const grow = (b: Box, p: number): Box => ({ x: b.x - p, y: b.y - p, w: b.w + p *
  * 边距默认 30px(给绕行的线留出通道,牌子也放得下),但**两个框会撞上时一起收** ——
  * 收到刚好不撞为止。收的是边距,不是成员的位置(成员是作者摆的,不动)。
  * 成员本身就交叠的,收不了 —— 那是摆位的问题。
+ *
+ * **套着的两个框不算撞**:一个分组在另一个分组里面(嵌套),本来就该套着 ——
+ * 收边距会把内外两层的留白一起收没,框就贴着节点了。
  */
 function boundaryBoxes(placed: Placed[], boundaries: ArchBoundary[]): Box[] {
   const byId = new Map(placed.map((p) => [p.id, p]));
@@ -1124,6 +1189,9 @@ function boundaryBoxes(placed: Placed[], boundaries: ArchBoundary[]): Box[] {
       h: Math.max(...boxes.map((o) => o.y + o.h)) - y,
     };
   });
+  const contains = (a: Box, b: Box): boolean =>
+    a.x <= b.x + 0.5 && a.y <= b.y + 0.5 &&
+    a.x + a.w >= b.x + b.w - 0.5 && a.y + a.h >= b.y + b.h - 0.5;
   const pads = inner.map(() => BOUNDARY_PAD);
   for (let round = 0; round < 8; round++) {
     let hit = false;
@@ -1134,6 +1202,7 @@ function boundaryBoxes(placed: Placed[], boundaries: ArchBoundary[]): Box[] {
         const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
         const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
         if (ox > 0 && oy > 0) {
+          if (contains(a, b) || contains(b, a)) continue;   // 套着 —— 不算撞
           const d = Math.min(ox, oy) / 2 + 0.5; // 撞上多少,两边各让一半
           pads[i] = Math.max(0, pads[i] - d);
           pads[j] = Math.max(0, pads[j] - d);

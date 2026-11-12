@@ -36,6 +36,17 @@ import {
 } from './store.js';
 import type { DrawEnv, Platform } from './types.js';
 
+/**
+ * interactive=1 —— 要不要带交互标记(data-node / data-from / data-edge-label…)。
+ *
+ * 默认不带:对外的图 URL 是干净的(嵌到别处也不会多一堆属性)。
+ * explore 那种落地页要悬停说明、要点节点高亮、要走流向 —— 那边会带上这个参数。
+ */
+function interactiveOf(url: URL): boolean {
+  const v = url.searchParams.get('interactive');
+  return v === '1' || v === 'true';
+}
+
 const SVG_CT = 'image/svg+xml; charset=utf-8';
 const TEXT_CT = 'text/plain; charset=utf-8';
 
@@ -276,7 +287,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;...;<r0c1>] params`, { allow: 'GET' });
     }
-    return chartResponse(url, renderArchmapFromUrl(url));
+    return chartResponse(url, renderArchmapFromUrl(url, interactiveOf(url)));
   }
   // /draw/arch2 架构图 v2:同一套 n=/e=/b= 模型,换一张更像架构图的脸(类型着色 + 图例 + 角标)。
   // 路径不叫 /arch —— 那是 archmap 的老别名,不动。
@@ -284,35 +295,35 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<sub>][;<r0c1>]`, { allow: 'GET' });
     }
-    return chartResponse(url, renderArchFromUrl(url));
+    return chartResponse(url, renderArchFromUrl(url, interactiveOf(url)));
   }
   // /draw/cloud 云架构(大图标版):同一套 n=/e=/b= 模型,节点画成大图标(diagrams + 那种海报)
   if (sub === '/cloud') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<icon>]`, { allow: 'GET' });
     }
-    return chartResponse(url, renderCloudFromUrl(url));
+    return chartResponse(url, renderCloudFromUrl(url, interactiveOf(url)));
   }
   // /draw/seq 时序图:参与方在上一行,消息按 URL 顺序往下走
   if (sub === '/seq') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<pos>] and ?e=from;to[;label]`, { allow: 'GET' });
     }
-    return chartResponse(url, renderSeqFromUrl(url));
+    return chartResponse(url, renderSeqFromUrl(url, interactiveOf(url)));
   }
   // /draw/uc 用例图:参与者(火柴人)+ 用例(椭圆)+ 系统边界
   if (sub === '/uc') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;actor|label or <id>;uc|label`, { allow: 'GET' });
     }
-    return chartResponse(url, renderUcFromUrl(url));
+    return chartResponse(url, renderUcFromUrl(url, interactiveOf(url)));
   }
   // /draw/gantt2 甘特图 v2:同一份 mermaid 甘特源码,架构图 v2 那张脸
   if (sub === '/gantt2') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?m=<gantt source>`, { allow: 'GET' });
     }
-    return chartResponse(url, renderGantt2FromUrl(url));
+    return chartResponse(url, renderGantt2FromUrl(url, interactiveOf(url)));
   }
   // /draw/dataflow /draw/lifecycle /draw/erd /draw/class —— 四种新图种,
   // 同一套引擎(架构图 v2),各带一套语义类型词汇
@@ -320,14 +331,14 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<id>;<type>;<label>[;<sub>][;<pos>]`, { allow: 'GET' });
     }
-    return chartResponse(url, renderKindFromUrl(sub.slice(1), url));
+    return chartResponse(url, renderKindFromUrl(sub.slice(1), url, interactiveOf(url)));
   }
   // /draw/mindmap 树形导图(x-cmd-hub/draw#17/#20):n=<根/枝/叶 路径>,树→自动布局
   if (sub === '/mindmap') {
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?n=<root/branch/leaf> paths`, { allow: 'GET' });
     }
-    return chartResponse(url, renderMindmapFromUrl(url));
+    return chartResponse(url, renderMindmapFromUrl(url, interactiveOf(url)));
   }
   // /draw/gantt 甘特图(#20 拆分):m=<gantt 源码>(首行 gantt 关键字可省)。
   // 独立入口——mermaid 只是受支持的输入语法之一,甘特不隶属 mermaid
@@ -335,7 +346,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     if (method !== 'GET') {
       return textResponse(405, `method ${request.method} not allowed; use GET with ?m=<gantt source>`, { allow: 'GET' });
     }
-    return chartResponse(url, renderGanttFromUrl(url));
+    return chartResponse(url, renderGanttFromUrl(url, interactiveOf(url)));
   }
   // /draw/tokei 代码统计图:d=<tokei --output json> → 「代码/注释/空行」三段堆叠柱。
   // POST 也收:body 直接放 tokei 的 json(tokei --output json | curl -X POST --data-binary @- …)
