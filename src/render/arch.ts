@@ -85,9 +85,10 @@ const linesOf = (n: { sub?: string }): string[] =>
 
 const v2Size = (n: ArchNode, types: HouseTypes): { w: number; h: number } => {
   if (types.rows === 'fields') return fieldsSize(n);
-  // 大图标节点:图标占一块,名字在下面 —— 宽度由名字决定(图标不会更宽)
   const lines = linesOf(n);
-  if (types.icons === 'big') {
+  // 大图标节点:图标占一块,名字在下面 —— 宽度由名字决定(图标不会更宽)
+  // 图标库里没有这个图标 → 按普通节点算,别在顶上留一块空地(很难看)
+  if (types.icons === 'big' && n.icon && iconOf(n.icon)) {
     const w = Math.max(ICON_BIG, textW(n.label, LABEL_FS) + 8, ...lines.map((l) => textW(l, SUB_FS) + 8));
     const h = n.sub ? ICON_SUB_DY + DESC(11.5) + 4 : ICON_NAME_DY + DESC(14) + 4;
     return { w, h };
@@ -650,7 +651,7 @@ function routeOrthogonal(
 function computeRoutesV2(placed: Placed[], edges: ArchEdge[], bounds: Box[] = [], iconsBig = false): V2Routed[] {
   // 大图标节点:连线只接图标那块(名字在图标下面,别从名字里穿过去)
   const portBoxOf = (p: Placed): Box =>
-    iconsBig && p.icon ? { x: p.box.x, y: p.box.y, w: p.box.w, h: ICON_BIG } : p.box;
+    iconsBig && p.icon && iconOf(p.icon) ? { x: p.box.x, y: p.box.y, w: p.box.w, h: ICON_BIG } : p.box;
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
   const cx = (b: Box) => b.x + b.w / 2;
@@ -1082,29 +1083,62 @@ function boundaryColors(boundaries: ArchBoundary[], types: HouseTypes): string[]
  * 否则那条线看起来像是跑出了这个区域。
  */
 const BOUNDARY_PAD = 30;
-function boundaryBoxV2(byId: Map<string, Placed>, bd: ArchBoundary): Box {
-  const boxes = bd.ids.map((id) => byId.get(id)!.box);
-  const x = Math.min(...boxes.map((o) => o.x)) - BOUNDARY_PAD;
-  const y = Math.min(...boxes.map((o) => o.y)) - BOUNDARY_PAD;
-  return {
-    x, y,
-    w: Math.max(...boxes.map((o) => o.x + o.w)) + BOUNDARY_PAD - x,
-    h: Math.max(...boxes.map((o) => o.y + o.h)) + BOUNDARY_PAD - y,
-  };
+
+const grow = (b: Box, p: number): Box => ({ x: b.x - p, y: b.y - p, w: b.w + p * 2, h: b.h + p * 2 });
+
+/**
+ * 分组框:成员的包围盒 + 边距。
+ *
+ * 边距默认 30px(给绕行的线留出通道,牌子也放得下),但**两个框会撞上时一起收** ——
+ * 收到刚好不撞为止。收的是边距,不是成员的位置(成员是作者摆的,不动)。
+ * 成员本身就交叠的,收不了 —— 那是摆位的问题。
+ */
+function boundaryBoxes(placed: Placed[], boundaries: ArchBoundary[]): Box[] {
+  const byId = new Map(placed.map((p) => [p.id, p]));
+  const inner = boundaries.map((bd) => {
+    const boxes = bd.ids.map((id) => byId.get(id)!.box);
+    const x = Math.min(...boxes.map((o) => o.x));
+    const y = Math.min(...boxes.map((o) => o.y));
+    return {
+      x, y,
+      w: Math.max(...boxes.map((o) => o.x + o.w)) - x,
+      h: Math.max(...boxes.map((o) => o.y + o.h)) - y,
+    };
+  });
+  const pads = inner.map(() => BOUNDARY_PAD);
+  for (let round = 0; round < 8; round++) {
+    let hit = false;
+    for (let i = 0; i < inner.length; i++) {
+      for (let j = i + 1; j < inner.length; j++) {
+        const a = grow(inner[i], pads[i]);
+        const b = grow(inner[j], pads[j]);
+        const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+        const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+        if (ox > 0 && oy > 0) {
+          const d = Math.min(ox, oy) / 2 + 0.5; // 撞上多少,两边各让一半
+          pads[i] = Math.max(0, pads[i] - d);
+          pads[j] = Math.max(0, pads[j] - d);
+          hit = true;
+        }
+      }
+    }
+    if (!hit) break;
+  }
+  return inner.map((b, i) => grow(b, pads[i]));
 }
 
 /**
  * 分组(b=)的显示样式:
- * - `dash`  虚线框(默认)
- * - `faint` 更虚更淡的边 —— 线多的时候不抢戏
+ * - `tint`  区域底色(默认):一块淡色,不用边 —— 线多的时候框不抢戏
+ * - `dash`  虚线框
+ * - `faint` 更虚更淡的边
  * - `glow`  荧光线(几层叠出来的光晕)
- * - `tint`  区域底色(淡色块 + 极淡的边)
  * - `plain` 不画框,只留小牌子
  */
 export type BoundaryStyle = 'dash' | 'faint' | 'glow' | 'tint' | 'plain';
 export const BOUNDARY_STYLES: BoundaryStyle[] = ['dash', 'faint', 'glow', 'tint', 'plain'];
 
-/** bstyle= —— 分组怎么画;不写就是默认那套虚线框 */
+/** bstyle= —— 分组怎么画;不写就是默认那套(区域底色) */
 export function boundaryStyleParam(params: URLSearchParams): BoundaryStyle | undefined {
   const raw = params.get('bstyle');
   if (raw === null || raw === '') return undefined;
@@ -1114,15 +1148,14 @@ export function boundaryStyleParam(params: URLSearchParams): BoundaryStyle | und
 }
 
 function drawBoundariesV2(
-  placed: Placed[],
   boundaries: ArchBoundary[],
+  bboxes: Box[],
   interactive: boolean,
   colors: string[],
-  style: BoundaryStyle = 'dash',
+  style: BoundaryStyle = 'tint',
 ): string {
-  const byId = new Map(placed.map((p) => [p.id, p]));
   return boundaries.map((bd, i) => {
-    const box = boundaryBoxV2(byId, bd);
+    const box = bboxes[i];
     const ia = interactive ? ` data-boundary="${esc(bd.ids.join(' '))}"` : '';
     const c = colors[i];
     const rect =
@@ -1140,8 +1173,8 @@ function drawBoundariesV2(
           `${rect} fill="none" stroke="${c}" stroke-opacity="0.85" stroke-width="1.4"/>`;
         break;
       case 'tint':
-        body =
-          `${rect} fill="${c}" fill-opacity="0.07" stroke="${c}" stroke-opacity="0.22" stroke-width="1"/>`;
+        // 区域底色:只有一块淡色,没有边 —— 边会跟线打架
+        body = `${rect} fill="${c}" fill-opacity="0.07"/>`;
         break;
       case 'plain':
         body = '';
@@ -1155,14 +1188,13 @@ function drawBoundariesV2(
 
 /** 边界的标签胶囊:画在走线之上,线不会压在字上 */
 function drawBoundaryLabelsV2(
-  placed: Placed[],
   boundaries: ArchBoundary[],
+  bboxes: Box[],
   colors: string[],
-  style: BoundaryStyle = 'dash',
+  style: BoundaryStyle = 'tint',
 ): string {
-  const byId = new Map(placed.map((p) => [p.id, p]));
   return boundaries.map((bd, i) => {
-    const box = boundaryBoxV2(byId, bd);
+    const box = bboxes[i];
     const label = bd.label.toUpperCase();
     const w = textW(label, 10) + bd.label.length * 1.2 + 20;
     const c = colors[i];
@@ -1361,9 +1393,10 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     width = Math.max(width, p.box.x + p.box.w + PAD);
     bodyH = Math.max(bodyH, p.box.y + p.box.h + PAD);
   }
+  // 分组框:算一次,画框、画牌子、算画布、给标签避让,都用同一份
+  const bboxes = boundaryBoxes(placed, o.boundaries);
   // 边界框比它的成员大一圈:画布要给它留出位置,不然图例会压在边界上
-  for (const bd of o.boundaries) {
-    const bb = boundaryBoxV2(byIdEarly, bd);
+  for (const bb of bboxes) {
     width = Math.max(width, bb.x + bb.w + PAD);
     bodyH = Math.max(bodyH, bb.y + bb.h + PAD);
   }
@@ -1371,17 +1404,16 @@ export function renderArchCore(o: ArchOpts): DrawResult {
 
   const byId = new Map(placed.map((p) => [p.id, p]));
   const boxes = placed.map((p) => p.box);
-  const routed = computeRoutesV2(placed, o.edges, o.boundaries.map((bd) => boundaryBoxV2(byId, bd)), types.icons === 'big');
+  const routed = computeRoutesV2(placed, o.edges, bboxes, types.icons === 'big');
   const avoid: Box[] = [
     ...boxes.map((b) => ({ x: b.x - 2, y: b.y - 2, w: b.w + 4, h: b.h + 4 })),
-    ...o.boundaries.map((bd) => {
-      const bb = boundaryBoxV2(byId, bd);
+    ...o.boundaries.map((bd, i) => {
+      const bb = bboxes[i];
       const w = textW(bd.label.toUpperCase(), 10) + bd.label.length * 1.2 + 20;
       return { x: bb.x + 14, y: bb.y - 12, w, h: 22 };
     }),
     // 分组的框线:只挡「边框那一圈」—— 框里的标签是正常的,压在框线上才是压线
-    ...o.boundaries.flatMap((bd) => {
-      const bb = boundaryBoxV2(byId, bd);
+    ...bboxes.flatMap((bb) => {
       const t = 4;
       return [
         { x: bb.x - t, y: bb.y - t, w: bb.w + t * 2, h: t * 2 },
@@ -1410,9 +1442,7 @@ export function renderArchCore(o: ArchOpts): DrawResult {
   width = Math.max(width, o.minW ?? 0);
   // 边界的小牌子探出边界框 9px;标题的字底也在这一带 —— 身子要让开,
   // 不然牌子会压在标题上(「Inside draw」那张就压住了)。
-  const bTop = o.boundaries.length
-    ? Math.min(...o.boundaries.map((bd) => boundaryBoxV2(byId, bd).y - 9))
-    : 0;
+  const bTop = bboxes.length ? Math.min(...bboxes.map((bb) => bb.y - 9)) : 0;
   const titleBottom = o.title ? PAD + 26 : 0;   // 标题的字底(含下伸部)
   const headH = o.boundaries.length ? Math.max(titleH, titleBottom - bTop) : titleH;
   const height = Math.max(bodyH + headH + legend.h + 14, o.minH ?? 0);
@@ -1439,11 +1469,11 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     ? `<rect x="0" y="0" width="${r2(width)}" height="${r2(height)}" fill="url(#am-paper)"/>`
     : '';
   const body = iStyle + DEFS
-    + drawBoundariesV2(placed, o.boundaries, o.interactive, bColors, o.boundaryStyle)
+    + drawBoundariesV2(o.boundaries, bboxes, o.interactive, bColors, o.boundaryStyle)
     + drawRoutesV2(routed, o.interactive, types)
     + drawEdgeLabelsV2(spots, o.interactive)
     + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
-    + drawBoundaryLabelsV2(placed, o.boundaries, bColors, o.boundaryStyle);
+    + drawBoundaryLabelsV2(o.boundaries, bboxes, bColors, o.boundaryStyle);
   // 图例在身子下面 —— 要跟着身子一起往下挪(dy),不然身子一被推下去,
   // 图例就留在原地、压进身子里面
   const dy = headH + Math.max(0, (height - headH - legend.h - bodyH) / 2);

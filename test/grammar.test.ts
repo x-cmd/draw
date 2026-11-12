@@ -277,7 +277,7 @@ describe('b= 泳道/边界,所有图种都认', () => {
     const q = [...nodes, 'e=d;e;write', 'b=Region;d e m'].join('&');
     const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + q));
     // 边界框的下沿
-    const bb = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="14" fill="none" stroke="var\(--d-s\d+\)"/.exec(svg);
+    const bb = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="14" fill="var\(--d-s\d+\)" fill-opacity="0.07"/.exec(svg);
     expect(bb).toBeTruthy();
     const bottom = Number(bb![2]) + Number(bb![4]);
     // 走线的每一个 y 都要在框内(框的上沿留出标签胶囊的余量)
