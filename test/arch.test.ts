@@ -221,3 +221,53 @@ describe('端口与走线', () => {
     expect(new Set(routes.map((r) => r[0][0])).size).toBeGreaterThan(1);
   });
 });
+
+// org: 前缀 = 公司/机构图标。那族图标住在私有仓的内部图库里(商标图形不能公开分发),
+// 公开请求查不到 → 画组图标(自绘的通用机构剪影,公开层不输出任何第三方图形)。
+describe('org: 公司图标(公开层)', () => {
+  const ORG = 'M5 4h14v18h-5v-5h-4v5H5V4Z';
+
+  it('认 org: 前缀当图标字段(不当成副标题或位置)', () => {
+    const svg = renderCloudFromUrl(new URL('https://x-cmd.com/draw/cloud?n=a;ext;Verisign;org:verisign;r0c0')).svg;
+    expect(svg).toContain(ORG);
+    expect(svg).toContain('Verisign');
+    // 副标题没被当成图标吃掉:节点仍是图标节点(名字在下面),不是普通方框
+    expect(svg).toContain('translate(');
+  });
+
+  it('公开层不内嵌任何第三方图形(组图标是矢量,不是 data URI)', () => {
+    const svg = renderCloudFromUrl(new URL('https://x-cmd.com/draw/cloud?n=a;ext;Verisign;org:verisign;r0c0')).svg;
+    expect(svg).not.toContain('data:image/');
+    expect(svg).toContain('fill-rule="evenodd"');
+  });
+
+  it('云厂商图标那一族不受影响(照旧内嵌 data URI)', () => {
+    const svg = renderCloudFromUrl(new URL('https://x-cmd.com/draw/cloud?n=a;cloud;CF;aws:cloudfront;r0c0')).svg;
+    expect(svg).toContain('data:image/png;base64,');
+    expect(svg).not.toContain(ORG);
+  });
+
+  it('arch2 的角标位画组图标(不是类型字母)', () => {
+    const svg = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;ext;Verisign;org:verisign;r0c0')).svg;
+    expect(svg).toContain(ORG);
+    // 类型字母让位给组图标:那格说的是"这是个机构",不是"这是外部依赖"
+    expect(svg).not.toContain('>X<');
+  });
+
+  it('不认识的云厂商图标照旧(类型字母),不换成组图标', () => {
+    const svg = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?n=a;be;API;aws:nope;r0c0')).svg;
+    expect(svg).not.toContain(ORG);
+    expect(svg).toContain('>B<');
+  });
+
+  it('调用方可以注入图标(私有仓的公司图标库就是走这条路)', () => {
+    const svg = renderCloudFromUrl(
+      new URL('https://x-cmd.com/draw/cloud?n=a;ext;Verisign;org:verisign;r0c0'),
+      false,
+      { icons: { 'org:verisign': 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=' } },
+    ).svg;
+    // 注入的图标优先,组图标让位
+    expect(svg).toContain('data:image/svg+xml;base64,');
+    expect(svg).not.toContain(ORG);
+  });
+});
