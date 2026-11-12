@@ -18,6 +18,26 @@ Nobody reads a chart of star counts. What a reader wants on an issue, a pull
 request or a release is a picture of the thing itself: what it does, what
 changed, what the code looks like now.
 
+## Why a link and not a screenshot
+
+GitHub is the first place a chart link belongs — and the reason is not that it
+looks good there. It is that everything on GitHub is already text: a diff, a
+comment, a release note. A URL drops into that world without asking anybody to
+change a habit, and it buys three things a screenshot cannot have.
+
+- **It is reviewable.** Edit one parameter in the pull request and the picture
+  changes with it. A screenshot can only be replaced.
+- **It is diffable.** Two links that differ in one parameter differ in one
+  character, so a chart in a pull request is a change somebody can read.
+- **It is readable by a bot.** An agent reading the issue can fetch the link and
+  take the numbers out of it instead of reading them off the pixels — the SVG
+  embeds the data it was drawn from, so the link parses back into the spec it
+  came from.
+
+That last point is why a link beats a screenshot everywhere a machine may read
+the same page a human does. The general idea has a name and a draft
+specification: [datalink.ac](https://datalink.ac) — *data in the link*.
+
 ## An issue — what should it do?
 
 ### Use case diagram
