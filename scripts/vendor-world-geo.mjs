@@ -7,7 +7,7 @@
 import { writeFileSync } from 'node:fs';
 
 const SRC = 'https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json';
-const TOL = 0.7;      // 抽稀(度)—— 球上够用
+const TOL = 0.25;     // 抽稀(度)—— 球上够用
 
 const res = await fetch(SRC);
 if (!res.ok) throw new Error(`下载失败: ${res.status}`);
@@ -39,7 +39,9 @@ function dp(pts, tol) {
 
 const ring = (r) => {
   const s = dp(r.map(([lon, lat]) => [lon, lat]), TOL);
-  return s.length > 2 ? s.map(([lon, lat]) => [Math.round(lon * 100) / 100, Math.round(lat * 100) / 100]) : [];
+  // 抽稀到只剩两点就等于没了 —— 那种小地方原样留着
+  const keep = s.length > 2 ? s : r;
+  return keep.map(([lon, lat]) => [Math.round(lon * 100) / 100, Math.round(lat * 100) / 100]);
 };
 const walk = (c) => (Array.isArray(c[0]) && typeof c[0][0] === 'number' ? ring(c) : c.map(walk));
 
