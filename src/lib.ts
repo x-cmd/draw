@@ -39,6 +39,8 @@ export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
 export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_RULES } from './render/echarts-ssr.js';
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
 export { renderArchmapFromUrl, parseNodes, parseEdges, parseBoundaries } from './render/archmap.js';
+// 图标库(站上自己画图时要用:三维场景里把图标摆在块上面)
+export { iconOf, ICONS } from './render/icons.js';
 export type { ArchNode, ArchEdge, ArchBoundary, NodeType, EdgeVariant } from './render/archmap.js';
 export { renderArchFromUrl, renderArchCore, renderCloudFromUrl, CLOUD_TYPES } from './render/arch.js';
 // 摆位引擎的挂载点:库只管把「怎么画」做好,「怎么摆」可以换 ——
