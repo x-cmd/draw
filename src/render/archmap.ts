@@ -25,7 +25,8 @@ export type EdgeVariant = 'plain' | 'main' | 'dash';
 
 export const ID_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/;
 export const GRID_POS_RE = /^r(\d+)c(\d+)(?:w([1-3]))?(?:h([1-3]))?$/;
-export const PX_POS_RE = /^p(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)(?:,(\d+)x(\d+))?$/;
+// 负数要能写:像素位置可以是负的(球面图里的经度就是负的)
+export const PX_POS_RE = /^p(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)(?:,(\d+)x(\d+))?$/;
 
 const GAP_X = 30;
 const GAP_Y = 34;
