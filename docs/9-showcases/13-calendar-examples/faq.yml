@@ -1,4 +1,4 @@
-id: x-draw-9-showcases-13-calendar
+id: x-draw-9-showcases-13-calendar-examples
 
 data:
   - name:
@@ -17,8 +17,8 @@ data:
             with thirty-seven things in it — dense, not toy data.
         confidence: 9
         reference:
-          - docs/9-showcases/13-calendar/en.md
-          - docs/9-showcases/13-calendar/cn.md
+          - docs/9-showcases/13-calendar-examples/en.md
+          - docs/9-showcases/13-calendar-examples/cn.md
       - id: one-kind
         question:
           en: "Why is a timetable and a Gantt the same chart?"
@@ -31,5 +31,5 @@ data:
             `layout=` parameter and one URL grammar cover all seven shapes.
         confidence: 9
         reference:
-          - docs/9-showcases/13-calendar/en.md
-          - docs/9-showcases/13-calendar/cn.md
+          - docs/9-showcases/13-calendar-examples/en.md
+          - docs/9-showcases/13-calendar-examples/cn.md

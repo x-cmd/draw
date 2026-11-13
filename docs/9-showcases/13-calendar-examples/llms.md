@@ -1,5 +1,5 @@
 ---
-name: docs/9-showcases/13-calendar
+name: docs/9-showcases/13-calendar-examples
 description: 'x-cmd/draw showcase: ten calendar cases — a course timetable, a release schedule, an on-call roster, a team month, a personal month, a work week, October 2026 National Day, the whole of 2026, two months side by side, and three months with a note each.'
 type: reference
 ---

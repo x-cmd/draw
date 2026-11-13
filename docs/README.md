@@ -105,5 +105,5 @@ Real scenarios, each one a set of ready URLs.
 | [10 logistics](9-showcases/10-logistics/en.md) | logistics — throughput, warehouse fill, the fulfilment network |
 | [11 ai-coding era](9-showcases/11-ai-coding-era/en.md) | the AI-coding era — one person, the whole picture: composition, files, architecture, plan |
 | [12 reference charts](9-showcases/12-reference-examples/en.md) | seven reference charts checked one by one — agent leaderboard, home network, CI pipeline, character network |
-| [13 calendar](9-showcases/13-calendar/en.md) | ten calendar cases — course timetable, release schedule, on-call roster, team month, personal month, week, October holidays, the year 2026, two months, three months |
+| [13 calendar examples](9-showcases/13-calendar-examples/en.md) | ten calendar cases — course timetable, release schedule, on-call roster, team month, personal month, week, October holidays, the year 2026, two months, three months |
 | [14 cloud architecture](9-showcases/14-cloud-architecture/en.md) | five cloud architectures that ship — three-tier web app, CI/CD, data pipeline, serverless API, EKS microservices |
