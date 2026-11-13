@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/copy-ofl.mjs",
+    "prepare": "npm run build",
     "check": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.build.json",
     "serve": "tsx src/node/server.ts",
     "start": "npm run serve",
