@@ -38,7 +38,8 @@ export { renderFromUrl, renderStoredFromUrl } from './render/query.js';
 // echarts 覆盖层:异步(SSR 引擎按需加载),与 GET /draw/echarts 同参同输出
 export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_RULES } from './render/echarts-ssr.js';
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
-export { renderArchmapFromUrl } from './render/archmap.js';
+export { renderArchmapFromUrl, parseNodes, parseEdges, parseBoundaries } from './render/archmap.js';
+export type { ArchNode, ArchEdge, ArchBoundary, NodeType, EdgeVariant } from './render/archmap.js';
 export { renderArchFromUrl, renderArchCore, renderCloudFromUrl, CLOUD_TYPES } from './render/arch.js';
 // 摆位引擎的挂载点:库只管把「怎么画」做好,「怎么摆」可以换 ——
 // 自带一个通用的实现,站上装的是更好的那个(引擎的选择不是 URL 的一部分)

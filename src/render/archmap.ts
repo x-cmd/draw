@@ -16,12 +16,12 @@ import { esc, r2, sVar, segRectIntersect, svgDoc, textW } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 
 const TYPES = ['ext', 'fe', 'be', 'db', 'cloud', 'sec', 'bus', 'svc'] as const;
-type NodeType = (typeof TYPES)[number];
+export type NodeType = (typeof TYPES)[number];
 // 语义类型 → 系列色序号(ext 无色,走中性虚线框)
 export const TYPE_COLOR: Partial<Record<NodeType, number>> = {
   fe: 0, be: 1, db: 2, cloud: 3, sec: 4, bus: 5, svc: 6,
 };
-type EdgeVariant = 'plain' | 'main' | 'dash';
+export type EdgeVariant = 'plain' | 'main' | 'dash';
 
 export const ID_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/;
 export const GRID_POS_RE = /^r(\d+)c(\d+)(?:w([1-3]))?(?:h([1-3]))?$/;
