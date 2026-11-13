@@ -39,8 +39,8 @@ function dp(pts, tol) {
 
 const ring = (r) => {
   const s = dp(r.map(([lon, lat]) => [lon, lat]), TOL);
-  // 抽稀到只剩两点就等于没了 —— 那种小地方原样留着
-  const keep = s.length > 2 ? s : r;
+  // 抽稀到只剩两点就等于没了 —— 那种小地方隔几个取一个,留个轮廓
+  const keep = s.length > 2 ? s : r.filter((_, i) => i % Math.max(1, Math.ceil(r.length / 8)) === 0);
   return keep.map(([lon, lat]) => [Math.round(lon * 100) / 100, Math.round(lat * 100) / 100]);
 };
 const walk = (c) => (Array.isArray(c[0]) && typeof c[0][0] === 'number' ? ring(c) : c.map(walk));
