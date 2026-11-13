@@ -25,6 +25,7 @@ const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   AU: () => import('./vendor/au.js'),
   DE: () => import('./vendor/de.js'),
   KR: () => import('./vendor/kr.js'),
+  WORLD: () => import('./vendor/world.js'),
 };
 
 /**
@@ -55,7 +56,8 @@ export async function loadMapGeoJson(name: string): Promise<unknown> {
   if (!load) throw new Error(`unknown map: ${name}`);
   const mod = await load();
   return flipY(mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson
-    ?? mod.brGeoJson ?? mod.auGeoJson ?? mod.deGeoJson ?? mod.krGeoJson);
+    ?? mod.brGeoJson ?? mod.auGeoJson ?? mod.deGeoJson ?? mod.krGeoJson
+    ?? mod.worldGeoJson);
 }
 
 /**
