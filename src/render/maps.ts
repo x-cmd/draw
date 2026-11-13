@@ -115,6 +115,15 @@ export function mapNamesOf(option: unknown): string[] {
 }
 
 /**
+ * 世界地图的**经纬度**版本(球面用)—— 动态载入(静态 import 会拖进冷启动路径)。
+ * 坐标粗一点(球上本来就小)。
+ */
+export async function loadWorldSphericalGeoJson(): Promise<unknown> {
+  const mod = await import('./vendor/world-geo.js');
+  return mod.worldSphericalGeoJson;
+}
+
+/**
  * Register the map data an ECharts option refers to. Must run before `setOption`:
  * echarts resolves `series.map` / `geo.map` against its registered map table.
  */
