@@ -20,6 +20,7 @@ export { renderGauge } from './render/gauge.js';
 export { renderScatter } from './render/scatter.js';
 export { renderCombo } from './render/combo.js';
 export { renderQR } from './render/qr.js';
+export { parseAnnos, injectAnnos, annoLayer, type Anno } from './render/anno.js';
 export { renderSankey } from './render/sankey.js';
 export { renderQuadrant } from './render/quadrant.js';
 export { renderCompass } from './render/compass.js';

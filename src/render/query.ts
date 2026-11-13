@@ -10,6 +10,7 @@ import {
   clip, type ChartInput,
 } from '../specs/index.js';
 import { resolveVersion, CURRENT_VERSION, type VersionInfo } from '../version.js';
+import { parseAnnos, injectAnnos } from './anno.js';
 import { renderPie } from './pie.js';
 import type { RenderOpts } from './svg.js';
 import { renderBar } from './bar.js';
@@ -174,6 +175,17 @@ function qrRender(request: URL): DrawResult {
  * @throws ApiError(400) with a corrective example on bad params
  */
 export function renderFromUrl(url: URL): DrawResult {
+  return withAnnos(renderFromUrlInner(url), url);
+}
+
+/** 标注层(oval=/text=):在画好的 SVG 上面再叠一层 —— 图还是那张图 */
+function withAnnos(r: DrawResult, url: URL): DrawResult {
+  const annos = parseAnnos(url.searchParams);
+  if (!annos?.length) return r;
+  return { ...r, svg: injectAnnos(r.svg, annos) };
+}
+
+function renderFromUrlInner(url: URL): DrawResult {
   const typeParam = url.searchParams.get('type');
   // 拓扑图族(x-cmd-hub/draw#17/#20):在 CHART_TEMPLATES 校验前拦截,短链注册表保持零接触
   // (CLI 透传/lib.draw()/裸查询串与 /draw/archmap 端点同参同输出)
