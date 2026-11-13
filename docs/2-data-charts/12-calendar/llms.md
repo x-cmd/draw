@@ -36,4 +36,4 @@ official:
 related:
   overview: docs/1-overview/01-what-is-draw/cn.md
   butterfly: docs/2-data-charts/11-butterfly/cn.md
-  showcase: docs/9-showcases/13-calendar/cn.md
+  showcase: docs/9-showcases/13-calendar-examples/cn.md
