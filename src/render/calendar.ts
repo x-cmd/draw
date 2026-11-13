@@ -7,6 +7,7 @@ import type { CalendarSpec, CalDay, CalItem, CalLayout } from '../specs/calendar
 import { dayIso, daysInMonth, firstWeekday, isoDay, isoParts, isoWeekday } from '../specs/calendar.js';
 import { TAB, card } from '../theme.js';
 import { esc, r2, svgDoc, textW, titleBlock, topLegend, trunc, type RenderOpts } from './svg.js';
+import { footerUnit, headerMeta, tipHeight, tipUnit } from './units.js';
 
 const PAD = 24;
 const HEAD_FS = 12;
@@ -47,6 +48,8 @@ interface Ctx {
   today: string;
   /** 一周从哪天开始:0=周日 */
   ws: number;
+  /** 主体里没画下的东西(格子装不下的日程与备注)—— 交给提示单元列出来 */
+  overflow: { date: string; label: string; time?: string; kind: string }[];
 }
 
 const colorVar = (ctx: Ctx, kind: string): string => {
@@ -99,6 +102,7 @@ function buildCtx(spec: CalendarSpec, o: RenderOpts, ws: number): Ctx {
     dayOf: (date) => days.get(date),
     today,
     ws,
+    overflow: [],
   };
   return ctx;
 }
@@ -159,7 +163,9 @@ function monthGrid(
       const nx = cx + cw - 8;
       const ny = cy + 16;
       if (today) {
-        parts.push(`<circle cx="${r2(nx - 5)}" cy="${r2(ny - 4)}" r="10" fill="var(--d-mark)"/>`);
+        // 圆圈要正好套住数字:数字是右对齐的,圆心得跟着数字的宽度走
+        const nw = textW(String(dayNum), NUM_FS);
+        parts.push(`<circle cx="${r2(nx - nw / 2)}" cy="${r2(ny - NUM_FS * 0.35)}" r="10" fill="var(--d-mark)"/>`);
       }
       const fill = today ? '#ffffff' : holiday ? 'var(--d-mark)' : rest ? 'var(--d-muted)' : 'var(--d-ink)';
       parts.push(`<text x="${r2(nx)}" y="${r2(ny)}" text-anchor="end" font-size="${NUM_FS}" font-weight="${today || holiday ? 600 : 400}" fill="${fill}" style="${TAB}">${dayNum}</text>`);
@@ -188,16 +194,23 @@ function monthGrid(
           const label = it.label;
           parts.push(`<text x="${r2(cx + 16)}" y="${r2(ey)}" font-size="${EV_FS}" fill="var(--d-text)">${esc(fitText(label, room, EV_FS))}</text>`);
         });
+        // 下一行:先是「+N」(自己占一行),再排备注 —— 备注跟「+N」挤一行会被盖住
+        let row = maxRows;
         if (items.length > maxRows) {
-          parts.push(`<text x="${r2(cx + 6)}" y="${r2(cy + 32 + maxRows * 15)}" font-size="11" fill="var(--d-muted)">+${items.length - maxRows}</text>`);
+          parts.push(`<text x="${r2(cx + 6)}" y="${r2(cy + 32 + row * 15)}" font-size="11" fill="var(--d-muted)">+${items.length - maxRows}</text>`);
+          // 没画出来的别丢 —— 提示单元会把它们列出来
+          for (const it of items.slice(maxRows)) ctx.overflow.push({ date: iso, label: it.label, time: it.time, kind: it.kind });
+          row++;
         }
-      }
-      // 当天的备注
-      if (!dense) {
+        // 当天的备注
         const notes = ctx.spec.notes.filter((n) => n.date === iso);
-        const maxRows = Math.max(1, Math.floor((ch - 22) / 15));
         notes.forEach((n, i) => {
-          const ny2 = cy + 32 + (maxRows + i) * 15;
+          const ny2 = cy + 32 + (row + i) * 15;
+          if (ny2 > cy + ch - 4) {
+            // 格子装不下:也别压到下一格 —— 交给提示单元
+            ctx.overflow.push({ date: iso, label: n.text, kind: 'note' });
+            return;
+          }
           parts.push(`<text x="${r2(cx + 6)}" y="${r2(ny2)}" font-size="11" fill="var(--d-muted)">${esc(fitText(n.text, cw - 12, 11))}</text>`);
         });
       }
@@ -332,7 +345,6 @@ export function renderCalendar(spec: CalendarSpec, o: RenderOpts): string {
 
   const start = spec.start ?? ctx.today;
   const p = isoParts(start)!;
-  const parts: string[] = [];
   let title = spec.title ?? '';
 
   // 图例:出现过的类别(坐底部一行 —— 类别多的时候放标题那行会压住标题)
@@ -343,11 +355,26 @@ export function renderCalendar(spec: CalendarSpec, o: RenderOpts): string {
   }));
   const legendH = legendItems.length ? 26 : 0;
   const bodyTop = 62;
-  const bodyH = height - bodyTop - legendH - 14;
+  // 页脚(统计/来源)—— 底部一行;提示单元在它上面
+  const footerH = 24;
+  const bodyW = width - PAD * 2;
 
+  // 标题:与格子高度无关,先定下来
+  if (!title) {
+    if (spec.layout === 'month') {
+      title = skin.rules.title === 'editorial' ? `${MONTH_EN[p.m - 1]} ${p.y}` : `${p.y}年${p.m}月`;
+    } else if (spec.layout === 'year') {
+      title = `${p.y}`;
+    } else if (spec.layout === 'plan') {
+      title = '排期';
+    }
+  }
+
+  /** 主体:按给定的高度画一遍(高度会被提示单元挤掉一点,所以可能要画两遍) */
+  const drawBody = (bodyH: number): string[] => {
+  const parts: string[] = [];
   if (spec.layout === 'month') {
-    title = title || (skin.rules.title === 'editorial' ? `${MONTH_EN[p.m - 1]} ${p.y}` : `${p.y}年${p.m}月`);
-    parts.push(monthGrid(ctx, p.y, p.m, PAD, bodyTop, width - PAD * 2, bodyH));
+    parts.push(monthGrid(ctx, p.y, p.m, PAD, bodyTop, bodyW, bodyH));
   } else if (spec.layout === 'bimonth' || spec.layout === 'quarter') {
     const n = spec.layout === 'bimonth' ? 2 : 3;
     const months = spec.months?.length
@@ -405,21 +432,63 @@ export function renderCalendar(spec: CalendarSpec, o: RenderOpts): string {
     const back = (wd - ws + 7) % 7;
     const days = Array.from({ length: 7 }, (_, i) => dayIso(d0 - back + i));
     const periods = spec.periods?.length ? spec.periods : DEFAULT_PERIODS;
-    title = title || (spec.layout === 'course' ? '课程表' : `${days[0].slice(5)} – ${days[6].slice(5)}`);
+    if (!title) title = spec.layout === 'course' ? '课程表' : `${days[0].slice(5)} – ${days[6].slice(5)}`;
     parts.push(timeGrid(ctx, days, periods, PAD, bodyTop + 18, width - PAD * 2, bodyH - 18));
   } else {
     // plan
     const days = 56;
-    title = title || '排期';
     parts.push(planBoard(ctx, start, days, PAD, bodyTop + 18, width - PAD * 2, Math.max(22, (bodyH - 18) / Math.max(1, spec.items.length))));
   }
 
-  const titleSvg = titleBlock(title);
+  return parts;
+  };
+
+  // 先按「没有提示单元」画一遍:看看有没有塞不下的东西
+  ctx.overflow.length = 0;
+  let parts = drawBody(height - bodyTop - legendH - footerH - 14);
+  let tipH = 0;
+  if (ctx.overflow.length) {
+    // 有塞不下的 → 页脚上方加一块提示,把明细列清楚;主体相应矮一点(重画一遍)
+    tipH = tipHeight(ctx.overflow.length, bodyW);
+    ctx.overflow.length = 0;
+    parts = drawBody(height - bodyTop - legendH - footerH - tipH - 14);
+  }
+
+  // 页头:标题 + 右边一句摘要
+  const nItems = spec.items.length;
+  const nDays = spec.days.length;
+  const nNotes = spec.notes.length;
+  const meta = [nItems ? `${nItems} 个日程` : '', nNotes ? `${nNotes} 条备注` : ''].filter(Boolean).join(' · ');
+  // 右边让开 Edit @X-CMD 角标(它占右上角那一块,最多 ~100px)
+  const badgeRoom = Math.min(108, bodyW * 0.32);
+  const titleSvg = titleBlock(title) + headerMeta(meta, PAD, 38, bodyW - badgeRoom);
+  // 图例:出现过的类别(坐底部一行 —— 类别多的时候放标题那行会压住标题)
   const legendSvg = legendItems.length
-    ? `<g transform="translate(0 ${r2(height - 22)})">${topLegend(legendItems, PAD, 0, 'left', 'circle')}</g>`
+    ? `<g transform="translate(0 ${r2(height - footerH - 18)})">${topLegend(legendItems, PAD, 0, 'left', 'circle')}</g>`
     : '';
+  // 提示单元:主体里没画下的明细(格子太密时装不下的日程)
+  const tipRows = ctx.overflow.map((o) => ({
+    text: o.label,
+    sub: o.time ? `${o.date.slice(5)} ${o.time}` : o.date.slice(5),
+    color: o.kind === 'note' ? 'var(--d-faint)' : ctx.colorOf(o.kind),
+  }));
+  const tipSvg = tipRows.length
+    ? tipUnit(tipRows, PAD, height - footerH - 18 - (legendH ? 26 : 0) - tipHeight(tipRows.length, bodyW) - 6, bodyW, '下面这些没画进格子')
+    : '';
+  // 页脚:统计 + 来源
+  const footerSvg = footerUnit(
+    [
+      { label: '日程', value: String(nItems) },
+      ...(nDays ? [{ label: '标记', value: String(nDays) }] : []),
+      ...(nNotes ? [{ label: '备注', value: String(nNotes) }] : []),
+    ],
+    spec.source,
+    PAD,
+    height - 10,
+    bodyW,
+  );
   const bg = card(width, height, skin.rules.canvas === 'plain');
-  const svg = svgDoc(width, height, 'calendar', version, title || 'calendar', spec, skin, bg + titleSvg + legendSvg + parts.join(''));
+  const svg = svgDoc(width, height, 'calendar', version, title || 'calendar', spec, skin, bg + titleSvg + legendSvg + tipSvg + footerSvg + parts.join(''));
   return svg;
 }
 

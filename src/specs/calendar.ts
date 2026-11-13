@@ -61,6 +61,8 @@ export interface CalendarSpec {
   /** 哪种表 */
   layout: CalLayout;
   title?: string;
+  /** 来源(页脚右边那一句) */
+  source?: string;
   /** 一周从哪天开始:0=周日(缺省),1=周一(课程表/工作周用) */
   weekStart?: 0 | 1;
   /** 三月历的备注位置:below(缺省,横向)/right/left(纵向) */
@@ -221,6 +223,7 @@ export function calendarSpecFromParams(params: URLSearchParams): string | null {
     days,
     notes,
     ...(params.get('title') ? { title: params.get('title') } : {}),
+    ...(params.get('source') ? { source: params.get('source') } : {}),
   });
 }
 
@@ -248,6 +251,10 @@ export function parseCalendarSpec(raw: string | null): CalendarSpec {
   if (o.title !== undefined) {
     if (typeof o.title !== 'string') throw new ApiError(400, `"title" must be a string`);
     spec.title = clip(o.title, LIMITS.title);
+  }
+  if (o.source !== undefined) {
+    if (typeof o.source !== 'string') throw new ApiError(400, `"source" must be a string`);
+    spec.source = clip(o.source, LIMITS.title);
   }
   if (o.start !== undefined && o.start !== '') {
     if (typeof o.start !== 'string' || !isoParts(o.start)) {
