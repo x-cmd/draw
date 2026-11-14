@@ -1,7 +1,7 @@
 ---
 x-title: radar レーダー — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=radar.
-x-sidebar: draw
+x-sidebar: radar chart
 x-keywords: draw, radar, レーダー, svg, chart
 ---
 

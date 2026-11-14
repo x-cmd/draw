@@ -1,7 +1,7 @@
 ---
 x-title: qr QR kod — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, QR kod, svg, chart
 ---
 

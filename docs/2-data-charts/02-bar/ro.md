@@ -1,7 +1,7 @@
 ---
 x-title: bar coloane — x-cmd/draw
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=. type=bar.
-x-sidebar: draw
+x-sidebar: bar chart
 x-keywords: draw, bar, coloane, svg, chart
 ---
 

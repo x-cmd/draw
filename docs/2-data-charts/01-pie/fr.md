@@ -1,7 +1,7 @@
 ---
 x-title: pie anneau — x-cmd/draw
 x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, anneau, svg, chart
 ---
 

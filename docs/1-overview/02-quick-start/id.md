@@ -1,7 +1,7 @@
 ---
 x-title: Bahasa Indonesia — draw quick start
 x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

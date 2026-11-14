@@ -1,7 +1,7 @@
 ---
 x-title: Română — draw self-hosting
 x-desc: Cloudflare / Node / Deno.
-x-sidebar: draw
+x-sidebar: self-hosting
 x-keywords: draw, self-hosting, cloudflare, node
 ---
 

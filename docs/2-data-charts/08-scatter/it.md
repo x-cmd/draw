@@ -1,7 +1,7 @@
 ---
 x-title: scatter dispersione — x-cmd/draw
 x-desc: Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=scatter.
-x-sidebar: draw
+x-sidebar: scatter plot
 x-keywords: draw, scatter, dispersione, svg, chart
 ---
 

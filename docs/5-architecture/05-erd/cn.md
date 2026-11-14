@@ -1,7 +1,7 @@
 ---
 x-title: 实体关系图 —— 表、字段,以及表之间的关系
 x-desc: 'x-cmd/draw 实体关系图(`/draw/erd`)。一个表一个节点,字段表写在节点里(用 %0A 分行),关系写在边上。和架构图同一套 URL 模型。'
-x-sidebar: draw 实体关系图
+x-sidebar: 实体关系图
 x-keywords: erd, entity relationship diagram, 实体关系图, draw, svg, 表结构
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: 和弦图 —— 一圈弧,弧与弧之间的带子
 x-desc: 'x-cmd/draw 和弦图(`/draw/chord`):`links=源,目标,值;…` 一串就够,节点从连接里长出来,各占一段弧(弧长 ∝ 总流量),连接拉成弧间的带子。参数:`links=`、`title=`、`w=`/`h=`。'
-x-sidebar: draw 和弦图
+x-sidebar: 和弦图
 x-keywords: 和弦图, chord diagram, draw, svg, 关系, 流量, 双向关系, 占比
 x-json-ld:
   '@context': https://schema.org

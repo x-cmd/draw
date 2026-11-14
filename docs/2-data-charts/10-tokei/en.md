@@ -1,7 +1,7 @@
 ---
 x-title: Code composition — tokei's numbers as a chart
 x-desc: 'x-cmd/draw code composition chart (`/draw/tokei`). Takes the JSON from `tokei --output json` and draws one stacked column per language: code, comments, blanks. Params: `d=` the tokei json, `title=`, `unit=`, `w=/h=`, `t=`, `scheme=`.'
-x-sidebar: draw code composition chart
+x-sidebar: code composition chart
 x-keywords: code composition chart, 代码构成图, tokei, draw, svg, repository stats, language stats
 x-json-ld:
   '@context': https://schema.org

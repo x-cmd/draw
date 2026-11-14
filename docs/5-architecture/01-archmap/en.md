@@ -1,7 +1,7 @@
 ---
 x-title: Architecture diagram — you place the cells, the engine routes
 x-desc: 'x-cmd/draw architecture diagram (`/draw/archmap`). Grid-placed nodes, engine-routed edges, boundary groups. Params: `n=` node (`id;type;label[;sub][;pos]`), `e=` edge (`from;to[;label][;variant]`), `b=` boundary (`label;id id`), `t=` style (base/mono/soft), `grid=`, `title=`, `w=/h=`.'
-x-sidebar: draw architecture diagram
+x-sidebar: architecture diagram
 x-keywords: architecture diagram, 架构图, draw, svg, topology, system design, kubernetes
 x-json-ld:
   '@context': https://schema.org

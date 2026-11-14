@@ -1,7 +1,7 @@
 ---
 x-title: hbar 横棒 — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, 横棒, svg, chart
 ---
 

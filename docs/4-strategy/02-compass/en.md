@@ -1,7 +1,7 @@
 ---
 x-title: Four-arrow compass — labels radiating out
 x-desc: 'x-cmd/draw `type=compass` quick reference. A centre point with four labelled arrows (up / right / down / left) — the other quadrant-style business diagram, next to the 2×2 matrix. Params: `up=`, `right=`, `down=`, `left=` (each `label` or `label:note`), `center=`, `title=`.'
-x-sidebar: draw compass chart
+x-sidebar: compass chart
 x-keywords: compass chart, 四向箭头, draw, svg, four arrows, business decision
 x-json-ld:
   '@context': https://schema.org

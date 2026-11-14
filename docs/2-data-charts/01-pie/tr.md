@@ -1,7 +1,7 @@
 ---
 x-title: pie pasta — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, pasta, svg, chart
 ---
 

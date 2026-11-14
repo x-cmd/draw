@@ -1,7 +1,7 @@
 ---
 x-title: Quadrant chart — 2×2 decision matrix
 x-desc: 'x-cmd/draw `type=quadrant` quick reference. A family of business decision diagrams: the 2×2 matrix (BCG, Eisenhower) and the two-axis cross (prioritisation). Params: `quadrants=` four cell names, `quaddescs=` four notes, `quadlabels=` extra labels per cell, `frame=box|cross`, `xlabel=`/`ylabel=` axis titles, `xlow=`/`xhigh=`/`ylow=`/`yhigh=` axis ends, `items=` points (`name@x,y`, 0..1).'
-x-sidebar: draw quadrant chart
+x-sidebar: quadrant chart
 x-keywords: quadrant chart, 四象限图, draw, svg, bcg matrix, eisenhower matrix, decision matrix, 2x2 matrix, prioritisation
 x-json-ld:
   '@context': https://schema.org

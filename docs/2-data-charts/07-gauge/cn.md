@@ -1,7 +1,7 @@
 ---
 x-title: gauge 仪表盘 —— 单值监控
 x-desc: x-cmd/draw `type=gauge` 用法速查。单值监控（CPU / 内存 / 进度 / 完成率）。参数：`value=` 当前值，`max=` 最大值（默认 100），`label=` 名称，`t=` 风格。
-x-sidebar: draw 仪表盘
+x-sidebar: 仪表盘
 x-keywords: gauge, 仪表盘, gauge dial, draw, svg, 单值监控
 x-json-ld:
   '@context': https://schema.org

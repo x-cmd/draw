@@ -1,7 +1,7 @@
 ---
 x-title: hbar batang horizontal — x-cmd/draw
 x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, batang horizontal, svg, chart
 ---
 

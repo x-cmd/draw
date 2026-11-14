@@ -1,7 +1,7 @@
 ---
 x-title: styles 风格速查 —— 各图表的 `t=` 清单
 x-desc: x-cmd/draw 风格（`t=`）跨图表速查。同名风格在不同图表上有不同视觉效果（如 `evil` 在 pie 是圆角扇区、在 line 是粗线）。每个图表自己专门文章里有完整示例，这里是跨图表索引。
-x-sidebar: draw 风格速查
+x-sidebar: 风格速查
 x-keywords: draw styles, t=, evil, opendata, market-mono, progress, revenue, 风格, 主题
 x-json-ld:
   '@context': https://schema.org

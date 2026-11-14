@@ -1,7 +1,7 @@
 ---
 x-title: Mind map — a tree of paths, four shapes
 x-desc: 'x-cmd/draw mind map (`/draw/mindmap`). The tree is written as slash-separated paths; the engine infers the parents. Params: `n=` path (`root/branch/leaf`), `style=` (organic/tree/radial/bubble), `t=`, `title=`, `w=/h=`.'
-x-sidebar: draw mind map
+x-sidebar: mind map
 x-keywords: mind map, 思维导图, draw, svg, tree diagram, roadmap, feature map
 x-json-ld:
   '@context': https://schema.org

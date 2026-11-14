@@ -1,7 +1,7 @@
 ---
 x-title: scatter 散点图 —— 关联分析
 x-desc: x-cmd/draw `type=scatter` 用法速查。两维关联分析（高度 vs 体重 / 价格 vs 销量）。参数：`points=x1,y1;x2,y2;...` 或 `series=A:x1,y1;...&series=B:x1,y1;...`。
-x-sidebar: draw 散点图
+x-sidebar: 散点图
 x-keywords: scatter plot, 散点图, draw, svg, 关联分析
 x-json-ld:
   '@context': https://schema.org

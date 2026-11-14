@@ -1,7 +1,7 @@
 ---
 x-title: line 선 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, 선, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: Lifecycle diagram — the states and the moves between them
 x-desc: 'x-cmd/draw lifecycle diagram (`/draw/lifecycle`). States, decisions and terminals; every edge says what triggers the move. Same URL model as the architecture diagram.'
-x-sidebar: draw lifecycle diagram
+x-sidebar: lifecycle diagram
 x-keywords: lifecycle diagram, 生命周期图, state machine, draw, svg
 x-json-ld:
   '@context': https://schema.org

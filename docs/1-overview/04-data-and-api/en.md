@@ -1,7 +1,7 @@
 ---
 x-title: data formats — flat params vs `?d=` JSON
 x-desc: x-cmd/draw two data format comparison. Flat params (URL always readable, `?labels=A,B&values=10,20`) vs `?d=` JSON (cleaner for big data, `?d={"data":[...]}`). Both formats produce identical output.
-x-sidebar: draw data formats
+x-sidebar: data formats
 x-keywords: data formats, flat params, JSON, ?d=, draw, url encoding
 x-json-ld:
   '@context': https://schema.org

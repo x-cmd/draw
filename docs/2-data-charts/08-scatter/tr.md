@@ -1,7 +1,7 @@
 ---
 x-title: scatter saçılım — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=scatter.
-x-sidebar: draw
+x-sidebar: scatter plot
 x-keywords: draw, scatter, saçılım, svg, chart
 ---
 

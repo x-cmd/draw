@@ -1,7 +1,7 @@
 ---
 x-title: 甘特图 v2 —— 同一份源码,另一张脸
 x-desc: 'x-cmd/draw 甘特图 v2(`/draw/gantt2`)。和 `/draw/gantt` 同一份 mermaid 甘特源码,换成架构图那张脸:条按状态着色、每行一个角标、底下有图例。'
-x-sidebar: draw 甘特图 v2
+x-sidebar: 甘特图 v2
 x-keywords: gantt chart, 甘特图, draw, svg, 项目计划, 里程碑
 x-json-ld:
   '@context': https://schema.org

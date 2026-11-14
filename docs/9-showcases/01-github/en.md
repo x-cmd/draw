@@ -1,7 +1,7 @@
 ---
 x-title: GitHub — issues, PRs and releases
 x-desc: 'x-cmd/draw showcase: GitHub issues, pull requests and releases. The pictures worth attaching: a use case diagram, a sequence diagram, the code composition of a diff, the files a PR touched, the architecture of the codebase and the folders that matter.'
-x-sidebar: draw showcase github
+x-sidebar: showcase github
 x-keywords: github issue, pull request, release notes, draw showcase, architecture from code
 x-json-ld:
   '@context': https://schema.org

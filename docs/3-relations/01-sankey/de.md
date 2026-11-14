@@ -1,7 +1,7 @@
 ---
 x-title: sankey Sankey — x-cmd/draw
 x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=sankey.
-x-sidebar: draw
+x-sidebar: sankey
 x-keywords: draw, sankey, Sankey, svg, chart
 ---
 

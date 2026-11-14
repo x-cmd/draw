@@ -1,7 +1,7 @@
 ---
 x-title: gauge dial — single-value monitoring
 x-desc: 'x-cmd/draw `type=gauge` quick reference. Single-value monitoring (CPU / memory / progress / completion rate). Params: `value=` current value, `max=` max (default 100), `label=` gauge name, `t=` style.'
-x-sidebar: draw gauge dial
+x-sidebar: gauge dial
 x-keywords: gauge, gauge dial, draw, svg, single-value monitoring
 x-json-ld:
   '@context': https://schema.org

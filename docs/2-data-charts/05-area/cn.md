@@ -1,7 +1,7 @@
 ---
 x-title: area 面积图 —— 折线 + 填充
 x-desc: x-cmd/draw `type=area` 用法速查。折线 + 下方填充，强调累积 / 总量。参数与 line 相同：x + y 或 series。
-x-sidebar: draw area chart
+x-sidebar: area chart
 x-keywords: area chart, 面积图, draw, svg
 x-json-ld:
   '@context': https://schema.org

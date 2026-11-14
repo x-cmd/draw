@@ -1,7 +1,7 @@
 ---
 x-title: line çizgi — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, çizgi, svg, chart
 ---
 

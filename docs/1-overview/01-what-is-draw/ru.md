@@ -1,7 +1,7 @@
 ---
 x-title: Русский — draw overview
 x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

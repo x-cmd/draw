@@ -1,7 +1,7 @@
 ---
 x-title: hbar 水平柱状图 —— 长 label 友好
 x-desc: x-cmd/draw `type=hbar` 用法速查。水平柱状图，适合 label 文字较长（人名 / 项目名）。参数与 bar 相同：labels + values 或 series，title / unit / t / scheme / num / w/h。
-x-sidebar: draw 水平柱状图
+x-sidebar: 水平柱状图
 x-keywords: hbar, 水平柱状图, horizontal bar chart, draw, svg
 x-json-ld:
   '@context': https://schema.org

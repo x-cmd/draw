@@ -1,7 +1,7 @@
 ---
 x-title: 四向箭头 —— 从中心射出的四个方向
 x-desc: x-cmd/draw `type=compass` 用法速查。中心一点,上右下左四个方向各一支箭头(与四象限同族的另一种商业图)。参数:`up=`、`right=`、`down=`、`left=`(各写 `标签` 或 `标签:说明`),`center=` 中心的字,`title=` 图标题。
-x-sidebar: draw 四向箭头图
+x-sidebar: 四向箭头图
 x-keywords: 四向箭头, compass chart, draw, svg, four arrows, 商业决策
 x-json-ld:
   '@context': https://schema.org

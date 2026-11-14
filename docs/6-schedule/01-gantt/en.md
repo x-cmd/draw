@@ -1,7 +1,7 @@
 ---
 x-title: Gantt chart — a schedule in a handful of lines
 x-desc: 'x-cmd/draw Gantt chart (`/draw/gantt`). The schedule is written as text: sections, tasks, durations, dependencies. Params: `m=` source, `scale=` (day/week/month), `t=`, `title=`, `w=/h=`.'
-x-sidebar: draw gantt chart
+x-sidebar: gantt chart
 x-keywords: gantt chart, 甘特图, draw, svg, project schedule, sprint plan, milestone
 x-json-ld:
   '@context': https://schema.org

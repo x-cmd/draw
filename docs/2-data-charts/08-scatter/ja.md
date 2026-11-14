@@ -1,7 +1,7 @@
 ---
 x-title: scatter 散布 — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=scatter.
-x-sidebar: draw
+x-sidebar: scatter plot
 x-keywords: draw, scatter, 散布, svg, chart
 ---
 

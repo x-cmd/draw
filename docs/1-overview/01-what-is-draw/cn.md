@@ -1,7 +1,7 @@
 ---
 x-title: draw —— SVG chart endpoint 速查（13 种图表 + 通用参数 + 数据格式）
 x-desc: x-cmd/draw 是单端点 SVG 图表服务：`GET /draw?type=...` 返 SVG。支持 pie / bar / hbar / line / area / radar / gauge / scatter / combo / sankey / qr / quadrant / compass / butterfly 共 14 种图表，通用参数含 `t=` 风格、`scheme=dark|light`、`num=all|peak|none`、`v=1`、`w/h=`。两种数据写法：扁平参数 vs `?d=` JSON。
-x-sidebar: draw 总览
+x-sidebar: 总览
 x-keywords: draw, svg, chart, 图表, 饼图, 柱状图, 折线图, 雷达图, 仪表盘, 散点图, 桑基图, 二维码, svg endpoint, x-cmd/draw
 x-json-ld:
   '@context': https://schema.org

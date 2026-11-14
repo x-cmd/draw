@@ -1,7 +1,7 @@
 ---
 x-title: combo 복합 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=combo.
-x-sidebar: draw
+x-sidebar: combo chart
 x-keywords: draw, combo, 복합, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: 宏观经济 —— 指标、流向与地图
 x-desc: 'x-cmd/draw 场景用例:宏观经济。人均 GDP、通胀、失业率、政策利率、贸易流向、CPI 构成、地区 GDP 等值图的真实 URL。'
-x-sidebar: draw 场景用例 宏观经济
+x-sidebar: 场景用例 宏观经济
 x-keywords: 宏观经济图表, gdp 图, 通胀图, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: pie koláč — x-cmd/draw
 x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, koláč, svg, chart
 ---
 

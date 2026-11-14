@@ -1,7 +1,7 @@
 ---
 x-title: 分析报告 —— 一份报告由哪些数字组成
 x-desc: 'x-cmd/draw 场景用例:分析报告。延迟与负载、CI 通过率仪表盘、雷达记分卡、量与率、收入与利润率、测试耗时分布的真实 URL。'
-x-sidebar: draw 场景用例 分析报告
+x-sidebar: 场景用例 分析报告
 x-keywords: 分析报告图表, 指标看板, draw 场景用例, svg, 数据指标
 x-json-ld:
   '@context': https://schema.org

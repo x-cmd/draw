@@ -1,7 +1,7 @@
 ---
 x-title: Finance — allocation, risk and the deal funnel
 x-desc: 'x-cmd/draw showcase: finance. Real URLs for asset allocation, return against benchmark, return against risk, revenue and margin, the four options for a business line and the deal funnel.'
-x-sidebar: draw showcase finance
+x-sidebar: showcase finance
 x-keywords: finance chart, portfolio report, risk chart, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

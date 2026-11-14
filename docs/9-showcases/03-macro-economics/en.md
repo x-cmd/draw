@@ -1,7 +1,7 @@
 ---
 x-title: Macro economics — indicators, flows and maps
 x-desc: 'x-cmd/draw showcase: macro economics. Real URLs for GDP per capita, inflation, unemployment, the policy rate, trade flows, the CPI basket and a regional GDP choropleth.'
-x-sidebar: draw showcase macro economics
+x-sidebar: showcase macro economics
 x-keywords: macro economics chart, gdp chart, inflation chart, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: Polski — draw overview
 x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

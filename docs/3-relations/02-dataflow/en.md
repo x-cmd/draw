@@ -1,7 +1,7 @@
 ---
 x-title: Data flow diagram — where the data goes
 x-desc: 'x-cmd/draw data flow diagram (`/draw/dataflow`). Nodes are processes, stores, sources and sinks; edges carry the data. Same URL model as the architecture diagram: `n=` / `e=` / `b=`.'
-x-sidebar: draw data flow diagram
+x-sidebar: data flow diagram
 x-keywords: data flow diagram, 数据流图, draw, svg, pipeline, etl
 x-json-ld:
   '@context': https://schema.org

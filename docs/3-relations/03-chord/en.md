@@ -1,7 +1,7 @@
 ---
 x-title: Chord diagram — a ring of arcs, bands between them
 x-desc: 'x-cmd/draw chord diagram (`/draw/chord`): a single `links=from,to,value;…` is enough — nodes grow out of the links, each owns an arc (length ∝ total flow), and each link pulls a band between the two arcs. Params: `links=`, `title=`, `w=`/`h=`.'
-x-sidebar: draw chord
+x-sidebar: chord
 x-keywords: chord diagram, 和弦图, draw, svg, pairwise relations, flow, proportions
 x-json-ld:
   '@context': https://schema.org

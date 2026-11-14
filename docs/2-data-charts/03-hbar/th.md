@@ -1,7 +1,7 @@
 ---
 x-title: hbar แท่งนอน — x-cmd/draw
 x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, แท่งนอน, svg, chart
 ---
 

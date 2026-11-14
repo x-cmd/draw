@@ -1,7 +1,7 @@
 ---
 x-title: styles quick reference — `t=` catalog per chart
 x-desc: x-cmd/draw style (`t=`) cross-chart quick reference. Same style name renders differently per chart (e.g., `evil` is rounded sectors in pie, thick line in line). Per-chart dedicated articles have full examples; this is the cross-chart index.
-x-sidebar: draw styles
+x-sidebar: styles
 x-keywords: draw styles, t=, evil, opendata, market-mono, progress, revenue
 x-json-ld:
   '@context': https://schema.org

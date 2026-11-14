@@ -1,7 +1,7 @@
 ---
 x-title: area area — x-cmd/draw
 x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=area.
-x-sidebar: draw
+x-sidebar: area chart
 x-keywords: draw, area, area, svg, chart
 ---
 

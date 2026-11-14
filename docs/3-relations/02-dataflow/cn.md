@@ -1,7 +1,7 @@
 ---
 x-title: 数据流图 —— 数据往哪走
 x-desc: 'x-cmd/draw 数据流图(`/draw/dataflow`)。节点是处理、存储、外部源汇,边上标着数据。和架构图同一套 URL 模型:`n=` / `e=` / `b=`。'
-x-sidebar: draw 数据流图
+x-sidebar: 数据流图
 x-keywords: data flow diagram, 数据流图, draw, svg, 流水线, etl
 x-json-ld:
   '@context': https://schema.org

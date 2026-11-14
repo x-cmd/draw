@@ -1,7 +1,7 @@
 ---
 x-title: area 面 — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=area.
-x-sidebar: draw
+x-sidebar: area chart
 x-keywords: draw, area, 面, svg, chart
 ---
 

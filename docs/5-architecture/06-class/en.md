@@ -1,7 +1,7 @@
 ---
 x-title: Class diagram — the types and how they hang together
 x-desc: 'x-cmd/draw class diagram (`/draw/class`). Classes, interfaces and enums; the members live inside the node, one per line. Same URL model as the architecture diagram.'
-x-sidebar: draw class diagram
+x-sidebar: class diagram
 x-keywords: class diagram, 类图, draw, svg, uml, types
 x-json-ld:
   '@context': https://schema.org

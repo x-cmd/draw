@@ -1,7 +1,7 @@
 ---
 x-title: 甘特图 —— 几行字写完一份排期
 x-desc: 'x-cmd/draw 甘特图(`/draw/gantt`)。排期用文本写:分段、任务、时长、依赖。参数:`m=` 源码,`scale=`(day/week/month),`t=`,`title=`,`w=/h=`。'
-x-sidebar: draw 甘特图
+x-sidebar: 甘特图
 x-keywords: 甘特图, draw, svg, 项目排期, 迭代计划, 里程碑
 x-json-ld:
   '@context': https://schema.org

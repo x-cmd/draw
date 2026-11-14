@@ -1,7 +1,7 @@
 ---
 x-title: 图标 —— 云上架构图该有图标
 x-desc: 'x-cmd/draw 图标库:来自 mingrammer/diagrams 的开源图标(Apache-2.0),内嵌成 data URI;架构图的节点可以带图标(`n=…;aws:ec2`)。'
-x-sidebar: draw 图标
+x-sidebar: 图标
 x-keywords: 图标, diagrams, aws, azure, gcp, 架构图, draw
 x-json-ld:
   '@context': https://schema.org

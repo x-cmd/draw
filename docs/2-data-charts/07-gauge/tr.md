@@ -1,7 +1,7 @@
 ---
 x-title: gauge gösterge — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, gösterge, svg, chart
 ---
 

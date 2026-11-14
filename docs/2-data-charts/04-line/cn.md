@@ -1,7 +1,7 @@
 ---
 x-title: line 折线图 —— 时间序列标配
 x-desc: x-cmd/draw `type=line` 用法速查。时间序列标配。参数：`x=` 时间标签 / `y=` 单系列 / `series=A:...,B:...` 多系列 / `title=` / `unit=`。点和线可分别控制样式。
-x-sidebar: draw 折线图
+x-sidebar: 折线图
 x-keywords: line chart, 折线图, draw, svg, 时间序列, time series
 x-json-ld:
   '@context': https://schema.org

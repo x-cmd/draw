@@ -1,7 +1,7 @@
 ---
 x-title: 流程图 —— 写 Mermaid,出图
 x-desc: 'x-cmd/draw 流程图(`/draw/mermaid`)。Mermaid 语法进,SVG 出。参数:`m=` 源码,`t=` 风格(mono/soft),`title=`,`w=/h=`。'
-x-sidebar: draw 流程图
+x-sidebar: 流程图
 x-keywords: 流程图, mermaid, draw, svg, 决策树, 图示
 x-json-ld:
   '@context': https://schema.org

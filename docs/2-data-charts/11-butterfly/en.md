@@ -1,7 +1,7 @@
 ---
 x-title: Butterfly chart — two series, back to back
 x-desc: 'x-cmd/draw butterfly chart (`/draw?type=butterfly`). Two bar series mirrored around a shared centre axis, each side optionally stacked, either side optionally carrying a line on its own scale. Params: `labels=`, `left=`, `right=`, `line=`, `lineside=`, `dir=lr|tb`, `title=`, `unit=`, `w=/h=`.'
-x-sidebar: draw butterfly chart
+x-sidebar: butterfly chart
 x-keywords: butterfly chart, 双翼条形图, tornado chart, population pyramid, diverging bar, back to back bar, draw, svg
 x-json-ld:
   '@context': https://schema.org

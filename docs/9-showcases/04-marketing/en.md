@@ -1,7 +1,7 @@
 ---
 x-title: Marketing — funnels, channels and the numbers behind them
 x-desc: 'x-cmd/draw showcase: marketing. Real URLs for the signup funnel, browser market share, channel attribution, spend against ROI, the CAC trend and customer segments.'
-x-sidebar: draw showcase marketing
+x-sidebar: showcase marketing
 x-keywords: marketing chart, funnel chart, campaign report, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

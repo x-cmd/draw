@@ -1,7 +1,7 @@
 ---
 x-title: scatter împrăștiere — x-cmd/draw
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=. type=scatter.
-x-sidebar: draw
+x-sidebar: scatter plot
 x-keywords: draw, scatter, împrăștiere, svg, chart
 ---
 

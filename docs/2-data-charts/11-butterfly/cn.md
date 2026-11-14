@@ -1,7 +1,7 @@
 ---
 x-title: 双翼条形图 —— 两个系列,背靠背
 x-desc: 'x-cmd/draw 双翼条形图(`/draw?type=butterfly`)。两个柱系列共用一根中轴、往两侧长,两侧各自可堆叠,任意一侧可叠一条自己标尺的折线。参数:`labels=`、`left=`、`right=`、`line=`、`lineside=`、`dir=lr|tb`、`title=`、`unit=`、`w=/h=`。'
-x-sidebar: draw 双翼条形图
+x-sidebar: 双翼条形图
 x-keywords: 双翼条形图, butterfly chart, 龙卷风图, tornado chart, 人口金字塔, population pyramid, draw, svg
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: Cloud architecture — five designs that really ship
 x-desc: 'x-cmd/draw showcase: a three-tier web app, a CI/CD pipeline, a data pipeline, a serverless API and microservices on EKS — each one a URL, with cloud vendor icons on the nodes.'
-x-sidebar: draw showcase cloud architecture
+x-sidebar: showcase cloud architecture
 x-keywords: cloud architecture, AWS, Azure, GCP, icons, microservices, CI/CD, draw showcase
 x-json-ld:
   '@context': https://schema.org

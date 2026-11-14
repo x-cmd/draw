@@ -1,7 +1,7 @@
 ---
 x-title: sankey サンキー — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=sankey.
-x-sidebar: draw
+x-sidebar: sankey
 x-keywords: draw, sankey, サンキー, svg, chart
 ---
 

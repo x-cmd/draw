@@ -1,7 +1,7 @@
 ---
 x-title: draw 自托管 —— Cloudflare 一键部署 / Node 本地服务
 x-desc: 把 x-cmd/draw 部署成自己的服务:Cloudflare Workers 一键脚本(setup.sh)、wrangler dev 本地开发、Node serve 零依赖起服;含短链存储(DATA_REPO/GITHUB_TOKEN)与 BASE_PATH/域名配置。
-x-sidebar: draw 自托管
+x-sidebar: 自托管
 x-keywords: draw, self-hosted, 自托管, cloudflare, workers, wrangler, node, setup
 x-json-ld:
   '@context': https://schema.org

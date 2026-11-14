@@ -1,7 +1,7 @@
 ---
 x-title: radar radar — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=radar.
-x-sidebar: draw
+x-sidebar: radar chart
 x-keywords: draw, radar, radar, svg, chart
 ---
 

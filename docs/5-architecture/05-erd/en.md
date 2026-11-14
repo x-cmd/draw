@@ -1,7 +1,7 @@
 ---
 x-title: ERD — the tables, their fields, and how they relate
 x-desc: 'x-cmd/draw ERD (`/draw/erd`). One node per table, the field list inside the node (lines separated by %0A), relationships on the edges. Same URL model as the architecture diagram.'
-x-sidebar: draw ERD
+x-sidebar: ERD
 x-keywords: erd, entity relationship diagram, 实体关系图, draw, svg, schema
 x-json-ld:
   '@context': https://schema.org

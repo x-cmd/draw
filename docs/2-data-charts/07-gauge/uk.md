@@ -1,7 +1,7 @@
 ---
 x-title: gauge індикатор — x-cmd/draw
 x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, індикатор, svg, chart
 ---
 

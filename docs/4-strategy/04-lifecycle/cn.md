@@ -1,7 +1,7 @@
 ---
 x-title: 生命周期图 —— 有哪些状态,怎么流转
 x-desc: 'x-cmd/draw 生命周期图(`/draw/lifecycle`)。状态、判断、终态,每条边写明什么触发了这次流转。和架构图同一套 URL 模型。'
-x-sidebar: draw 生命周期图
+x-sidebar: 生命周期图
 x-keywords: lifecycle diagram, 生命周期图, 状态机, draw, svg
 x-json-ld:
   '@context': https://schema.org

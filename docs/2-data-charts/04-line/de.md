@@ -1,7 +1,7 @@
 ---
 x-title: line Linie — x-cmd/draw
 x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, Linie, svg, chart
 ---
 

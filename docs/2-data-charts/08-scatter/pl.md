@@ -1,7 +1,7 @@
 ---
 x-title: scatter rozrzutu — x-cmd/draw
 x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=scatter.
-x-sidebar: draw
+x-sidebar: scatter plot
 x-keywords: draw, scatter, rozrzutu, svg, chart
 ---
 

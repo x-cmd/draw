@@ -1,7 +1,7 @@
 ---
 x-title: 代码构成图 —— 把 tokei 的数字画出来
 x-desc: 'x-cmd/draw 代码构成图(`/draw/tokei`)。吃 `tokei --output json` 的 JSON,每门语言一根堆叠柱:代码、注释、空行。参数:`d=` tokei 的 json,`title=`,`unit=`,`w=/h=`,`t=`,`scheme=`。'
-x-sidebar: draw 代码构成图
+x-sidebar: 代码构成图
 x-keywords: 代码构成图, tokei, draw, svg, 仓库统计, 语言统计
 x-json-ld:
   '@context': https://schema.org

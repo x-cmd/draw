@@ -1,7 +1,7 @@
 ---
 x-title: area 면적 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=area.
-x-sidebar: draw
+x-sidebar: area chart
 x-keywords: draw, area, 면적, svg, chart
 ---
 

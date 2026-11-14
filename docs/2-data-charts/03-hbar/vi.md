@@ -1,7 +1,7 @@
 ---
 x-title: hbar thanh ngang — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, thanh ngang, svg, chart
 ---
 

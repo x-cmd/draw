@@ -1,7 +1,7 @@
 ---
 x-title: sankey санкі — x-cmd/draw
 x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=sankey.
-x-sidebar: draw
+x-sidebar: sankey
 x-keywords: draw, sankey, санкі, svg, chart
 ---
 

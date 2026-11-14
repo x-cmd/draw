@@ -1,7 +1,7 @@
 ---
 x-title: bar แท่งตั้ง — x-cmd/draw
 x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=bar.
-x-sidebar: draw
+x-sidebar: bar chart
 x-keywords: draw, bar, แท่งตั้ง, svg, chart
 ---
 

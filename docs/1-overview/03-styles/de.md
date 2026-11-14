@@ -1,7 +1,7 @@
 ---
 x-title: Deutsch — draw styles
 x-desc: t=, scheme.
-x-sidebar: draw
+x-sidebar: styles
 x-keywords: draw, styles, themes, svg
 ---
 

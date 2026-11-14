@@ -1,7 +1,7 @@
 ---
 x-title: Deutsch — draw overview
 x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

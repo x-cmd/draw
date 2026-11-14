@@ -1,7 +1,7 @@
 ---
 x-title: Bahasa Indonesia — draw overview
 x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

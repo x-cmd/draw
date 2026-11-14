@@ -1,7 +1,7 @@
 ---
 x-title: combo 複合 — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=combo.
-x-sidebar: draw
+x-sidebar: combo chart
 x-keywords: draw, combo, 複合, svg, chart
 ---
 

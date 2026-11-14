@@ -1,7 +1,7 @@
 ---
 x-title: radar 雷达图 —— 多维对比
 x-desc: x-cmd/draw `type=radar` 用法速查。多维对比（产品 / 候选人 / 方案 横向评分）。参数：labels=`维度` + values=`分数` 或 series=`多对象`。值域通常 0-100。
-x-sidebar: draw 雷达图
+x-sidebar: 雷达图
 x-keywords: radar chart, 雷达图, draw, svg, 多维对比
 x-json-ld:
   '@context': https://schema.org

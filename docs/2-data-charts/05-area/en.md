@@ -1,7 +1,7 @@
 ---
 x-title: area chart — line + fill, emphasizes accumulation
 x-desc: 'x-cmd/draw `type=area` quick reference. Line + fill below, emphasizes accumulation / totals (vs line''s "instantaneous"). Same params as line: x + y or series.'
-x-sidebar: draw area chart
+x-sidebar: area chart
 x-keywords: area chart, draw, svg
 x-json-ld:
   '@context': https://schema.org

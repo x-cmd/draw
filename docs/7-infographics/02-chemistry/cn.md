@@ -1,7 +1,7 @@
 ---
 x-title: 生化 —— SMILES 一串,分子一张
 x-desc: 'x-cmd/draw 生化(`/draw/chem`):SMILES 化学式 → 分子结构图,smilesdrawer 排版(数据随服务分发,不用外部 API)。参数:`smiles=`(必填,别名 `s=`)、`w=`(120–1600)、`h=`(120–1200)、`theme=dark|light`。例:CCO 乙醇、阿司匹林、扑热息痛。'
-x-sidebar: draw 生化
+x-sidebar: 生化
 x-keywords: 化学结构, 分子图, SMILES, 生化, draw, svg, chemistry, molecule, 阿司匹林, 乙醇
 x-json-ld:
   '@context': https://schema.org

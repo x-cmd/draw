@@ -1,7 +1,7 @@
 ---
 x-title: Română — draw quick start
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

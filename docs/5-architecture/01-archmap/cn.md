@@ -1,7 +1,7 @@
 ---
 x-title: 架构图 —— 你摆格子,引擎走线
 x-desc: 'x-cmd/draw 架构图(`/draw/archmap`)。节点摆格子、连线自动走、边界自动成组。参数:`n=` 节点(`id;类型;标签[;副标][;位置]`),`e=` 连线(`起点;终点[;标签][;样式]`),`b=` 边界(`名称;id id`),`t=` 风格(base/mono/soft),`grid=`,`title=`,`w=/h=`。'
-x-sidebar: draw 架构图
+x-sidebar: 架构图
 x-keywords: 架构图, draw, svg, 拓扑图, 系统设计, kubernetes
 x-json-ld:
   '@context': https://schema.org

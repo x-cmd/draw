@@ -1,7 +1,7 @@
 ---
 x-title: combo chart — bar + line overlay
 x-desc: 'x-cmd/draw `type=combo` quick reference. Bar + line overlay (bar = absolute / line = trend or ratio). Params: bar series `series=A:...` + line series `series=B:...&kind=line`. `kind` distinguishes bar from line.'
-x-sidebar: draw combo chart
+x-sidebar: combo chart
 x-keywords: combo chart, draw, svg, bar + line
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: bar cột — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=bar.
-x-sidebar: draw
+x-sidebar: bar chart
 x-keywords: draw, bar, cột, svg, chart
 ---
 

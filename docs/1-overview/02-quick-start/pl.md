@@ -1,7 +1,7 @@
 ---
 x-title: Polski — draw quick start
 x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

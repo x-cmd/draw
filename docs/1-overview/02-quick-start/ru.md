@@ -1,7 +1,7 @@
 ---
 x-title: Русский — draw quick start
 x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

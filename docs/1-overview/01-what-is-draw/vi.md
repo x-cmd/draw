@@ -1,7 +1,7 @@
 ---
 x-title: Tiếng Việt — draw overview
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

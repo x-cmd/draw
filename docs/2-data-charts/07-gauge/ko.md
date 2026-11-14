@@ -1,7 +1,7 @@
 ---
 x-title: gauge 게이지 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, 게이지, svg, chart
 ---
 

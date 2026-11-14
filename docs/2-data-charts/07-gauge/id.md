@@ -1,7 +1,7 @@
 ---
 x-title: gauge meter — x-cmd/draw
 x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, meter, svg, chart
 ---
 

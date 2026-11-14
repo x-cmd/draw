@@ -1,7 +1,7 @@
 ---
 x-title: draw 快速使用 —— 3 分钟上手（URL / npm / Deno）
 x-desc: x-cmd/draw 最快上手路径:拼 URL 直接渲染、npm 库与 CLI 离线渲染、Deno 零权限沙盒。文末附全部图表类型与参数全表。
-x-sidebar: draw 快速使用
+x-sidebar: 快速使用
 x-keywords: draw, quickstart, 快速使用, svg, chart, url, npm, deno, cli
 x-json-ld:
   '@context': https://schema.org

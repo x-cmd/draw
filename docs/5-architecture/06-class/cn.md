@@ -1,7 +1,7 @@
 ---
 x-title: 类图 —— 有哪些类型,怎么搭在一起
 x-desc: 'x-cmd/draw 类图(`/draw/class`)。类、接口、枚举,成员写在节点里,一行一个。和架构图同一套 URL 模型。'
-x-sidebar: draw 类图
+x-sidebar: 类图
 x-keywords: class diagram, 类图, draw, svg, uml, 类型
 x-json-ld:
   '@context': https://schema.org

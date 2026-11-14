@@ -1,7 +1,7 @@
 ---
 x-title: Terminal — a command-line session, drawn as a macOS window
 x-desc: 'x-cmd/draw terminal (`/draw/tty`): one command line plus its output, drawn as an Apple-style terminal window (traffic lights + title bar), with ANSI escapes restored to colours. Params: `cmd=` (a built-in mini shell actually runs it), `out=` (pass raw ANSI output), `cols=`/`rows=`, `title=`, `theme=`.'
-x-sidebar: draw terminal
+x-sidebar: terminal
 x-keywords: terminal screenshot, tty, ANSI, draw, svg, README image, command line, cli
 x-json-ld:
   '@context': https://schema.org

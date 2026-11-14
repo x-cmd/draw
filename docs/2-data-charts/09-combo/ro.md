@@ -1,7 +1,7 @@
 ---
 x-title: combo combinat — x-cmd/draw
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=. type=combo.
-x-sidebar: draw
+x-sidebar: combo chart
 x-keywords: draw, combo, combinat, svg, chart
 ---
 

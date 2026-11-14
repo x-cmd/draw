@@ -1,7 +1,7 @@
 ---
 x-title: 四象限图 —— 2×2 决策矩阵
 x-desc: x-cmd/draw `type=quadrant` 用法速查。一族商业决策图：矩阵式(BCG、艾森豪威尔)与十字式(优先级排序)。参数：`quadrants=` 四个象限名,`quaddescs=` 四条说明(分号分隔),`quadlabels=` 每格并列的小标签,`frame=box|cross`,`xlabel=`/`ylabel=` 轴标题,`xlow=`/`xhigh=`/`ylow=`/`yhigh=` 轴两端,`items=` 散点(`名称@x,y`,0..1)。
-x-sidebar: draw 四象限图
+x-sidebar: 四象限图
 x-keywords: 四象限图, quadrant chart, draw, svg, BCG 矩阵, 艾森豪威尔矩阵, 决策矩阵, 2x2, 优先级排序
 x-json-ld:
   '@context': https://schema.org

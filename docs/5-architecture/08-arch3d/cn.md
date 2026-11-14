@@ -1,7 +1,7 @@
 ---
 x-title: 三维架构图 —— 高度轴就是「流到哪儿了」
 x-desc: 'x-cmd/draw 三维架构图(`/draw/arch3d`):与 arch2 同一套 `n=`/`e=`/`b=` 语法,画成能转的三维场景。高度轴是流的深度 —— 源在上、汇在下,引擎按边自动分层。参数:`view=flat` 出平面图,`bstyle=`/`planes=`/`aux=` 控制辅助线。'
-x-sidebar: draw 三维架构图
+x-sidebar: 三维架构图
 x-keywords: 三维架构图, 架构图, 3D architecture, isometric, draw, svg, arch3d, 等轴测
 x-json-ld:
   '@context': https://schema.org

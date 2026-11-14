@@ -1,7 +1,7 @@
 ---
 x-title: 3D architecture — the height axis is "where the flow ends up"
 x-desc: 'x-cmd/draw 3D architecture (`/draw/arch3d`): the same `n=`/`e=`/`b=` grammar as arch2, drawn as a rotatable 3D scene. The height axis is flow depth — sources on top, sinks at the bottom, layered automatically from the edges. Params: `view=flat` for the flat version, `bstyle=`/`planes=`/`aux=` for the guides.'
-x-sidebar: draw 3D architecture
+x-sidebar: 3D architecture
 x-keywords: 3D architecture diagram, isometric diagram, draw, svg, arch3d, architecture
 x-json-ld:
   '@context': https://schema.org

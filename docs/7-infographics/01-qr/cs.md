@@ -1,7 +1,7 @@
 ---
 x-title: qr QR kód — x-cmd/draw
 x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, QR kód, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: AI-coding 时代 —— 一个人,看得见全局
 x-desc: 'x-cmd/draw 场景用例:代码来得很快的时候,一个人(一个小团队)怎么把整个项目握在手里。仓库的代码构成、一次改动的构成、架构、改动碰过的文件、工作的形状 —— 每一张都是一个能直接粘贴的 URL。'
-x-sidebar: draw 场景用例 ai coding
+x-sidebar: 场景用例 ai coding
 x-keywords: ai coding, 一个人做项目, 宏观掌控, 代码构成, tokei, 架构图, draw 场景用例
 x-json-ld:
   '@context': https://schema.org

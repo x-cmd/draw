@@ -1,7 +1,7 @@
 ---
 x-title: combo комбинированный — x-cmd/draw
 x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=combo.
-x-sidebar: draw
+x-sidebar: combo chart
 x-keywords: draw, combo, комбинированный, svg, chart
 ---
 

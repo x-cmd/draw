@@ -1,7 +1,7 @@
 ---
 x-title: Gantt chart v2 — the same source, a different face
 x-desc: 'x-cmd/draw Gantt chart v2 (`/draw/gantt2`). The same mermaid Gantt source as `/draw/gantt`, rendered in the architecture diagram house style: bars coloured by status, a type badge per row, a legend underneath.'
-x-sidebar: draw gantt chart v2
+x-sidebar: gantt chart v2
 x-keywords: gantt chart, 甘特图, draw, svg, project plan, milestone
 x-json-ld:
   '@context': https://schema.org

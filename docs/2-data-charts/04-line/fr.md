@@ -1,7 +1,7 @@
 ---
 x-title: line courbe — x-cmd/draw
 x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, courbe, svg, chart
 ---
 

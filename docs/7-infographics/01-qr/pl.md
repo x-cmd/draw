@@ -1,7 +1,7 @@
 ---
 x-title: qr kod QR — x-cmd/draw
 x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, kod QR, svg, chart
 ---
 

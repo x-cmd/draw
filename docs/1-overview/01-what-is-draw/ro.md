@@ -1,7 +1,7 @@
 ---
 x-title: Română — draw overview
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

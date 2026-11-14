@@ -1,7 +1,7 @@
 ---
 x-title: 时序图 —— 谁跟谁说话,按什么顺序
 x-desc: 'x-cmd/draw 时序图(`/draw/seq`)。参与方排在最上面,一条消息一行,时间往下走 —— `e=` 的先后就是消息的先后。参数:`n=` 参与方,`e=` 消息(`起点;终点[;文字][;dash]`),`title=`,`w=/h=`。'
-x-sidebar: draw 时序图
+x-sidebar: 时序图
 x-keywords: 时序图, draw, svg, uml, 交互图, 生命线
 x-json-ld:
   '@context': https://schema.org

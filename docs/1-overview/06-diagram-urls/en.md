@@ -1,7 +1,7 @@
 ---
 x-title: Diagram URLs — one grammar, eight kinds
 x-desc: 'How to write the URL of a draw diagram: `n=` node (`id;type;label[;sub][;pos]`), `e=` edge (`from;to[;label][;variant]`), `b=` boundary (`label;id id`). One grammar for archmap, arch2, seq, uc, dataflow, lifecycle, erd and class — plus the node-type table for each kind.'
-x-sidebar: draw diagram URLs
+x-sidebar: diagram URLs
 x-keywords: diagram url, architecture diagram, sequence diagram, use case, erd, class diagram, lifecycle, dataflow, node syntax, 架构图, 时序图, 用例图, 节点语法
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: Русский — draw data formats
 x-desc: labels/values, series, ?d= JSON.
-x-sidebar: draw
+x-sidebar: data formats
 x-keywords: draw, data, json, csv
 ---
 

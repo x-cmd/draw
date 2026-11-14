@@ -1,7 +1,7 @@
 ---
 x-title: Product and roadmap — what you build, when, and what first
 x-desc: 'x-cmd/draw showcase: product and roadmap. Real URLs for the product mind map, the launch checklist, a sprint plan on a Gantt chart, a roadmap by quarter and a prioritisation quadrant.'
-x-sidebar: draw showcase product roadmap
+x-sidebar: showcase product roadmap
 x-keywords: roadmap chart, gantt chart, product map, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

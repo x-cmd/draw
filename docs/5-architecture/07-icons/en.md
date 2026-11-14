@@ -1,7 +1,7 @@
 ---
 x-title: Icons — a cloud architecture diagram wants icons
 x-desc: 'x-cmd/draw icon library: the open-source icons from mingrammer/diagrams (Apache-2.0), embedded as data URIs; architecture nodes can carry an icon (`n=…;aws:ec2`).'
-x-sidebar: draw icons
+x-sidebar: icons
 x-keywords: icons, diagrams, aws, azure, gcp, architecture, draw
 x-json-ld:
   '@context': https://schema.org

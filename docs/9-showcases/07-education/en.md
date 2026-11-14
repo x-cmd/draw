@@ -1,7 +1,7 @@
 ---
 x-title: Education — enrolment, scores and the term plan
 x-desc: 'x-cmd/draw showcase: education. Real URLs for enrolment by course, average score by week, attendance against score, course evaluation, the course map and the term plan.'
-x-sidebar: draw showcase education
+x-sidebar: showcase education
 x-keywords: education chart, course report, student data, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

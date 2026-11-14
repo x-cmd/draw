@@ -1,7 +1,7 @@
 ---
 x-title: 终端图 —— 一段命令行会话,画成苹果风格窗口
 x-desc: 'x-cmd/draw 终端图(`/draw/tty`):一行命令 + 它的输出,画成 macOS 风格终端窗口(红黄绿灯 + 标题栏),ANSI 转义还原成颜色。参数:`cmd=`(内置小 shell 会真的跑它)、`out=`(直接给带 ANSI 的输出)、`cols=`/`rows=`、`title=`、`theme=`。'
-x-sidebar: draw 终端图
+x-sidebar: 终端图
 x-keywords: 终端图, 终端截图, terminal, tty, ANSI, draw, svg, README 截图, 命令行
 x-json-ld:
   '@context': https://schema.org

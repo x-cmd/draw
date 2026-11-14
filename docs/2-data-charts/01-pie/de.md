@@ -1,7 +1,7 @@
 ---
 x-title: pie Kreis — x-cmd/draw
 x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, Kreis, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: combo 混合图 —— 柱 + 折线
 x-desc: x-cmd/draw `type=combo` 用法速查。柱状图 + 折线图叠加（柱=总量 / 折线=趋势或比率）。参数：bar 系列 `series=A:...` + line 系列 `series=A:...&kind=line`。`kind` 区分柱/线。
-x-sidebar: draw 混合图
+x-sidebar: 混合图
 x-keywords: combo chart, 混合图, draw, svg, bar + line
 x-json-ld:
   '@context': https://schema.org

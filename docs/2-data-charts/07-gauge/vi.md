@@ -1,7 +1,7 @@
 ---
 x-title: gauge đồng hồ — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, đồng hồ, svg, chart
 ---
 

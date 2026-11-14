@@ -1,7 +1,7 @@
 ---
 x-title: hbar barras horizontales — x-cmd/draw
 x-desc: Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, barras horizontales, svg, chart
 ---
 

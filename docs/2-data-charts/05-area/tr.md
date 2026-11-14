@@ -1,7 +1,7 @@
 ---
 x-title: area alan — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=area.
-x-sidebar: draw
+x-sidebar: area chart
 x-keywords: draw, area, alan, svg, chart
 ---
 

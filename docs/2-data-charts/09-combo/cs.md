@@ -1,7 +1,7 @@
 ---
 x-title: combo kombinovaný — x-cmd/draw
 x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=combo.
-x-sidebar: draw
+x-sidebar: combo chart
 x-keywords: draw, combo, kombinovaný, svg, chart
 ---
 

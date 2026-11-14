@@ -1,7 +1,7 @@
 ---
 x-title: line garis — x-cmd/draw
 x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, garis, svg, chart
 ---
 

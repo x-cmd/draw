@@ -1,7 +1,7 @@
 ---
 x-title: 云上架构 —— 五个真的落地的架构
 x-desc: 'x-cmd/draw 场景用例:三层 Web 应用、CI/CD 流水线、数据管道、无服务器 API、EKS 上的微服务 —— 每一个都是 URL,节点带云厂商图标。'
-x-sidebar: draw 场景用例 云架构
+x-sidebar: 场景用例 云架构
 x-keywords: 云架构, AWS, Azure, GCP, 图标, 架构图, 微服务, CI/CD, draw 场景用例
 x-json-ld:
   '@context': https://schema.org

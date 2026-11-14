@@ -1,7 +1,7 @@
 ---
 x-title: Healthcare — waiting times, occupancy and pathways
 x-desc: 'x-cmd/draw showcase: healthcare. Real URLs for waiting time by department, outpatient visits, bed occupancy, case mix, length of stay against age, the patient pathway and the clinical systems.'
-x-sidebar: draw showcase healthcare
+x-sidebar: showcase healthcare
 x-keywords: healthcare chart, hospital dashboard, patient data, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

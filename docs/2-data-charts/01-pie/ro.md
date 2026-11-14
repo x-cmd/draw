@@ -1,7 +1,7 @@
 ---
 x-title: pie circular — x-cmd/draw
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, circular, svg, chart
 ---
 

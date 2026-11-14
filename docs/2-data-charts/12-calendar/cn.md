@@ -1,7 +1,7 @@
 ---
 x-title: 日历 —— 一个月、一周、一年,以及课程表和排期表
 x-desc: 'x-cmd/draw 日历(`/draw?type=calendar`):月历、周历、年历、双月历、三月历、课程表、排期表 —— URL 控图,内容都在链接里。'
-x-sidebar: draw 日历
+x-sidebar: 日历
 x-keywords: 日历, 月历, 周历, 年历, 双月历, 三月历, 课程表, 排期表, 值班表, calendar, draw
 x-json-ld:
   '@context': https://schema.org

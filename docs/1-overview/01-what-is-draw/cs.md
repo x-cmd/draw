@@ -1,7 +1,7 @@
 ---
 x-title: Čeština — draw overview
 x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

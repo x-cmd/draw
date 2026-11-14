@@ -1,7 +1,7 @@
 ---
 x-title: line линия — x-cmd/draw
 x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, линия, svg, chart
 ---
 

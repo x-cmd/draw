@@ -1,7 +1,7 @@
 ---
 x-title: pie torta — x-cmd/draw
 x-desc: Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, torta, svg, chart
 ---
 

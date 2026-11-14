@@ -1,7 +1,7 @@
 ---
 x-title: Use case diagram — who uses it, and for what
 x-desc: 'x-cmd/draw use case diagram (`/draw/uc`). Stick-figure actors, oval use cases, a system boundary, and `<<include>>` / `<<extend>>` dependencies. Params: `n=` element (`id;actor|label` or `id;uc|label`), `e=` association, `b=` boundary, `title=`, `w=/h=`.'
-x-sidebar: draw use case diagram
+x-sidebar: use case diagram
 x-keywords: use case diagram, 用例图, draw, svg, uml, actor, system boundary
 x-json-ld:
   '@context': https://schema.org

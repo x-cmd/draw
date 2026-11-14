@@ -1,7 +1,7 @@
 ---
 x-title: pie 円グラフ — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, 円グラフ, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: scatter 산점 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=scatter.
-x-sidebar: draw
+x-sidebar: scatter plot
 x-keywords: draw, scatter, 산점, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: pie 饼图 —— 6 种风格（opendata / evil / evil-mono / market-mono / progress / revenue）
 x-desc: x-cmd/draw `type=pie` 用法速查。6 种风格：opendata（标签圈外+编辑式标题）、evil（圆角扇区+数值内标）、evil-mono（引线外标）、market-mono（灰阶+环心总计）、progress（点状进度环）、revenue（渐变扇区+右图例）。完整参数：labels / values / title / unit / donut / t / scheme / num / w/h。
-x-sidebar: draw 饼图
+x-sidebar: 饼图
 x-keywords: pie chart, 饼图, draw, svg, opendata, evil, market-mono, progress, revenue, donut
 x-json-ld:
   '@context': https://schema.org

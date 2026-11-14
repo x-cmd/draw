@@ -1,7 +1,7 @@
 ---
 x-title: qr cod QR — x-cmd/draw
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, cod QR, svg, chart
 ---
 

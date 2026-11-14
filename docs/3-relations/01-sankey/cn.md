@@ -1,7 +1,7 @@
 ---
 x-title: sankey 桑基图 —— 流量 / 转化路径
 x-desc: x-cmd/draw `type=sankey` 用法速查。流量 / 转化路径可视化（用户从来源 → 中间步骤 → 终点）。参数：nodes + links 描述流。
-x-sidebar: draw sankey 桑基图
+x-sidebar: sankey 桑基图
 x-keywords: sankey diagram, 桑基图, draw, svg, 流量, 转化路径
 x-json-ld:
   '@context': https://schema.org

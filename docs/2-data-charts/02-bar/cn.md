@@ -1,7 +1,7 @@
 ---
 x-title: bar 柱状图 —— 分组柱 / 堆叠柱 / 单系列
 x-desc: x-cmd/draw `type=bar` 用法速查。分组柱：`labels=` + 多 `series=A:...,B:...`；堆叠柱：同分组；单系列：`labels=` + `values=`。风格 `t=` 含 evil 等。完整参数：labels / values / series / title / unit / t / scheme / num / w/h。
-x-sidebar: draw 柱状图
+x-sidebar: 柱状图
 x-keywords: bar chart, 柱状图, draw, svg, evil, 分组柱, 堆叠柱
 x-json-ld:
   '@context': https://schema.org

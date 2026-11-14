@@ -1,7 +1,7 @@
 ---
 x-title: line liniowy — x-cmd/draw
 x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, liniowy, svg, chart
 ---
 

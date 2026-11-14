@@ -1,7 +1,7 @@
 ---
 x-title: qr mã QR — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, mã QR, svg, chart
 ---
 

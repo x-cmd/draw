@@ -1,7 +1,7 @@
 ---
 x-title: qr 二维码 —— URL / WiFi / 联系人
 x-desc: x-cmd/draw `type=qr` 用法速查。生成 URL / WiFi / 联系人 / 任意文本的二维码 SVG。参数：`data=` 内容（URL / 文本 / WiFi / vCard），`size=` 二维码大小，`ec=` 纠错级别 (L/M/Q/H)。
-x-sidebar: draw 二维码
+x-sidebar: 二维码
 x-keywords: qr code, 二维码, draw, svg, wifi qr, vcard qr
 x-json-ld:
   '@context': https://schema.org

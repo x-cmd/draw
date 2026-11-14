@@ -1,7 +1,7 @@
 ---
 x-title: hbar yatay çubuk — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, yatay çubuk, svg, chart
 ---
 

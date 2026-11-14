@@ -1,7 +1,7 @@
 ---
 x-title: line línea — x-cmd/draw
 x-desc: Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, línea, svg, chart
 ---
 

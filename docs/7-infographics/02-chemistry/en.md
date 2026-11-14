@@ -1,7 +1,7 @@
 ---
 x-title: Chemistry — one SMILES string, one molecule
 x-desc: 'x-cmd/draw chemistry (`/draw/chem`): SMILES to a structural formula, laid out by smilesdrawer (ships with the service — no external API). Params: `smiles=` (required, alias `s=`), `w=` (120–1600), `h=` (120–1200), `theme=dark|light`. Try CCO for ethanol, aspirin, paracetamol.'
-x-sidebar: draw chemistry
+x-sidebar: chemistry
 x-keywords: chemical structure, molecule diagram, SMILES, chemistry, draw, svg, aspirin, ethanol
 x-json-ld:
   '@context': https://schema.org

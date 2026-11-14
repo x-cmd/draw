@@ -1,7 +1,7 @@
 ---
 x-title: bar kolon — x-cmd/draw
 x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=bar.
-x-sidebar: draw
+x-sidebar: bar chart
 x-keywords: draw, bar, kolon, svg, chart
 ---
 

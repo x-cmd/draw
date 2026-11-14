@@ -1,7 +1,7 @@
 ---
 x-title: Maps — choropleths over the GeoJSON that ships with the service
 x-desc: 'x-cmd/draw maps (`/draw/echarts?d=`). Choropleths over the GeoJSON shipped with the service: USA, CN, EU, JP, BR, AU, DE, KR. Params: `d=` the ECharts option as JSON, `w=/h=`.'
-x-sidebar: draw map
+x-sidebar: map
 x-keywords: map chart, 地图, draw, svg, choropleth, geo, region
 x-json-ld:
   '@context': https://schema.org

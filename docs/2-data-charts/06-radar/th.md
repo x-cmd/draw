@@ -1,7 +1,7 @@
 ---
 x-title: radar เรดาร์ — x-cmd/draw
 x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=radar.
-x-sidebar: draw
+x-sidebar: radar chart
 x-keywords: draw, radar, เรดาร์, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: ไทย — draw quick start
 x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: Português — draw overview
 x-desc: Gráficos SVG para a era da IA: um único endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: combo kết hợp — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=combo.
-x-sidebar: draw
+x-sidebar: combo chart
 x-keywords: draw, combo, kết hợp, svg, chart
 ---
 

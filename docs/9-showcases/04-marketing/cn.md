@@ -1,7 +1,7 @@
 ---
 x-title: 市场营销 —— 漏斗、渠道与背后的数字
 x-desc: 'x-cmd/draw 场景用例:市场营销。注册漏斗、浏览器市场份额、渠道归因、投放与 ROI、获客成本趋势、客户分层的真实 URL。'
-x-sidebar: draw 场景用例 市场营销
+x-sidebar: 场景用例 市场营销
 x-keywords: 营销图表, 漏斗图, 投放报告, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

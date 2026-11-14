@@ -1,7 +1,7 @@
 ---
 x-title: sankey 산키 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=sankey.
-x-sidebar: draw
+x-sidebar: sankey
 x-keywords: draw, sankey, 산키, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: Flowchart — Mermaid source in, diagram out
 x-desc: 'x-cmd/draw flowchart (`/draw/mermaid`). Mermaid syntax in, SVG out. Params: `m=` source, `t=` style (mono/soft), `title=`, `w=/h=`.'
-x-sidebar: draw flowchart
+x-sidebar: flowchart
 x-keywords: flowchart, 流程图, mermaid, draw, svg, decision tree, diagram
 x-json-ld:
   '@context': https://schema.org

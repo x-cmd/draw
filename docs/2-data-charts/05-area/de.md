@@ -1,7 +1,7 @@
 ---
 x-title: area Fläche — x-cmd/draw
 x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=area.
-x-sidebar: draw
+x-sidebar: area chart
 x-keywords: draw, area, Fläche, svg, chart
 ---
 

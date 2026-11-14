@@ -1,7 +1,7 @@
 ---
 x-title: 参数 —— URL / CLI / npm 三个入口,一份参数
 x-desc: 'x-cmd/draw 参数对照:同一个图,URL、命令行、npm 三种写法;加上 URL 编码规则和各图种的调用入口。'
-x-sidebar: draw 参数
+x-sidebar: 参数
 x-keywords: 参数, URL, CLI, npm, 编码, draw
 x-json-ld:
   '@context': https://schema.org

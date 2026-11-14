@@ -1,7 +1,7 @@
 ---
 x-title: radar ra đa — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=radar.
-x-sidebar: draw
+x-sidebar: radar chart
 x-keywords: draw, radar, ra đa, svg, chart
 ---
 

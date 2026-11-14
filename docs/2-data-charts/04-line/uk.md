@@ -1,7 +1,7 @@
 ---
 x-title: line лінія — x-cmd/draw
 x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, лінія, svg, chart
 ---
 

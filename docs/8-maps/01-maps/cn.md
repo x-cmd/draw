@@ -1,7 +1,7 @@
 ---
 x-title: 地图 —— 随包分发的 GeoJSON 画等值图
 x-desc: 'x-cmd/draw 地图(`/draw/echarts?d=`)。用随服务分发的 GeoJSON 画等值图:美国、中国、欧盟、日本、巴西、澳大利亚、德国、韩国。参数:`d=` ECharts option 的 JSON,`w=/h=`。'
-x-sidebar: draw 地图
+x-sidebar: 地图
 x-keywords: 地图, draw, svg, 等值图, 地理, 区域
 x-json-ld:
   '@context': https://schema.org

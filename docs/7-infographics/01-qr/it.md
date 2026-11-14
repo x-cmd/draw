@@ -1,7 +1,7 @@
 ---
 x-title: qr QR code — x-cmd/draw
 x-desc: Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, QR code, svg, chart
 ---
 

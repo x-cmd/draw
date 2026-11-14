@@ -1,7 +1,7 @@
 ---
 x-title: Sequence diagram — who talks to whom, and in what order
 x-desc: 'x-cmd/draw sequence diagram (`/draw/seq`). Participants across the top, one message per line, time running down — the order of the `e=` parameters is the order of the messages. Params: `n=` participant, `e=` message (`from;to[;label][;dash]`), `title=`, `w=/h=`.'
-x-sidebar: draw sequence diagram
+x-sidebar: sequence diagram
 x-keywords: sequence diagram, 时序图, draw, svg, uml, interaction, lifeline
 x-json-ld:
   '@context': https://schema.org

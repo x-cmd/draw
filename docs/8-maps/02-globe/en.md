@@ -1,7 +1,7 @@
 ---
 x-title: Globe and sphere — cities on a ball, relations along great-circle arcs
 x-desc: 'x-cmd/draw globe (`/draw/globe`) and sphere (`/draw/sphere`): the landmasses ship with the service, cities drop onto the ball at `p<lat>,<lon>`, edges draw as great-circle arcs; `hl=` highlights named nodes. The sphere kind force-lays a relation graph on the ball (fixed seed, same picture every time).'
-x-sidebar: draw globe
+x-sidebar: globe
 x-keywords: globe, sphere, 3D globe, great-circle arc, world map, draw, svg, global traffic, data centers
 x-json-ld:
   '@context': https://schema.org

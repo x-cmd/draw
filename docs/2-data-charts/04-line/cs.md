@@ -1,7 +1,7 @@
 ---
 x-title: line čára — x-cmd/draw
 x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, čára, svg, chart
 ---
 

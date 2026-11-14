@@ -1,7 +1,7 @@
 ---
 x-title: line 折れ線 — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, 折れ線, svg, chart
 ---
 

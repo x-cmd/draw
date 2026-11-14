@@ -1,7 +1,7 @@
 ---
 x-title: gauge Messuhr — x-cmd/draw
 x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, Messuhr, svg, chart
 ---
 

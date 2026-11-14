@@ -1,7 +1,7 @@
 ---
 x-title: bar стовпчики — x-cmd/draw
 x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=bar.
-x-sidebar: draw
+x-sidebar: bar chart
 x-keywords: draw, bar, стовпчики, svg, chart
 ---
 

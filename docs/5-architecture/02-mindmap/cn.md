@@ -1,7 +1,7 @@
 ---
 x-title: 思维导图 —— 一串路径,四种形态
 x-desc: 'x-cmd/draw 思维导图(`/draw/mindmap`)。树用斜杠路径写,父节点由引擎推断。参数:`n=` 路径(`根/枝/叶`),`style=`(organic/tree/radial/bubble),`t=`,`title=`,`w=/h=`。'
-x-sidebar: draw 思维导图
+x-sidebar: 思维导图
 x-keywords: 思维导图, draw, svg, 树状图, 路线图, 功能地图
 x-json-ld:
   '@context': https://schema.org

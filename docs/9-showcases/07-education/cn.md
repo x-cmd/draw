@@ -1,7 +1,7 @@
 ---
 x-title: 教育教学 —— 选课、成绩与学期计划
 x-desc: 'x-cmd/draw 场景用例:教育教学。各门课选课人数、每周平均分、出勤与成绩、课程评估、课程地图、学期计划的真实 URL。'
-x-sidebar: draw 场景用例 教育教学
+x-sidebar: 场景用例 教育教学
 x-keywords: 教学图表, 课程报告, 学生数据, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: Tiếng Việt — draw quick start
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

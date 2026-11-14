@@ -1,7 +1,7 @@
 ---
 x-title: hbar bare orizontale — x-cmd/draw
 x-desc: Grafice SVG pentru era AI: un singur endpoint `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, bare orizontale, svg, chart
 ---
 

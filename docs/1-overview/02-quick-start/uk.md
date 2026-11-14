@@ -1,7 +1,7 @@
 ---
 x-title: Українська — draw quick start
 x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

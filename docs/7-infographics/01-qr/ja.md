@@ -1,7 +1,7 @@
 ---
 x-title: qr QR コード — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, QR コード, svg, chart
 ---
 

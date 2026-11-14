@@ -1,7 +1,7 @@
 ---
 x-title: 图的 URL —— 一套语法,八种图
 x-desc: '怎么写 draw 的图的 URL:`n=` 节点(`id;type;label[;sub][;pos]`)、`e=` 边(`from;to[;label][;variant]`)、`b=` 分组(`label;id id`)。archmap、arch2、seq、uc、dataflow、lifecycle、erd、class 共用这一套 —— 外加每种图的节点类型对照表。'
-x-sidebar: draw 图的 URL
+x-sidebar: 图的 URL
 x-keywords: 图的 URL, 架构图, 时序图, 用例图, ERD, 类图, 生命周期, 数据流, 节点语法, diagram url
 x-json-ld:
   '@context': https://schema.org

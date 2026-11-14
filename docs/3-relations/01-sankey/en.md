@@ -1,7 +1,7 @@
 ---
 x-title: sankey diagram — flow / conversion path
 x-desc: 'x-cmd/draw `type=sankey` quick reference. Flow / conversion path visualization (users from source → middle steps → endpoint). Params: nodes + links describe the flow.'
-x-sidebar: draw sankey
+x-sidebar: sankey
 x-keywords: sankey, sankey diagram, draw, svg, flow, conversion path
 x-json-ld:
   '@context': https://schema.org

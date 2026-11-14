@@ -1,7 +1,7 @@
 ---
 x-title: Calendar — a month, a week, a year, plus timetables and schedules
 x-desc: 'x-cmd/draw calendar (`/draw?type=calendar`): month, week, year, two-month, three-month, course timetable and project schedule — the URL carries the content.'
-x-sidebar: draw calendar
+x-sidebar: calendar
 x-keywords: calendar, month view, week view, year view, timetable, course schedule, gantt-like, draw
 x-json-ld:
   '@context': https://schema.org

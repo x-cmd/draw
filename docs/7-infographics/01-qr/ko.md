@@ -1,7 +1,7 @@
 ---
 x-title: qr QR 코드 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=qr.
-x-sidebar: draw
+x-sidebar: QR code
 x-keywords: draw, qr, QR 코드, svg, chart
 ---
 

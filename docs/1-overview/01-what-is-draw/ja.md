@@ -1,7 +1,7 @@
 ---
 x-title: 日本語 — draw overview
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=.
-x-sidebar: draw
+x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---
 

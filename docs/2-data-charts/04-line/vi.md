@@ -1,7 +1,7 @@
 ---
 x-title: line đường — x-cmd/draw
 x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=line.
-x-sidebar: draw
+x-sidebar: line chart
 x-keywords: draw, line, đường, svg, chart
 ---
 

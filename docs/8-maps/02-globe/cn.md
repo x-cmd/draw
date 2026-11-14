@@ -1,7 +1,7 @@
 ---
 x-title: 地球仪与球面图 —— 城市落在球面上,关系走大圆弧
 x-desc: 'x-cmd/draw 地球仪(`/draw/globe`)与球面图(`/draw/sphere`):大陆随服务分发,城市按 `p<纬度>,<经度>` 落在球面上,边画成大圆弧;`hl=` 点名高亮。球面图把一张关系图力导向铺到球上(固定 seed,每次一样)。'
-x-sidebar: draw 地球仪
+x-sidebar: 地球仪
 x-keywords: 地球仪, 球面图, globe, sphere, 大圆弧, 世界地图, draw, svg, 全球流量, 数据中心
 x-json-ld:
   '@context': https://schema.org

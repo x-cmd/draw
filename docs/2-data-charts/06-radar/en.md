@@ -1,7 +1,7 @@
 ---
 x-title: radar chart — multi-dimension comparison
 x-desc: 'x-cmd/draw `type=radar` quick reference. Multi-dimension comparison (products / candidates / plans scored on multiple axes). Params: labels=`dimensions` + values=`scores` or series=`multiple objects`. Value range usually 0-100.'
-x-sidebar: draw radar chart
+x-sidebar: radar chart
 x-keywords: radar chart, draw, svg, multi-dimension
 x-json-ld:
   '@context': https://schema.org

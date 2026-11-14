@@ -1,7 +1,7 @@
 ---
 x-title: hbar 수평 막대 — x-cmd/draw
 x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=hbar.
-x-sidebar: draw
+x-sidebar: horizontal bar
 x-keywords: draw, hbar, 수평 막대, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: 日本語 — draw quick start
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=.
-x-sidebar: draw
+x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---
 

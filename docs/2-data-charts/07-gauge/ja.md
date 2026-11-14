@@ -1,7 +1,7 @@
 ---
 x-title: gauge ゲージ — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, ゲージ, svg, chart
 ---
 

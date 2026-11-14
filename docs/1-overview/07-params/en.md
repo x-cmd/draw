@@ -1,7 +1,7 @@
 ---
 x-title: Parameters — one set, three entry points (URL / CLI / npm)
 x-desc: 'x-cmd/draw parameter reference: the same chart in three forms, plus the URL encoding rules and which endpoint each chart kind uses.'
-x-sidebar: draw parameters
+x-sidebar: parameters
 x-keywords: parameters, URL, CLI, npm, encoding, draw
 x-json-ld:
   '@context': https://schema.org

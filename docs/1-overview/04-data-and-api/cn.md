@@ -1,7 +1,7 @@
 ---
 x-title: data formats —— 扁平参数 vs `?d=` JSON
 x-desc: x-cmd/draw 两种数据写法对比。扁平参数（URL 永远可读，`?labels=A,B&values=10,20`）vs `?d=` JSON（数据多时更整洁，`?d={"data":[...]}`）。两种写法结果完全等价。
-x-sidebar: draw 数据格式
+x-sidebar: 数据格式
 x-keywords: data formats, flat params, JSON, ?d=, draw, url encoding
 x-json-ld:
   '@context': https://schema.org

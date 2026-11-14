@@ -1,7 +1,7 @@
 ---
 x-title: bar 縦棒 — x-cmd/draw
 x-desc: AI 時代の SVG グラフ生成:単一エンドポイント `/draw?type=. type=bar.
-x-sidebar: draw
+x-sidebar: bar chart
 x-keywords: draw, bar, 縦棒, svg, chart
 ---
 

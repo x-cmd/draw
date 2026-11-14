@@ -1,7 +1,7 @@
 ---
 x-title: pie кругова — x-cmd/draw
 x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=pie.
-x-sidebar: draw
+x-sidebar: pie chart
 x-keywords: draw, pie, кругова, svg, chart
 ---
 

@@ -1,7 +1,7 @@
 ---
 x-title: 运维与可靠性 —— 值班室的那面墙
 x-desc: 'x-cmd/draw 场景用例:运维与可靠性。可用性 SLA 仪表盘、存储占用、Kubernetes 拓扑、登录决策流程、周活跃用户的真实 URL。'
-x-sidebar: draw 场景用例 运维可靠性
+x-sidebar: 场景用例 运维可靠性
 x-keywords: sre 看板, 可用性图, k8s 拓扑, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: gauge ukazatel — x-cmd/draw
 x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=gauge.
-x-sidebar: draw
+x-sidebar: gauge dial
 x-keywords: draw, gauge, ukazatel, svg, chart
 ---
 
