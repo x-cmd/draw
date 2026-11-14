@@ -1,0 +1,78 @@
+id: x-draw-7-infographics-03-terminal
+
+data:
+  - name:
+      en: Terminal
+      cn: 终端图
+    qa:
+      - id: what
+        question:
+          en: "What does /draw/tty draw?"
+          cn: "/draw/tty 画的是什么?"
+        answer:
+          en: >
+            A command-line session as an Apple-style window: traffic lights, a
+            title bar, one command line with the `$` prompt and a cursor, then the
+            output — with ANSI escapes restored to colours. It is the README
+            "terminal screenshot" as a crisp, editable SVG.
+          cn: >
+            一段命令行会话,画成苹果风格的窗口:红黄绿灯、标题栏、一行带
+            `$` 提示符和光标的命令,下面是输出 —— ANSI 转义还原成颜色。
+            就是 README 里那张「终端截图」,但是清晰、可改的 SVG。
+        confidence: 9
+        reference:
+          - docs/7-infographics/03-terminal/en.md
+          - docs/7-infographics/03-terminal/cn.md
+      - id: cmd-vs-out
+        question:
+          en: "What is the difference between cmd= and out=?"
+          cn: "cmd= 和 out= 有什么区别?"
+        answer:
+          en: >
+            `cmd=` is the command line shown in the window; `out=` is the output
+            text (may carry ANSI escapes). When `out=` is absent, a built-in mini
+            shell actually runs `cmd=` — `help`, `echo`, `clear`, and
+            `draw <kind> --labels A,B --values 1,2` in six chart kinds. Pass
+            `out=` to show a real program's printout instead.
+          cn: >
+            `cmd=` 是窗口里那一行命令;`out=` 是输出文本(可带 ANSI 转义)。
+            不给 `out=` 时,内置小 shell 会真的跑 `cmd=` —— `help`、`echo`、
+            `clear`,还有 `draw <图种> --labels A,B --values 1,2`(六种图种)。
+            想展示真实程序的打印,就用 `out=` 把输出贴进来。
+        confidence: 9
+        reference:
+          - docs/7-infographics/03-terminal/en.md
+          - docs/7-infographics/03-terminal/cn.md
+      - id: encode
+        question:
+          en: "My ANSI output breaks the URL — how do I pass it?"
+          cn: "带 ANSI 的输出怎么放进 URL?"
+        answer:
+          en: >
+            URL-encode it: ESC as `%1B`, newline as `%0A`, `%` itself as `%25`.
+            The escapes come back as colours in the picture. The interactive page
+            /draw/explore/tty takes the raw output and copies the encoded URL for you.
+          cn: >
+            URL-encode:ESC 写 `%1B`,换行写 `%0A`,`%` 自身写 `%25`。
+            图里这些转义会还原成颜色。交互页 /draw/explore/tty 直接收原始输出,
+            帮你复制编好码的 URL。
+        confidence: 8
+        reference:
+          - docs/7-infographics/03-terminal/en.md
+          - docs/7-infographics/03-terminal/cn.md
+      - id: truncate
+        question:
+          en: "The bottom of my output is missing — why?"
+          cn: "输出底下少了几行,怎么回事?"
+        answer:
+          en: >
+            `rows=` caps the window height (default 24) and overflow is cut from
+            the bottom. Raise `rows=` for a complete screenshot, or trim the
+            output to the lines that matter.
+          cn: >
+            `rows=` 限着窗口高度(默认 24),装不下的从下面截掉。
+            要完整截图就把 `rows=` 调大,或者把输出剪到要紧的几行。
+        confidence: 9
+        reference:
+          - docs/7-infographics/03-terminal/en.md
+          - docs/7-infographics/03-terminal/cn.md

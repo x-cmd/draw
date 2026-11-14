@@ -1,0 +1,78 @@
+id: x-draw-8-maps-02-globe
+
+data:
+  - name:
+      en: Globe and sphere
+      cn: 地球仪与球面图
+    qa:
+      - id: globe-vs-sphere
+        question:
+          en: "What is the difference between /draw/globe and /draw/sphere?"
+          cn: "/draw/globe 和 /draw/sphere 有什么区别?"
+        answer:
+          en: >
+            The globe is a map plus cities: continents ship with the service, nodes pin
+            at `p<lat>,<lon>`, and `hl=` rings the named nodes — for global traffic and
+            data-center pictures. The sphere is a relation graph on a ball: no continents,
+            positions ignored, a force layout spreads the graph over the surface with a
+            fixed seed, so the same graph renders identically every time.
+          cn: >
+            地球仪是「地图 + 城市」:大陆随服务分发,节点按 `p<纬度>,<经度>` 钉住,
+            `hl=` 给点名的节点画圈 —— 适合全球流量、数据中心这类图。球面图是
+            「球上的关系图」:没有大陆、不看位置,力导向把图铺到球面上,
+            固定 seed,同样的图每次摆得一模一样。
+        confidence: 9
+        reference:
+          - docs/8-maps/02-globe/en.md
+          - docs/8-maps/02-globe/cn.md
+      - id: position
+        question:
+          en: "How do I place a city at its real coordinates?"
+          cn: "怎么把城市落在真实的经纬度上?"
+        answer:
+          en: >
+            Put `p<lat>,<lon>` in the node: `n=ash;db;us-east-1 · Ashburn;p38.95,-77.45`.
+            Lat must be within ±90 and lon within ±180; anything out of range is ignored
+            and the node falls back to the force layout. Nodes with a `p` are pinned and
+            do not move.
+          cn: >
+            在节点里写 `p<纬度>,<经度>`:`n=ash;db;us-east-1 · Ashburn;p38.95,-77.45`。
+            纬度要在 ±90、经度 ±180 之内,超出的会被忽略、退回力导向摆位。
+            写了 `p` 的节点被钉住,不会动。
+        confidence: 9
+        reference:
+          - docs/8-maps/02-globe/en.md
+          - docs/8-maps/02-globe/cn.md
+      - id: highlight
+        question:
+          en: "How do I emphasise the origin nodes on a globe?"
+          cn: "地球仪上怎么突出源站那几个点?"
+        answer:
+          en: >
+            Use `hl=<id,id>`: the named nodes get a bigger dot and a ring around it —
+            the "called out" look. It is globe-only; on the sphere kind every node is
+            equal by design.
+          cn: >
+            用 `hl=<id,id>`:点名的节点画大一点、外面再套一圈 —— 「被点名」的样子。
+            只有地球仪有;球面图上每个点生而平等。
+        confidence: 8
+        reference:
+          - docs/8-maps/02-globe/en.md
+          - docs/8-maps/02-globe/cn.md
+      - id: rotate
+        question:
+          en: "Can I rotate the globe?"
+          cn: "地球仪能转吗?"
+        answer:
+          en: >
+            Yes — on the explore page (/draw/explore/globe?… or /draw/explore/sphere?…).
+            The SVG is always the same fixed camera (yaw 20°, pitch −18°); explore loads
+            the same scene and re-projects it as you drag.
+          cn: >
+            能 —— 在 explore 页(/draw/explore/globe?… 或 /draw/explore/sphere?…)。
+            静态 SVG 永远是固定相机那一眼(yaw 20°、pitch -18°);explore 拿同一份
+            场景,拖拽时重新投影。
+        confidence: 8
+        reference:
+          - docs/8-maps/02-globe/en.md
+          - docs/8-maps/02-globe/cn.md

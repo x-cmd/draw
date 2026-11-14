@@ -1,0 +1,78 @@
+id: x-draw-5-architecture-08-arch3d
+
+data:
+  - name:
+      en: 3D architecture
+      cn: 三维架构图
+    qa:
+      - id: height-axis
+        question:
+          en: "What does the height axis mean in a 3D architecture diagram?"
+          cn: "三维架构图的高度轴表示什么?"
+        answer:
+          en: >
+            It is flow depth. Each connected component is cycle-broken and layered
+            along its longest path: nodes with only outgoing edges (sources) go to
+            the top tier (SOURCE), nodes with only incoming edges (sinks) go to the
+            bottom tier (SINK), and everything else stays in the middle (MID).
+            Sources literally sit above their downstream.
+          cn: >
+            是流的深度。引擎对每个连通分量去环、沿最长路径分层:只有出边的是源(SOURCE),
+            在最上层;只有入边的是汇(SINK),在最下层;其余待在中层(MID)。
+            上游实实在在地坐在下游的上方。
+        confidence: 9
+        reference:
+          - docs/5-architecture/08-arch3d/en.md
+          - docs/5-architecture/08-arch3d/cn.md
+      - id: position-ignored
+        question:
+          en: "Why is my r0c1 position ignored on /draw/arch3d?"
+          cn: "为什么 /draw/arch3d 不理我写的 r0c1 格子坐标?"
+        answer:
+          en: >
+            Because tiers are derived from the edges, not hand-placed. The engine
+            layers each connected component itself, so the position field of `n=`
+            has no effect in the 3D kind — to move a node to another tier, change
+            the edges. (The sixth field `icon` still works, e.g. `aws:cloudfront`.)
+          cn: >
+            因为层是引擎按边算出来的,不是手摆的。三维版对每个连通分量自动分层,
+            `n=` 里的位置段写了也不生效 —— 想让节点换层,得改边。
+            (第六段 `icon` 仍然有效,比如 `aws:cloudfront`。)
+        confidence: 9
+        reference:
+          - docs/5-architecture/08-arch3d/en.md
+          - docs/5-architecture/08-arch3d/cn.md
+      - id: rotate
+        question:
+          en: "Can I rotate the 3D scene?"
+          cn: "三维场景能转吗?"
+        answer:
+          en: >
+            Yes — on the explore page (/draw/explore/arch3d?…). The static SVG is
+            always the default isometric camera; explore loads the same scene and
+            re-projects it with a movable camera, so the picture you rotate is the
+            same picture the URL renders.
+          cn: >
+            能 —— 在 explore 页(/draw/explore/arch3d?…)。静态 SVG 永远是默认相机
+            那一眼等轴测;explore 拿同一份场景换相机再投影,转出来的画面和
+            URL 渲染的是同一张。
+        confidence: 8
+        reference:
+          - docs/5-architecture/08-arch3d/en.md
+          - docs/5-architecture/08-arch3d/cn.md
+      - id: flat
+        question:
+          en: "How do I get a flat, printable version of the same graph?"
+          cn: "同一张图想要平面可打印的版本怎么办?"
+        answer:
+          en: >
+            Add `view=flat`. It renders the flat version — one plane per tier,
+            side by side — using exactly the same `n=`/`e=`/`b=` parameters, which
+            makes it easy to compare with the 3D rendering.
+          cn: >
+            加 `view=flat`。它用同一套 `n=`/`e=`/`b=` 参数出二维版 —— 每层一张
+            平面图、并排摆 —— 正好和三维渲染对照着看。
+        confidence: 9
+        reference:
+          - docs/5-architecture/08-arch3d/en.md
+          - docs/5-architecture/08-arch3d/cn.md

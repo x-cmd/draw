@@ -46,6 +46,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 |---|---|---|
 | [01 sankey](3-relations/01-sankey/en.md) | flow | where things go |
 | [02 dataflow](3-relations/02-dataflow/en.md) | data flow | processes, stores, what flows between |
+| [03 chord](3-relations/03-chord/en.md) | chord diagram | pairwise flows inside a group — who deals with whom |
 
 ## 4 · Strategy and decision 战略与决策
 
@@ -67,6 +68,7 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | [05 erd](5-architecture/05-erd/en.md) | ERD | the tables, their fields, how they relate |
 | [06 class](5-architecture/06-class/en.md) | class diagram | the types, and how they hang together |
 | [07 icons](5-architecture/07-icons/en.md) | cloud vendor icons for architecture nodes, from the open-source diagrams library |
+| [08 arch3d](5-architecture/08-arch3d/en.md) | 3D architecture | flow depth as the height axis — sources on top, sinks at the bottom |
 
 ## 6 · Schedule 日程与排布
 
@@ -80,12 +82,15 @@ Folder names carry a numeric prefix for ordering — the prefix is dropped when 
 | page | chart | good for |
 |---|---|---|
 | [01 qr](7-infographics/01-qr/en.md) | QR code | links, WiFi, contact cards |
+| [02 chemistry](7-infographics/02-chemistry/en.md) | chemical structure | SMILES in, molecule diagram out |
+| [03 terminal](7-infographics/03-terminal/en.md) | terminal window | a command-line session with ANSI colours, as a macOS window |
 
 ## 8 · Maps 地图
 
 | page | chart | good for |
 |---|---|---|
 | [01 maps](8-maps/01-maps/en.md) | choropleth over the shipped GeoJSON | regional comparisons |
+| [02 globe](8-maps/02-globe/en.md) | globe and sphere | cities pinned by coordinates, relations along great-circle arcs |
 
 ## 9 · Showcases 场景用例
 

@@ -236,7 +236,14 @@ function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number):
   // 'xAxis "0" not found'。按浏览器对等行为补空轴对象({} = 缺省 x=category/y=value),
   // 仅在用户完全没写该轴时落;写了一根(多轴场景)也不动
   const seriesArr = Array.isArray(option.series) ? option.series : isObj(option.series) ? [option.series] : [];
-  if (seriesArr.some((s) => isObj(s) && typeof s.type === 'string' && CARTESIAN.has(s.type))) {
+  // 只给**真正挂在笛卡尔坐标系上**的系列补轴:系列写明 coordinateSystem:'polar'
+  // (或别的非笛卡尔)时,补出来的 xAxis/yAxis 会被 echarts 画成一对没人要的 L 形轴线
+  const onCartesian = (s: Obj): boolean => {
+    if (typeof s.type !== 'string' || !CARTESIAN.has(s.type)) return false;
+    const cs = s.coordinateSystem;
+    return cs === undefined || cs === 'cartesian2d';
+  };
+  if (seriesArr.some((s) => isObj(s) && onCartesian(s))) {
     if (option.xAxis === undefined) option.xAxis = {};
     if (option.yAxis === undefined) option.yAxis = {};
   }

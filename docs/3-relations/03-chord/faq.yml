@@ -1,0 +1,60 @@
+id: x-draw-3-relations-03-chord
+
+data:
+  - name:
+      en: Chord diagram
+      cn: 和弦图
+    qa:
+      - id: links
+        question:
+          en: "How do I describe a chord diagram's data?"
+          cn: "和弦图的数据怎么写?"
+        answer:
+          en: >
+            One parameter: `links=from,to,value;from,to,value;…`. Every name that
+            appears becomes a node — there is no separate node list. Each node owns an
+            arc of the ring (length ∝ its total in + out flow), and each link pulls a
+            band between its two arcs, as wide as the value.
+          cn: >
+            一个参数:`links=源,目标,值;源,目标,值;…`。出现过的每个名字自动成为节点,
+            不用单独写节点表。每个节点占一段弧(弧长 ∝ 进出总流量),
+            每条连接在两端弧之间拉一条带子,宽度按值。
+        confidence: 9
+        reference:
+          - docs/3-relations/03-chord/en.md
+          - docs/3-relations/03-chord/cn.md
+      - id: chord-vs-sankey
+        question:
+          en: "Chord or sankey — which one do I want?"
+          cn: "和弦图和桑基图,该用哪个?"
+        answer:
+          en: >
+            Chord for pairwise relations inside a group — symmetric, circular, who
+            deals with whom. Sankey for directed flow with stages — left to right,
+            conversion funnels, energy flows, anything with a clear upstream and
+            downstream. Past about 20 nodes the chord crowds; a sankey scales better.
+          cn: >
+            一群实体「两两之间」的往来,用和弦图 —— 圆的、对称的、谁和谁都来往。
+            有方向、有阶段的流动(转化漏斗、能源流、上下游),用桑基图 ——
+            从左到右。节点超过 20 个和弦图开始挤,桑基图更能撑。
+        confidence: 9
+        reference:
+          - docs/3-relations/03-chord/en.md
+          - docs/3-relations/03-chord/cn.md
+      - id: skipped
+        question:
+          en: "Why did one of my links not draw?"
+          cn: "为什么我有一条连接没画出来?"
+        answer:
+          en: >
+            Most likely its value: entries with a zero, negative or non-numeric value
+            are silently skipped. Also check the shape — each entry must be exactly
+            `from,to,value` separated by commas; names cannot contain commas.
+          cn: >
+            大概率是值的问题:值 ≤ 0 或不是数字的条会被静默跳过,不报错。
+            再检查格式 —— 每条必须是 `源,目标,值` 三段,用逗号隔开;
+            名字里不能带逗号。
+        confidence: 8
+        reference:
+          - docs/3-relations/03-chord/en.md
+          - docs/3-relations/03-chord/cn.md

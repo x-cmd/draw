@@ -1,0 +1,61 @@
+id: x-draw-7-infographics-02-chemistry
+
+data:
+  - name:
+      en: Chemistry
+      cn: 生化
+    qa:
+      - id: smiles
+        question:
+          en: "How do I draw a molecule with draw?"
+          cn: "怎么用 draw 画分子?"
+        answer:
+          en: >
+            Call `/draw/chem?smiles=<SMILES>` — for example `?smiles=CCO` for ethanol,
+            `?smiles=CC(%3DO)Oc1ccccc1C(%3DO)O` for aspirin. Layout is done by
+            smilesdrawer (MIT) inside the service; no external chemistry API is
+            involved, and the ~200 KB layout library only loads for this endpoint.
+          cn: >
+            调 `/draw/chem?smiles=<SMILES>` —— 比如 `?smiles=CCO` 是乙醇,
+            `?smiles=CC(%3DO)Oc1ccccc1C(%3DO)O` 是阿司匹林。排版由服务内的
+            smilesdrawer(MIT)完成,不走外部化学绘图 API;约 200KB 的排版库
+            也只有这个端点才会载入。
+        confidence: 9
+        reference:
+          - docs/7-infographics/02-chemistry/en.md
+          - docs/7-infographics/02-chemistry/cn.md
+      - id: params
+        question:
+          en: "Which parameters does /draw/chem take?"
+          cn: "/draw/chem 收哪些参数?"
+        answer:
+          en: >
+            `smiles=` (required; alias `s=`), `w=` and `h=` for the canvas
+            (w 120–1600, h 120–1200, default 400×360), and `theme=dark|light`
+            (default dark; `scheme=light` works too). Invalid SMILES returns 400
+            with the parser's error message.
+          cn: >
+            `smiles=`(必填,别名 `s=`)、画布 `w=`(120–1600)和 `h=`(120–1200,
+            默认 400×360)、配色 `theme=dark|light`(默认 dark;`scheme=light`
+            也认)。SMILES 解析失败返回 400,带解析器自己的错误信息。
+        confidence: 9
+        reference:
+          - docs/7-infographics/02-chemistry/en.md
+          - docs/7-infographics/02-chemistry/cn.md
+      - id: big-molecules
+        question:
+          en: "My molecule looks cramped — what can I do?"
+          cn: "分子图画出来很挤,怎么办?"
+        answer:
+          en: >
+            Give it a bigger canvas: `?smiles=…&w=760&h=560`. Big structures
+            (cholesterol, ATP) overflow the 400×360 default. If it is still dense,
+            that is the molecule — dozens of atoms is a lot for any flat diagram.
+          cn: >
+            把画布调大:`?smiles=…&w=760&h=560`。胆固醇、ATP 这种大结构
+            在 400×360 的默认尺寸里塞不下。还大,那就是分子本身的事儿了 ——
+            几十个原子对任何平面图都多。
+        confidence: 8
+        reference:
+          - docs/7-infographics/02-chemistry/en.md
+          - docs/7-infographics/02-chemistry/cn.md
