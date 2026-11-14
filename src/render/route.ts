@@ -46,10 +46,16 @@ const FACE_MARGIN = 8;
 const ROUTE_MARGIN = 8;
 /** 拐一次弯的代价(像素当量) */
 const ROUTE_BEND = 30;
-/** 交叉一次别的线的代价 —— 比绕远一点贵,但不是「除非没别的路」 */
-const ROUTE_CROSS = 800;
-/** 挨上(接在同一个点上)的代价 —— 比交叉更贵:接成一根线最难读 */
-const ROUTE_TOUCH = 1600;
+/**
+ * 交叉一次别的线的代价。
+ *
+ * 交叉是「局部毛病」,绕远是「整张图变形」—— 后者更难看。所以交叉的价不能太高:
+ * 贵到一定程度,路由宁可在画布外围兜一大圈(15 倍!)也不肯交叉一次。
+ * 绕远有上限(MAX_DETOUR)兜着,交叉的价就压低一点。
+ */
+const ROUTE_CROSS = 500;
+/** 挨上(接在同一个点上)的代价 —— 接成一根线最难读,比交叉贵一点 */
+const ROUTE_TOUCH = 1000;
 /** 绕远上限:路长 ≤ 直线距离 × 这个倍数 */
 const MAX_DETOUR = 3;
 /** 端口往外伸的那一小段(引线的长度) */
@@ -58,8 +64,11 @@ const STUB = 16;
 const PARALLEL = 7;
 /** 多近算「同一条通道」(差这么几像素就是并排走,挤在一处) */
 const CHANNEL = 12;
-/** 挤在别人已经走过的通道里的代价 —— 空着的通道更清楚,别都堆在一处 */
-const CHANNEL_COST = 250;
+/**
+ * 挤在别人已经走过的通道里的代价 —— 空着的通道更清楚,别都堆在一处。
+ * 别设太高:太贵了,路由宁可绕一大圈也不肯并排走 —— 那更难看。
+ */
+const CHANNEL_COST = 120;
 
 /* ---------------------------------------------------------------- 小工具 */
 
@@ -378,7 +387,7 @@ function rank(m: Member): number {
 /* ---------------------------------------------------------------- 正交布线 */
 
 /** 已经画好的线段:谁画的 + 在哪 */
-interface Drawn { seg: [number, number, number, number]; edge: number }
+export interface Drawn { seg: [number, number, number, number]; edge: number }
 
 /**
  * 正交布线:Hanan 网格 + Dijkstra(长度 + 拐弯惩罚 + 交叉惩罚)。
@@ -396,7 +405,7 @@ interface Drawn { seg: [number, number, number, number]; edge: number }
  * @param outer 图的外框 —— 绕远的那条边要能从图的外面绕过去
  * @param hard true = 压线直接封死(规矩 R1);false = 压线只加钱(宁可交叉也不能没有线)
  */
-function routeOrthogonal(
+export function routeOrthogonal(
   p0: [number, number], side0: Side,
   p4: [number, number], side4: Side,
   boxes: Box[],
@@ -435,7 +444,7 @@ function routeOrthogonal(
       Math.abs(x1 - s[0]) + Math.abs(y1 - s[1]),
       Math.abs(x2 - t[0]) + Math.abs(y2 - t[1]),
     );
-    if (near > 240) continue;
+    if (near > 700) continue;
     if (y1 === y2) { ysSet.add(y1 - PARALLEL); ysSet.add(y1 + PARALLEL); }
     else { xsSet.add(x1 - PARALLEL); xsSet.add(x1 + PARALLEL); }
   }
@@ -630,9 +639,26 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     }
     : { x: 0, y: 0, w: 0, h: 0 };
   const drawn: Drawn[] = [];
-  const out: [number, number][][] = [];
+  const out: [number, number][][] = edges.map(() => []);
 
-  edges.forEach((e, i) => {
+  // 谁先走:越没得选的越先走。
+  //
+  // 「直着走得了」的边(两头对齐、中间没挡)只有一条路可走 —— 先给它,
+  // 后面的边就绕开它的通道。反过来先走的会占掉好位置,把直的那条挤歪。
+  const order = edges.map((e, i) => {
+    const a = portBox(e.from);
+    const b = portBox(e.to);
+    const p0 = portAt(a, faces[i].exit, exitOff[i]);
+    const p1 = portAt(b, faces[i].entry, entryOff[i]);
+    const straight = (faces[i].exit === 'left' || faces[i].exit === 'right')
+      ? Math.abs(p0[1] - p1[1]) < 0.5
+      : Math.abs(p0[0] - p1[0]) < 0.5;
+    const len = Math.abs(p1[0] - p0[0]) + Math.abs(p1[1] - p0[1]);
+    return { i, straight: straight ? 0 : 1, len };
+  }).sort((x, y) => (x.straight - y.straight) || (x.len - y.len)).map((s) => s.i);
+
+  for (const i of order) {
+    const e = edges[i];
     const a = portBox(e.from);
     const b = portBox(e.to);
     const exit = faces[i].exit;
@@ -647,8 +673,8 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     for (let j = 1; j < pts.length; j++) {
       drawn.push({ seg: [pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]], edge: i });
     }
-    out.push(pts);
-  });
+    out[i] = pts;
+  }
 
   return out;
 }

@@ -43,7 +43,7 @@ export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_
 export { renderArchmapFromUrl, parseNodes, parseEdges, parseBoundaries } from './render/archmap.js';
 // 图标库(站上自己画图时要用:三维场景里把图标摆在块上面)
 export { iconOf, ICONS } from './render/icons.js';
-export type { ArchNode, ArchEdge, ArchBoundary, NodeType, EdgeVariant } from './render/archmap.js';
+export type { ArchNode, ArchEdge, ArchBoundary, NodeType, EdgeVariant, Box, Side, Placed } from './render/archmap.js';
 export { renderArchFromUrl, renderArchCore, renderCloudFromUrl, CLOUD_TYPES } from './render/arch.js';
 // 摆位引擎的挂载点:库只管把「怎么画」做好,「怎么摆」可以换 ——
 // 自带一个通用的实现,站上装的是更好的那个(引擎的选择不是 URL 的一部分)
@@ -58,9 +58,16 @@ export {
 // 库只管把「怎么画」做好,「怎么走」可以换(引擎的选择不是 URL 的一部分)
 export {
   routeEdges,
+  routeOrthogonal,
+  portAt,
+  portOffset,
+  segsCross,
+  segsOverlap,
+  segsMeet,
   PORT_GAP,
   type RoutingEngine,
   type RoutingCtx,
+  type Drawn,
 } from './render/route.js';
 // mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
