@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%
 
 [![Koláč — největší města](https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
 
+## Prompt — zadání pro AI agenta (skill)
+
+Nulová instalace: vložte tento prompt jednou do libovolného agenta připojeného k webu a poté přirozeným jazykem popište graf nebo diagram, který potřebujete:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Poté můžete napsat například:
+
+> Vykresli hvězdičky jednotlivých jazyků jako koláčový graf — TypeScript 4821, Python 2312, Go 980
+
+Agenti s nativním načítáním skillů (Claude Code atd.): uložte [`SKILL.md`](../SKILL.md) jednou do složky skills (`~/.claude/skills/draw/SKILL.md`); poté stačí přímo požádat o graf nebo diagram, bez promptu nebo URL.
+
 ## Tři způsoby použití
 
 **Hostovaná služba (nulová instalace)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

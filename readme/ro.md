@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%9
 
 [![Circular — cele mai mari orașe](https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
 
+## Prompt — instrucțiuni pentru agentul AI (skill)
+
+Fără instalare: lipește acest prompt o singură dată într-un agent conectat la web, apoi descrie în limbaj natural graficul sau diagrama de care ai nevoie:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Apoi poți cere:
+
+> Desenează o diagramă circulară cu stelele pe limbaje — TypeScript 4821, Python 2312, Go 980
+
+Agenții care încarcă skill-uri nativ (Claude Code etc.): copiază [`SKILL.md`](../SKILL.md) o singură dată în folderul skills (`~/.claude/skills/draw/SKILL.md`); apoi cere direct grafice sau diagrame, fără să lipești promptul sau URL-ul.
+
 ## Trei moduri de utilizare
 
 **Serviciu găzduit (zero instalare)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

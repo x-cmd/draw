@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=%EC%B5%9C%EB%8C%80%20%EB%8F%
 
 [![원형 — 최대 도시](https://x-cmd.com/draw?type=pie&t=market-mono&title=%EC%B5%9C%EB%8C%80%20%EB%8F%84%EC%8B%9C%20%EC%9D%B8%EA%B5%AC&unit=%EB%B0%B1%EB%A7%8C%20%EB%AA%85&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%82%B0,%EC%9D%B8%EC%B2%9C,%EB%8C%80%EA%B5%AC&values=9.7,3.4,2.9,2.4)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=%EC%B5%9C%EB%8C%80%20%EB%8F%84%EC%8B%9C%20%EC%9D%B8%EA%B5%AC&unit=%EB%B0%B1%EB%A7%8C%20%EB%AA%85&labels=%EC%84%9C%EC%9A%B8,%EB%B6%80%EC%82%B0,%EC%9D%B8%EC%B2%9C,%EB%8C%80%EA%B5%AC&values=9.7,3.4,2.9,2.4)
 
+## Prompt — AI 에이전트에게 지시하기(skill)
+
+설치 불필요: 웹에 연결된 에이전트에 아래 prompt를 한 번만 붙여넣으면, 이후에는 자연어로 원하는 차트나 다이어그램을 설명하면 됩니다:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+이후에는 이렇게 요청할 수 있습니다:
+
+> 언어별 스타 수를 원형 차트로 그려 줘 — TypeScript 4821, Python 2312, Go 980
+
+skill을 기본으로 로드하는 에이전트(Claude Code 등): [`SKILL.md`](../SKILL.md)를 skills 폴더(`~/.claude/skills/draw/SKILL.md`)에 한 번 넣어두면, 이후에는 prompt나 URL 없이 바로 차트나 다이어그램을 요청하면 됩니다.
+
 ## 3가지 사용 방법
 
 **호스티드 서비스(설치 불필요)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Th%C3%A0nh%20ph%E1%BB%91%20l
 
 [![Tròn — thành phố lớn nhất](https://x-cmd.com/draw?type=pie&t=market-mono&title=Th%C3%A0nh%20ph%E1%BB%91%20l%E1%BB%9Bn%20nh%E1%BA%A5t&unit=tr&labels=TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh,H%C3%A0%20N%E1%BB%99i,%C4%90%C3%A0%20N%E1%BA%B5ng,C%E1%BA%A7n%20Th%C6%A1&values=9.5,8.4,1.3,1.2)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Th%C3%A0nh%20ph%E1%BB%91%20l%E1%BB%9Bn%20nh%E1%BA%A5t&unit=tr&labels=TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh,H%C3%A0%20N%E1%BB%99i,%C4%90%C3%A0%20N%E1%BA%B5ng,C%E1%BA%A7n%20Th%C6%A1&values=9.5,8.4,1.3,1.2)
 
+## Prompt — hướng dẫn cho AI agent (skill)
+
+Không cần cài đặt: dán prompt này một lần vào bất kỳ agent nào có kết nối web, sau đó mô tả biểu đồ hoặc sơ đồ bạn cần bằng ngôn ngữ tự nhiên:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Sau đó, bạn có thể hỏi:
+
+> Vẽ biểu đồ tròn về số sao theo ngôn ngữ — TypeScript 4821, Python 2312, Go 980
+
+Các agent tải skill nguyên bản (Claude Code, v.v.): đặt [`SKILL.md`](../SKILL.md) vào thư mục skills (`~/.claude/skills/draw/SKILL.md`) một lần; sau đó chỉ cần yêu cầu biểu đồ hoặc sơ đồ trực tiếp, không cần dán prompt hay URL.
+
 ## Ba cách sử dụng
 
 **Dịch vụ lưu trữ (không cần cài)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=Ty
 
 [![环形图:语言构成](https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)
 
+## 给 AI Agent 的 Prompt（skill）
+
+零安装：将下面的 prompt 粘贴一次给任意可联网的 agent，之后直接用自然语言描述需要的图表或示意图：
+
+```text
+读取并遵循 https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md ，之后需要画图时使用 x-cmd Draw。
+```
+
+之后你可以这样问：
+
+> 把各语言的星标数画成饼图 —— TypeScript 4821、Python 2312、Go 980
+
+原生加载 skill 的 agent（Claude Code 等）：将 [`SKILL.md`](../SKILL.md) 放入 skills 目录（`~/.claude/skills/draw/SKILL.md`）一次；之后直接提出画图需求即可，无需再粘贴 prompt 或 URL。
+
 ## 三种使用方式(同一份渲染核心)
 
 **托管服务**(零安装):直接拼 URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

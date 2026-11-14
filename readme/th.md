@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=%E0%B9%80%E0%B8%A1%E0%B8%B7%
 
 [![วงกลม — เมืองใหญ่ที่สุด](https://x-cmd.com/draw?type=pie&t=market-mono&title=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AA%E0%B8%B8%E0%B8%94&unit=%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%99&labels=%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3,%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88,%E0%B8%99%E0%B8%99%E0%B8%97%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5,%E0%B8%A0%E0%B8%B9%E0%B9%80%E0%B8%81%E0%B9%87%E0%B8%95&values=10.7,1.2,0.3,0.9)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AA%E0%B8%B8%E0%B8%94&unit=%E0%B8%A5%E0%B9%89%E0%B8%B2%E0%B8%99&labels=%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3,%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88,%E0%B8%99%E0%B8%99%E0%B8%97%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5,%E0%B8%A0%E0%B8%B9%E0%B9%80%E0%B8%81%E0%B9%87%E0%B8%95&values=10.7,1.2,0.3,0.9)
 
+## Prompt — คำสั่งสำหรับ AI agent (skill)
+
+ไม่ต้องติดตั้ง: วาง prompt นี้เพียงครั้งเดียวใน agent ที่เชื่อมต่อเว็บ จากนั้นอธิบายแผนภูมิหรือไดอะแกรมที่ต้องการด้วยภาษาธรรมชาติ:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+จากนั้นคุณสามารถถามได้ เช่น:
+
+> วาดแผนภูมิวงกลมแสดงจำนวนดาวตามภาษา — TypeScript 4821, Python 2312, Go 980
+
+Agent ที่โหลด skill แบบเนทีฟ (Claude Code ฯลฯ): วาง [`SKILL.md`](../SKILL.md) ไว้ในโฟลเดอร์ skills (`~/.claude/skills/draw/SKILL.md`) เพียงครั้งเดียว จากนั้นขอแผนภูมิหรือไดอะแกรมได้โดยตรง โดยไม่ต้องวาง prompt หรือ URL
+
 ## 3 วิธีใช้งาน
 
 **บริการโฮสต์ (ไม่ต้องติดตั้ง)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

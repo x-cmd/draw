@@ -126,9 +126,14 @@ Every way below hits the same render core with the same parameters — a URL tes
 
 ### 1. Prompt — tell your AI agent (skill)
 
-Zero install: point any web-connected agent at the skill by URL and ask in plain language —
+Zero install: paste this once into any web-connected agent, then describe the chart or diagram you need in plain language:
 
-> Follow the draw skill at https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md:
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Afterwards, you can ask:
+
 > chart language stars as a pie — TypeScript 4821, Python 2312, Go 980
 
 The skill carries the whole contract — chart-type selection by data shape, params, styles, the ECharts layer, short links, error recovery — so the agent answers with a URL:
@@ -137,7 +142,7 @@ The skill carries the whole contract — chart-type selection by data shape, par
 https://x-cmd.com/draw?type=pie&labels=TypeScript,Python,Go&values=4821,2312,980&title=Language%20stars
 ```
 
-Agents that load skills natively (Claude Code etc.): drop [`SKILL.md`](SKILL.md) into your skills folder (`~/.claude/skills/draw/SKILL.md`) once, and the same prompt works without the URL line.
+Agents that load skills natively (Claude Code etc.): drop [`SKILL.md`](SKILL.md) into your skills folder (`~/.claude/skills/draw/SKILL.md`) once, then ask for charts or diagrams directly — no prompt or URL needed.
 
 ### 2. Click a URL — charts straight in the browser
 

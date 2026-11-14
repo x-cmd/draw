@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&la
 
 [![Pizza — maiores cidades](https://x-cmd.com/draw?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Maiores%20cidades&unit=mi&labels=S%C3%A3o%20Paulo,Rio%20de%20Janeiro,Bras%C3%ADlia,Salvador&values=12.3,6.7,3,2.9)
 
+## Prompt — instrua seu agente de IA (skill)
+
+Sem instalação: cole este prompt uma vez em qualquer agente conectado à web e depois descreva em linguagem natural o gráfico ou diagrama de que precisa:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Depois, você pode pedir:
+
+> Desenhe um gráfico de pizza com as estrelas por linguagem — TypeScript 4821, Python 2312, Go 980
+
+Agentes que carregam skills nativamente (Claude Code etc.): coloque [`SKILL.md`](../SKILL.md) uma vez na sua pasta de skills (`~/.claude/skills/draw/SKILL.md`); depois peça gráficos ou diagramas diretamente, sem colar o prompt ou a URL.
+
 ## Três formas de usar
 
 **Serviço hospedado (zero instalação)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%
 
 [![円 — 最大都市](https://x-cmd.com/draw?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=%E6%9C%80%E5%A4%A7%E9%83%BD%E5%B8%82%E3%81%AE%E4%BA%BA%E5%8F%A3&unit=%E7%99%BE%E4%B8%87%E4%BA%BA&labels=%E6%9D%B1%E4%BA%AC,%E6%A8%AA%E6%B5%9C,%E5%A4%A7%E9%98%AA,%E5%90%8D%E5%8F%A4%E5%B1%8B&values=13.9,3.8,2.8,2.3)
 
+## Prompt — AI エージェントへの指示（skill）
+
+インストール不要：以下の prompt を Web に接続した agent に一度貼り付ければ、あとは自然言語で必要なグラフや図を伝えるだけです：
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+その後、次のように頼めます：
+
+> 言語別のスター数を円グラフにして — TypeScript 4821、Python 2312、Go 980
+
+skill をネイティブに読み込む agent（Claude Code など）：[`SKILL.md`](../SKILL.md) を skills フォルダー（`~/.claude/skills/draw/SKILL.md`）に一度配置すれば、あとは prompt や URL を貼らずに直接グラフや図を依頼できます。
+
 ## 3 つの使い方
 
 **ホステッドサービス(インストール不要)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

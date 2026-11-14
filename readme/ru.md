@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=%D0%9A%D1%80%D1%83%D0%BF%D0%
 
 [![Круговая — крупнейшие города](https://x-cmd.com/draw?type=pie&t=market-mono&title=%D0%9A%D1%80%D1%83%D0%BF%D0%BD%D0%B5%D0%B9%D1%88%D0%B8%D0%B5%20%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%B0&unit=%D0%BC%D0%BB%D0%BD&labels=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0,%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3,%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA,%D0%95%D0%BA%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%BD%D0%B1%D1%83%D1%80%D0%B3&values=12.6,5.4,1.6,1.5)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=%D0%9A%D1%80%D1%83%D0%BF%D0%BD%D0%B5%D0%B9%D1%88%D0%B8%D0%B5%20%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%B0&unit=%D0%BC%D0%BB%D0%BD&labels=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0,%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3,%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA,%D0%95%D0%BA%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%BD%D0%B1%D1%83%D1%80%D0%B3&values=12.6,5.4,1.6,1.5)
 
+## Prompt — инструкция для AI-агента (skill)
+
+Без установки: один раз вставьте этот промпт в любого агента с доступом к интернету, а затем описывайте нужный график или диаграмму обычным языком:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+После этого можно попросить:
+
+> Построй круговую диаграмму звёзд по языкам — TypeScript 4821, Python 2312, Go 980
+
+Агенты с нативной загрузкой skill (Claude Code и т. п.): один раз поместите [`SKILL.md`](../SKILL.md) в папку skills (`~/.claude/skills/draw/SKILL.md`); после этого можно напрямую просить графики и диаграммы, не вставляя промпт или URL.
+
 ## Три способа использования
 
 **Хостед-сервис (без установки)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
