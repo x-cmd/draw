@@ -542,7 +542,8 @@ function labelSlots(pts: [number, number][]): { p: [number, number]; horiz: bool
     // 太短的段落放不下标签,跳过(免得标签骑在拐角上)
     if (horiz && len < 40) continue;
     if (!horiz && len < 24) continue;
-    for (const f of [0.5, 0.3, 0.7]) {
+    // 多给几个位置:一条线上能放的地方越多,越容易找到一个不压东西的
+    for (const f of [0.5, 0.3, 0.7, 0.15, 0.85, 0.4, 0.6]) {
       out.push({
         p: [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f],
         horiz,
@@ -762,21 +763,26 @@ function drawBoundaryLabelsV2(
   bboxes: Box[],
   colors: string[],
   style: BoundaryStyle = 'tint',
+  memberBoxes: Box[] = [],
 ): string {
   return boundaries.map((bd, i) => {
     const box = bboxes[i];
+    // 牌子挂在框的左上角 —— 但框的边距被别的框挤扁时(见 boundaryBoxes 的收边距),
+    // 牌子会压到成员身上。成员的上沿是底线:牌子不许越过它。
+    const member = memberBoxes[i];
+    const chipY = member ? Math.min(box.y - 9, member.y - 20) : box.y - 9;
     const label = bd.label.toUpperCase();
     const w = textW(label, 10) + bd.label.length * 1.2 + 20;
     const c = colors[i];
     // 区域底色那套:牌子直接用底色垫,不再垫画布色(否则白方块浮在色块上)
     const chip = style === 'tint'
-      ? `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="${c}" fill-opacity="0.14"/>`
-      : `<rect x="${r2(box.x + 14)}" y="${r2(box.y - 9)}" width="${r2(w)}" height="20" rx="6" fill="var(--d-card)"/>` +
-        `<rect x="${r2(box.x + 15)}" y="${r2(box.y - 8)}" width="${r2(w - 2)}" height="18" rx="5" fill="${c}" fill-opacity="0.16"/>`;
+      ? `<rect x="${r2(box.x + 14)}" y="${r2(chipY)}" width="${r2(w)}" height="20" rx="6" fill="${c}" fill-opacity="0.14"/>`
+      : `<rect x="${r2(box.x + 14)}" y="${r2(chipY)}" width="${r2(w)}" height="20" rx="6" fill="var(--d-card)"/>` +
+        `<rect x="${r2(box.x + 15)}" y="${r2(chipY + 1)}" width="${r2(w - 2)}" height="18" rx="5" fill="${c}" fill-opacity="0.16"/>`;
     return (
       `<g>` +
       chip +
-      `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(box.y + 4)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
+      `<text x="${r2(box.x + 14 + w / 2)}" y="${r2(chipY + 13)}" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.2" fill="${c}">${esc(label)}</text>` +
       `</g>`
     );
   }).join('');
@@ -1060,7 +1066,17 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     + drawRoutesV2(routed, o.interactive, types)
     + drawEdgeLabelsV2(spots, o.interactive)
     + placed.map((p) => drawNodeV2(p, o.interactive, degree.get(p.id) ?? 0, types)).join('')
-    + drawBoundaryLabelsV2(o.boundaries, bboxes, bColors, o.boundaryStyle);
+    + drawBoundaryLabelsV2(
+      o.boundaries, bboxes, bColors, o.boundaryStyle,
+      // 成员的外框 —— 牌子不许压到成员身上
+      o.boundaries.map((bd) => {
+        const ms = o.nodes.filter((n) => bd.ids.includes(n.id)).map((n) => placed.find((p) => p.id === n.id)!.box);
+        if (!ms.length) return { x: 0, y: 0, w: 0, h: 0 };
+        const x = Math.min(...ms.map((m) => m.x));
+        const y = Math.min(...ms.map((m) => m.y));
+        return { x, y, w: Math.max(...ms.map((m) => m.x + m.w)) - x, h: Math.max(...ms.map((m) => m.y + m.h)) - y };
+      }),
+    );
   // 图例在身子下面 —— 要跟着身子一起往下挪(dy),不然身子一被推下去,
   // 图例就留在原地、压进身子里面
   const dy = headH + Math.max(0, (height - headH - legend.h - bodyH) / 2);
