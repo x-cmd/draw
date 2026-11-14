@@ -54,10 +54,10 @@ https://x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O&w=560&h=420
 ### Paracetamol
 
 ```text
-https://x-cmd.com/draw/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC(C%3DC1)O&w=560&h=420
+https://x-cmd.com/draw/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC%28C%3DC1%29O&w=560&h=420
 ```
 
-[![Paracetamol](https://x-cmd.com/draw/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC(C%3DC1)O&w=560&h=420)](https://x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC(C%3DC1)O&w=560&h=420)
+[![Paracetamol](https://x-cmd.com/draw/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC%28C%3DC1%29O&w=560&h=420)](https://x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC%28C%3DC1%29O&w=560&h=420)
 
 ### More molecules (gallery links)
 
@@ -70,8 +70,7 @@ https://x-cmd.com/draw/chem?smiles=CC%28%3DO%29NC1%3DCC%3DC(C%3DC1)O&w=560&h=420
 [Glucose](https://x-cmd.com/draw/chem?smiles=OC%5BC%40H%5D1OC%28O%29%5BC%40H%5D%28O%29%5BC%40%40H%5D%28O%29%5BC%40%40H%5D1O) ·
 [Sucrose](https://x-cmd.com/draw/chem?smiles=OCC1OC%28CO%29C%28O%29C%28O%29C1O) ·
 [Penicillin](https://x-cmd.com/draw/chem?smiles=CC1%28C%29S%5BC%40%40H%5D2%5BC%40H%5D%28NC%28%3DO%29Cc3ccccc3%29C%28%3DO%29N2%5BC%40H%5D1C%28%3DO%29O) ·
-[Cholesterol](https://x-cmd.com/draw/chem?smiles=CC%28C%29CCCC%28C%29C1CCC2C3CC%3DC4CC%28O%29CCC4%28C%29C3CCC12C) ·
-[ATP](https://x-cmd.com/draw/chem?smiles=NC1%3DNC%3DNC2%3DC1N%3DCN2%5BC%40%40H%5D1O%5BC%40H%5D%28COP%28%3DO%29%28O%29OP%28%3DO%29%28O%29OP%28%3DO%29%28O%29OC2%5BC%40H%5D%28O%29%5BC%40%40H%5D%28O%29%5BC%40H%5D%28O%29%5BC%40H%5D2O)
+[Cholesterol](https://x-cmd.com/draw/chem?smiles=CC%28C%29CCCC%28C%29C1CCC2C3CC%3DC4CC%28O%29CCC4%28C%29C3CCC12C)
 
 ## Limits
 
