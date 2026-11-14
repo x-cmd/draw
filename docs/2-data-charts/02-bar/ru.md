@@ -1,6 +1,6 @@
 ---
 x-title: bar столбцы — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=bar.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, столбцы, svg, chart
 ---

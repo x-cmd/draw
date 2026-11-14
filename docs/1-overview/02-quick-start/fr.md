@@ -1,6 +1,6 @@
 ---
 x-title: Français — draw quick start
-x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=.
+x-desc: 'Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=.'
 x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: sankey sankey — x-cmd/draw
-x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=sankey.
+x-desc: 'Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=sankey.'
 x-sidebar: sankey
 x-keywords: draw, sankey, sankey, svg, chart
 ---

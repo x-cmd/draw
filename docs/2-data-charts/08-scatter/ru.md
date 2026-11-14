@@ -1,6 +1,6 @@
 ---
 x-title: scatter разброс — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=scatter.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, разброс, svg, chart
 ---

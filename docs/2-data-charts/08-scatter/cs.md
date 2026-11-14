@@ -1,6 +1,6 @@
 ---
 x-title: scatter bodový — x-cmd/draw
-x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=scatter.
+x-desc: 'SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, bodový, svg, chart
 ---

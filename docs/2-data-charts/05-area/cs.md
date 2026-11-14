@@ -1,6 +1,6 @@
 ---
 x-title: area plocha — x-cmd/draw
-x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=area.
+x-desc: 'SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=area.'
 x-sidebar: area chart
 x-keywords: draw, area, plocha, svg, chart
 ---

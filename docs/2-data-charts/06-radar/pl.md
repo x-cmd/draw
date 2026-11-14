@@ -1,6 +1,6 @@
 ---
 x-title: radar radar — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=radar.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=radar.'
 x-sidebar: radar chart
 x-keywords: draw, radar, radar, svg, chart
 ---

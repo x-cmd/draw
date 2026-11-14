@@ -1,6 +1,6 @@
 ---
 x-title: gauge индикатор — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=gauge.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=gauge.'
 x-sidebar: gauge dial
 x-keywords: draw, gauge, индикатор, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: pie tròn — x-cmd/draw
-x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=pie.
+x-desc: 'Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=pie.'
 x-sidebar: pie chart
 x-keywords: draw, pie, tròn, svg, chart
 ---

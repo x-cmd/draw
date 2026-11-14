@@ -1,6 +1,6 @@
 ---
 x-title: sankey санки — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=sankey.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=sankey.'
 x-sidebar: sankey
 x-keywords: draw, sankey, санки, svg, chart
 ---

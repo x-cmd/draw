@@ -1,6 +1,6 @@
 ---
 x-title: hbar горизонтальные полосы — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=hbar.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=hbar.'
 x-sidebar: horizontal bar
 x-keywords: draw, hbar, горизонтальные полосы, svg, chart
 ---

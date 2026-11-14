@@ -1,6 +1,6 @@
 ---
 x-title: scatter กระจาย — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=scatter.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, กระจาย, svg, chart
 ---

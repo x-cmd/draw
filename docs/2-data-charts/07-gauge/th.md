@@ -1,6 +1,6 @@
 ---
 x-title: gauge เกจ — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=gauge.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=gauge.'
 x-sidebar: gauge dial
 x-keywords: draw, gauge, เกจ, svg, chart
 ---

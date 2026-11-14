@@ -1,6 +1,6 @@
 ---
 x-title: Deutsch — draw quick start
-x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=.
+x-desc: 'SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=.'
 x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---

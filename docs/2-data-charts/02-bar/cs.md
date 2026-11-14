@@ -1,6 +1,6 @@
 ---
 x-title: bar sloupce — x-cmd/draw
-x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=bar.
+x-desc: 'SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, sloupce, svg, chart
 ---

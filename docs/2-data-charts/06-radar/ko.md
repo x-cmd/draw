@@ -1,6 +1,6 @@
 ---
 x-title: radar 레이더 — x-cmd/draw
-x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=radar.
+x-desc: 'AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=radar.'
 x-sidebar: radar chart
 x-keywords: draw, radar, 레이더, svg, chart
 ---

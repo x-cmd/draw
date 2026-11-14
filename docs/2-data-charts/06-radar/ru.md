@@ -1,6 +1,6 @@
 ---
 x-title: radar радар — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=radar.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=radar.'
 x-sidebar: radar chart
 x-keywords: draw, radar, радар, svg, chart
 ---

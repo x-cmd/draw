@@ -1,6 +1,6 @@
 ---
 x-title: radar Radar — x-cmd/draw
-x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=radar.
+x-desc: 'SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=radar.'
 x-sidebar: radar chart
 x-keywords: draw, radar, Radar, svg, chart
 ---

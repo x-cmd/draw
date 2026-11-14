@@ -1,6 +1,6 @@
 ---
 x-title: area aire — x-cmd/draw
-x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=area.
+x-desc: 'Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=area.'
 x-sidebar: area chart
 x-keywords: draw, area, aire, svg, chart
 ---

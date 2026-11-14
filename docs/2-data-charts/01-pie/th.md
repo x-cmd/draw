@@ -1,6 +1,6 @@
 ---
 x-title: pie วงกลม — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=pie.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=pie.'
 x-sidebar: pie chart
 x-keywords: draw, pie, วงกลม, svg, chart
 ---

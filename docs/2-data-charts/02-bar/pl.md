@@ -1,6 +1,6 @@
 ---
 x-title: bar słupkowy — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=bar.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, słupkowy, svg, chart
 ---

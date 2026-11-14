@@ -1,6 +1,6 @@
 ---
 x-title: hbar poziomy — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=hbar.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=hbar.'
 x-sidebar: horizontal bar
 x-keywords: draw, hbar, poziomy, svg, chart
 ---

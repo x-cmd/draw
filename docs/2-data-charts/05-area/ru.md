@@ -1,6 +1,6 @@
 ---
 x-title: area область — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=area.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=area.'
 x-sidebar: area chart
 x-keywords: draw, area, область, svg, chart
 ---

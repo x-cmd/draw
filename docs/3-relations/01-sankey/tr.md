@@ -1,6 +1,6 @@
 ---
 x-title: sankey sankey — x-cmd/draw
-x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=sankey.
+x-desc: 'Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=sankey.'
 x-sidebar: sankey
 x-keywords: draw, sankey, sankey, svg, chart
 ---

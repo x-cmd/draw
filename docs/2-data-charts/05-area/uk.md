@@ -1,6 +1,6 @@
 ---
 x-title: area площина — x-cmd/draw
-x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=area.
+x-desc: 'SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=area.'
 x-sidebar: area chart
 x-keywords: draw, area, площина, svg, chart
 ---

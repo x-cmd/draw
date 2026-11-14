@@ -1,6 +1,6 @@
 ---
 x-title: 한국어 — draw overview
-x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=.
+x-desc: 'AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=.'
 x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: ไทย — draw overview
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=.'
 x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---

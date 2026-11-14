@@ -1,6 +1,6 @@
 ---
 x-title: combo kombinowany — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=combo.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=combo.'
 x-sidebar: combo chart
 x-keywords: draw, combo, kombinowany, svg, chart
 ---

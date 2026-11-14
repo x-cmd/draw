@@ -1,6 +1,6 @@
 ---
 x-title: combo combinado — x-cmd/draw
-x-desc: Gráficos SVG para a era da IA: um único endpoint `/draw?type=. type=combo.
+x-desc: 'Gráficos SVG para a era da IA: um único endpoint `/draw?type=. type=combo.'
 x-sidebar: combo chart
 x-keywords: draw, combo, combinado, svg, chart
 ---

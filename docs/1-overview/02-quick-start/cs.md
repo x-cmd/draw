@@ -1,6 +1,6 @@
 ---
 x-title: Čeština — draw quick start
-x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=.
+x-desc: 'SVG grafy pro éru AI: jediný endpoint `/draw?type=.'
 x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---

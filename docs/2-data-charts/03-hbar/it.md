@@ -1,6 +1,6 @@
 ---
 x-title: hbar barre orizzontali — x-cmd/draw
-x-desc: Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=hbar.
+x-desc: 'Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=hbar.'
 x-sidebar: horizontal bar
 x-keywords: draw, hbar, barre orizzontali, svg, chart
 ---

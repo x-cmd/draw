@@ -1,6 +1,6 @@
 ---
 x-title: line เส้น — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=line.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=line.'
 x-sidebar: line chart
 x-keywords: draw, line, เส้น, svg, chart
 ---

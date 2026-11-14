@@ -1,6 +1,6 @@
 ---
 x-title: gauge wskaźnik — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=gauge.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=gauge.'
 x-sidebar: gauge dial
 x-keywords: draw, gauge, wskaźnik, svg, chart
 ---

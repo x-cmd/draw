@@ -1,6 +1,6 @@
 ---
 x-title: Italiano — draw overview
-x-desc: Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=.
+x-desc: 'Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=.'
 x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---

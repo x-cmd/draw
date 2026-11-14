@@ -1,6 +1,6 @@
 ---
 x-title: area powierzchniowy — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=area.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=area.'
 x-sidebar: area chart
 x-keywords: draw, area, powierzchniowy, svg, chart
 ---

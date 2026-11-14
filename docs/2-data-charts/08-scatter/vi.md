@@ -1,6 +1,6 @@
 ---
 x-title: scatter phân tán — x-cmd/draw
-x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=scatter.
+x-desc: 'Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, phân tán, svg, chart
 ---

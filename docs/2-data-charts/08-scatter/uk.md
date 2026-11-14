@@ -1,6 +1,6 @@
 ---
 x-title: scatter розсіювання — x-cmd/draw
-x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=scatter.
+x-desc: 'SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, розсіювання, svg, chart
 ---

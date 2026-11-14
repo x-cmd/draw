@@ -1,6 +1,6 @@
 ---
 x-title: combo kombine — x-cmd/draw
-x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=combo.
+x-desc: 'Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=. type=combo.'
 x-sidebar: combo chart
 x-keywords: draw, combo, kombine, svg, chart
 ---

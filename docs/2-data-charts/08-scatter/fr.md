@@ -1,6 +1,6 @@
 ---
 x-title: scatter nuage de points — x-cmd/draw
-x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=scatter.
+x-desc: 'Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, nuage de points, svg, chart
 ---

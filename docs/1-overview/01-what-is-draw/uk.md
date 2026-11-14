@@ -1,6 +1,6 @@
 ---
 x-title: Українська — draw overview
-x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=.
+x-desc: 'SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=.'
 x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---

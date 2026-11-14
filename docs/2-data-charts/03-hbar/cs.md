@@ -1,6 +1,6 @@
 ---
 x-title: hbar vodorovné pruhy — x-cmd/draw
-x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=hbar.
+x-desc: 'SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=hbar.'
 x-sidebar: horizontal bar
 x-keywords: draw, hbar, vodorovné pruhy, svg, chart
 ---

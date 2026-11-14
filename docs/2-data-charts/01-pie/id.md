@@ -1,6 +1,6 @@
 ---
 x-title: pie pie — x-cmd/draw
-x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=pie.
+x-desc: 'Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=pie.'
 x-sidebar: pie chart
 x-keywords: draw, pie, pie, svg, chart
 ---

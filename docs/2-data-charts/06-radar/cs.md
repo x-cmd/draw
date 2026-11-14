@@ -1,6 +1,6 @@
 ---
 x-title: radar radar — x-cmd/draw
-x-desc: SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=radar.
+x-desc: 'SVG grafy pro éru AI: jediný endpoint `/draw?type=. type=radar.'
 x-sidebar: radar chart
 x-keywords: draw, radar, radar, svg, chart
 ---

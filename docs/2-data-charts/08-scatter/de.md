@@ -1,6 +1,6 @@
 ---
 x-title: scatter Streudiagramm — x-cmd/draw
-x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=scatter.
+x-desc: 'SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, Streudiagramm, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: scatter sebaran — x-cmd/draw
-x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=scatter.
+x-desc: 'Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=scatter.'
 x-sidebar: scatter plot
 x-keywords: draw, scatter, sebaran, svg, chart
 ---

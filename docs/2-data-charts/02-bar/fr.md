@@ -1,6 +1,6 @@
 ---
 x-title: bar colonnes — x-cmd/draw
-x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=bar.
+x-desc: 'Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, colonnes, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: combo Kombination — x-cmd/draw
-x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=combo.
+x-desc: 'SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=combo.'
 x-sidebar: combo chart
 x-keywords: draw, combo, Kombination, svg, chart
 ---

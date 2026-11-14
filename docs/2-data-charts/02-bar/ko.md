@@ -1,6 +1,6 @@
 ---
 x-title: bar 세로 막대 — x-cmd/draw
-x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=bar.
+x-desc: 'AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, 세로 막대, svg, chart
 ---

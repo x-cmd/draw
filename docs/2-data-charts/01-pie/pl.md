@@ -1,6 +1,6 @@
 ---
 x-title: pie kołowy — x-cmd/draw
-x-desc: Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=pie.
+x-desc: 'Wykresy SVG dla ery AI: jeden endpoint `/draw?type=. type=pie.'
 x-sidebar: pie chart
 x-keywords: draw, pie, kołowy, svg, chart
 ---

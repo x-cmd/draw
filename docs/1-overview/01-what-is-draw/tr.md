@@ -1,6 +1,6 @@
 ---
 x-title: Türkçe — draw overview
-x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=.
+x-desc: 'Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=.'
 x-sidebar: overview
 x-keywords: draw, overview, svg, chart, api
 ---

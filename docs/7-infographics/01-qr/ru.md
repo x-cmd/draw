@@ -1,6 +1,6 @@
 ---
 x-title: qr QR-код — x-cmd/draw
-x-desc: SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=qr.
+x-desc: 'SVG-графики для эпохи ИИ: один эндпоинт `/draw?type=. type=qr.'
 x-sidebar: QR code
 x-keywords: draw, qr, QR-код, svg, chart
 ---

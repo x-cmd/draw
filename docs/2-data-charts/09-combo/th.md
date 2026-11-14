@@ -1,6 +1,6 @@
 ---
 x-title: combo ผสม — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=combo.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=combo.'
 x-sidebar: combo chart
 x-keywords: draw, combo, ผสม, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: gauge medidor — x-cmd/draw
-x-desc: Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=gauge.
+x-desc: 'Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=gauge.'
 x-sidebar: gauge dial
 x-keywords: draw, gauge, medidor, svg, chart
 ---

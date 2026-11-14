@@ -1,6 +1,6 @@
 ---
 x-title: gauge jauge — x-cmd/draw
-x-desc: Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=gauge.
+x-desc: 'Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=. type=gauge.'
 x-sidebar: gauge dial
 x-keywords: draw, gauge, jauge, svg, chart
 ---

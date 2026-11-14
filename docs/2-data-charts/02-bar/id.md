@@ -1,6 +1,6 @@
 ---
 x-title: bar kolom — x-cmd/draw
-x-desc: Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=bar.
+x-desc: 'Grafik SVG untuk era AI: satu endpoint `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, kolom, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: qr คิวอาร์โค้ด — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=qr.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=qr.'
 x-sidebar: QR code
 x-keywords: draw, qr, คิวอาร์โค้ด, svg, chart
 ---

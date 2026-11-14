@@ -1,6 +1,6 @@
 ---
 x-title: 한국어 — draw quick start
-x-desc: AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=.
+x-desc: 'AI 시대의 SVG 차트 생성: 단일 엔드포인트 `/draw?type=.'
 x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---

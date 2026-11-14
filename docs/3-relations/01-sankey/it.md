@@ -1,6 +1,6 @@
 ---
 x-title: sankey sankey — x-cmd/draw
-x-desc: Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=sankey.
+x-desc: 'Grafici SVG per l’era dell’IA: un solo endpoint `/draw?type=. type=sankey.'
 x-sidebar: sankey
 x-keywords: draw, sankey, sankey, svg, chart
 ---

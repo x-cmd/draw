@@ -1,6 +1,6 @@
 ---
 x-title: sankey แซงกี้ — x-cmd/draw
-x-desc: กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=sankey.
+x-desc: 'กราฟ SVG สำหรับยุค AI: endpoint เดียว `/draw?type=. type=sankey.'
 x-sidebar: sankey
 x-keywords: draw, sankey, แซงกี้, svg, chart
 ---

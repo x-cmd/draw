@@ -1,6 +1,6 @@
 ---
 x-title: Türkçe — draw quick start
-x-desc: Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=.
+x-desc: 'Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=.'
 x-sidebar: quick start
 x-keywords: draw, quickstart, svg, chart
 ---

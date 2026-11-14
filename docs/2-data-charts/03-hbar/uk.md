@@ -1,6 +1,6 @@
 ---
 x-title: hbar горизонтальні стовпчики — x-cmd/draw
-x-desc: SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=hbar.
+x-desc: 'SVG-діаграми для епохи ШІ: один ендпоінт `/draw?type=. type=hbar.'
 x-sidebar: horizontal bar
 x-keywords: draw, hbar, горизонтальні стовпчики, svg, chart
 ---

@@ -1,6 +1,6 @@
 ---
 x-title: area diện tích — x-cmd/draw
-x-desc: Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=area.
+x-desc: 'Biểu đồ SVG cho thời đại AI: một endpoint `/draw?type=. type=area.'
 x-sidebar: area chart
 x-keywords: draw, area, diện tích, svg, chart
 ---

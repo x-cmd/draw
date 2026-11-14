@@ -1,6 +1,6 @@
 ---
 x-title: qr QR-Code — x-cmd/draw
-x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=qr.
+x-desc: 'SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=qr.'
 x-sidebar: QR code
 x-keywords: draw, qr, QR-Code, svg, chart
 ---

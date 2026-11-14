@@ -1,6 +1,6 @@
 ---
 x-title: bar Säulen — x-cmd/draw
-x-desc: SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=bar.
+x-desc: 'SVG-Diagramme für das KI-Zeitalter: ein Endpunkt `/draw?type=. type=bar.'
 x-sidebar: bar chart
 x-keywords: draw, bar, Säulen, svg, chart
 ---

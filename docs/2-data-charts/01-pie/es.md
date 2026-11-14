@@ -1,6 +1,6 @@
 ---
 x-title: pie pastel — x-cmd/draw
-x-desc: Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=pie.
+x-desc: 'Gráficos SVG para la era de la IA: un único endpoint `/draw?type=. type=pie.'
 x-sidebar: pie chart
 x-keywords: draw, pie, pastel, svg, chart
 ---
