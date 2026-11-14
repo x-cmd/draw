@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labe
 
 [![Pie — kota terbesar](https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
 
+## Prompt — beri tahu agen AI Anda (skill)
+
+Tanpa instalasi: tempel prompt ini sekali ke agen mana pun yang terhubung ke web, lalu jelaskan grafik atau diagram yang Anda butuhkan dengan bahasa alami:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Setelah itu, Anda bisa bertanya:
+
+> Buat diagram pai jumlah bintang per bahasa — TypeScript 4821, Python 2312, Go 980
+
+Agen yang memuat skill secara native (Claude Code, dll.): simpan [`SKILL.md`](../SKILL.md) sekali ke folder skills Anda (`~/.claude/skills/draw/SKILL.md`); kemudian cukup minta grafik atau diagram secara langsung, tanpa menempelkan prompt atau URL.
+
 ## Tiga cara pakai
 
 **Layanan hosted (tanpa instalasi)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

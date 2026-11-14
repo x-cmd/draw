@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9
 
 [![Pasta — en büyük şehirler](https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
 
+## Prompt — AI ajanınıza talimat verin (skill)
+
+Kurulum yok: bu promptu web bağlantılı herhangi bir ajana bir kez yapıştırın; sonrasında ihtiyacınız olan grafik veya diyagramı doğal dille anlatın:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Sonrasında şöyle sorabilirsiniz:
+
+> Programlama dillerinin yıldız sayılarını pasta grafik olarak çiz — TypeScript 4821, Python 2312, Go 980
+
+Skill'leri yerel olarak yükleyen ajanlar (Claude Code vb.): [`SKILL.md`](../SKILL.md) dosyasını skills klasörünüze (`~/.claude/skills/draw/SKILL.md`) bir kez koyun; sonrasında prompt veya URL yapıştırmadan doğrudan grafik ya da diyagram isteyin.
+
 ## Üç kullanım yolu
 
 **Hosted servis (kurulum yok)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

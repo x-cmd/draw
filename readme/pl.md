@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&uni
 
 [![Kołowy — największe miasta](https://x-cmd.com/draw?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Najwi%C4%99ksze%20miasta&unit=mln&labels=Warszawa,Krak%C3%B3w,Wroc%C5%82aw,%C5%81%C3%B3d%C5%BA&values=1.9,0.8,0.7,0.7)
 
+## Prompt — polecenie dla agenta AI (skill)
+
+Bez instalacji: wklej ten prompt raz do dowolnego agenta połączonego z internetem, a następnie opisz w naturalnym języku potrzebny wykres lub diagram:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Następnie możesz napisać:
+
+> Narysuj wykres kołowy gwiazdek według języka — TypeScript 4821, Python 2312, Go 980
+
+Agenci z natywnym wczytywaniem skilli (Claude Code itp.): umieść [`SKILL.md`](../SKILL.md) raz w folderze skills (`~/.claude/skills/draw/SKILL.md`); później możesz bezpośrednio prosić o wykresy lub diagramy, bez wklejania promptu czy URL.
+
 ## Trzy sposoby użycia
 
 **Serwis hostowany (zero instalacji)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

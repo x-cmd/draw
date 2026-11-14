@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill
 
 [![Pastel — mayores ciudades](https://x-cmd.com/draw?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Mayores%20ciudades&unit=mill.&labels=Madrid,Barcelona,Valencia,Sevilla&values=3.3,1.6,0.8,0.7)
 
+## Prompt — indica a tu agente de IA (skill)
+
+Sin instalación: pega este prompt una vez en cualquier agente conectado a la web; después, describe en lenguaje natural el gráfico o diagrama que necesites:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Después puedes pedir, por ejemplo:
+
+> Representa las estrellas por lenguaje en un gráfico circular — TypeScript 4821, Python 2312, Go 980
+
+Los agentes que cargan skills de forma nativa (Claude Code, etc.): copia [`SKILL.md`](../SKILL.md) una vez en tu carpeta de skills (`~/.claude/skills/draw/SKILL.md`); después pide gráficos o diagramas directamente, sin pegar el prompt ni la URL.
+
 ## Tres formas de usarlo
 
 **Servicio alojado (cero instalación)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=m
 
 [![Torta — maggiori città](https://x-cmd.com/draw?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Maggiori%20citt%C3%A0&unit=mln&labels=Roma,Milano,Napoli,Torino&values=2.8,1.4,1,0.9)
 
+## Prompt — istruzioni per il tuo agente AI (skill)
+
+Zero installazione: incolla questo prompt una sola volta in qualsiasi agente connesso al web, poi descrivi in linguaggio naturale il grafico o diagramma che ti serve:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Poi puoi chiedere, ad esempio:
+
+> Disegna un grafico a torta con le stelle per linguaggio — TypeScript 4821, Python 2312, Go 980
+
+Gli agenti che caricano nativamente le skill (Claude Code, ecc.): copia [`SKILL.md`](../SKILL.md) una sola volta nella cartella delle skill (`~/.claude/skills/draw/SKILL.md`); poi richiedi direttamente grafici o diagrammi, senza incollare prompt o URL.
+
 ## Tre modi per usarlo
 
 **Servizio ospitato (zero installazione)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`

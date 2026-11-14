@@ -59,6 +59,20 @@ https://x-cmd.com/draw?type=pie&t=market-mono&title=Gr%C3%B6%C3%9Fte%20St%C3%A4d
 
 [![Kreis — größte Städte](https://x-cmd.com/draw?type=pie&t=market-mono&title=Gr%C3%B6%C3%9Fte%20St%C3%A4dte&unit=Mio.&labels=Berlin,Hamburg,M%C3%BCnchen,K%C3%B6ln&values=3.6,1.8,1.5,1.1)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Gr%C3%B6%C3%9Fte%20St%C3%A4dte&unit=Mio.&labels=Berlin,Hamburg,M%C3%BCnchen,K%C3%B6ln&values=3.6,1.8,1.5,1.1)
 
+## Prompt — Anweisung für deinen AI-Agenten (skill)
+
+Ohne Installation: Füge diesen Prompt einmal in einen mit dem Web verbundenen Agenten ein und beschreibe danach in natürlicher Sprache das gewünschte Diagramm:
+
+```text
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
+```
+
+Danach kannst du zum Beispiel fragen:
+
+> Erstelle ein Kreisdiagramm der Sterne nach Programmiersprache — TypeScript 4821, Python 2312, Go 980
+
+Agenten mit nativer Skill-Unterstützung (Claude Code usw.): Lege [`SKILL.md`](../SKILL.md) einmal in deinem Skills-Ordner (`~/.claude/skills/draw/SKILL.md`) ab. Danach kannst du Diagramme direkt anfordern, ohne Prompt oder URL.
+
 ## Drei Wege der Nutzung
 
 **Hosted Service (null Installation)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
