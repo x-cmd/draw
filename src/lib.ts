@@ -54,6 +54,14 @@ export {
   type LayoutCtx,
   type LayoutResult,
 } from './render/layout.js';
+// 布线的挂载点:线怎么走(选面、排端口、走哪条通道)可以换 ——
+// 库只管把「怎么画」做好,「怎么走」可以换(引擎的选择不是 URL 的一部分)
+export {
+  routeEdges,
+  PORT_GAP,
+  type RoutingEngine,
+  type RoutingCtx,
+} from './render/route.js';
 // mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
 export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';

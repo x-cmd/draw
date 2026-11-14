@@ -13,6 +13,7 @@ import { ApiError } from '../specs/index.js';
 import { resolveVersion, type VersionInfo } from '../version.js';
 import { resolveSkin, type Skin } from '../styles/index.js';
 import { esc, r2, sVar, segRectIntersect, svgDoc, textW } from './svg.js';
+import { routeEdges, type RoutingCtx, type RoutingEngine } from './route.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 
 const TYPES = ['ext', 'fe', 'be', 'db', 'cloud', 'sec', 'bus', 'svc'] as const;
@@ -420,55 +421,34 @@ function straightRoutes(placed: Placed[], edges: ArchEdge[], dir: 'TB' | 'LR'): 
   });
 }
 
-export function computeRoutes(placed: Placed[], edges: ArchEdge[]): Routed[] {
+/**
+ * 走线:几何交给布线内核(见 render/route.ts),这里只管样式。
+ *
+ * 内核那套规矩:不同源的边不共用一段、不首尾相接;端口进出一组排、间距 ≥ 9px。
+ * (旧写法进出端口分开数 → 落同一个点;竖通道只避让盒子、不看别的线 →
+ *  两条边选了同一个通道,接成一根线。见 x-cmd-hub/draw#92。)
+ */
+export function computeRoutes(
+  placed: Placed[], edges: ArchEdge[], bounds: Box[] = [],
+  routing?: RoutingEngine, dir: 'LR' | 'TB' = 'TB',
+): Routed[] {
   const byId = new Map(placed.map(p => [p.id, p]));
-  const boxes = placed.map(p => p.box);
-  const exitSeen = new Map<string, number>();
-  const entrySeen = new Map<string, number>();
-  const exitAt: number[] = [];
-  const entryAt: number[] = [];
-  const sides: { exit: Side; entry: Side }[] = edges.map(e => {
-    const a = byId.get(e.from)!.box;
-    const b = byId.get(e.to)!.box;
-    const horiz = Math.abs(boxCx(b) - boxCx(a)) >= Math.abs(boxCy(b) - boxCy(a));
-    const toRight = boxCx(b) >= boxCx(a);
-    const down = boxCy(b) >= boxCy(a);
-    return {
-      exit: horiz ? (toRight ? 'right' : 'left') : down ? 'bottom' : 'top',
-      entry: horiz ? (toRight ? 'left' : 'right') : down ? 'top' : 'bottom',
-    };
-  });
-  edges.forEach((e, i) => {
-    const ek = `${e.from}|${sides[i].exit}`;
-    exitAt[i] = exitSeen.get(ek) ?? 0;
-    exitSeen.set(ek, exitAt[i] + 1);
-    const rk = `${e.to}|${sides[i].entry}`;
-    entryAt[i] = entrySeen.get(rk) ?? 0;
-    entrySeen.set(rk, entryAt[i] + 1);
-  });
+  const ctx: RoutingCtx = {
+    nodes: placed,
+    boxes: new Map(placed.map(p => [p.id, p.box])),
+    edges,
+    bounds,
+    dir,
+    portBox: (id) => byId.get(id)!.box,
+  };
+  const paths = (routing ?? routeEdges)(ctx);
   return edges.map((e, i) => {
-    const a = byId.get(e.from)!;
-    const b = byId.get(e.to)!;
-    const { exit, entry } = sides[i];
-    const p0 = port(a.box, exit, exitAt[i], exitSeen.get(`${e.from}|${exit}`) ?? 1);
-    const p4 = port(b.box, entry, entryAt[i], entrySeen.get(`${e.to}|${entry}`) ?? 1);
-    const OUT = 14;
-    const p1 = step(p0, exit, OUT);
-    const p3 = step(p4, entry, OUT);
-    let pts: [number, number][];
-    if (exit === 'left' || exit === 'right') {
-      const mid = nudgeMid('v', (p1[0] + p3[0]) / 2, p1, p3, a.box, b.box, boxes);
-      pts = [p0, p1, [mid, p1[1]], [mid, p3[1]], p3, p4];
-    } else {
-      const mid = nudgeMid('h', (p1[1] + p3[1]) / 2, p1, p3, a.box, b.box, boxes);
-      pts = [p0, p1, [p1[0], mid], [p3[0], mid], p3, p4];
-    }
     const style = e.variant === 'main'
       ? { stroke: 'var(--d-ink)', width: 1.8, marker: 'am-m', dash: '' }
       : e.variant === 'dash'
         ? { stroke: 'var(--d-faint)', width: 1.4, marker: 'am-d', dash: ' stroke-dasharray="5 4"' }
         : { stroke: 'var(--d-muted)', width: 1.4, marker: 'am-p', dash: '' };
-    return { e, pts, ...style };
+    return { e, pts: paths[i] ?? [], ...style };
   });
 }
 
@@ -699,6 +679,8 @@ export interface ArchmapCoreOpts {
   aria?: string;
   /** 正交折线(默认,格位架构图)或直连线(mermaid 流程图:迎面边直连,零弯折) */
   edgeMode?: 'ortho' | 'straight';
+  /** 布线引擎(线怎么走)—— 不给就用库里那个基础版;调用方的事,不是 URL 参数 */
+  routing?: RoutingEngine;
   straightDir?: 'TB' | 'LR';
   /** 原始 URL 查询串:角标直链 explore 落地页用(#44) */
   tagQuery?: string;
@@ -715,8 +697,13 @@ export function renderArchmapCore(o: ArchmapCoreOpts): DrawResult {
     width = Math.max(width, p.box.x + p.box.w + PAD);
     bodyH = Math.max(bodyH, p.box.y + p.box.h + PAD);
   }
+  // 分组框先算好:走线要避开它(绕行时别跑出这个框)
+  const byIdEarly = new Map(placed.map(p => [p.id, p]));
+  const bboxes = o.boundaries.map(bd => boundaryBox(byIdEarly, bd));
   // 管线:路由 → 边界标签选角(避开走线) → 边标签避让(节点盒 ∪ 边界标签区)
-  const routed = o.edgeMode === 'straight' ? straightRoutes(placed, o.edges, o.straightDir ?? 'TB') : computeRoutes(placed, o.edges);
+  const routed = o.edgeMode === 'straight'
+    ? straightRoutes(placed, o.edges, o.straightDir ?? 'TB')
+    : computeRoutes(placed, o.edges, bboxes, o.routing);
   // 画布要盖住走线:反向边绕到节点外面(U 形),边标签又贴在走线上 ——
   // 只按节点盒算尺寸,那一段会被裁掉(字看不全)。
   for (const rt of routed) {

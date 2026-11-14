@@ -60,7 +60,9 @@ describe('arch v2 rendering', () => {
     for (const d of paths) expect(d.split('L').length).toBeGreaterThan(2);
   });
 
-  it('走一条公共的横向通道(总线),且不横穿中间的盒子', () => {
+  it('扇出各走各的:不横穿中间的盒子,也不共用一段', () => {
+    // 旧写法是「总线」:三条线压着一条公共横通道走 —— 看着像一根线分叉。
+    // 新写法各走各的:从哪边出、绕哪条道,看目标在哪。
     const nodes = [
       'n=h;be;Handler;r0c1',
       'n=a;be;Left;r1c0',
@@ -72,13 +74,18 @@ describe('arch v2 rendering', () => {
     const body = renderArchFromUrl(url).svg.replace(/<defs>.*?<\/defs>/s, '');
     const paths = [...body.matchAll(/<path d="([^"]+)"[^>]*stroke="var\(--d-muted\)"/g)].map((m) => m[1]);
     const pts = paths.map((d) => d.split(/[ML]/).filter(Boolean).map((p) => p.trim().split(' ').map(Number)));
-    // 每条边都要有一段水平的通道,而且三条边共用同一条
-    const channel = pts.map((p) => {
-      for (let i = 1; i < p.length; i++) if (p[i][1] === p[i - 1][1]) return p[i][1];
-      return null;
-    });
-    expect(channel.every((y) => y !== null)).toBe(true);
-    expect(new Set(channel).size).toBe(1);
+    expect(pts.length).toBe(3);
+    // 两条边不许共用同一段(共用段 = 看着像一根线)
+    const segKey = (a: number[], b: number[]): string =>
+      JSON.stringify(([[a[0], a[1]], [b[0], b[1]]] as [number, number][]).sort((p, q) => p[0] - q[0] || p[1] - q[1]));
+    const seen = new Set<string>();
+    for (const p of pts) {
+      for (let i = 1; i < p.length; i++) {
+        const k = segKey(p[i - 1], p[i]);
+        expect(seen.has(k), `两��边共用了一段 ${k}`).toBe(false);
+        seen.add(k);
+      }
+    }
     // 盒子(rx=12 的是节点框)
     const boxes = [...body.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="12"/g)]
       .map((m) => ({ x: +m[1], y: +m[2], w: +m[3], h: +m[4] }));
@@ -202,8 +209,8 @@ describe('端口与走线', () => {
     expect(inRoute[inRoute.length - 1]).not.toEqual(outRoute[0]);
   });
 
-  it('扇出可以共用一段(从一个源分出去的几条线,起点同一边)', () => {
-    // switch → 三个目标:共用源那一侧是好事(读者一眼看出是同一个源)
+  it('扇出的几条线不共用一段(合流窗口是站上引擎的事,公开仓这版不给引线)', () => {
+    // 同一个源分出去的几条线:起点不重合,也不压着同一段走
     const { svg } = renderArchFromUrl(new URL('https://x-cmd.com/draw/arch2?' + [
       'n=sw;svc;Switch;r0c0',
       'n=a;db;A;r1c0',
@@ -215,10 +222,19 @@ describe('端口与走线', () => {
     ].join('&')));
     const routes = routesOf(svg);
     expect(routes.length).toBe(3);
-    // 三条线都从 sw 的同一条边(下边)出来 → y 相同,x 散开
-    const ys = routes.map((r) => r[0][1]);
-    expect(new Set(ys).size).toBe(1);
-    expect(new Set(routes.map((r) => r[0][0])).size).toBeGreaterThan(1);
+    // 起点两两不同
+    expect(new Set(routes.map((r) => `${r[0]}`)).size).toBe(3);
+    // 没有共用段
+    const segKey = (a: number[], b: number[]): string =>
+      JSON.stringify(([[a[0], a[1]], [b[0], b[1]]] as [number, number][]).sort((p, q) => p[0] - q[0] || p[1] - q[1]));
+    const seen = new Set<string>();
+    for (const r of routes) {
+      for (let i = 1; i < r.length; i++) {
+        const k = segKey(r[i - 1], r[i]);
+        expect(seen.has(k), `两条边共用了一段 ${k}`).toBe(false);
+        seen.add(k);
+      }
+    }
   });
 });
 
