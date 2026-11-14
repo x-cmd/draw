@@ -183,11 +183,24 @@ export function headLayout(option: Obj): void {
     }
   }
 
+  // y 轴的名字画在轴的**上端**(grid.top 上面那一条)—— 标题带没给它留位置,
+  // 它就压在标题上(「政府收入与增长」和「平均实际增速 %/年」叠成一团)。
+  const yAxisNameH = (() => {
+    const ya = firstObj(option.yAxis);
+    if (!ya || ya.show === false) return 0;
+    if (typeof ya.name !== 'string' || ya.name.trim() === '') return 0;
+    const loc = ya.nameLocation;
+    if (loc === 'middle' || loc === 'center') return 0;   // 侧着写,不占顶部
+    return 20;                                            // 名字那一条(12px 字 + 留白)
+  })();
+
   // 绘图区:不许被标题带/图例压住
-  const need = Math.max(
+  const band = Math.max(
     titleBottom ? titleBottom + R.legendGap : 0,
     legendBottom ? legendBottom + R.legendGap : 0,
   );
+  // 顶部有带子时,再给 y 轴的名字让出它那一条
+  const need = band + (band ? yAxisNameH : 0);
   if (need > 0) {
     if (grid) {
       const gridTop = typeof grid.top === 'number' ? grid.top : R.gridTop;
