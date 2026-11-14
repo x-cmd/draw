@@ -67,6 +67,7 @@ export {
   PORT_GAP,
   type RoutingEngine,
   type RoutingCtx,
+  type RoutingWeights,
   type Drawn,
 } from './render/route.js';
 // mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)

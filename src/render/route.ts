@@ -15,6 +15,26 @@ import type { ArchEdge, ArchNode, Box, Side } from './archmap.js';
 
 /* ---------------------------------------------------------------- 契约 */
 
+/**
+ * 布线的「口味」:同样的算法,不同的代价权重。
+ *
+ * 有些地方是口味问题不是对错问题:交叉一次 vs 绕远一圈,哪个更难看,看图的人说了算。
+ * 所以权重交给调用方 —— 算法只有一种(这里是 Hanan 网格 + Dijkstra),
+ * 换权重不换算法。
+ */
+export interface RoutingWeights {
+  /** 交叉一次别的线的代价(像素当量) */
+  cross?: number;
+  /** 挨上(接在同一个点上)的代价 */
+  touch?: number;
+  /** 挤在别人已经走过的通道里的代价 */
+  channel?: number;
+  /** 拐一次弯的代价 */
+  bend?: number;
+  /** 绕远上限(路长 ≤ 直线距离 × 这个倍数) */
+  detour?: number;
+}
+
 /** 布线引擎的输入:摆好了的位置 + 边 + 障碍 */
 export interface RoutingCtx {
   /** 节点(带 id) */
@@ -29,6 +49,8 @@ export interface RoutingCtx {
   dir: 'LR' | 'TB';
   /** 线接在节点的哪块上(大图标模式:只接图标那块,不接名字) */
   portBox: (id: string) => Box;
+  /** 口味:代价权重(不给就用默认值) */
+  weights?: RoutingWeights;
 }
 
 /** 布线引擎:按 ctx.edges 的下标,返回每条边的折点 */
@@ -413,7 +435,12 @@ export function routeOrthogonal(
   outer: Box,
   hard: boolean,
   maxLen: number,
+  w: RoutingWeights = {},
 ): [number, number][] | null {
+  const CROSS = w.cross ?? ROUTE_CROSS;
+  const TOUCH = w.touch ?? ROUTE_TOUCH;
+  const BEND = w.bend ?? ROUTE_BEND;
+  const CHANNEL_C = w.channel ?? CHANNEL_COST;
   // 障碍:往外胀一点,路就不会贴着框
   const obs: Box[] = boxes.map((b) => ({
     x: b.x - ROUTE_MARGIN, y: b.y - ROUTE_MARGIN,
@@ -570,14 +597,14 @@ export function routeOrthogonal(
           Math.max(a[1], b[1]) < Math.min(c[1], e[1]) || Math.max(c[1], e[1]) < Math.min(a[1], b[1])) continue;
       if (segsOverlap(a, b, c, e)) {
         if (hard) { forbidden = true; break; }
-        extra += ROUTE_CROSS;
+        extra += CROSS;
         continue;
       }
-      if (segsCross(a, b, c, e)) { extra += ROUTE_CROSS; continue; }
-      if (segsMeet(a, b, c, e)) { extra += ROUTE_TOUCH; continue; }
+      if (segsCross(a, b, c, e)) { extra += CROSS; continue; }
+      if (segsMeet(a, b, c, e)) { extra += TOUCH; continue; }
       // 挤在同一条通道里:加钱(空着的通道更清楚)
-      if (a[0] === b[0] && c[0] === e[0] && Math.abs(a[0] - c[0]) <= CHANNEL) extra += CHANNEL_COST;
-      else if (a[1] === b[1] && c[1] === e[1] && Math.abs(a[1] - c[1]) <= CHANNEL) extra += CHANNEL_COST;
+      if (a[0] === b[0] && c[0] === e[0] && Math.abs(a[0] - c[0]) <= CHANNEL) extra += CHANNEL_C;
+      else if (a[1] === b[1] && c[1] === e[1] && Math.abs(a[1] - c[1]) <= CHANNEL) extra += CHANNEL_C;
     }
     if (forbidden) continue;
     const step = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
@@ -586,7 +613,7 @@ export function routeOrthogonal(
     if (newLen > maxLen) continue;
     for (let nd = 0; nd < 4; nd++) {
       const nIdx = startIdx(ni, nj, nd);
-      const bend = nd === d ? 0 : ROUTE_BEND;
+      const bend = nd === d ? 0 : BEND;
       const nc = cost[idx] + step + bend + extra;
       if (nc < cost[nIdx]) {
         const wasNew = cost[nIdx] === Infinity;
@@ -610,6 +637,8 @@ export function routeOrthogonal(
  */
 export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   const { edges, boxes, portBox } = ctx;
+  const w = ctx.weights ?? {};
+  const DETOUR = w.detour ?? MAX_DETOUR;
   if (!edges.length) return [];
   const byId = new Map(ctx.nodes.map((n) => [n.id, n]));
 
@@ -666,9 +695,9 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     const p0 = portAt(a, exit, exitOff[i]);
     const p4 = portAt(b, entry, entryOff[i]);
     const straight = Math.abs(p4[0] - p0[0]) + Math.abs(p4[1] - p0[1]);
-    const maxLen = Math.max(straight * MAX_DETOUR, straight + 120);
-    let pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, true, maxLen);
-    if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, false, maxLen);
+    const maxLen = Math.max(straight * DETOUR, straight + 120);
+    let pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, true, maxLen, w);
+    if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, false, maxLen, w);
     if (!pts) pts = directRoute(p0, exit, p4, entry, a, b, allBoxes, ctx.bounds);
     for (let j = 1; j < pts.length; j++) {
       drawn.push({ seg: [pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]], edge: i });
