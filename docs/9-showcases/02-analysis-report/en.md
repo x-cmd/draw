@@ -1,7 +1,7 @@
 ---
 x-title: Analysis reports — the numbers a report is made of
 x-desc: 'x-cmd/draw showcase: analysis reports. Real URLs for latency against load, the CI pass rate gauge, a radar scorecard, volume against rate, revenue against margin, and test duration spread.'
-x-sidebar: showcase analysis report
+x-sidebar: analysis report
 x-keywords: analysis report chart, dashboard, draw showcase, svg, metrics
 x-json-ld:
   '@context': https://schema.org

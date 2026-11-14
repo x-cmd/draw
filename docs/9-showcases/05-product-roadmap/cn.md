@@ -1,7 +1,7 @@
 ---
 x-title: 产品与路线图 —— 做什么、什么时候做、先做哪个
 x-desc: 'x-cmd/draw 场景用例:产品与路线图。产品导图、上线检查清单、甘特图迭代计划、按季度路线图、优先级四象限的真实 URL。'
-x-sidebar: 场景用例 产品路线图
+x-sidebar: 产品路线图
 x-keywords: 路线图图表, 甘特图, 产品地图, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

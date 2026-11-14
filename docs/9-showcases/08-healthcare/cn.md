@@ -1,7 +1,7 @@
 ---
 x-title: 医疗健康 —— 候诊、占用与就诊路径
 x-desc: 'x-cmd/draw 场景用例:医疗健康。各科室候诊时长、门诊量、床位占用率、病种构成、住院天数与年龄、就诊路径、临床系统的真实 URL。'
-x-sidebar: 场景用例 医疗健康
+x-sidebar: 医疗健康
 x-keywords: 医疗图表, 医院看板, 患者数据, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

@@ -1,7 +1,7 @@
 ---
 x-title: Seven reference charts — how far we get
 x-desc: 'x-cmd/draw showcase: seven public reference charts (an agent leaderboard, a home network, a CI pipeline, a character network, an animated illustration) checked one by one — a URL where we can, an honest reason where we cannot.'
-x-sidebar: showcase reference charts
+x-sidebar: reference charts
 x-keywords: reference charts, agent leaderboard, home network, CI pipeline, character network, draw showcase, frontierharness
 x-json-ld:
   '@context': https://schema.org

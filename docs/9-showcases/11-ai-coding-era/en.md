@@ -1,7 +1,7 @@
 ---
 x-title: The AI-coding era — one person, the whole picture
 x-desc: 'x-cmd/draw showcase: what a solo builder or a small team needs to keep hold of the whole project while the code comes fast. The code composition of a repository and of a diff, the architecture, the files a change touched, the shape of the work — each one a URL you can paste.'
-x-sidebar: showcase ai coding
+x-sidebar: ai coding
 x-keywords: ai coding, solo builder, project overview, code composition, tokei, architecture diagram, draw showcase, 宏观掌控
 x-json-ld:
   '@context': https://schema.org

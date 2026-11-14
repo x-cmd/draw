@@ -1,7 +1,7 @@
 ---
 x-title: Logistics — throughput, fill rate and the network
 x-desc: 'x-cmd/draw showcase: logistics and supply chain. Real URLs for on-time deliveries by region, weekly throughput, warehouse fill, shipments by mode, the order-to-door flow and the fulfilment network.'
-x-sidebar: showcase logistics
+x-sidebar: logistics
 x-keywords: logistics chart, supply chain dashboard, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

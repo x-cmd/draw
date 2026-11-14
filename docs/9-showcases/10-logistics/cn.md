@@ -1,7 +1,7 @@
 ---
 x-title: 物流供应链 —— 吞吐、占用与网络
 x-desc: 'x-cmd/draw 场景用例:物流供应链。各区域准时率、每周吞吐、仓库占用、运输方式构成、订单到交付流程、履约网络的真实 URL。'
-x-sidebar: 场景用例 物流供应链
+x-sidebar: 物流供应链
 x-keywords: 物流图表, 供应链看板, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

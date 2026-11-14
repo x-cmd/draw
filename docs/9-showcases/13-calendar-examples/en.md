@@ -1,7 +1,7 @@
 ---
 x-title: Calendar — ten uses that actually happen
 x-desc: 'x-cmd/draw showcase: course timetable, release schedule, on-call roster, a team month, a personal month, week view, month view, two months, three months, and the 2026 holiday calendar — each one a URL.'
-x-sidebar: showcase calendar
+x-sidebar: calendar
 x-keywords: course timetable, schedule board, on-call roster, month view, week view, year view, holidays, calendar, draw showcase
 x-json-ld:
   '@context': https://schema.org

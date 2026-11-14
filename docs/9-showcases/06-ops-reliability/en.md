@@ -1,7 +1,7 @@
 ---
 x-title: Ops and reliability — the dashboard wall
 x-desc: 'x-cmd/draw showcase: ops and reliability. Real URLs for the uptime SLA gauge, storage, a Kubernetes topology, a login decision flow and weekly active users.'
-x-sidebar: showcase ops reliability
+x-sidebar: ops reliability
 x-keywords: sre dashboard, uptime chart, k8s diagram, draw showcase, svg
 x-json-ld:
   '@context': https://schema.org

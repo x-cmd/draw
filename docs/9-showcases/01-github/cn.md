@@ -1,7 +1,7 @@
 ---
 x-title: GitHub —— issue、PR 与 release
 x-desc: 'x-cmd/draw 场景用例:GitHub 的 issue、pull request 与 release。值得贴的图:用例图、时序图、一次改动的代码构成、PR 碰到的文件、代码库的架构与关键文件夹。'
-x-sidebar: 场景用例 github
+x-sidebar: github
 x-keywords: github issue, pull request, release 说明, draw 场景用例, 从代码出架构图
 x-json-ld:
   '@context': https://schema.org

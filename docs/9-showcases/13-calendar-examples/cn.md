@@ -1,7 +1,7 @@
 ---
 x-title: 日历 —— 十个真的用得上的场景
 x-desc: 'x-cmd/draw 场景用例:课程表、发版排期、值班表、团队的一个月、一个人的一个月、周历、月历、双月历、三月历、2026 全年节假日 —— 每一个都是一个 URL。'
-x-sidebar: 场景用例 日历
+x-sidebar: 日历
 x-keywords: 课程表, 排期表, 值班表, 月历, 周历, 年历, 三月历, 节假日, calendar, draw 场景用例
 x-json-ld:
   '@context': https://schema.org

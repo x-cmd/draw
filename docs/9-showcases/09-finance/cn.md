@@ -1,7 +1,7 @@
 ---
 x-title: 金融风控 —— 配置、风险与交易漏斗
 x-desc: 'x-cmd/draw 场景用例:金融风控。资产配置、收益对基准、收益对风险、收入与利润率、一条业务线的四个选项、交易漏斗的真实 URL。'
-x-sidebar: 场景用例 金融风控
+x-sidebar: 金融风控
 x-keywords: 金融图表, 组合报告, 风险图, draw 场景用例, svg
 x-json-ld:
   '@context': https://schema.org

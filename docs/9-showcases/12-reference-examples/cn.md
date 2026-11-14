@@ -1,7 +1,7 @@
 ---
 x-title: 七张参考图 —— 我们能画到哪一步
 x-desc: 'x-cmd/draw 场景用例:拿七张公开的参考图(agent 榜单、家庭网络图、CI 流程、人物关系、动画插画)一张一张对:能画的给 URL,画不了的写清楚为什么。'
-x-sidebar: 场景用例 参考图
+x-sidebar: 参考图
 x-keywords: 参考图, agent 横评, 家庭网络图, CI 流水线, 人物关系图, draw 场景用例, frontierharness
 x-json-ld:
   '@context': https://schema.org
