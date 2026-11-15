@@ -88,9 +88,9 @@ const PARALLEL = 7;
 const CHANNEL = 12;
 /**
  * 挤在别人已经走过的通道里的代价 —— 空着的通道更清楚,别都堆在一处。
- * 0 = 不罚(并排的位置也不罚 —— 那正是地铁图想要的)。
+ * 别设太高:太贵了,路由宁可绕一大圈也不肯并排走 —— 那更难看。
  */
-const CHANNEL_COST = 0;
+const CHANNEL_COST = 120;
 
 /* ---------------------------------------------------------------- 小工具 */
 
@@ -472,11 +472,8 @@ export function routeOrthogonal(
       Math.abs(x2 - t[0]) + Math.abs(y2 - t[1]),
     );
     if (near > 700) continue;
-    if (y1 === y2) {
-      for (let k = 1; k <= 3; k++) { ysSet.add(y1 - PARALLEL * k); ysSet.add(y1 + PARALLEL * k); }
-    } else {
-      for (let k = 1; k <= 3; k++) { xsSet.add(x1 - PARALLEL * k); xsSet.add(x1 + PARALLEL * k); }
-    }
+    if (y1 === y2) { ysSet.add(y1 - PARALLEL); ysSet.add(y1 + PARALLEL); }
+    else { xsSet.add(x1 - PARALLEL); xsSet.add(x1 + PARALLEL); }
   }
   const xs = [...xsSet].sort((a, b) => a - b);
   const ys = [...ysSet].sort((a, b) => a - b);
@@ -689,6 +686,10 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     return { i, straight: straight ? 0 : 1, len };
   }).sort((x, y) => (x.straight - y.straight) || (x.len - y.len)).map((s) => s.i);
 
+  // 枚举的预算:换脸是「走一遍看结果」,一次搜索不便宜 —— 一张图最多试这么多次。
+  // (稠密图上枚举到 16 种组合 × 几十条边,渲染会变成几十秒。)
+  let budget = 24;
+
   // 已经占掉的端口(按 节点|脸)—— 换脸之后要重算,不然两个端口会落同一点
   const usedNow = (): Map<string, number[]> => {
     const m = new Map<string, number[]>();
@@ -704,6 +705,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     return m;
   };
 
+  // 走一遍:一条一条来,后来的躲着先来的
   for (const i of order) {
     const e = edges[i];
     const a = portBox(e.from);
@@ -717,51 +719,77 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     let pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, true, maxLen, w);
     if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, false, maxLen, w);
     if (!pts) pts = directRoute(p0, exit, p4, entry, a, b, allBoxes, ctx.bounds);
-    let best = { pts, exit, entry, p0, p4 };
-
-    // 绕太远 = 脸挑错了:这张脸出去走不通,别的脸能走。
-    // (ERD 那张:users→comments 从右面出去,只能从上边绕整张画布 —— 1475px;
-    //  而 users 的底面是空的,从底下走既短又没交叉。)
-    // 所以:绕远超过 2 倍就换几张脸试试,挑交叉最少的那条。
-    const detourOf = (r: [number, number][]): number => {
-      const l = r.slice(1).reduce((s2, p, k) => s2 + Math.abs(p[0] - r[k][0]) + Math.abs(p[1] - r[k][1]), 0);
-      const s2 = Math.abs(r[r.length - 1][0] - r[0][0]) + Math.abs(r[r.length - 1][1] - r[0][1]);
-      return s2 > 1 ? l / s2 : 1;
-    };
-    if (detourOf(pts) > 1.75) {
-      const used = usedNow();
-      for (const ex of [exit, ...alts[i].exit]) {
-        for (const en of [entry, ...alts[i].entry]) {
-          if (ex === best.exit && en === best.entry) continue;
-          const o0 = ex === exit ? exitOff[i] : freeSlot(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex));
-          const o4 = en === entry ? entryOff[i] : freeSlot(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en));
-          if (o0 === null || o4 === null) continue;   // 这张脸塞不下了,换别的
-          if (ex === exit && Math.abs(o0 - exitOff[i]) < 0.01 && en === entry && Math.abs(o4 - entryOff[i]) < 0.01) continue;
-          const q0 = portAt(a, ex, o0);
-          const q4 = portAt(b, en, o4);
-          const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
-          const cap = Math.max(s2 * DETOUR, s2 + 120);
-          let cand = routeOrthogonal(q0, ex, q4, en, allBoxes, drawn, outer, true, cap, w);
-          if (!cand) cand = routeOrthogonal(q0, ex, q4, en, allBoxes, drawn, outer, false, cap, w);
-          if (!cand) continue;
-          // 跟路由器自己一个口径:长度 + 交叉的代价
-          const cost = lenOf(cand) + crossingsOf(cand, drawn) * ROUTE_CROSS;
-          const bestCost = lenOf(best.pts) + crossingsOf(best.pts, drawn) * ROUTE_CROSS;
-          if (cost < bestCost) best = { pts: cand, exit: ex, entry: en, p0: q0, p4: q4 };
-        }
-      }
-      // 换了脸:端口也跟着换(那才是这张脸上的位置)
-      if (best.exit !== exit) { faces[i].exit = best.exit; exitOff[i] = offsetOf(best.p0, a, best.exit); }
-      if (best.entry !== entry) { faces[i].entry = best.entry; entryOff[i] = offsetOf(best.p4, b, best.entry); }
-      pts = best.pts;
-    }
     for (let j = 1; j < pts.length; j++) {
       drawn.push({ seg: [pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]], edge: i });
     }
     out[i] = pts;
   }
 
+  // ── 修一遍:出口面/入口面挑错了的,换一张脸重走一遍。
+  //
+  // 症状:绕太远(直线 590px 走了 1475px,绕着画布外圈走)或者跟别的线交叉。
+  // 原因:脸是按几何挑的,没看「从这张脸出去走不走得通」。
+  // 做法:逐条边换几张「朝得开」的脸各走一遍,挑更好的。
+  //
+  // **看的是全局**:贪心地一条一条换,会把后面的线挤到别处,总交叉数反而涨。
+  // 所以只有当「整张图的交叉数确实少了」才换 —— 不可能越改越差。
+  for (let pass = 0; pass < 2 && budget > 0; pass++) {
+    let improved = false;
+    for (const i of order) {
+      const e = edges[i];
+      const a = portBox(e.from);
+      const b = portBox(e.to);
+      const others = drawn.filter((d) => d.edge !== i);
+      const curCross = crossingsOf(out[i], others);
+      const curLen = lenOf(out[i]);
+      if (curCross === 0 && detourOf(out[i]) <= 1.75) continue;   // 这条已经挺好的,不动
+      const used = usedNow();
+      let best: { pts: [number, number][]; ex: Side; en: Side; q0: [number, number]; q4: [number, number]; score: number } | null = null;
+      for (const ex of [faces[i].exit, ...alts[i].exit]) {
+        for (const en of [faces[i].entry, ...alts[i].entry]) {
+          if (budget <= 0) break;
+          if (ex === faces[i].exit && en === faces[i].entry) continue;
+          const o0 = ex === faces[i].exit ? exitOff[i] : freeSlot(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex));
+          const o4 = en === faces[i].entry ? entryOff[i] : freeSlot(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en));
+          if (o0 === null || o4 === null) continue;   // 这张脸塞不下了,换别的
+          const q0 = portAt(a, ex, o0);
+          const q4 = portAt(b, en, o4);
+          const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
+          const cap = Math.max(s2 * DETOUR, s2 + 120);
+          budget--;
+          let cand = routeOrthogonal(q0, ex, q4, en, allBoxes, others, outer, true, cap, w);
+          if (!cand) cand = routeOrthogonal(q0, ex, q4, en, allBoxes, others, outer, false, cap, w);
+          if (!cand) continue;
+          const score = crossingsOf(cand, others) * 1000 + lenOf(cand);
+          if (!best || score < best.score) best = { pts: cand, ex, en, q0, q4, score };
+        }
+      }
+      if (!best) continue;
+      const curScore = curCross * 1000 + curLen;
+      if (best.score >= curScore) continue;
+      // 换:脸、端口、路线、线段表一起换
+      faces[i].exit = best.ex;
+      faces[i].entry = best.en;
+      exitOff[i] = offsetOf(best.q0, a, best.ex);
+      entryOff[i] = offsetOf(best.q4, b, best.en);
+      out[i] = best.pts;
+      for (let k = drawn.length - 1; k >= 0; k--) if (drawn[k].edge === i) drawn.splice(k, 1);
+      for (let j = 1; j < best.pts.length; j++) {
+        drawn.push({ seg: [best.pts[j - 1][0], best.pts[j - 1][1], best.pts[j][0], best.pts[j][1]], edge: i });
+      }
+      improved = true;
+    }
+    if (!improved) break;
+  }
+
   return out;
+}
+
+/** 绕远多少倍(曼哈顿长 ÷ 直线距离) */
+function detourOf(r: [number, number][]): number {
+  const l = lenOf(r);
+  const s2 = Math.abs(r[r.length - 1][0] - r[0][0]) + Math.abs(r[r.length - 1][1] - r[0][1]);
+  return s2 > 1 ? l / s2 : 1;
 }
 
 /** 这条线有多长(曼哈顿) */
