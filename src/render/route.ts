@@ -735,11 +735,13 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     return { i, straight: straight ? 0 : 1, len };
   }).sort((x, y) => (x.straight - y.straight) || (x.len - y.len)).map((s) => s.i);
 
-  // 枚举的预算:换脸是「走一遍看结果」,一次搜索不便宜 —— 一张图最多试这么多次。
-  // (稠密图上枚举到 16 种组合 × 几十条边,渲染会变成几十秒。)
-  let budget = 16;
-  // 一条边最多试这么多次 —— 别让一条边把预算吃光,后面的边就没人管了
-  const EDGE_TRIES = 6;
+  // 修一遍的预算:**每条要修的线自己一份**,没有全局的总数。
+  //
+  // 原来有个「整张图 16 次」的总数 —— 一条病得最重的线就吃光了,
+  // 后面那条线根本没得修(serverless 那张:iam→fn 一直没人管)。
+  // 改成每条线一份:要修的线有几条,总次数就是几倍 —— 谁也不欠谁。
+  // (实测:26 条边的稠密图,修完 1.2 秒;十个案例的数一个没变。)
+  const EDGE_TRIES = 8;
 
   // 已经占掉的端口(按 节点|脸)—— 换脸之后要重算,不然两个端口会落同一点
   const usedNow = (): Map<string, number[]> => {
@@ -792,7 +794,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   // **改一条线,只有跟它有关的交叉会变** —— 所以「这条线的代价变化」就是全局的变化,
   // 不用每次把整张图重算一遍(那样太贵了)。
   const CROSS = w.cross ?? ROUTE_CROSS;
-  for (let pass = 0; pass < 2 && budget > 0; pass++) {
+  for (let pass = 0; pass < 2; pass++) {
     let improved = false;
     for (const i of repairOrder) {
       const e = edges[i];
@@ -805,7 +807,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
       if (curCross === 0 && detourOf(out[i]) <= 1.75 && !hasJog(out[i])) continue;
       const used = usedNow();
       const curScore = curCross * CROSS + curLen + (hasJog(out[i]) ? 300 : 0);
-      if (process.env.DBG) console.error('repair edge', i, 'cross', curCross, 'jog', hasJog(out[i]), 'curScore', Math.round(curScore), 'budget', budget);
+      if (process.env.DBG) console.error('repair edge', i, 'cross', curCross, 'jog', hasJog(out[i]), 'curScore', Math.round(curScore));
       let best: { pts: [number, number][]; ex: Side; en: Side; q0: [number, number]; q4: [number, number]; score: number } | null = null;
       // 候选:(出口面, 端口位置, 入口面, 端口位置)
       // **端口位置也一起试** —— 同一张脸上往往还空着(tenants 的右面高 153px,
@@ -864,7 +866,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
       const detourCap = Math.max(1.75, curDetour + 0.2);
       for (const [ex, o0, en, o4] of ordered) {
         {
-          if (done || budget <= 0) break;
+          if (done) break;
           if (tries >= EDGE_TRIES) break;
           if (ex === faces[i].exit && en === faces[i].entry &&
               o0 === exitOff[i] && o4 === entryOff[i]) continue;
@@ -873,7 +875,6 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
           const q4 = portAt(b, en, o4);
           const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
           const cap = Math.max(s2 * DETOUR, s2 + 120);
-          budget--;
           tries++;
           const obs = obstaclesFor(e);
           let cand = routeOrthogonal(q0, ex, q4, en, obs, others, outer, true, cap, w);
