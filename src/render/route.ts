@@ -227,25 +227,6 @@ function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
 /** 一条边的出口面/入口面 */
 interface Faces { exit: Side; entry: Side }
 
-/**
- * 这个节点的「名字」在不在端口框的下面?
- *
- * 大图标模式:端口框是图标那块(64×64),节点框还高出一截 —— 那一截是名字和副标题。
- * 从底面出线,线就从名字里穿出去 ✗ —— 大图标的底面只留给「正下方」的那种边。
- */
-function labelUnder(
-  id: string, portBox: (id: string) => Box, boxes: Map<string, Box>,
-): boolean {
-  const p = portBox(id);
-  const b = boxes.get(id);
-  if (!b) return false;
-  return b.h > p.h + 4 && Math.abs(b.y - p.y) < 2;
-}
-
-/** 目标是不是就在正下方(两个框的横向是叠着的) */
-function straightBelow(a: Box, b: Box): boolean {
-  return a.x + a.w > b.x && b.x + b.w > a.x;
-}
 
 /**
  * 首选的面:横向优先(跟 archmap 一致),再决定出/入口在哪一侧。
@@ -690,21 +671,12 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   const faces: Faces[] = edges.map((e) => {
     const a = portBox(e.from);
     const b = portBox(e.to);
-    const f = primaryFaces(a, b);
-    // 大图标节点:名字在图标下面 —— 底面出线会从名字里穿出去。
-    // 只有目标就在正下方时(线本来就该往下走)才用底面。
-    if (f.exit === 'bottom' && labelUnder(e.from, portBox, boxes) && !straightBelow(a, b)) {
-      f.exit = cx(b) < cx(a) ? 'left' : 'right';
-    }
-    return f;
+    return primaryFaces(a, b);
   });
   const alts = edges.map((e, i) => {
     const a = portBox(e.from);
     const b = portBox(e.to);
-    // 备选面里同样去掉大图标的底面(名字在那儿)
-    const exitAlts = altFaces(a, b, faces[i].exit)
-      .filter((s) => !(s === 'bottom' && labelUnder(e.from, portBox, boxes) && !straightBelow(a, b)));
-    return { exit: exitAlts, entry: altFaces(b, a, faces[i].entry) };
+    return { exit: altFaces(a, b, faces[i].exit), entry: altFaces(b, a, faces[i].entry) };
   });
 
   // 2. 排端口
@@ -873,6 +845,10 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
         return r;
       };
       // 换脸:换个出口面(或入口面),端口位置也一起试
+      //
+      // **每个备选面先来一次**(端口还用当前的位置),再来各面的组合 ——
+      // 不然一个面的十几种组合会把别的面挤到预算外(iam→fn 那个:right 脸
+      // 排在第 17 位,永远轮不到)。
       const faceMoves = (): [Side, number | null, Side, number | null][] => {
         const r: [Side, number | null, Side, number | null][] = [];
         for (const [ex, o0] of outs) {
@@ -923,7 +899,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
             best = { pts: cand, ex, en, q0, q4, score };
             // 找到「又短又干净」的就收手 —— 预算有限,别把后面的边饿着。
             // (还带凸起的就别收手:那种候选没解决问题,得继续找。)
-            if (score < curScore && !hasJog(cand)) { done = true; break; }
+            if (score < curScore && !hasJog(cand) && !hasStepOut(cand)) { done = true; break; }
           }
         }
       }
