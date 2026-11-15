@@ -733,9 +733,14 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   //
   // **看的是全局**:贪心地一条一条换,会把后面的线挤到别处,总交叉数反而涨。
   // 所以只有当「整张图的交叉数确实少了」才换 —— 不可能越改越差。
+  // 修的顺序:绕得最远、交叉最多的先修 —— 预算有限,先救最病的
+  const repairOrder = [...order].sort((x, y) => {
+    const bad = (i: number): number => detourOf(out[i]) + crossingsOf(out[i], drawn.filter((d) => d.edge !== i));
+    return bad(y) - bad(x);
+  });
   for (let pass = 0; pass < 2 && budget > 0; pass++) {
     let improved = false;
-    for (const i of order) {
+    for (const i of repairOrder) {
       const e = edges[i];
       const a = portBox(e.from);
       const b = portBox(e.to);
