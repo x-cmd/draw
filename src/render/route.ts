@@ -689,6 +689,21 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     return { i, straight: straight ? 0 : 1, len };
   }).sort((x, y) => (x.straight - y.straight) || (x.len - y.len)).map((s) => s.i);
 
+  // 已经占掉的端口(按 节点|脸)—— 换脸之后要重算,不然两个端口会落同一点
+  const usedNow = (): Map<string, number[]> => {
+    const m = new Map<string, number[]>();
+    const add = (node: string, side: Side, off: number): void => {
+      const k = `${node}|${side}`;
+      m.set(k, [...(m.get(k) ?? []), off]);
+    };
+    // 全部的边都算上(还没走的那几条,占着它们分到的端口)
+    ctx.edges.forEach((e, j) => {
+      add(e.from, faces[j].exit, exitOff[j]);
+      add(e.to, faces[j].entry, entryOff[j]);
+    });
+    return m;
+  };
+
   for (const i of order) {
     const e = edges[i];
     const a = portBox(e.from);
@@ -714,12 +729,14 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
       return s2 > 1 ? l / s2 : 1;
     };
     if (detourOf(pts) > 1.75) {
-      const used = usedOffsets(ctx, faces, exitOff, entryOff);
+      const used = usedNow();
       for (const ex of [exit, ...alts[i].exit]) {
         for (const en of [entry, ...alts[i].entry]) {
           if (ex === best.exit && en === best.entry) continue;
           const o0 = ex === exit ? exitOff[i] : freeSlot(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex));
           const o4 = en === entry ? entryOff[i] : freeSlot(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en));
+          if (o0 === null || o4 === null) continue;   // 这张脸塞不下了,换别的
+          if (ex === exit && Math.abs(o0 - exitOff[i]) < 0.01 && en === entry && Math.abs(o4 - entryOff[i]) < 0.01) continue;
           const q0 = portAt(a, ex, o0);
           const q4 = portAt(b, en, o4);
           const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
@@ -780,19 +797,27 @@ function usedOffsets(
   return m;
 }
 
-/** 这张脸上找一个空着的端口(离别的至少 9px) */
-function freeSlot(used: number[], len: number): number {
+/** 这张脸上找一个空着的端口(离别的至少 9px)—— 找不到就返回 null(这张脸别用了) */
+function freeSlot(used: number[], len: number): number | null {
   const gap = PORT_GAP;
   const limit = len / 2 - FACE_MARGIN;
-  const sorted = [...used].sort((x, y) => Math.abs(x) - Math.abs(y));
-  // 从正中往外找第一个离谁都够远的
-  for (let d = 0; d <= limit; d += gap) {
-    for (const cand of d === 0 ? [0] : [d, -d]) {
-      if (Math.abs(cand) > limit) continue;
-      if (sorted.every((u) => Math.abs(u - cand) >= gap)) return cand;
-    }
+  const sorted = [...used].sort((a, b) => a - b);
+  const far = (cand: number): boolean => sorted.every((u) => Math.abs(u - cand) >= gap);
+  // 候选:正中、已占位置往两边让一格、两块之间的中间
+  const cands: number[] = [0];
+  for (const u of sorted) {
+    cands.push(u + gap, u - gap);
+    cands.push(u + gap / 2, u - gap / 2);
   }
-  return 0;
+  for (const u of sorted) {
+    const i = sorted.indexOf(u);
+    if (i + 1 < sorted.length) cands.push((u + sorted[i + 1]) / 2);
+  }
+  for (const cand of cands) {
+    if (Math.abs(cand) > limit) continue;
+    if (far(cand)) return cand;
+  }
+  return null;
 }
 
 /** 这条线跟已经画好的线交叉了几次 */
