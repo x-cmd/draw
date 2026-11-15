@@ -88,9 +88,9 @@ const PARALLEL = 7;
 const CHANNEL = 12;
 /**
  * 挤在别人已经走过的通道里的代价 —— 空着的通道更清楚,别都堆在一处。
- * 别设太高:太贵了,路由宁可绕一大圈也不肯并排走 —— 那更难看。
+ * 0 = 不罚(并排的位置也不罚 —— 那正是地铁图想要的)。
  */
-const CHANNEL_COST = 120;
+const CHANNEL_COST = 0;
 
 /* ---------------------------------------------------------------- 小工具 */
 
@@ -472,8 +472,11 @@ export function routeOrthogonal(
       Math.abs(x2 - t[0]) + Math.abs(y2 - t[1]),
     );
     if (near > 700) continue;
-    if (y1 === y2) { ysSet.add(y1 - PARALLEL); ysSet.add(y1 + PARALLEL); }
-    else { xsSet.add(x1 - PARALLEL); xsSet.add(x1 + PARALLEL); }
+    if (y1 === y2) {
+      for (let k = 1; k <= 3; k++) { ysSet.add(y1 - PARALLEL * k); ysSet.add(y1 + PARALLEL * k); }
+    } else {
+      for (let k = 1; k <= 3; k++) { xsSet.add(x1 - PARALLEL * k); xsSet.add(x1 + PARALLEL * k); }
+    }
   }
   const xs = [...xsSet].sort((a, b) => a - b);
   const ys = [...ysSet].sort((a, b) => a - b);
