@@ -412,6 +412,30 @@ function rank(m: Member): number {
 export interface Drawn { seg: [number, number, number, number]; edge: number }
 
 /**
+ * 一条线的折点 → 几段**直线**。
+ *
+ * 网格上的折点常常落在同一条直线上(比如一条竖线被切成四段)。
+ * 不压成一段的话,别的线横着穿过去的时候,正好撞在某个折点上 ——
+ * 判起来不是「交叉」而是「挨上」(贵十倍),路由器就宁可绕一大圈。
+ * 压成一段之后,穿过去就是老老实实的交叉 ✓
+ */
+function straightSegs(pts: [number, number][]): [number, number, number, number][] {
+  const out: [number, number, number, number][] = [];
+  for (let j = 1; j < pts.length; j++) {
+    const a = pts[j - 1];
+    const b = pts[j];
+    const last = out[out.length - 1];
+    if (last && (last[0] === last[2]) === (a[0] === b[0])) {
+      last[2] = b[0];
+      last[3] = b[1];
+      continue;
+    }
+    out.push([a[0], a[1], b[0], b[1]]);
+  }
+  return out;
+}
+
+/**
  * 正交布线:Hanan 网格 + Dijkstra(长度 + 拐弯惩罚 + 交叉惩罚)。
  *
  * 1. **Hanan 网格** —— 候选坐标只有两拨:每个障碍框的左右边、上下边。
@@ -714,6 +738,8 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   // 枚举的预算:换脸是「走一遍看结果」,一次搜索不便宜 —— 一张图最多试这么多次。
   // (稠密图上枚举到 16 种组合 × 几十条边,渲染会变成几十秒。)
   let budget = 16;
+  // 一条边最多试这么多次 —— 别让一条边把预算吃光,后面的边就没人管了
+  const EDGE_TRIES = 6;
 
   // 已经占掉的端口(按 节点|脸)—— 换脸之后要重算,不然两个端口会落同一点
   const usedNow = (): Map<string, number[]> => {
@@ -745,9 +771,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     let pts = routeOrthogonal(p0, exit, p4, entry, obs, drawn, outer, true, maxLen, w);
     if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, obs, drawn, outer, false, maxLen, w);
     if (!pts) pts = directRoute(p0, exit, p4, entry, a, b, obs, ctx.bounds);
-    for (let j = 1; j < pts.length; j++) {
-      drawn.push({ seg: [pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]], edge: i });
-    }
+    for (const seg of straightSegs(pts)) drawn.push({ seg, edge: i });
     out[i] = pts;
   }
 
@@ -800,23 +824,48 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
           : freeSlots(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en), null);
         for (const o4 of slots) ins.push([en, o4]);
       }
-      // 顺序:先在同一张脸上挪端口(最常见的修法),再挪脸,最后挪入口端口
+      // 候选的顺序:**挪端口和换脸交替着来**。
+      //
+      // 只挪端口:治得了「端口正好撞上别人的通道」这种小毛病。
+      // 只换脸:治得了「这条线从这张脸出去就得出事」这种结构性的毛病。
+      // 两类轮流试 —— 预算有限,不能让一类把名额占满,另一类就没机会了。
       const ordered: [Side, number | null, Side, number | null][] = [];
       const curEx = faces[i].exit;
       const curEn = faces[i].entry;
-      // 1. 同一张脸上挪端口(最常见的修法:端口撞上了别人的通道)
-      for (const [ex, o0] of outs) if (ex === curEx) ordered.push([ex, o0, curEn, entryOff[i]]);
-      // 2. 挪入口端口
-      for (const [en, o4] of ins) if (en === curEn) ordered.push([curEx, exitOff[i], en, o4]);
-      // 3. 换脸
-      for (const [ex, o0] of outs) {
-        if (ex === curEx) continue;
-        for (const [en, o4] of ins) ordered.push([ex, o0, en, o4]);
+      // 挪端口:同一张脸,位置挪一挪
+      const portMoves = (): [Side, number | null, Side, number | null][] => {
+        const r: [Side, number | null, Side, number | null][] = [];
+        // 1. 出口挪一挪(最常见的修法:端口撞上了别人的通道)
+        for (const [ex, o0] of outs) if (ex === curEx) r.push([ex, o0, curEn, entryOff[i]]);
+        // 2. 入口挪一挪
+        for (const [en, o4] of ins) if (en === curEn) r.push([curEx, exitOff[i], en, o4]);
+        return r;
+      };
+      // 换脸:换个出口面(或入口面),端口位置也一起试
+      const faceMoves = (): [Side, number | null, Side, number | null][] => {
+        const r: [Side, number | null, Side, number | null][] = [];
+        for (const [ex, o0] of outs) {
+          if (ex === curEx) continue;
+          for (const [en, o4] of ins) r.push([ex, o0, en, o4]);
+        }
+        return r;
+      };
+      const pm = portMoves();
+      const fm = faceMoves();
+      for (let k = 0; k < Math.max(pm.length, fm.length); k++) {
+        if (k < pm.length) ordered.push(pm[k]);
+        if (k < fm.length) ordered.push(fm[k]);
       }
       let done = false;
+      // 每条边最多试这么多次 —— 一条边别把预算吃光,后面的边就没得修了
+      let tries = 0;
+      // 绕远的底线:候选不能比现在更绕(不然「治好了交叉、绕出一大圈」,更难看)
+      const curDetour = detourOf(out[i]);
+      const detourCap = Math.max(1.75, curDetour + 0.2);
       for (const [ex, o0, en, o4] of ordered) {
         {
           if (done || budget <= 0) break;
+          if (tries >= EDGE_TRIES) break;
           if (ex === faces[i].exit && en === faces[i].entry &&
               o0 === exitOff[i] && o4 === entryOff[i]) continue;
           if (o0 === null || o4 === null) continue;   // 这张脸塞不下了,换别的
@@ -825,13 +874,19 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
           const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
           const cap = Math.max(s2 * DETOUR, s2 + 120);
           budget--;
+          tries++;
           const obs = obstaclesFor(e);
           let cand = routeOrthogonal(q0, ex, q4, en, obs, others, outer, true, cap, w);
           if (!cand) cand = routeOrthogonal(q0, ex, q4, en, obs, others, outer, false, cap, w);
           if (!cand) continue;
+          // 绕太远的候选不要 —— 治好了交叉却兜一大圈,更难看
+          if (detourOf(cand) > detourCap) {
+            if (process.env.DBG) console.error('   cand', ex, o0, en, o4, '绕太远', detourOf(cand).toFixed(2));
+            continue;
+          }
           // 代价:交叉最贵,然后是长度,再然后是「有个小凸起」(并排位置的副作用)
           const score = crossingsOf(cand, others) * CROSS + lenOf(cand) + (hasJog(cand) ? 300 : 0);
-          if (process.env.DBG) console.error('   cand', ex, o0, en, o4, 'score', Math.round(score), 'jog', hasJog(cand));
+          if (process.env.DBG) console.error('   cand', ex, o0, en, o4, 'score', Math.round(score), 'jog', hasJog(cand), cand.map((q) => `${q[0].toFixed(0)},${q[1].toFixed(0)}`).join(' '));
           if (!best || score < best.score) {
             best = { pts: cand, ex, en, q0, q4, score };
             // 找到「又短又干净」的就收手 —— 预算有限,别把后面的边饿着。
@@ -849,9 +904,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
       entryOff[i] = offsetOf(best.q4, b, best.en);
       out[i] = best.pts;
       for (let k = drawn.length - 1; k >= 0; k--) if (drawn[k].edge === i) drawn.splice(k, 1);
-      for (let j = 1; j < best.pts.length; j++) {
-        drawn.push({ seg: [best.pts[j - 1][0], best.pts[j - 1][1], best.pts[j][0], best.pts[j][1]], edge: i });
-      }
+      for (const seg of straightSegs(best.pts)) drawn.push({ seg, edge: i });
       improved = true;
     }
     if (!improved) break;
