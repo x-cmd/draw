@@ -4,10 +4,12 @@
 //   绕远有上限:不许为了避开一条线兜一大圈。
 // 这里测的是**规矩**,不是哪条线走哪 —— 引擎在站上(private),这里守的是底线。
 import { describe, expect, it } from 'vitest';
-import { renderArchFromUrl } from '../src/render/arch.js';
+import { renderArchFromUrl, renderCloudFromUrl } from '../src/render/arch.js';
 import { renderArchmapFromUrl as renderArchmap } from '../src/render/archmap.js';
 
 type Pt = [number, number];
+/** 一个矩形的四条边(给「点在边上吗」用) */
+interface Box2 { x0: number; y0: number; x1: number; y1: number }
 
 /** 每条边的折点(去掉 <defs> —— 箭头也是 path,不然会被当成边) */
 const routesOf = (svg: string): Pt[][] =>
@@ -181,5 +183,78 @@ describe('布线的规矩', () => {
       { routing: () => [[[10, 10], [90, 10], [90, 40]]] },
     );
     expect(svg).toContain('M10 10L90 10L90 40');
+  });
+});
+
+/* ---------------------------------------------------------------- 大图标 */
+
+const EKS = [
+  'n=dns;cloud;Route%2053;Domain;r0c0;aws:route53',
+  'n=elb;cloud;NLB;Ingress;r1c0;aws:nlb',
+  'n=eks;be;EKS;Control%20plane;r2c0;aws:eks',
+  'n=svc1;be;orders;Orders%20service;r3c0',
+  'n=svc2;be;billing;Billing%20service;r3c1',
+  'e=dns;elb',
+  'e=elb;eks',
+  'e=eks;svc1',
+  'e=eks;svc2',
+].join('&');
+
+/** 大图标模式:每个节点的图标(没有图标的节点不算) */
+const iconsOf = (svg: string): Map<string, Box2> => {
+  const out = new Map<string, Box2>();
+  for (const m of svg.matchAll(/<g data-node="([^"]+)"/g)) {
+    const at = m.index ?? 0;
+    const im = /<image [^>]*>/.exec(svg.slice(at, at + 4000));
+    if (!im) continue;
+    const attr = (k: string): number => {
+      const v = new RegExp(`${k}="([-\\d.]+)"`).exec(im[0]);
+      return v ? +v[1] : NaN;
+    };
+    const x = attr('x');
+    const y = attr('y');
+    const w = attr('width');
+    const h = attr('height');
+    if ([x, y, w, h].some(Number.isNaN)) continue;
+    out.set(m[1], { x0: x, y0: y, x1: x + w, y1: y + h });
+  }
+  return out;
+};
+
+/** 点在矩形的边上吗(容差 1px) */
+const onEdge = (p: Pt, b: Box2): boolean => {
+  const near = (a: number, c: number): boolean => Math.abs(a - c) <= 1;
+  const inside = (a: number, c: number, d: number): boolean => a >= c - 1 && a <= d + 1;
+  return (near(p[0], b.x0) && inside(p[1], b.y0, b.y1)) ||
+    (near(p[0], b.x1) && inside(p[1], b.y0, b.y1)) ||
+    (near(p[1], b.y0) && inside(p[0], b.x0, b.x1)) ||
+    (near(p[1], b.y1) && inside(p[0], b.x0, b.x1));
+};
+
+describe('大图标的端口', () => {
+  it('端口落在图标上,不是落在格子的空处(#29)', () => {
+    // 格子比图标宽得多(一列对齐了宽度就一样)—— 端口落在格子上,
+    // 线就从图标旁边的空处冒出来,看着像从虚空里长出来一根线。
+    const { svg } = renderCloudFromUrl(new URL(`https://x-cmd.com/draw/cloud?${EKS}`), true);
+    const icons = iconsOf(svg);
+    expect(icons.size).toBeGreaterThan(0);
+    let checked = 0;
+    for (const m of svg.matchAll(/<path d="(M[^"]+)"([^>]*)fill="none"/g)) {
+      const from = /data-from="([^"]+)"/.exec(m[2])?.[1];
+      const to = /data-to="([^"]+)"/.exec(m[2])?.[1];
+      if (!from || !to) continue;
+      const pts = m[1].split(/[ML]/).filter(Boolean).map((p) => p.trim().split(' ').map(Number) as Pt);
+      const a = icons.get(from);
+      const b = icons.get(to);
+      if (a) {
+        expect(onEdge(pts[0], a), `${from} 的线不是从图标上出来的`).toBe(true);
+        checked++;
+      }
+      if (b) {
+        expect(onEdge(pts[pts.length - 1], b), `${to} 的线不是接到图标上的`).toBe(true);
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(0);
   });
 });

@@ -373,8 +373,15 @@ function computeRoutesV2(
   routing?: RoutingEngine, dir: 'LR' | 'TB' = 'LR',
 ): V2Routed[] {
   // 大图标节点:连线只接图标那块(名字在图标下面,别从名字里穿过去)
-  const portBoxOf = (p: Placed): Box =>
-    iconsBig && p.iconData ? { x: p.box.x, y: p.box.y, w: p.box.w, h: ICON_BIG } : p.box;
+  //
+  // **端口要落在图标上**,不是落在格子上:格子是摆位留下的空位,通常比图标宽得多
+  // (一列对齐了就一样宽)。端口落在格子上,线就从图标旁边的空处冒出来 ——
+  // 看着像从虚空里长出来一根线(#29)。
+  const portBoxOf = (p: Placed): Box => {
+    if (!iconsBig) return p.box;
+    if (!p.iconData && !(p.icon && isOrgIcon(p.icon))) return p.box;
+    return { x: p.box.x + (p.box.w - ICON_BIG) / 2, y: p.box.y, w: ICON_BIG, h: ICON_BIG };
+  };
   const byId = new Map(placed.map((p) => [p.id, p]));
   const ctx: RoutingCtx = {
     nodes: placed,

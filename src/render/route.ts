@@ -659,6 +659,31 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
 
   // 3. 一条一条走
   const allBoxes = [...boxes.values()];
+
+  /**
+   * 一条边走的时候,自己的源/目标节点**不算障碍** —— 但只在端口框跟节点框不一样时。
+   *
+   * 大图标模式:端口框是图标,图标在格子中间 —— 线得从源节点里出来、钻进目标节点,
+   * 不把那一格让开就永远出不去,只能退回到那条不看障碍的直路(#29)。
+   *
+   * 端口框 == 节点框时(普通方框节点),节点照旧是障碍 —— 端口就在框边上,不用让。
+   * 图标本身**还是障碍**:线不许从图标中间穿过去。
+   */
+  const obstaclesFor = (e: ArchEdge): Box[] => {
+    const same = (a: Box, b: Box): boolean =>
+      a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
+    const out: Box[] = [];
+    for (const [id, b] of boxes) {
+      if ((id === e.from || id === e.to) && !same(portBox(id), b)) continue;
+      out.push(b);
+    }
+    const pa = portBox(e.from);
+    const pb = portBox(e.to);
+    if (!same(pa, boxes.get(e.from)!)) out.push(pa);
+    if (!same(pb, boxes.get(e.to)!)) out.push(pb);
+    return out;
+  };
+
   const outer: Box = allBoxes.length
     ? {
       x: Math.min(...allBoxes.map((b) => b.x)) - 40,
@@ -716,9 +741,10 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     const p4 = portAt(b, entry, entryOff[i]);
     const straight = Math.abs(p4[0] - p0[0]) + Math.abs(p4[1] - p0[1]);
     const maxLen = Math.max(straight * DETOUR, straight + 120);
-    let pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, true, maxLen, w);
-    if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, false, maxLen, w);
-    if (!pts) pts = directRoute(p0, exit, p4, entry, a, b, allBoxes, ctx.bounds);
+    const obs = obstaclesFor(e);
+    let pts = routeOrthogonal(p0, exit, p4, entry, obs, drawn, outer, true, maxLen, w);
+    if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, obs, drawn, outer, false, maxLen, w);
+    if (!pts) pts = directRoute(p0, exit, p4, entry, a, b, obs, ctx.bounds);
     for (let j = 1; j < pts.length; j++) {
       drawn.push({ seg: [pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]], edge: i });
     }
@@ -799,8 +825,9 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
           const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
           const cap = Math.max(s2 * DETOUR, s2 + 120);
           budget--;
-          let cand = routeOrthogonal(q0, ex, q4, en, allBoxes, others, outer, true, cap, w);
-          if (!cand) cand = routeOrthogonal(q0, ex, q4, en, allBoxes, others, outer, false, cap, w);
+          const obs = obstaclesFor(e);
+          let cand = routeOrthogonal(q0, ex, q4, en, obs, others, outer, true, cap, w);
+          if (!cand) cand = routeOrthogonal(q0, ex, q4, en, obs, others, outer, false, cap, w);
           if (!cand) continue;
           // 代价:交叉最贵,然后是长度,再然后是「有个小凸起」(并排位置的副作用)
           const score = crossingsOf(cand, others) * CROSS + lenOf(cand) + (hasJog(cand) ? 300 : 0);
@@ -956,7 +983,8 @@ function directRoute(
 ): [number, number][] {
   const p1: [number, number] = [p0[0] + OUT_DIR[exit][0] * STUB, p0[1] + OUT_DIR[exit][1] * STUB];
   const p3: [number, number] = [p4[0] + OUT_DIR[entry][0] * STUB, p4[1] + OUT_DIR[entry][1] * STUB];
-  const others = boxes.filter((x) => x !== a && x !== b);
+  // 传进来的 boxes 已经去掉了源/目标节点(调用方干的),这里直接当障碍用
+  const others = boxes;
   if (exit === 'left' || exit === 'right') {
     if (hitBox(Math.min(p1[0], p3[0]), p1[1], Math.max(p1[0], p3[0]), p1[1], others)) {
       const dy = detourY(a, b, p1[0], p3[0], others, enclosingBoundary(a, b, bounds));
