@@ -702,6 +702,42 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     let pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, true, maxLen, w);
     if (!pts) pts = routeOrthogonal(p0, exit, p4, entry, allBoxes, drawn, outer, false, maxLen, w);
     if (!pts) pts = directRoute(p0, exit, p4, entry, a, b, allBoxes, ctx.bounds);
+    let best = { pts, exit, entry, p0, p4 };
+
+    // 绕太远 = 脸挑错了:这张脸出去走不通,别的脸能走。
+    // (ERD 那张:users→comments 从右面出去,只能从上边绕整张画布 —— 1475px;
+    //  而 users 的底面是空的,从底下走既短又没交叉。)
+    // 所以:绕远超过 2 倍就换几张脸试试,挑交叉最少的那条。
+    const detourOf = (r: [number, number][]): number => {
+      const l = r.slice(1).reduce((s2, p, k) => s2 + Math.abs(p[0] - r[k][0]) + Math.abs(p[1] - r[k][1]), 0);
+      const s2 = Math.abs(r[r.length - 1][0] - r[0][0]) + Math.abs(r[r.length - 1][1] - r[0][1]);
+      return s2 > 1 ? l / s2 : 1;
+    };
+    if (detourOf(pts) > 1.75) {
+      const used = usedOffsets(ctx, faces, exitOff, entryOff);
+      for (const ex of [exit, ...alts[i].exit]) {
+        for (const en of [entry, ...alts[i].entry]) {
+          if (ex === best.exit && en === best.entry) continue;
+          const o0 = ex === exit ? exitOff[i] : freeSlot(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex));
+          const o4 = en === entry ? entryOff[i] : freeSlot(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en));
+          const q0 = portAt(a, ex, o0);
+          const q4 = portAt(b, en, o4);
+          const s2 = Math.abs(q4[0] - q0[0]) + Math.abs(q4[1] - q0[1]);
+          const cap = Math.max(s2 * DETOUR, s2 + 120);
+          let cand = routeOrthogonal(q0, ex, q4, en, allBoxes, drawn, outer, true, cap, w);
+          if (!cand) cand = routeOrthogonal(q0, ex, q4, en, allBoxes, drawn, outer, false, cap, w);
+          if (!cand) continue;
+          // 跟路由器自己一个口径:长度 + 交叉的代价
+          const cost = lenOf(cand) + crossingsOf(cand, drawn) * ROUTE_CROSS;
+          const bestCost = lenOf(best.pts) + crossingsOf(best.pts, drawn) * ROUTE_CROSS;
+          if (cost < bestCost) best = { pts: cand, exit: ex, entry: en, p0: q0, p4: q4 };
+        }
+      }
+      // 换了脸:端口也跟着换(那才是这张脸上的位置)
+      if (best.exit !== exit) { faces[i].exit = best.exit; exitOff[i] = offsetOf(best.p0, a, best.exit); }
+      if (best.entry !== entry) { faces[i].entry = best.entry; entryOff[i] = offsetOf(best.p4, b, best.entry); }
+      pts = best.pts;
+    }
     for (let j = 1; j < pts.length; j++) {
       drawn.push({ seg: [pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]], edge: i });
     }
@@ -709,6 +745,67 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   }
 
   return out;
+}
+
+/** 这条线有多长(曼哈顿) */
+function lenOf(pts: [number, number][]): number {
+  let n = 0;
+  for (let i = 1; i < pts.length; i++) n += Math.abs(pts[i][0] - pts[i - 1][0]) + Math.abs(pts[i][1] - pts[i - 1][1]);
+  return n;
+}
+
+/** 端口偏移(相对脸的正中) */
+function offsetOf(p: [number, number], box: Box, side: Side): number {
+  switch (side) {
+    case 'left': return p[1] - cy(box);
+    case 'right': return p[1] - cy(box);
+    case 'top': return p[0] - cx(box);
+    case 'bottom': return p[0] - cx(box);
+  }
+}
+
+/** 已经占掉的端口偏移(按 节点|脸) */
+function usedOffsets(
+  ctx: RoutingCtx, faces: Faces[], exitOff: number[], entryOff: number[],
+): Map<string, number[]> {
+  const m = new Map<string, number[]>();
+  const put = (node: string, side: Side, off: number): void => {
+    const k = `${node}|${side}`;
+    m.set(k, [...(m.get(k) ?? []), off]);
+  };
+  ctx.edges.forEach((e, i) => {
+    put(e.from, faces[i].exit, exitOff[i]);
+    put(e.to, faces[i].entry, entryOff[i]);
+  });
+  return m;
+}
+
+/** 这张脸上找一个空着的端口(离别的至少 9px) */
+function freeSlot(used: number[], len: number): number {
+  const gap = PORT_GAP;
+  const limit = len / 2 - FACE_MARGIN;
+  const sorted = [...used].sort((x, y) => Math.abs(x) - Math.abs(y));
+  // 从正中往外找第一个离谁都够远的
+  for (let d = 0; d <= limit; d += gap) {
+    for (const cand of d === 0 ? [0] : [d, -d]) {
+      if (Math.abs(cand) > limit) continue;
+      if (sorted.every((u) => Math.abs(u - cand) >= gap)) return cand;
+    }
+  }
+  return 0;
+}
+
+/** 这条线跟已经画好的线交叉了几次 */
+function crossingsOf(pts: [number, number][], drawn: Drawn[]): number {
+  let n = 0;
+  for (let i = 1; i < pts.length; i++) {
+    for (const d of drawn) {
+      const c: [number, number] = [d.seg[0], d.seg[1]];
+      const e: [number, number] = [d.seg[2], d.seg[3]];
+      if (segsCross(pts[i - 1], pts[i], c, e)) n++;
+    }
+  }
+  return n;
 }
 
 /** 走不通时的兜底:先直连,直连撞到盒子就绕到空通道 */
