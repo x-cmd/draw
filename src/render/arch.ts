@@ -533,9 +533,22 @@ const overlapArea = (a: Box, b: Box): number => {
  */
 function labelSlots(pts: [number, number][]): { p: [number, number]; horiz: boolean }[] {
   const out: { p: [number, number]; horiz: boolean }[] = [];
-  for (let i = 1; i < pts.length; i++) {
-    const a = pts[i - 1];
-    const b = pts[i];
+  // 先把「同一条直线上的中转点」合掉 —— 网格走线会留下几个共线的碎点
+  // (并排位置就是 ±7px 一格一格挪过去的),不合并的话每段都短得放不下标签。
+  const simple: [number, number][] = [];
+  for (const p of pts) {
+    const n = simple.length;
+    if (n >= 2) {
+      const a = simple[n - 2];
+      const b = simple[n - 1];
+      const collinear = (a[0] === b[0] && b[0] === p[0]) || (a[1] === b[1] && b[1] === p[1]);
+      if (collinear) { simple[n - 1] = p; continue; }
+    }
+    simple.push(p);
+  }
+  for (let i = 1; i < simple.length; i++) {
+    const a = simple[i - 1];
+    const b = simple[i];
     const horiz = Math.abs(b[0] - a[0]) >= Math.abs(b[1] - a[1]);
     const len = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
     if (len < 1) continue;

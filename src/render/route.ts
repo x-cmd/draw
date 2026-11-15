@@ -688,7 +688,7 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
 
   // 枚举的预算:换脸是「走一遍看结果」,一次搜索不便宜 —— 一张图最多试这么多次。
   // (稠密图上枚举到 16 种组合 × 几十条边,渲染会变成几十秒。)
-  let budget = 24;
+  let budget = 16;
 
   // 已经占掉的端口(按 节点|脸)—— 换脸之后要重算,不然两个端口会落同一点
   const usedNow = (): Map<string, number[]> => {
@@ -738,6 +738,10 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
     const bad = (i: number): number => detourOf(out[i]) + crossingsOf(out[i], drawn.filter((d) => d.edge !== i));
     return bad(y) - bad(x);
   });
+  // 代价:长度 + 交叉 + 凸起。
+  // **改一条线,只有跟它有关的交叉会变** —— 所以「这条线的代价变化」就是全局的变化,
+  // 不用每次把整张图重算一遍(那样太贵了)。
+  const CROSS = w.cross ?? ROUTE_CROSS;
   for (let pass = 0; pass < 2 && budget > 0; pass++) {
     let improved = false;
     for (const i of repairOrder) {
@@ -747,15 +751,48 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
       const others = drawn.filter((d) => d.edge !== i);
       const curCross = crossingsOf(out[i], others);
       const curLen = lenOf(out[i]);
-      if (curCross === 0 && detourOf(out[i]) <= 1.75) continue;   // 这条已经挺好的,不动
+      // 该修的:绕太远(脸挑错了)、有交叉、或者路线里有个小凸起(并排位置的副作用)
+      if (curCross === 0 && detourOf(out[i]) <= 1.75 && !hasJog(out[i])) continue;
       const used = usedNow();
+      const curScore = curCross * CROSS + curLen + (hasJog(out[i]) ? 300 : 0);
+      if (process.env.DBG) console.error('repair edge', i, 'cross', curCross, 'jog', hasJog(out[i]), 'curScore', Math.round(curScore), 'budget', budget);
       let best: { pts: [number, number][]; ex: Side; en: Side; q0: [number, number]; q4: [number, number]; score: number } | null = null;
+      // 候选:(出口面, 端口位置, 入口面, 端口位置)
+      // **端口位置也一起试** —— 同一张脸上往往还空着(tenants 的右面高 153px,
+      // 只用了两个端口)。挪一下端口,线就不用先进别人占着的通道再让开(那个 7px 的凸起)。
+      const outs: [Side, number | null][] = [];
       for (const ex of [faces[i].exit, ...alts[i].exit]) {
-        for (const en of [faces[i].entry, ...alts[i].entry]) {
-          if (budget <= 0) break;
-          if (ex === faces[i].exit && en === faces[i].entry) continue;
-          const o0 = ex === faces[i].exit ? exitOff[i] : freeSlot(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex));
-          const o4 = en === faces[i].entry ? entryOff[i] : freeSlot(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en));
+        const slots = ex === faces[i].exit
+          ? [exitOff[i], ...freeSlots(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex), exitOff[i])]
+          : freeSlots(used.get(`${e.from}|${ex}`) ?? [], faceLen(a, ex), null);
+        for (const o0 of slots) outs.push([ex, o0]);
+      }
+      const ins: [Side, number | null][] = [];
+      for (const en of [faces[i].entry, ...alts[i].entry]) {
+        const slots = en === faces[i].entry
+          ? [entryOff[i], ...freeSlots(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en), entryOff[i])]
+          : freeSlots(used.get(`${e.to}|${en}`) ?? [], faceLen(b, en), null);
+        for (const o4 of slots) ins.push([en, o4]);
+      }
+      // 顺序:先在同一张脸上挪端口(最常见的修法),再挪脸,最后挪入口端口
+      const ordered: [Side, number | null, Side, number | null][] = [];
+      const curEx = faces[i].exit;
+      const curEn = faces[i].entry;
+      // 1. 同一张脸上挪端口(最常见的修法:端口撞上了别人的通道)
+      for (const [ex, o0] of outs) if (ex === curEx) ordered.push([ex, o0, curEn, entryOff[i]]);
+      // 2. 挪入口端口
+      for (const [en, o4] of ins) if (en === curEn) ordered.push([curEx, exitOff[i], en, o4]);
+      // 3. 换脸
+      for (const [ex, o0] of outs) {
+        if (ex === curEx) continue;
+        for (const [en, o4] of ins) ordered.push([ex, o0, en, o4]);
+      }
+      let done = false;
+      for (const [ex, o0, en, o4] of ordered) {
+        {
+          if (done || budget <= 0) break;
+          if (ex === faces[i].exit && en === faces[i].entry &&
+              o0 === exitOff[i] && o4 === entryOff[i]) continue;
           if (o0 === null || o4 === null) continue;   // 这张脸塞不下了,换别的
           const q0 = portAt(a, ex, o0);
           const q4 = portAt(b, en, o4);
@@ -765,13 +802,19 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
           let cand = routeOrthogonal(q0, ex, q4, en, allBoxes, others, outer, true, cap, w);
           if (!cand) cand = routeOrthogonal(q0, ex, q4, en, allBoxes, others, outer, false, cap, w);
           if (!cand) continue;
-          const score = crossingsOf(cand, others) * 1000 + lenOf(cand);
-          if (!best || score < best.score) best = { pts: cand, ex, en, q0, q4, score };
+          // 代价:交叉最贵,然后是长度,再然后是「有个小凸起」(并排位置的副作用)
+          const score = crossingsOf(cand, others) * CROSS + lenOf(cand) + (hasJog(cand) ? 300 : 0);
+          if (process.env.DBG) console.error('   cand', ex, o0, en, o4, 'score', Math.round(score), 'jog', hasJog(cand));
+          if (!best || score < best.score) {
+            best = { pts: cand, ex, en, q0, q4, score };
+            // 找到「又短又干净」的就收手 —— 预算有限,别把后面的边饿着。
+            // (还带凸起的就别收手:那种候选没解决问题,得继续找。)
+            if (score < curScore && !hasJog(cand)) { done = true; break; }
+          }
         }
       }
-      if (!best) continue;
-      const curScore = curCross * 1000 + curLen;
-      if (best.score >= curScore) continue;
+      if (!best || best.score >= curScore) continue;
+
       // 换:脸、端口、路线、线段表一起换
       faces[i].exit = best.ex;
       faces[i].entry = best.en;
@@ -788,6 +831,23 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   }
 
   return out;
+}
+
+/**
+ * 路线里有没有「上去又下来」的小凸起。
+ *
+ * 那是从别人占着的通道里进去、又让开留下的副作用:上去 7px、横向 7px、再下来 7px。
+ * 盒子是障碍,路线不会正经地跨过去 —— 所以这种小起伏一定是多余的。
+ */
+function hasJog(r: [number, number][]): boolean {
+  // 上去一小截 → 横着走 → 下来,回到原来的高度 —— 绕了个弯又回来
+  for (let i = 1; i < r.length - 1; i++) {
+    if (!(r[i][1] < r[i - 1][1] && Math.abs(r[i][1] - r[i - 1][1]) < 12)) continue;
+    for (let j = i + 1; j < Math.min(r.length, i + 6); j++) {
+      if (r[j][1] > r[i - 1][1] && Math.abs(r[j][1] - r[i - 1][1]) < 14) return true;
+    }
+  }
+  return false;
 }
 
 /** 绕远多少倍(曼哈顿长 ÷ 直线距离) */
@@ -828,6 +888,28 @@ function usedOffsets(
     put(e.to, faces[i].entry, entryOff[i]);
   });
   return m;
+}
+
+/** 这张脸上的几个空位(离别人至少 9px)—— 挪端口时用 */
+function freeSlots(used: number[], len: number, cur: number | null): number[] {
+  const gap = PORT_GAP;
+  const limit = len / 2 - FACE_MARGIN;
+  const sorted = [...used].sort((a, b) => a - b);
+  const far = (cand: number): boolean => sorted.every((u) => Math.abs(u - cand) >= gap);
+  const out: number[] = [];
+  for (let d = 0; d <= limit && out.length < 6; d += gap) {
+    for (const cand of d === 0 ? [0] : [d, -d]) {
+      if (Math.abs(cand) > limit) continue;
+      if (cur !== null && Math.abs(cand - cur) < 0.5) continue;
+      if (far(cand)) out.push(cand);
+    }
+  }
+  // 两块之间的中间也算空位
+  for (let i = 1; i < sorted.length && out.length < 6; i++) {
+    const mid = (sorted[i - 1] + sorted[i]) / 2;
+    if (Math.abs(mid) <= limit && far(mid) && (cur === null || Math.abs(mid - cur) >= 0.5)) out.push(mid);
+  }
+  return out;
 }
 
 /** 这张脸上找一个空着的端口(离别的至少 9px)—— 找不到就返回 null(这张脸别用了) */
