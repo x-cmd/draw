@@ -228,6 +228,26 @@ function enclosingBoundary(a: Box, b: Box, bounds: Box[]): Box | undefined {
 interface Faces { exit: Side; entry: Side }
 
 /**
+ * 这个节点的「名字」在不在端口框的下面?
+ *
+ * 大图标模式:端口框是图标那块(64×64),节点框还高出一截 —— 那一截是名字和副标题。
+ * 从底面出线,线就从名字里穿出去 ✗ —— 大图标的底面只留给「正下方」的那种边。
+ */
+function labelUnder(
+  id: string, portBox: (id: string) => Box, boxes: Map<string, Box>,
+): boolean {
+  const p = portBox(id);
+  const b = boxes.get(id);
+  if (!b) return false;
+  return b.h > p.h + 4 && Math.abs(b.y - p.y) < 2;
+}
+
+/** 目标是不是就在正下方(两个框的横向是叠着的) */
+function straightBelow(a: Box, b: Box): boolean {
+  return a.x + a.w > b.x && b.x + b.w > a.x;
+}
+
+/**
  * 首选的面:横向优先(跟 archmap 一致),再决定出/入口在哪一侧。
  *
  * 比的是两个框**之间留出多远**,不是中心差多少 ——
@@ -670,12 +690,21 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
   const faces: Faces[] = edges.map((e) => {
     const a = portBox(e.from);
     const b = portBox(e.to);
-    return primaryFaces(a, b);
+    const f = primaryFaces(a, b);
+    // 大图标节点:名字在图标下面 —— 底面出线会从名字里穿出去。
+    // 只有目标就在正下方时(线本来就该往下走)才用底面。
+    if (f.exit === 'bottom' && labelUnder(e.from, portBox, boxes) && !straightBelow(a, b)) {
+      f.exit = cx(b) < cx(a) ? 'left' : 'right';
+    }
+    return f;
   });
   const alts = edges.map((e, i) => {
     const a = portBox(e.from);
     const b = portBox(e.to);
-    return { exit: altFaces(a, b, faces[i].exit), entry: altFaces(b, a, faces[i].entry) };
+    // 备选面里同样去掉大图标的底面(名字在那儿)
+    const exitAlts = altFaces(a, b, faces[i].exit)
+      .filter((s) => !(s === 'bottom' && labelUnder(e.from, portBox, boxes) && !straightBelow(a, b)));
+    return { exit: exitAlts, entry: altFaces(b, a, faces[i].entry) };
   });
 
   // 2. 排端口
@@ -886,7 +915,9 @@ export function routeEdges(ctx: RoutingCtx): [number, number][][] {
             continue;
           }
           // 代价:交叉最贵,然后是长度,再然后是「有个小凸起」(并排位置的副作用)
-          const score = crossingsOf(cand, others) * CROSS + lenOf(cand) + (hasJog(cand) ? 300 : 0);
+          // 源头上有个台阶(出了几像素就拐)也算 —— 线看着像从半空冒出来的
+          const score = crossingsOf(cand, others) * CROSS + lenOf(cand)
+            + (hasJog(cand) ? 300 : 0) + (hasStepOut(cand) ? 300 : 0);
           if (process.env.DBG) console.error('   cand', ex, o0, en, o4, 'score', Math.round(score), 'jog', hasJog(cand), cand.map((q) => `${q[0].toFixed(0)},${q[1].toFixed(0)}`).join(' '));
           if (!best || score < best.score) {
             best = { pts: cand, ex, en, q0, q4, score };
@@ -929,6 +960,24 @@ function hasJog(r: [number, number][]): boolean {
     }
   }
   return false;
+}
+
+/**
+ * 源头上有个「小台阶」吗 —— 出线走了几像素就拐弯。
+ *
+ * 出线的那一小段(引线)只能朝它那张脸的方向走;走完 8px 就拐,
+ * 线看着像是从节点的半空中冒出来的(大图标节点尤其明显:
+ * 从图标底下出来、往旁边挪 8px 再走)。这种线不该选。
+ */
+function hasStepOut(r: [number, number][]): boolean {
+  if (r.length < 3) return false;
+  const [p0, p1, p2] = r;
+  const d0 = Math.abs(p1[0] - p0[0]) + Math.abs(p1[1] - p0[1]);
+  if (d0 > 16) return false;          // 走远了才拐 —— 那是正常的转向
+  const d1 = Math.abs(p2[0] - p1[0]) + Math.abs(p2[1] - p1[1]);
+  if (d1 < 1) return false;
+  // 拐了(两段不共线)就是台阶
+  return (p1[0] - p0[0]) * (p2[0] - p1[0]) + (p1[1] - p0[1]) * (p2[1] - p1[1]) === 0 ? false : true;
 }
 
 /** 绕远多少倍(曼哈顿长 ÷ 直线距离) */
