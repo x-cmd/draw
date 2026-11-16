@@ -246,7 +246,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const w = ((a.w ?? 0) / 100) * frame.w;
     const h = ((a.h ?? 0) / 100) * frame.h;
     parts.push(
-      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(4 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
+      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(10 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
     );
   }
 
@@ -314,7 +314,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
       `<line x1="${r2(ax)}" y1="${r2(ay)}" x2="${r2(px)}" y2="${r2(py)}" stroke="${color}" stroke-width="${r2(1.4 * k)}" stroke-opacity="0.85"/>`,
       `<circle cx="${r2(ax)}" cy="${r2(ay)}" r="${r2(3.2 * k)}" fill="${color}"/>`,
       // 垫色:底下垫一块近黑的底 —— 压在什么颜色的图上都读得出(亮底上是深色小牌,暗底上融进背景)
-      `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(6 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
+      `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(10 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
     );
     lines.forEach((l, i) => {
       parts.push(

@@ -2,7 +2,7 @@
 import { ApiError, type ChartSpec, type MultiSpec } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
 import {
-  esc, fmtFull, fmtNum, niceStep, niceTicks, r2, reserveBands, snap, smoothPath, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, toSegments,
+  esc, fmtFull, fmtNum, niceStep, niceTicks, r2, reserveBands, snap, smoothPath, roundedPath, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, toSegments,
   type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, topLegend, findPeak, sVar, markPoints, marksLayer,
 } from './svg.js';
 import { xOverhang, yTickInset, type GeoMeasure } from './measure.js';
@@ -116,7 +116,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   const n = spec.data.length;
   const xs = (i: number): number => (n === 1 ? (left + right) / 2 : xFirst + ((right - xFirst) * i) / (n - 1));
   const pts = spec.data.map((d, i) => [xs(i), y(d.value)] as [number, number]);
-  const path = rules.smooth ? smoothPath(pts) : `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
+  const path = rules.smooth ? smoothPath(pts) : roundedPath(pts);
 
   const bg = card(width, height, rules.canvas === 'plain');
   const parts: string[] = [];
@@ -200,7 +200,7 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   const colors = spec.series.map((_, i) => sVar(i % skin.series.length));
   const allPts = spec.series.map((s) => s.values.map((v, i) => [xs(i), y(v)] as [number, number]));
   const pathOf = (pts: [number, number][]): string =>
-    rules.smooth ? smoothPath(pts) : `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
+    rules.smooth ? smoothPath(pts) : roundedPath(pts);
 
   const bg = card(width, height, rules.canvas === 'plain');
   const parts: string[] = [];

@@ -2,7 +2,7 @@
 // 面积填充/数值标注/平滑/点形态/线宽/虚线/发光全部跟随变体规则。
 import type { ChartSpec, MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, markPoints, marksLayer } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, roundedPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, markPoints, marksLayer } from './svg.js';
 import { plainGeo, type GeoMeasure } from './measure.js';
 
 /**
@@ -47,7 +47,7 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   const n = spec.data.length;
   const xs = (i: number): number => (n === 1 ? (left + right) / 2 : left + ((right - left) * i) / (n - 1));
   const pts = spec.data.map((d, i) => [xs(i), y(d.value)] as [number, number]);
-  const path = rules.smooth ? smoothPath(pts) : `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
+  const path = rules.smooth ? smoothPath(pts) : roundedPath(pts);
 
   const parts: string[] = [card(width, height, rules.canvas === 'plain')];
   if (rules.areaGradient) {

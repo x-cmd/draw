@@ -422,6 +422,35 @@ export function smoothPath(pts: [number, number][]): string {
   return d;
 }
 
+/**
+ * 折线的角点改成圆角(x-cmd-hub/draw#116)。
+ *
+ * 尖角在数据图上很扎眼:一段折线的每个拐角都是一个小小的尖刺。
+ * 做法:每个拐角切掉一小段,拿二次贝塞尔补过去 —— 半径 r,
+ * 相邻两段短于 2r 就自动收小(免得弧画到线外面去)。
+ */
+export function roundedPath(pts: readonly [number, number][], r = 8): string {
+  if (pts.length < 3) return `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
+  let d = `M${r2(pts[0][0])} ${r2(pts[0][1])}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [px, py] = pts[i - 1];
+    const [cx, cy] = pts[i];
+    const [nx, ny] = pts[i + 1];
+    const d1 = Math.hypot(cx - px, cy - py);
+    const d2 = Math.hypot(nx - cx, ny - cy);
+    if (d1 < 0.01 || d2 < 0.01) continue;
+    const rr = Math.min(r, d1 / 2, d2 / 2);
+    const ax = cx - ((cx - px) / d1) * rr;
+    const ay = cy - ((cy - py) / d1) * rr;
+    const bx = cx + ((nx - cx) / d2) * rr;
+    const by = cy + ((ny - cy) / d2) * rr;
+    d += `L${r2(ax)} ${r2(ay)}Q${r2(cx)} ${r2(cy)} ${r2(bx)} ${r2(by)}`;
+  }
+  const last = pts[pts.length - 1];
+  d += `L${r2(last[0])} ${r2(last[1])}`;
+  return d;
+}
+
 // 按底色亮度选字色:亮底→墨色,深底→白色
 export function onColor(hex: string): string {
   const h = hex.replace('#', '');

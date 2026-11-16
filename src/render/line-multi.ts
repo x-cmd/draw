@@ -2,7 +2,7 @@
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
 import type { MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, smoothPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar, markPoints, marksLayer } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, r2, smoothPath, roundedPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar, markPoints, marksLayer } from './svg.js';
 import { lineLayout } from './line.js';
 
 /**
@@ -57,7 +57,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   spec.series.forEach((s, si) => {
     const pts = s.values.map((v, i) => [xs(i), y(v)] as [number, number]);
     allSegs.push(...toSegments(pts));
-    const dpath = rules.smooth ? smoothPath(pts) : `M${pts.map((p) => `${r2(p[0])} ${r2(p[1])}`).join('L')}`;
+    const dpath = rules.smooth ? smoothPath(pts) : roundedPath(pts);
     if (rules.glow) {
       parts.push(
         `<defs><filter id="d-glow" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>` +
