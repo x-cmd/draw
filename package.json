@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@resvg/resvg-wasm": "^2.6.2",
+    "@x-cmd/table": "github:x-cmd/table#main",
     "d3-array": "^3.2.4",
     "d3-sankey": "^0.12.3",
     "d3-scale": "^4.0.2",

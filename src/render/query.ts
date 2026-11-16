@@ -34,6 +34,8 @@ import { renderCalendar } from './calendar.js';
 import { parseSankeySpec, sankeySpecFromParams } from '../specs/sankey.js';
 import { renderStored } from './dispatch.js';
 import { renderArchmapFromUrl } from './archmap.js';
+import { parseTableSpec, tableSpecFromParams } from '../specs/table.js';
+import { renderTable, tableToGrid } from './table.js';
 import { renderMindmapFromUrl } from './mindmap.js';
 import { resolveSkin, type Scheme } from '../styles/index.js';
 import { CHART_TEMPLATES, type ChartTemplate, type StoredChart } from '../store.js';
@@ -65,6 +67,7 @@ const SIZE: Record<ChartTemplate, [number, number]> = {
   compass: [560, 460],
   butterfly: [640, 420],
   calendar: [760, 520],
+  table: [640, 320],
 };
 
 function svgResult(svg: string, v: VersionInfo): DrawResult {
@@ -195,6 +198,18 @@ function renderFromUrlInner(url: URL): DrawResult {
     throw new ApiError(400, `"type" query param is required: one of ${CHART_TEMPLATES.join(', ')}. Example: /draw?type=pie&labels=A,B&values=1,2`);
   }
   const kind = typeParam as ChartTemplate;
+  if (kind === 'table') {
+    // 表格:规格来自 @x-cmd/table/core(唯一真源在多维表格仓那边)
+    const spec = parseTableSpec(tableSpecFromParams(url.searchParams));
+    const v = resolveVersion(url.searchParams.get('v'));
+    const skin = resolveSkin('table', url.searchParams.get('t'), schemeParam(url.searchParams));
+    const grid = tableToGrid(spec);
+    const [tw, th] = skin.size ?? SIZE.table;
+    // 表格的画布按内容算:没给 ?w=/?h= 就用自然尺寸
+    const width = url.searchParams.has('w') ? clampInt(url.searchParams, 'w', tw, 200, 1600) : grid.width;
+    const height = url.searchParams.has('h') ? clampInt(url.searchParams, 'h', th, 140, 1200) : grid.height;
+    return svgResult(renderTable(spec, { width, height, version: v.version, skin }), v);
+  }
   if (kind === 'qr') return qrRender(url);
   if (kind === 'quadrant') {
     const spec = parseQuadrantSpec(quadrantSpecFromParams(url.searchParams));

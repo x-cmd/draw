@@ -27,6 +27,7 @@ export { renderQuadrant } from './render/quadrant.js';
 export { renderCompass } from './render/compass.js';
 export { renderButterfly } from './render/butterfly.js';
 export { renderCalendar } from './render/calendar.js';
+export { renderTable, tableToGrid, type TableGrid } from './render/table.js';
 export { renderStored } from './render/dispatch.js';
 // Small helpers that page builders (and the x-cmd-hosted worker) reuse:
 export { esc, fmtFull, fmtNum, textW, EDIT_TAG_STRIP_SRC } from './render/svg.js';

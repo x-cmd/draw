@@ -11,6 +11,7 @@ import { parseQuadrantSpec } from './specs/quadrant.js';
 import { parseCompassSpec } from './specs/compass.js';
 import { parseButterflySpec } from './specs/butterfly.js';
 import { parseCalendarSpec } from './specs/calendar.js';
+import { parseTableSpec } from './specs/table.js';
 import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
@@ -221,6 +222,8 @@ async function createHandler(request: Request, env: DrawEnv, platform: Platform,
     normalizedSpec = parseSeriesSpec(specJson, template === 'line' || template === 'area' || template === 'radar' ? 'line' : 'bar');
   } else if (template === 'calendar') {
     normalizedSpec = parseCalendarSpec(specJson);
+  } else if (template === 'table') {
+    normalizedSpec = parseTableSpec(specJson);
   } else {
     normalizedSpec = parseChartSpec(specJson, template);
   }
@@ -234,7 +237,9 @@ async function createHandler(request: Request, env: DrawEnv, platform: Platform,
   if (typeof normalizedSpec === 'object' && normalizedSpec !== null) {
     const s = normalizedSpec as Record<string, unknown>;
     const caps: Record<string, number> = { title: 80, unit: 24, subtitle: 96, source: 96 };
-    for (const k of ['title', 'unit', 'subtitle', 'source'] as const) {
+    // 表格的规格只有 title(unit/subtitle/source 是图表的键,并进去会变成未知键)
+    const mergeKeys = template === 'table' ? (['title'] as const) : (['title', 'unit', 'subtitle', 'source'] as const);
+    for (const k of mergeKeys) {
       const v = url.searchParams.get(k);
       // 不能用 !(k in s):parseChartSpec 返回的规范形态恒带这些键(值可为 undefined)
       if (v !== null && !(typeof s[k] === 'string' && s[k] !== '')) s[k] = clip(v, caps[k]);
@@ -459,13 +464,29 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
   return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · GET ${base}/echarts?d=... · GET ${base}/archmap?n=... · GET ${base}/mindmap?n=... · GET ${base}/x-cmd/release-banner?title=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
 }
 
+/**
+ * 错误里的状态码。
+ *
+ * `instanceof` 只在同一份代码里成立 —— 跨包的 ApiError(比如 @x-cmd/table 的)
+ * 结构相同但类不同,所以按字段判定。
+ */
+function errorStatus(e: unknown): number | null {
+  if (e instanceof ApiError) return e.status;
+  if (e instanceof Error) {
+    const st = (e as unknown as { status?: unknown }).status;
+    if (typeof st === 'number' && st >= 400 && st < 600) return st;
+  }
+  return null;
+}
+
 // 统一入口:Worker 的 fetch handler 与 Node 适配器都调这里。
 // ApiError → 对应状态码文本;其余异常 → 500 + rid(日志带 stack)。
 export async function handleRequest(request: Request, env: DrawEnv, platform: Platform): Promise<Response> {
   try {
     return await route(request, env, platform);
   } catch (e) {
-    if (e instanceof ApiError) return textResponse(e.status, e.message);
+    const st = errorStatus(e);
+    if (st !== null) return textResponse(st, (e as Error).message);
     const rid = crypto.randomUUID().slice(0, 8);
     console.error(JSON.stringify({
       msg: 'unhandled error', rid, method: request.method, url: request.url,

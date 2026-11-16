@@ -69,6 +69,7 @@ README 嵌入推荐形态 = 图预览 + 点击进 explore(悬停看数、调参�
 | 两个系列背靠背 | `butterfly` | `type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6` |
 | 日历 / 课程表 / 排期 | `calendar` | `type=calendar&layout=month&start=2026-11-02&ev=2026-11-03;meeting;需求评审;14:00` |
 | 二维码 | `qr` | `type=qr&d=https://x-cmd.com` |
+| 表格 / 清单 | `table` | `type=table&cols=Service,Errors&rows=api:12;worker:9` |
 
 ### 4.2 结构图:统一节点与连线语法
 
@@ -277,6 +278,7 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 - **calendar**:`layout=month|week|year|bimonth|quarter|course|plan`;`ev=日期;类别;标签;时间` / `day=日期;性质;标签` / `note=日期;文字` 均可重复;事件 ≤60 条
 - **quadrant**:`quadrants=` 逗号四格名(左上,右上,左下,右下);`quaddescs=` 分号四格说明;`items=名称@x,y` 落点散点(x/y 为 0..1);`frame=cross` 只要十字轴
 - **compass**:`up=`/`right=`/`down=`/`left=` 各方向标签(可 `标签:副说明`),`center=` 中心字
+- **table**:`cols=` 逗号分隔的列名;`rows=` 分号分隔的行,**行内冒号分隔单元格**(`api:12;worker:9`);也接受 `?d=` 的 JSON 形态 `{"cols":[…],"rows":[[…]]}`。单元格含 `:` `;` `,` 时改用 `?d=`。规格解析在 x-cmd/table(多维表格仓)那边,这边只转发
 - **结构图**(arch2/archmap/seq/uc/dataflow/lifecycle/erd/class):语法见 §4.2;类型词汇错了会 400 并列出有效值
 
 ### 9.3 风格家族(可选 `t=`)
@@ -296,6 +298,7 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 | combo | ⭐`base` `evil` |
 | butterfly | ⭐`base` `track` `grid` `scale` |
 | calendar | ⭐`base` `mono`(墨水风) |
+| table | ⭐`base`(仅此) |
 | scatter / qr / quadrant / compass | ⭐`base`(仅此) |
 
 ### 9.4 JSON 形态(`?d=`,URL 编码;15 种数据图表)
