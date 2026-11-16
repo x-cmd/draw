@@ -314,6 +314,25 @@ Common parameters:
 - `num` value labels: `all` / `peak` (highest only) / `none`. Defaults follow the style; applies to pie/bar/hbar/line/area/scatter/combo (radar/gauge/sankey/qr ignore it)
 - `subtitle` editorial subtitle (only rendered by area's editorial style `t=opendata`), `source` data-source footnote (area only, any `t`); other types parse but ignore these
 
+## Mark it up (every endpoint)
+
+Any chart can be marked up without touching the chart itself — the marks are drawn on top, in one layer, after the drawing is done. Coordinates are **percent of the canvas** (0–100), so a mark stays where you put it when the size or the theme changes.
+
+| param | draws | example |
+|---|---|---|
+| `oval=` | an ellipse around a spot (`cx,cy,rx,ry`) | `oval=70,25,12,8` |
+| `text=` | a short label (`x,y;text`) | `text=70,12;the spike` |
+| `_hl=` | a highlighted region (`x,y,w,h`) | `_hl=20,30,40,25` |
+| `_note=` | a comment, with a leader line to the point (`x,y;text`) | `_note=62,44;this spike came from the release` |
+
+All four can be repeated, and each takes an optional 6-digit hex color (`#` URL-encoded as `%23`):
+
+```
+/draw?type=bar&labels=Mon,Tue,Wed&values=12,18,9&_hl=8,20,42,55&_note=72,62;the%20spike%20was%20the%20release&oval=72,62,7,6
+```
+
+`_hl=` and `_note=` are prefixed with `_` so they can never collide with a chart's own params (`smiles=`, `d=`, `theme=`, …) — see [#33](https://github.com/x-cmd/draw/issues/33). `format=png` rasterizes the marks too.
+
 ## Styles (`?t=`)
 
 Per-type reference: [pie](docs/2-data-charts/01-pie/en.md) · [bar](docs/2-data-charts/02-bar/en.md) · [hbar](docs/2-data-charts/03-hbar/en.md) · [line](docs/2-data-charts/04-line/en.md) · [area](docs/2-data-charts/05-area/en.md) · [radar](docs/2-data-charts/06-radar/en.md) · [gauge](docs/2-data-charts/07-gauge/en.md) · [scatter](docs/2-data-charts/08-scatter/en.md) · [combo](docs/2-data-charts/09-combo/en.md) · [sankey](docs/3-relations/01-sankey/en.md) · [qr](docs/7-infographics/01-qr/en.md) · [quadrant](docs/4-strategy/01-quadrant/en.md) · [compass](docs/4-strategy/02-compass/en.md) — each page has the parameters, the style families, the pitfalls and its own `faq.yml`.

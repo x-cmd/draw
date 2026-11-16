@@ -1,34 +1,48 @@
-// 图上的标注层:在图上圈一个椭圆、写一句话。
+// 图上的标注层:在图上圈一个椭圆、写一句话、标一块区域、写一条评论。
 //
 // 用途:AI(或人)拿到一张图,想在上面指出点东西 —— 「那次抖动是发布引起的」。
-// 于是 URL 后面可以再挂两个参数:
+// 于是 URL 后面可以再挂几个参数(都能写多次):
 //
 //   &oval=70,25,12,8            圈一个椭圆(中心 70,25;半径 12,8)
 //   &oval=70,25,12,8,#22d3ee    同上,换个颜色
 //   &text=70,12;发布抖动        写一句话
 //   &text=70,12,#22d3ee;发布抖动
+//   &_hl=20,30,40,25            高亮一块区域(左上角 x,y;宽 w;高 h)
+//   &_hl=20,30,40,25,#fbbf24    同上,换个颜色
+//   &_note=62,44;这个尖峰是发布引起的   一条评论(从 62,44 拉一条线过去)
+//   &_note=62,44,#60a5fa;…      同上,换个颜色
 //
 // 坐标是**百分比**(0-100),相对整张画布 —— 换尺寸、换图种,标注都还在原来的地方。
 // 颜色只收 6 位 hex(# 要 URL 编码成 %23)。
+//
+// 通用扩展用 `_` 开头(oval/text 是老名字,不改):这样不会跟各图种自己的参数
+// (smiles= d= theme= …)打架 —— 见 x-cmd/draw#33。
 //
 // 这层是画在图**上面**的一层(g.anno),不改动图本身 —— 图还是那张图,只是上面多了几笔。
 
 import { ApiError } from '../specs/index.js';
 
 export interface Anno {
-  kind: 'oval' | 'text';
-  /** 椭圆:中心;文字:标签中心(都是百分比) */
+  kind: 'oval' | 'text' | 'hl' | 'note';
+  /** 椭圆:中心;文字:标签中心;高亮:左上角;评论:引线的落点(都是百分比) */
   x: number;
   y: number;
   /** 椭圆的半径(百分比) */
   rx?: number;
   ry?: number;
+  /** 高亮的宽高(百分比) */
+  w?: number;
+  h?: number;
   text?: string;
   color?: string;
 }
 
 const HEX_RE = /^#?[0-9a-fA-F]{6}$/;
 const DEFAULT_COLOR = '#F87171';
+/** 高亮默认取荧光黄的底色(像荧光笔) */
+const HL_COLOR = '#FBBF24';
+/** 评论默认取站上的强调色(蓝) */
+const NOTE_COLOR = '#60A5FA';
 
 const r2 = (v: number): number => Math.round(v * 100) / 100;
 
@@ -49,13 +63,15 @@ function pct(v: number, name: string, raw: string): number {
 }
 
 /**
- * 解析标注参数(两个都可以写多次)。
+ * 解析标注参数(都能写多次)。
  * 约定:第一个字段是逗号分隔的数,后面用分号分隔别的字段。
  */
 export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
   const ovals = params.getAll('oval');
   const texts = params.getAll('text');
-  if (!ovals.length && !texts.length) return undefined;
+  const hls = params.getAll('_hl');
+  const notes = params.getAll('_note');
+  if (!ovals.length && !texts.length && !hls.length && !notes.length) return undefined;
   const out: Anno[] = [];
 
   for (const raw of ovals) {
@@ -94,20 +110,114 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
       color: colorOf(nums[2], 'text'),
     });
   }
+
+  // 高亮一块区域:_hl=x,y,w,h(左上角 + 宽高,都是百分比)
+  for (const raw of hls) {
+    const parts = raw.split(';');
+    const nums = parts[0].split(',');
+    if (nums.length < 4 || nums.length > 5 || nums.slice(0, 4).some((n) => !Number.isFinite(Number(n)))) {
+      throw new ApiError(400, `"_hl" expects x,y,w,h in percent of the canvas (a ,#color may follow), e.g. _hl=20,30,40,25 — got ${JSON.stringify(raw)}`);
+    }
+    const w = Number(nums[2]);
+    const h = Number(nums[3]);
+    if (w <= 0 || h <= 0) {
+      throw new ApiError(400, `"_hl" width and height must be positive, e.g. _hl=20,30,40,25 — got ${JSON.stringify(raw)}`);
+    }
+    out.push({
+      kind: 'hl',
+      x: pct(Number(nums[0]), '_hl', raw),
+      y: pct(Number(nums[1]), '_hl', raw),
+      w,
+      h,
+      color: colorOf(nums[4] ?? parts[1], '_hl'),
+    });
+  }
+
+  // 一条评论:_note=x,y;评论正文(引线落在 x,y 上)
+  for (const raw of notes) {
+    const i = raw.indexOf(';');
+    const head = i < 0 ? raw : raw.slice(0, i);
+    const body = i < 0 ? '' : raw.slice(i + 1);
+    const nums = head.split(',');
+    if (nums.length < 2 || nums.length > 3 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
+      throw new ApiError(400, `"_note" expects x,y in percent of the canvas (a ,#color may follow), then the comment after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
+    }
+    const text = body.slice(0, 200);
+    if (!text.trim()) {
+      throw new ApiError(400, `"_note" needs some text after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
+    }
+    out.push({
+      kind: 'note',
+      x: pct(Number(nums[0]), '_note', raw),
+      y: pct(Number(nums[1]), '_note', raw),
+      text,
+      color: colorOf(nums[2], '_note'),
+    });
+  }
   return out;
+}
+
+/** 一个字符占几个字宽(CJK 一个字宽,拉丁半个左右) */
+function charUnits(ch: string): number {
+  const c = ch.codePointAt(0) ?? 0;
+  const wide = c >= 0x1100 && (c <= 0x115f || (c >= 0x2e80 && c <= 0xa4cf && c !== 0x303f)
+    || (c >= 0xac00 && c <= 0xd7a3) || (c >= 0xf900 && c <= 0xfaff)
+    || (c >= 0xfe30 && c <= 0xfe6f) || (c >= 0xff00 && c <= 0xff60));
+  return wide ? 1 : 0.55;
+}
+
+/** 一段文字占几个字宽 */
+function unitsOf(text: string): number {
+  let w = 0;
+  for (const ch of text) w += charUnits(ch);
+  return w;
 }
 
 /** 文本宽度估算(CJK 一个字宽,拉丁半个左右) */
 function textWidth(text: string, fontSize: number): number {
-  let w = 0;
-  for (const ch of text) {
-    const c = ch.codePointAt(0) ?? 0;
-    const wide = c >= 0x1100 && (c <= 0x115f || (c >= 0x2e80 && c <= 0xa4cf && c !== 0x303f)
-      || (c >= 0xac00 && c <= 0xd7a3) || (c >= 0xf900 && c <= 0xfaff)
-      || (c >= 0xfe30 && c <= 0xfe6f) || (c >= 0xff00 && c <= 0xff60));
-    w += wide ? fontSize : fontSize * 0.55;
+  return unitsOf(text) * fontSize;
+}
+
+/**
+ * 折行:中文随处断,西文按空格断(找不到空格就硬断)。
+ * maxEm 是「多少字宽」一行 —— 不是多少个字符。
+ */
+function wrapText(text: string, maxEm: number): string[] {
+  const lines: string[] = [];
+  // 显式换行先切开,每段各自折行
+  for (const para of text.replace(/\r/g, '').split('\n')) {
+    let rest = para;
+    while (rest.length) {
+      if (unitsOf(rest) <= maxEm) {
+        lines.push(rest);
+        break;
+      }
+      // 断点:宽度之内最后一个空格
+      let cut = -1;
+      let w = 0;
+      for (let i = 0; i < rest.length; i++) {
+        w += charUnits(rest[i]);
+        if (w > maxEm) break;
+        if (rest[i] === ' ') cut = i;
+      }
+      if (cut > 0) {
+        lines.push(rest.slice(0, cut).trimEnd());
+        rest = rest.slice(cut + 1).trimStart();
+        continue;
+      }
+      // 没有空格:按宽度硬断
+      let i = 0;
+      w = 0;
+      while (i < rest.length && w + charUnits(rest[i]) <= maxEm) {
+        w += charUnits(rest[i]);
+        i++;
+      }
+      if (i === 0) i = 1;
+      lines.push(rest.slice(0, i));
+      rest = rest.slice(i);
+    }
   }
-  return w;
+  return lines.filter((l) => l.length);
 }
 
 const esc = (s: string): string =>
@@ -116,28 +226,50 @@ const esc = (s: string): string =>
 /**
  * 标注层 → SVG(画在画布坐标上)。
  * frame 是画布在 viewBox 里的位置与大小(标注的百分比按它换算)。
+ *
+ * 画的时候按kind分批:高亮(区域)在最底下,圈与文字在上面,评论(带引线)最上。
+ *
+ * k 是「一个用户单位 = 多少像素」的倒数 —— 画布的 viewBox 跟它的像素尺寸
+ * 不一定一样(化学结构那张:viewBox 只有 119 个单位,画布 560 像素),
+ * 不按它折算,标注会跟着图一起被放大四倍(字变得比分子还大)。
  */
-export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: number; h: number }): string {
+export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: number; h: number }, k = 1): string {
   if (!annos.length) return '';
   const parts: string[] = [];
-  for (const a of annos) {
+  const of = (kind: Anno['kind']): Anno[] => annos.filter((a) => a.kind === kind);
+
+  // 一、高亮:一块区域(荧光笔那一笔)
+  for (const a of of('hl')) {
+    const color = a.color ?? HL_COLOR;
+    const x = frame.x + (a.x / 100) * frame.w;
+    const y = frame.y + (a.y / 100) * frame.h;
+    const w = ((a.w ?? 0) / 100) * frame.w;
+    const h = ((a.h ?? 0) / 100) * frame.h;
+    parts.push(
+      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(4 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
+    );
+  }
+
+  // 二、圈一个点
+  for (const a of of('oval')) {
     const color = a.color ?? DEFAULT_COLOR;
-    if (a.kind === 'oval') {
-      const cx = frame.x + (a.x / 100) * frame.w;
-      const cy = frame.y + (a.y / 100) * frame.h;
-      const rx = ((a.rx ?? 0) / 100) * frame.w;
-      const ry = ((a.ry ?? 0) / 100) * frame.h;
-      parts.push(
-        `<ellipse cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="2.5" stroke-opacity="0.95"/>`,
-      );
-      continue;
-    }
-    // 文字:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
-    const fs = 13;
+    const cx = frame.x + (a.x / 100) * frame.w;
+    const cy = frame.y + (a.y / 100) * frame.h;
+    const rx = ((a.rx ?? 0) / 100) * frame.w;
+    const ry = ((a.ry ?? 0) / 100) * frame.h;
+    parts.push(
+      `<ellipse cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="${r2(2.5 * k)}" stroke-opacity="0.95"/>`,
+    );
+  }
+
+  // 三、一句话:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
+  for (const a of of('text')) {
+    const color = a.color ?? DEFAULT_COLOR;
+    const fs = 13 * k;
     const text = a.text ?? '';
     const tw = textWidth(text, fs);
-    const padX = 8;
-    const padY = 5;
+    const padX = 8 * k;
+    const padY = 5 * k;
     const bw = tw + padX * 2;
     const bh = fs + padY * 2;
     const cx = frame.x + (a.x / 100) * frame.w;
@@ -145,12 +277,52 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const x = cx - bw / 2;
     const y = cy - bh / 2;
     parts.push(
-      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-opacity="0.5" stroke-width="1"/>`,
+      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-opacity="0.5" stroke-width="${r2(k)}"/>`,
     );
     parts.push(
-      `<text x="${r2(cx)}" y="${r2(cy + fs * 0.35)}" text-anchor="middle" font-size="${fs}" font-weight="500" fill="${color}">${esc(text)}</text>`,
+      `<text x="${r2(cx)}" y="${r2(cy + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" font-weight="500" fill="${color}">${esc(text)}</text>`,
     );
   }
+
+  // 四、一条评论:一条引线 + 一个多行的框(框自己挑位置:右边放不下就放左边)
+  for (const a of of('note')) {
+    const color = a.color ?? NOTE_COLOR;
+    const fs = 13 * k;
+    const text = a.text ?? '';
+    const lines = wrapText(text, 20).slice(0, 4);
+    if (!lines.length) continue;
+    const lh = fs * 1.35;
+    const padX = 10 * k;
+    const padY = 8 * k;
+    const bw = Math.max(...lines.map((l) => unitsOf(l) * fs)) + padX * 2;
+    const bh = lines.length * lh + padY * 2;
+    const ax = frame.x + (a.x / 100) * frame.w;
+    const ay = frame.y + (a.y / 100) * frame.h;
+    const gap = 16 * k;
+    // 框放在引线的哪一侧:先试右边,再试左边;上面放不下就放下面
+    let bx = ax + gap;
+    if (bx + bw > frame.x + frame.w) bx = ax - gap - bw;
+    let by = ay - gap - bh;
+    if (by < frame.y) by = ay + gap;
+    // 夹回画布(太小放不下时宁可压边,也不能跑出去)
+    bx = Math.min(Math.max(bx, frame.x), Math.max(frame.x, frame.x + frame.w - bw));
+    by = Math.min(Math.max(by, frame.y), Math.max(frame.y, frame.y + frame.h - bh));
+    // 引线:从落点连到框上最近的那一点
+    const px = Math.min(Math.max(ax, bx), bx + bw);
+    const py = Math.min(Math.max(ay, by), by + bh);
+    parts.push(
+      `<line x1="${r2(ax)}" y1="${r2(ay)}" x2="${r2(px)}" y2="${r2(py)}" stroke="${color}" stroke-width="${r2(1.4 * k)}" stroke-opacity="0.85"/>`,
+      `<circle cx="${r2(ax)}" cy="${r2(ay)}" r="${r2(3.2 * k)}" fill="${color}"/>`,
+      // 垫色:底下垫一块近黑的底 —— 压在什么颜色的图上都读得出(亮底上是深色小牌,暗底上融进背景)
+      `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(6 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
+    );
+    lines.forEach((l, i) => {
+      parts.push(
+        `<text x="${r2(bx + padX)}" y="${r2(by + padY + lh * i + fs * 0.82)}" font-size="${r2(fs)}" fill="${color}">${esc(l)}</text>`,
+      );
+    });
+  }
+
   return `<g class="anno" data-anno="1">${parts.join('')}</g>`;
 }
 
@@ -182,8 +354,14 @@ export function injectAnnos(svg: string, annos: Anno[] | undefined): string {
     vh = h ? Number(h[1]) : 0;
   }
   if (!vw || !vh) return svg;
+  // 画布的像素尺寸跟 viewBox 不一定一样(化学结构那张:viewBox 119 个单位、
+  // 画布 560 像素 —— 图被放大了四倍多)。标注的字号、线宽得按同一个比例折算,
+  // 否则标注会跟着图一起被放大(字比分子还大)。
+  const px = /width="([\d.]+)"/.exec(attrs);
+  const scale = px && vw > 0 ? Number(px[1]) / vw : 1;
+  const k = scale > 0 ? 1 / scale : 1;
   // 百分比按 viewBox 换算(viewBox 原点不一定在 0,0)
-  const layer = annoLayer(annos, { x: x0, y: y0, w: vw, h: vh });
+  const layer = annoLayer(annos, { x: x0, y: y0, w: vw, h: vh }, k);
   const at = svg.lastIndexOf('</svg>');
   if (at < 0) return svg;
   return svg.slice(0, at) + layer + svg.slice(at);
