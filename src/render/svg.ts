@@ -439,6 +439,13 @@ export function roundedPath(pts: readonly [number, number][], r = 8): string {
     const d1 = Math.hypot(cx - px, cy - py);
     const d2 = Math.hypot(nx - cx, ny - cy);
     if (d1 < 0.01 || d2 < 0.01) continue;
+    // 直着走(没拐弯)就别切角了 —— 免得路径里塞一堆没用的弧
+    const cross = (cx - px) * (ny - cy) - (cy - py) * (nx - cx);
+    const dot = (cx - px) * (nx - cx) + (cy - py) * (ny - cy);
+    if (Math.abs(cross) < 1e-9 && dot > 0) {
+      d += `L${r2(cx)} ${r2(cy)}`;
+      continue;
+    }
     const rr = Math.min(r, d1 / 2, d2 / 2);
     const ax = cx - ((cx - px) / d1) * rr;
     const ay = cy - ((cy - py) / d1) * rr;
