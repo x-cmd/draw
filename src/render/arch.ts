@@ -19,7 +19,7 @@ import { gridLayout, labelGaps, type LayoutEngine } from './layout.js';
 import { routeEdges, type RoutingCtx, type RoutingEngine } from './route.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
-import { esc, r2, svgDoc, textW, trunc} from './svg.js';
+import { esc, r2, roundedPath, svgDoc, textW, trunc} from './svg.js';
 import { iconOf } from './icons.js';
 import { groupIcon } from './orgicon.js';
 
@@ -405,7 +405,8 @@ function computeRoutesV2(
 /* ---------------------------------------------------------------- 边 */
 function drawRoutesV2(routed: V2Routed[], interactive: boolean, types: HouseTypes): string {
   return routed.map((rt) => {
-    const d = rt.pts.map((p, j) => `${j === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('');
+    // 直角走线的拐角改成圆角(#116):地铁图那样,比生硬的 90° 好看
+    const d = roundedPath(rt.pts, 10);
     const ia = interactive ? ` data-from="${esc(rt.e.from)}" data-to="${esc(rt.e.to)}"` : '';
     const s = rt as V2Routed & { stroke: string; width: number };
     const feet = types.crows === 'erd' ? crowFeetV2(rt, s.stroke) : '';

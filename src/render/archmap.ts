@@ -12,7 +12,7 @@
 import { ApiError } from '../specs/index.js';
 import { resolveVersion, type VersionInfo } from '../version.js';
 import { resolveSkin, type Skin } from '../styles/index.js';
-import { esc, r2, sVar, segRectIntersect, svgDoc, textW } from './svg.js';
+import { esc, r2, roundedPath, sVar, segRectIntersect, svgDoc, textW } from './svg.js';
 import { routeEdges, type RoutingCtx, type RoutingEngine } from './route.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 
@@ -454,7 +454,7 @@ export function computeRoutes(
 
 function drawRoutes(routed: Routed[], interactive = false, style: ArchStyle = 'base', byId?: Map<string, Placed>): string {
   return routed.map(rt => {
-    const d = rt.pts.map((p, j) => `${j === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('');
+    const d = roundedPath(rt.pts, 10);
     const ia = interactive ? ` data-from="${esc(rt.e.from)}" data-to="${esc(rt.e.to)}"` : '';
     let stroke = rt.stroke;
     let width = rt.width;

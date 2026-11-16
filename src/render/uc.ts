@@ -13,7 +13,7 @@ import type { ArchBoundary } from './archmap.js';
 import { GRID_POS_RE, PX_POS_RE, parseBoundaries, splitFields } from './archmap.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
-import { esc, r2, svgDoc, textW } from './svg.js';
+import { esc, r2, roundedPath, svgDoc, textW } from './svg.js';
 
 const PAD = 44;
 const ACTOR_H = 92;      // 火柴人 + 名字占的高度
@@ -286,7 +286,7 @@ export function renderUcCore(o: UcOpts): DrawResult {
       lx = depX + 6; ly = (ay + by) / 2; lanchor = 'start';
     }
     edges.push(
-      `<path d="${pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${r2(p[0])} ${r2(p[1])}`).join('')}" fill="none" stroke="${stroke}" stroke-width="1.3"${dash}${ia}/>`,
+      `<path d="${roundedPath(pts, 8)}" fill="none" stroke="${stroke}" stroke-width="1.3"${dash}${ia}/>`,
     );
     if (e.label) {
       const w = textW(e.label, 10.5) + 12;
