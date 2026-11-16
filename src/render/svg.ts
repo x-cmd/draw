@@ -249,6 +249,10 @@ export function svgDoc(
     tagHref = `https://x-cmd.com/draw/explore?type=${template}&d=${encodeURIComponent(JSON.stringify(spec))}`;
   } else if (template === 'qr') {
     tagHref = `https://x-cmd.com/draw/explore?type=qr&d=${encodeURIComponent(String((spec as { text?: string })?.text ?? ''))}`;
+  } else if (template === 'table') {
+    // 表格的入口直接是 /table —— 那个 app 才是能改表格的地方,
+    // draw 底下没有 table 的 explore 页,也不需要有一个。
+    tagHref = `https://x-cmd.com/table?d=${encodeURIComponent(JSON.stringify(spec))}`;
   } else if (tagQuery) {
     const q = new URLSearchParams(tagQuery.replace(/^\?/, ''));
     for (const k of ['w', 'h', 'scheme', 'format']) q.delete(k); // 尺寸/渲染控制参数不带进落地页

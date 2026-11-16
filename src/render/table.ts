@@ -1,19 +1,14 @@
-// 表格渲染器:规格 → SVG。
+// 表格渲染器:扁平的 {cols, rows} → SVG。
 //
 // 排版用 draw 自己的那一套(svgDoc / textW / skin),所以同一页里表格与其它图
 // 长得是一家人 —— 这是 x-cmd/draw#24 明确要求的:「表头和单元格的对齐要跟 draw
 // 的其它 kind 用同一套排版办法,不然同一张表在两个地方会长得不一样」。
 //
-// 规格来自 @x-cmd/table/core:字段、类型、关联记录都在那边定义。
+// 规格自包含(见 src/specs/table.ts):多维表格仓(x-cmd/table)是另一个服务,
+// 两边共享的是 cols=/rows= 这个约定,不是代码。
 
-import {
-  applyView,
-  cellText,
-  columnNumeric,
-  visibleFields,
-  type TableSpec,
-} from '@x-cmd/table/core';
 import { ApiError } from '../specs/index.js';
+import type { TableSpec } from '../specs/table.js';
 import { esc, svgDoc, textW, type RenderOpts } from './svg.js';
 
 /** 单元格左右内边距。 */
@@ -44,7 +39,7 @@ export interface TableCol {
   w: number;
 }
 
-/** 渲染用的网格(规格的一个投影)。 */
+/** 渲染用的网格。 */
 export interface TableGrid {
   title?: string;
   cols: TableCol[];
@@ -55,54 +50,56 @@ export interface TableGrid {
   height: number;
 }
 
+/** 整列都是数字 → 右对齐(与 Airtable 一致)。 */
+function columnNumeric(rows: string[][], index: number): boolean {
+  let seen = false;
+  for (const row of rows) {
+    const v = row[index];
+    if (v === undefined || v === '') continue;
+    if (!Number.isFinite(Number(v))) return false;
+    seen = true;
+  }
+  return seen;
+}
+
 /**
  * 规格 → 可渲染的网格。
- *
- * 取第一个网格视图(没有就取第一个视图)的那张表;字段与行都按视图算。
  */
 export function tableToGrid(spec: TableSpec): TableGrid {
-  const view = spec.views.find((v) => v.type === 'grid') ?? spec.views[0];
-  if (!view) {
-    throw new ApiError(400, 'the table spec has no views. Add a "views" entry with a grid view.');
-  }
-  const table = spec.tables.find((t) => t.id === view.table);
-  if (!table) {
+  if (!spec.cols.length && !spec.rows.length) {
     throw new ApiError(
       400,
-      `view ${JSON.stringify(view.id)} looks at unknown table ${JSON.stringify(view.table)}. ` +
-        `Known tables: ${spec.tables.map((t) => t.id).join(', ') || '(none)'}`,
+      'A table needs data. Try ?cols=Service,Errors&rows=api:12;worker:9',
     );
   }
-  const fields = visibleFields(table, view);
-  if (!fields.length) {
-    throw new ApiError(400, `table ${JSON.stringify(table.id)} has no visible fields to render.`);
-  }
-  const rows = applyView(spec, view).map((r) =>
-    fields.map((f) => cellText(spec, f, r.record.fields[f.id])),
-  );
+  const width = Math.max(spec.cols.length, ...spec.rows.map((r) => r.length), 0);
+  const names: string[] = [];
+  for (let i = 0; i < width; i++) names.push(spec.cols[i] ?? String(i + 1));
 
-  const cols: TableCol[] = fields.map((f) => {
-    // 列宽:表头与所有单元格里最宽的那条
-    let w = textW(f.name, HEAD_FS);
-    for (const row of rows) {
-      const cw = textW(row[fields.indexOf(f)] ?? '', BODY_FS);
+  const cols: TableCol[] = names.map((name, i) => {
+    let w = textW(name, HEAD_FS);
+    for (const row of spec.rows) {
+      const cw = textW(row[i] ?? '', BODY_FS);
       if (cw > w) w = cw;
     }
     return {
-      name: f.name,
-      align: columnNumeric(table, f) ? ('right' as const) : ('left' as const),
+      name,
+      align: columnNumeric(spec.rows, i) ? ('right' as const) : ('left' as const),
       w: Math.min(MAX_COL_W, Math.max(MIN_COL_W, Math.ceil(w) + PAD_X * 2)),
     };
   });
 
-  const width = Math.ceil(cols.reduce((a, c) => a + c.w, 0) + PAD * 2);
-  const height = Math.ceil(CONTENT_TOP + 34 + rows.length * ROW_H + PAD);
+  const rows = spec.rows.map((r) => {
+    const out: string[] = [];
+    for (let i = 0; i < width; i++) out.push(r[i] ?? '');
+    return out;
+  });
 
   const grid: TableGrid = {
     cols,
     rows,
-    width,
-    height,
+    width: Math.ceil(cols.reduce((a, c) => a + c.w, 0) + PAD * 2),
+    height: Math.ceil(CONTENT_TOP + 34 + rows.length * ROW_H + PAD),
   };
   if (spec.title) grid.title = spec.title;
   return grid;

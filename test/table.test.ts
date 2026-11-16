@@ -6,13 +6,24 @@ import { resolveSkin } from '../src/styles/index.js';
 import { handleRequest } from '../src/handler.js';
 
 describe('table kind', () => {
-  it('扁平参数 → 规格 → 表格', () => {
+  it('扁平参数 → 规格', () => {
     const spec = parseTableSpec(
       tableSpecFromParams(new URLSearchParams('cols=Service,Errors&rows=api:12;worker:9')),
     );
-    expect(spec.tables).toHaveLength(1);
-    expect(spec.tables[0]!.fields.map((f) => f.name)).toEqual(['Service', 'Errors']);
-    expect(spec.tables[0]!.records).toHaveLength(2);
+    expect(spec.cols).toEqual(['Service', 'Errors']);
+    expect(spec.rows).toEqual([
+      ['api', '12'],
+      ['worker', '9'],
+    ]);
+  });
+
+  it('?d= 的 JSON 形态', () => {
+    const spec = parseTableSpec('{"cols":["A","B"],"rows":[["x",1],["y",2]]}');
+    expect(spec.cols).toEqual(['A', 'B']);
+    expect(spec.rows).toEqual([
+      ['x', '1'],
+      ['y', '2'],
+    ]);
   });
 
   it('渲染出的 SVG 里有表头和数据', () => {
@@ -37,7 +48,20 @@ describe('table kind', () => {
     const doc = JSON.parse(raw) as { generator: string; template: string; spec: unknown };
     expect(doc.generator).toBe('draw');
     expect(doc.template).toBe('table');
-    expect(doc.spec).toBeTruthy();
+    expect(doc.spec).toEqual({ cols: ['A', 'B'], rows: [['1', '2']] });
+  });
+
+  it('整列都是数字 → 右对齐', () => {
+    const spec = parseTableSpec(tableSpecFromParams(new URLSearchParams('cols=A,B&rows=1:2;3:4')));
+    const grid = tableToGrid(spec);
+    expect(grid.cols[0]?.align).toBe('right');
+    expect(grid.cols[1]?.align).toBe('right');
+  });
+
+  it('有文字的列左对齐', () => {
+    const spec = parseTableSpec(tableSpecFromParams(new URLSearchParams('cols=A,B&rows=x:2')));
+    const grid = tableToGrid(spec);
+    expect(grid.cols[0]?.align).toBe('left');
   });
 
   it('自然尺寸按内容算', () => {
@@ -48,6 +72,12 @@ describe('table kind', () => {
     expect(grid.rows).toHaveLength(3);
     expect(grid.width).toBeGreaterThan(0);
     expect(grid.height).toBeGreaterThan(0);
+  });
+
+  it('角标指向 /table(不是 draw 底下的 explore)', () => {
+    const { svg } = draw({ type: 'table', cols: 'A', rows: '1' });
+    expect(svg).toContain('https://x-cmd.com/table?d=');
+    expect(svg).not.toContain('/draw/explore?type=table');
   });
 
   it('HTTP 层:GET /draw?type=table 出 SVG', async () => {
