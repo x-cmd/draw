@@ -13,7 +13,7 @@ import type { Skin } from '../styles/index.js';
 import { FONT } from '../theme.js';
 import { esc, metaTag, skinStyle, editTag } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
-import { mapAspect, registerMaps } from './maps.js';
+import { mapAspect, registerMaps, worldWrapLayout } from './maps.js';
 import type { EChartsOption } from 'echarts';
 
 // ?d= 上限:再大就撞各端 URL 长度红线(Workers/代理 ~16KB);超限直接拒绝,
@@ -284,6 +284,127 @@ function stripTextStrokes(svg: string): string {
     tag.replace(/ (stroke|stroke-width|stroke-opacity|stroke-linejoin|stroke-dasharray|stroke-miterlimit|paint-order)="[^"]*"/g, ''));
 }
 
+// 路径的包围盒(绝对坐标)—— 只为「裁掉画布外的图形」服务。
+// 只认 echarts SSR 实际用到的指令(M/L/l/H/V/C/Q/S/T/A/Z);认不出的就返回 undefined
+// (调用方保守起见不裁)。
+function pathBBox(d: string): { x0: number; x1: number; y0: number; y1: number } | undefined {
+  const tokens = d.match(/[A-Za-z]|[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g);
+  if (!tokens) return undefined;
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  let cx = 0, cy = 0, sx = 0, sy = 0;
+  const put = (x: number, y: number): void => {
+    if (x < x0) x0 = x;
+    if (x > x1) x1 = x;
+    if (y < y0) y0 = y;
+    if (y > y1) y1 = y;
+  };
+  let i = 0;
+  let cmd = '';
+  while (i < tokens.length) {
+    if (/[A-Za-z]/.test(tokens[i])) cmd = tokens[i++];
+    if (!cmd) break;
+    const rel = cmd === cmd.toLowerCase();
+    const num = (): number | undefined => {
+      if (i >= tokens.length) return undefined;
+      const v = Number(tokens[i++]);
+      return Number.isFinite(v) ? v : undefined;
+    };
+    const pair = (): [number, number] | undefined => {
+      const a = num();
+      const b = num();
+      if (a === undefined || b === undefined) return undefined;
+      return [rel ? cx + a : a, rel ? cy + b : b];
+    };
+    switch (cmd.toUpperCase()) {
+      case 'M': {
+        const p = pair();
+        if (!p) return undefined;
+        [cx, cy] = p;
+        sx = cx; sy = cy;
+        put(cx, cy);
+        cmd = rel ? 'l' : 'L'; // 后续的坐标对是隐式 lineto
+        break;
+      }
+      case 'L': {
+        const p = pair();
+        if (!p) return undefined;
+        [cx, cy] = p;
+        put(cx, cy);
+        break;
+      }
+      case 'H': {
+        const a = num();
+        if (a === undefined) return undefined;
+        cx = rel ? cx + a : a;
+        put(cx, cy);
+        break;
+      }
+      case 'V': {
+        const a = num();
+        if (a === undefined) return undefined;
+        cy = rel ? cy + a : a;
+        put(cx, cy);
+        break;
+      }
+      case 'C': {
+        const a = num(), b = num();
+        const p = pair();
+        if (a === undefined || b === undefined || !p) return undefined;
+        put(p[0], p[1]);
+        [cx, cy] = p;
+        put(cx, cy);
+        break;
+      }
+      case 'Q': case 'S': case 'T': {
+        const a = num();
+        const p = pair();
+        if (a === undefined || !p) return undefined;
+        [cx, cy] = p;
+        put(cx, cy);
+        break;
+      }
+      case 'A': {
+        const r1 = num(), r2 = num(), rot = num(), big = num(), sweep = num();
+        const p = pair();
+        if (r1 === undefined || r2 === undefined || rot === undefined || big === undefined || sweep === undefined || !p) return undefined;
+        [cx, cy] = p;
+        put(cx, cy);
+        break;
+      }
+      case 'Z': {
+        cx = sx; cy = sy;
+        break;
+      }
+      default:
+        return undefined; // 不认识的指令 → 不裁
+    }
+  }
+  if (!Number.isFinite(x0)) return undefined;
+  return { x0, x1, y0, y1 };
+}
+
+/**
+ * 画布外的图形裁掉 —— 世界地图「绕一圈」时,画布外还挂着两份世界(路径数据全在里面),
+ * SVG 因此大一大截(explore 页把整份内联进 HTML)。只裁**整块**在画布外的路径,
+ * 半个在画布内的留下;带圆弧的路径不裁(弧可能鼓出端点之外,算不准)。
+ */
+function cullOutsideCanvas(svg: string, w: number, h: number): string {
+  return svg.replace(/<path\b[^>]*>(?:<\/path>)?/g, (tag) => {
+    const d = /\sd="([^"]*)"/.exec(tag)?.[1];
+    const tr = /transform="translate\(([-\d.eE+]+)[ ,]+([-\d.eE+]+)\)"/.exec(tag);
+    if (!d || !tr) return tag;
+    if (/[Aa]/.test(d)) return tag; // 圆弧:算不准,不裁
+    const bb = pathBBox(d);
+    if (!bb) return tag;
+    const dx = Number(tr[1]);
+    const dy = Number(tr[2]);
+    if (!Number.isFinite(dx) || !Number.isFinite(dy)) return tag;
+    const x0 = bb.x0 + dx, x1 = bb.x1 + dx, y0 = bb.y0 + dy, y1 = bb.y1 + dy;
+    if (x1 < 0 || x0 > w || y1 < 0 || y0 > h) return '';
+    return tag;
+  });
+}
+
 // 后处理:根 svg 补 role/aria/font-family,内嵌皮肤变量(含 Inter 子集)+ metadata;
 // 注入 Edit @X-CMD 角标(#27,svgDoc 覆盖核心层,此处覆盖 echarts)
 function decorate(svg: string, skin: Skin, version: number, option: unknown): string {
@@ -300,7 +421,7 @@ function decorate(svg: string, skin: Skin, version: number, option: unknown): st
   const tagHref = `https://x-cmd.com/draw/explore/echarts?d=${encodeURIComponent(JSON.stringify(option))}`;
   const tag = editTag(tagHref, w, 54, tagFs);
   // 标签必须在 </svg> 之前(之后的 XML 非法,img 严格解析失败)
-  const body = stripTextStrokes(svg.slice(m[0].length)).replace(/<\/svg>\s*$/, '');
+  const body = cullOutsideCanvas(stripTextStrokes(svg.slice(m[0].length)), w, h).replace(/<\/svg>\s*$/, '');
   return root + skinStyle(skin) + metaTag('echarts', version, option) + body + tag + '</svg>';
 }
 
@@ -327,6 +448,9 @@ export async function renderEchartsOption(user: Obj, params: URLSearchParams): P
   // 先注册再补缺省 —— 布局要按地图的真实纵横比算
   await registerMaps(echarts, user);
   const option = withDrawDefaults(user, skin, width, height);
+  // 世界地图挪到某个经度时:底图绕一圈(registerMaps 已注册绕圈后的数据),
+  // 布局按份数放大 —— 两步都在 maps.ts,浏览器端跑同一份源码
+  worldWrapLayout(option);
   const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width, height });
   // echarts 对 var() 调色板会打 "illegal color" 警告(派生色 parseColor 不认 CSS 变量),
   // 但直写路径(fill/stroke)原样透传、输出正确——渲染成功时这些警告纯属噪音,吞掉;

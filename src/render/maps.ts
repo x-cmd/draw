@@ -5,6 +5,7 @@
 //
 // 名字即 option 里的地图名:series.type=map 的 map 字段、geo 组件的 map 字段都填它。
 //   {"type":"map","map":"USA","data":[{"name":"California","value":1}]}
+// WORLD 是世界地图(自然地球投影,等积)—— 投影好的底图随包分发(投影是构建期的事)。
 // 未收录的地图名不注册,echarts 自己报 "Map xxx not exists"(错误消息更贴切)。
 
 type Obj = Record<string, unknown>;
@@ -56,8 +57,7 @@ export async function loadMapGeoJson(name: string): Promise<unknown> {
   if (!load) throw new Error(`unknown map: ${name}`);
   const mod = await load();
   return flipY(mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson
-    ?? mod.brGeoJson ?? mod.auGeoJson ?? mod.deGeoJson ?? mod.krGeoJson
-    ?? mod.worldGeoJson);
+    ?? mod.brGeoJson ?? mod.auGeoJson ?? mod.deGeoJson ?? mod.krGeoJson ?? mod.worldGeoJson);
 }
 
 /**
@@ -123,6 +123,93 @@ export async function loadWorldSphericalGeoJson(): Promise<unknown> {
   return mod.worldSphericalGeoJson;
 }
 
+// ── 世界地图「绕一圈」────────────────────────────────────────────────────────
+//
+// 视图挪到某个经度时(series.center),底图得绕着地球转过去 —— 不然那一侧是空的:
+// 世界地图的数据只覆盖 -180°..180°,挪到东边时,画布右边露出的是画布底色(看着像地图缺一块)。
+//
+// 做法:底图左右各加一份(整体平移一个世界宽)—— 数据还是同一份,只是多几份拷贝,
+// 于是「往东挪」和「往西挪」都有东西接着。布局要跟着放大(份数倍),不然地图被压成三分之一。
+//
+// 三个函数都**自包含**(不引模块外任何东西):浏览器端(explore 页重画)直接跑同一份源码,
+// 两边不会走偏 —— 与 headLayout 同一套路。
+
+/** 绕圈后的份数(底图 + 左右各一份) */
+export const WORLD_WRAP_COPIES = 3;
+
+/**
+ * option 里有没有「挪到某个经度」的世界地图(要绕圈的场合)。
+ * 自包含:浏览器端直接跑同一份源码。
+ */
+export function worldWrapNeeded(option: unknown): boolean {
+  const isObj = (v: unknown): boolean => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const o = (option ?? {}) as Obj;
+  const series = Array.isArray(o.series) ? o.series : isObj(o.series) ? [o.series] : [];
+  for (const s of series) {
+    if (!isObj(s)) continue;
+    if (s.type !== 'map' || s.map !== 'WORLD') continue;
+    if (s.center !== undefined && s.center !== null) return true;
+  }
+  return false;
+}
+
+/**
+ * 底图左右各加一份(整体平移一个世界宽)。
+ * 自包含:浏览器端直接跑同一份源码。
+ */
+export function worldWrapGeo(geo: unknown): unknown {
+  const g = geo as { features?: Array<{ geometry?: { coordinates?: unknown } }> } | undefined;
+  const feats = g?.features ?? [];
+  if (!feats.length) return geo;
+  // 世界宽 = 底图外接框的宽(世界地图的数据正好覆盖 -180°..180°)
+  let x0 = Infinity, x1 = -Infinity;
+  const walk = (v: unknown): void => {
+    if (!Array.isArray(v)) return;
+    if (typeof v[0] === 'number') {
+      const x = v[0] as number;
+      if (x < x0) x0 = x;
+      if (x > x1) x1 = x;
+      return;
+    }
+    v.forEach(walk);
+  };
+  for (const f of feats) walk(f.geometry?.coordinates);
+  const w = x1 - x0;
+  if (!(w > 0)) return geo;
+  const shifted = (dx: number): unknown[] => {
+    const sh = (v: unknown): unknown => {
+      if (!Array.isArray(v)) return v;
+      if (typeof v[0] === 'number') return [v[0] + dx, v[1]];
+      return v.map(sh);
+    };
+    return feats.map((f) => ({ ...f, geometry: { ...f.geometry, coordinates: sh(f.geometry?.coordinates) } }));
+  };
+  return { ...g, features: [...feats, ...shifted(w), ...shifted(-w)] };
+}
+
+/**
+ * 绕圈后布局要按份数放大 —— 数据多了左右两份,地图还是原来那么大,
+ * 不然会被压成三分之一(看着像缩小了一圈)。
+ * 自包含:浏览器端直接跑同一份源码。
+ */
+export function worldWrapLayout(option: Obj): void {
+  const isObj = (v: unknown): boolean => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const series = Array.isArray(option.series) ? option.series : isObj(option.series) ? [option.series] : [];
+  for (const s of series) {
+    if (!isObj(s)) continue;
+    if (s.type !== 'map' || s.map !== 'WORLD') continue;
+    if (s.center === undefined || s.center === null) continue;
+    const n = 3; // WORLD_WRAP_COPIES —— 抄一份在这儿,免得这个函数引模块外的东西
+    const size = s.layoutSize;
+    if (typeof size === 'string' && size.trim().endsWith('%')) {
+      const v = parseFloat(size);
+      if (Number.isFinite(v)) s.layoutSize = `${(v * n).toFixed(2)}%`;
+    } else if (typeof size === 'number' && Number.isFinite(size)) {
+      s.layoutSize = size * n;
+    }
+  }
+}
+
 /**
  * Register the map data an ECharts option refers to. Must run before `setOption`:
  * echarts resolves `series.map` / `geo.map` against its registered map table.
@@ -131,8 +218,12 @@ export async function registerMaps(echarts: MapRegistrar, option: unknown): Prom
   for (const name of mapNamesOf(option)) {
     const load = MAPS[name];
     if (!load) continue;
-    const geo = await loadMapGeoJson(name);
+    const base = await loadMapGeoJson(name);
+    // 纵横比按**底图**算(不是绕圈后的):布局按底图定尺,再由 worldWrapLayout 乘份数
+    const aspect = aspectOf(base);
+    // 世界地图挪到某个经度 ⇒ 底图绕一圈(否则那一侧是空的)
+    const geo = name === 'WORLD' && worldWrapNeeded(option) ? worldWrapGeo(base) : base;
     echarts.registerMap(name, geo);
-    if (!aspects.has(name)) aspects.set(name, aspectOf(geo));
+    if (!aspects.has(name)) aspects.set(name, aspect);
   }
 }

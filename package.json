@@ -36,8 +36,8 @@
     "deploy": "wrangler deploy",
     "setup": "bash scripts/setup.sh",
     "vendor:us-states": "node scripts/vendor-us-states.mjs",
-    "vendor:world": "node scripts/vendor-world.mjs",
     "vendor:world-geo": "node scripts/vendor-world-geo.mjs",
+    "vendor:world": "node scripts/vendor-world.mjs",
     "vendor:china": "node scripts/vendor-china.mjs",
     "vendor:eu": "node scripts/vendor-eu.mjs",
     "vendor:japan": "node scripts/vendor-japan.mjs",
@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "@types/d3-array": "^3.2.2",
+    "@types/d3-geo": "^3.1.1",
     "@types/d3-sankey": "^0.12.5",
     "@types/node": "^22.10.0",
     "cf": "^0.15.0",
