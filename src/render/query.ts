@@ -6,6 +6,7 @@ import {
   parseScatterSpec, scatterSpecFromParams, parseComboSpec, comboSpecFromParams,
   parseQuadrantSpec, quadrantSpecFromParams, parseCompassSpec, compassSpecFromParams,
   parseButterflySpec, butterflySpecFromParams,
+  parseLadderSpec, ladderSpecFromParams,
   parseCalendarSpec, calendarSpecFromParams,
   clip, type ChartInput,
 } from '../specs/index.js';
@@ -30,6 +31,7 @@ import { renderSankey } from './sankey.js';
 import { renderQuadrant } from './quadrant.js';
 import { renderCompass } from './compass.js';
 import { renderButterfly } from './butterfly.js';
+import { renderLadder, renderButterflyLadder } from './ladder.js';
 import { renderCalendar } from './calendar.js';
 import { parseSankeySpec, sankeySpecFromParams } from '../specs/sankey.js';
 import { renderStored } from './dispatch.js';
@@ -66,6 +68,8 @@ const SIZE: Record<ChartTemplate, [number, number]> = {
   quadrant: [760, 520],
   compass: [560, 460],
   butterfly: [640, 420],
+  ladder: [640, 420],
+  'butterfly-ladder': [900, 520],
   calendar: [760, 520],
   table: [640, 320],
 };
@@ -229,6 +233,20 @@ function renderFromUrlInner(url: URL): DrawResult {
     const height = clampInt(url.searchParams, 'h', ch, 140, 1200);
     return svgResult(renderCompass(spec, { width, height, version: v.version, skin }), v);
   }
+  if (kind === 'ladder' || kind === 'butterfly-ladder') {
+    const spec = parseLadderSpec(ladderSpecFromParams(url.searchParams) ?? '{}');
+    const v = resolveVersion(url.searchParams.get('v'));
+    const skin = resolveSkin(kind, url.searchParams.get('t'), schemeParam(url.searchParams));
+    const [lw, lh] = skin.size ?? SIZE[kind];
+    const width = clampInt(url.searchParams, 'w', lw, 200, 1600);
+    const height = clampInt(url.searchParams, 'h', lh, 140, 1200);
+    const aria = kind === 'ladder' ? 'ladder' : 'butterfly ladder';
+    const svg = kind === 'ladder'
+      ? renderLadder(spec, { width, height, version: v.version, skin, interactive: true })
+      : renderButterflyLadder(spec, { width, height, version: v.version, skin, interactive: true });
+    return svgResult(svg, v);
+  }
+
   if (kind === 'butterfly') {
     const spec = parseButterflySpec(butterflySpecFromParams(url.searchParams) ?? '{}');
     const v = resolveVersion(url.searchParams.get('v'));

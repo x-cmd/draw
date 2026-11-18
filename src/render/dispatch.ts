@@ -1,5 +1,5 @@
 // 模板分发:ChartTemplate(+ChartInput/存档 spec)→ 渲染器。短链与 create 共用。
-import { ApiError, parseChartSpec, parseSeriesSpec, parseGaugeSpec, parseScatterSpec, parseComboSpec, looksMultiSeries, type ChartInput } from '../specs/index.js';
+import { ApiError, parseChartSpec, parseSeriesSpec, parseGaugeSpec, parseScatterSpec, parseComboSpec, parseLadderSpec, looksMultiSeries, type ChartInput } from '../specs/index.js';
 import { renderPie } from './pie.js';
 import { renderBar } from './bar.js';
 import { renderBarGrid } from './bar-grid.js';
@@ -24,6 +24,7 @@ import { parseCompassSpec } from '../specs/compass.js';
 import { parseButterflySpec } from '../specs/butterfly.js';
 import { parseCalendarSpec } from '../specs/calendar.js';
 import { renderButterfly } from './butterfly.js';
+import { renderLadder, renderButterflyLadder } from './ladder.js';
 import { renderCalendar } from './calendar.js';
 import { renderTable } from './table.js';
 import { parseTableSpec } from '../specs/table.js';
@@ -76,6 +77,8 @@ export function renderStored(doc: StoredChart, o: RenderOpts): string {
   if (doc.template === 'quadrant') return renderQuadrant(parseQuadrantSpec(specJson), o);
   if (doc.template === 'compass') return renderCompass(parseCompassSpec(specJson), o);
   if (doc.template === 'butterfly') return renderButterfly(parseButterflySpec(specJson), o);
+  if (doc.template === 'ladder') return renderLadder(parseLadderSpec(specJson), o);
+  if (doc.template === 'butterfly-ladder') return renderButterflyLadder(parseLadderSpec(specJson), o);
   if (doc.template === 'calendar') return renderCalendar(parseCalendarSpec(specJson), o);
   if (doc.template === 'table') return renderTable(parseTableSpec(specJson), o);
   const input: ChartInput = looksMultiSeries(specJson)

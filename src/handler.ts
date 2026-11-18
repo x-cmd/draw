@@ -12,6 +12,7 @@ import { parseCompassSpec } from './specs/compass.js';
 import { parseButterflySpec } from './specs/butterfly.js';
 import { parseCalendarSpec } from './specs/calendar.js';
 import { parseTableSpec } from './specs/table.js';
+import { parseLadderSpec } from './specs/ladder.js';
 import { assertDims } from './render/radar.js';
 import { renderQR, parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 import { renderFromUrl, renderStoredFromUrl, stackParam, type DrawResult } from './render/query.js';
@@ -229,6 +230,8 @@ async function createHandler(request: Request, env: DrawEnv, platform: Platform,
     normalizedSpec = parseCalendarSpec(specJson);
   } else if (template === 'table') {
     normalizedSpec = parseTableSpec(specJson);
+  } else if (template === 'ladder' || template === 'butterfly-ladder') {
+    normalizedSpec = parseLadderSpec(specJson);
   } else {
     normalizedSpec = parseChartSpec(specJson, template);
   }
@@ -464,9 +467,52 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     // 演示页:无查询,或仅带演示页自身的 tab 参数(?tab=pie)
     const onlyTab = url.searchParams.get('type') === null && [...url.searchParams.keys()].every((k) => k === 'tab');
     if (url.search === '' || onlyTab) return indexHandler(base);
-    return chartResponse(url, renderFromUrl(url));
+    return chartResponse(url, renderFromUrl(await resolveSrcSpec(url)));
   }
   return textResponse(404, `unknown path ${path}; available: GET ${base}?type=... · GET ${base}/echarts?d=... · GET ${base}/archmap?n=... · GET ${base}/mindmap?n=... · GET ${base}/x-cmd/release-banner?title=... · POST ${base}?type=... · GET ${base}/c/{hash}`);
+}
+
+
+/**
+ * `?src=<url>`:数据放在文件里,URL 只带一个链接。
+ *
+ * 天梯图这类会有上千行数据 —— 塞进 URL 会超长(浏览器几千字符、代理几 KB 都有上限)。
+ * 所以规格可以放在一个 JSON 文件里,URL 只给链接。
+ *
+ * 跟 onepage 的 `?src=` 一个规矩:github blob 链接自动转 raw ✓;
+ * 不许取回环和私网地址(SSRF)✓;体积上限 1MB ✓。
+ */
+async function resolveSrcSpec(url: URL): Promise<URL> {
+  const src = url.searchParams.get('src');
+  if (src === null || src === '') return url;
+  const raw = toRawGithub(src);
+  const host = new URL(raw).hostname;
+  if (/^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.0\.0\.0$|\[?::1)/.test(host)) {
+    throw new ApiError(400, 'refusing to fetch private/loopback addresses');
+  }
+  let up: Response;
+  try {
+    up = await fetch(raw, { headers: { 'user-agent': 'x-cmd-draw', accept: '*/*' }, redirect: 'follow' });
+  } catch (e) {
+    throw new ApiError(502, `upstream fetch failed: ${e instanceof Error ? e.message : 'network error'}`);
+  }
+  if (up.status >= 400) {
+    throw new ApiError(up.status >= 500 ? 502 : 404, `upstream ${up.status} for ${raw}`);
+  }
+  const text = await up.text();
+  if (text.length > 1024 * 1024) {
+    throw new ApiError(413, `upstream spec is ${text.length}B (max 1048576)`);
+  }
+  try {
+    JSON.parse(text);
+  } catch {
+    throw new ApiError(400, `upstream spec is not valid JSON: ${raw}`);
+  }
+  // 取来的 JSON 当成 d= 用 —— 其余参数(标题、尺寸、风格)照旧
+  const next = new URL(url);
+  next.searchParams.delete('src');
+  next.searchParams.set('d', text);
+  return next;
 }
 
 /**

@@ -1,0 +1,57 @@
+id: x-cmd-draw-2-data-charts-13-ladder
+
+data:
+  - name:
+      en: Ladder and butterfly ladder
+      cn: 天梯图与双翼天梯图
+    qa:
+      - id: difference
+        question:
+          en: "How is the butterfly ladder different from the butterfly chart?"
+          cn: "双翼天梯图跟双翼条形图差在哪?"
+        answer:
+          en: >
+            Butterfly is a general two-series chart — population pyramids, "on vs off" by age — and its two
+            sides share one set of row labels. A ladder needs two models per row (the NVIDIA card on the left,
+            the AMD card on the right) and tiers, which is a different set of semantics and a different way
+            of reading.
+          cn: >
+            双翼条形图是通用双系列图(人口金字塔、「开了 vs 关了」的按龄分布),两侧**共用一套**行标签。
+            天梯图要的是一行两个型号(左边 N 卡、右边 A 卡),还要能分档 —— 那是另一套语义、另一套读法。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/13-ladder/en.md
+          - docs/2-data-charts/13-ladder/cn.md
+      - id: match
+        question:
+          en: "What does match= do?"
+          cn: "match= 是干什么的?"
+        answer:
+          en: >
+            It decides how the two sides are paired row by row. `rank` (the default) ranks each side on its
+            own, so row k is the k-th strongest on each side — fully offset. `value` puts cards with close
+            values on the same row, which answers "these two are about equal, which is faster?".
+          cn: >
+            它决定两侧怎么一行一行配对。`rank`(缺省)是两侧各自排序,第 k 行对第 k 行 —— 完全错位;
+            `value` 把值相近的卡排在同一行,回答的是「这两张差不多,谁快一点」。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/13-ladder/en.md
+          - docs/2-data-charts/13-ladder/cn.md
+      - id: src
+        question:
+          en: "Can the data live in a file?"
+          cn: "数据可以放在文件里吗?"
+        answer:
+          en: >
+            Yes — `src=<url>` fetches the spec from a JSON file and renders it. A ladder can have a
+            thousand rows, which is far past what a URL should carry (browsers cap at a few thousand
+            characters, proxies at a few KB). GitHub blob links are converted to raw automatically;
+            loopback and private addresses are refused; 1MB maximum.
+          cn: >
+            可以 —— `src=<url>` 去取那个 JSON 文件再画。天梯图会有上千行,URL 装不下(浏览器几千字符、
+            代理几 KB 都有上限)。github blob 链接自动转 raw;回环和私网地址不取;上限 1MB。
+        confidence: 9
+        reference:
+          - docs/2-data-charts/13-ladder/en.md
+          - docs/2-data-charts/13-ladder/cn.md

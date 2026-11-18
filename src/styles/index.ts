@@ -17,6 +17,7 @@ import { QR_VARIANTS } from './qr.js';
 import { QUADRANT_VARIANTS } from './quadrant.js';
 import { COMPASS_VARIANTS } from './compass.js';
 import { BUTTERFLY_VARIANTS } from './butterfly.js';
+import { LADDER_VARIANTS, BUTTERFLY_LADDER_VARIANTS } from './ladder.js';
 import { CALENDAR_VARIANTS } from './calendar.js';
 import { TABLE_VARIANTS } from './table.js';
 
@@ -38,6 +39,8 @@ export const VARIANTS: Record<ChartTemplate, Variant[]> = {
   quadrant: QUADRANT_VARIANTS,
   compass: COMPASS_VARIANTS,
   butterfly: BUTTERFLY_VARIANTS,
+  ladder: LADDER_VARIANTS,
+  'butterfly-ladder': BUTTERFLY_LADDER_VARIANTS,
   calendar: CALENDAR_VARIANTS,
   table: TABLE_VARIANTS,
 };
