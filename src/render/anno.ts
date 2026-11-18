@@ -395,13 +395,14 @@ const esc = (s: string): string =>
  */
 function leaderAndDot(
   ax: number, ay: number, x: number, y: number, w: number, h: number,
-  color: string, k: number,
+  color: string, k: number, dataI = -1,
 ): string[] {
   const px = Math.min(Math.max(ax, x), x + w);
   const py = Math.min(Math.max(ay, y), y + h);
+  const tag = dataI >= 0 ? ` data-i="${dataI}"` : '';
   return [
-    `<line x1="${r2(ax)}" y1="${r2(ay)}" x2="${r2(px)}" y2="${r2(py)}" stroke="${color}" stroke-width="${r2(1.4 * k)}" stroke-opacity="0.85"/>`,
-    `<circle cx="${r2(ax)}" cy="${r2(ay)}" r="${r2(3.2 * k)}" fill="${color}"/>`,
+    `<line${tag} x1="${r2(ax)}" y1="${r2(ay)}" x2="${r2(px)}" y2="${r2(py)}" stroke="${color}" stroke-width="${r2(1.4 * k)}" stroke-opacity="0.85"/>`,
+    `<circle${tag} cx="${r2(ax)}" cy="${r2(ay)}" r="${r2(3.2 * k)}" fill="${color}"/>`,
   ];
 }
 
@@ -410,15 +411,16 @@ function leaderAndDot(
  * 类别牌(训练数据 ✓):一小块深色牌,写着这一条属于哪一类 ✓。
  * 锚点给的是牌的**左下角**(牌画在它上面 ✓)—— 不压着标注本身 ✓。
  */
-function clsTag(text: string, x: number, y: number, color: string, k: number): string {
+function clsTag(text: string, x: number, y: number, color: string, k: number, dataI = -1): string {
   const fs = 10 * k;
   const padX = 5 * k;
   const padY = 3 * k;
   const bw = textWidth(text, fs) + padX * 2;
   const bh = fs + padY * 2;
   const by = y - bh;
-  return `<rect x="${r2(x)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`
-    + `<text x="${r2(x + bw / 2)}" y="${r2(by + bh / 2 + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" fill="${color}">${esc(text)}</text>`;
+  const tag = dataI >= 0 ? ` data-i="${dataI}"` : '';
+  return `<rect${tag} x="${r2(x)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`
+    + `<text${tag} x="${r2(x + bw / 2)}" y="${r2(by + bh / 2 + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" fill="${color}">${esc(text)}</text>`;
 }
 
 /**
@@ -434,36 +436,39 @@ function clsTag(text: string, x: number, y: number, color: string, k: number): s
 export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: number; h: number }, k = 1): string {
   if (!annos.length) return '';
   const parts: string[] = [];
-  const of = (kind: Anno['kind']): Anno[] => annos.filter((a) => a.kind === kind);
+  // of():连**序号**一起给 ✓ —— 画出来的每一笔都带 data-i ✓
+  // (客户端靠它知道「点中的是第几条」✓ —— 悬停、拖动、双击编辑都靠它 ✓)
+  const of = (kind: Anno['kind']): { a: Anno; i: number }[] =>
+    annos.map((a, i) => ({ a, i })).filter((x) => x.a.kind === kind);
 
   // 一、高亮:一块区域(荧光笔那一笔)
-  for (const a of of('hl')) {
+  for (const { a, i } of of('hl')) {
     const color = a.color ?? HL_COLOR;
     const x = frame.x + (a.x / 100) * frame.w;
     const y = frame.y + (a.y / 100) * frame.h;
     const w = ((a.w ?? 0) / 100) * frame.w;
     const h = ((a.h ?? 0) / 100) * frame.h;
     parts.push(
-      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(10 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
+      `<rect data-i="${i}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(10 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
     );
-    if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k));
+    if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k, i));
   }
 
   // 二、圈一个点
-  for (const a of of('oval')) {
+  for (const { a, i } of of('oval')) {
     const color = a.color ?? DEFAULT_COLOR;
     const cx = frame.x + (a.x / 100) * frame.w;
     const cy = frame.y + (a.y / 100) * frame.h;
     const rx = ((a.rx ?? 0) / 100) * frame.w;
     const ry = ((a.ry ?? 0) / 100) * frame.h;
     parts.push(
-      `<ellipse cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="${r2(2.5 * k)}" stroke-opacity="0.95"/>`,
+      `<ellipse data-i="${i}" cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="${r2(2.5 * k)}" stroke-opacity="0.95"/>`,
     );
-    if (a.cls) parts.push(clsTag(a.cls, cx - rx, cy - ry - 4 * k, color, k));
+    if (a.cls) parts.push(clsTag(a.cls, cx - rx, cy - ry - 4 * k, color, k, i));
   }
 
   // 三、手绘的一笔:_path= 折线(笔触)
-  for (const a of of('path')) {
+  for (const { a, i } of of('path')) {
     const color = a.color ?? DEFAULT_COLOR;
     const pts = a.pts ?? [];
     if (pts.length < 2) continue;
@@ -471,17 +476,17 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
       .map(([px, py], i) => `${i ? 'L' : 'M'}${r2(frame.x + (px / 100) * frame.w)},${r2(frame.y + (py / 100) * frame.h)}`)
       .join(' ');
     parts.push(
-      `<path d="${d}" fill="none" stroke="${color}" stroke-width="${r2(2.2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
+      `<path data-i="${i}" d="${d}" fill="none" stroke="${color}" stroke-width="${r2(2.2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
     );
     if (a.cls) {
       const fx = frame.x + (pts[0][0] / 100) * frame.w;
       const fy = frame.y + (pts[0][1] / 100) * frame.h;
-      parts.push(clsTag(a.cls, fx + 4 * k, fy - 4 * k, color, k));
+      parts.push(clsTag(a.cls, fx + 4 * k, fy - 4 * k, color, k, i));
     }
   }
 
   // 四、一支箭头:_arrow= 起点、终点(末端一个箭头)
-  for (const a of of('arrow')) {
+  for (const { a, i } of of('arrow')) {
     const color = a.color ?? ARROW_COLOR;
     const x1 = frame.x + (a.x / 100) * frame.w;
     const y1 = frame.y + (a.y / 100) * frame.h;
@@ -501,10 +506,10 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const by = y2 - uy * head;
     const half = head * 0.42;                       // 张开的角度
     parts.push(
-      `<line x1="${r2(x1)}" y1="${r2(y1)}" x2="${r2(x2)}" y2="${r2(y2)}" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round"/>`,
-      `<path d="M${r2(x2)},${r2(y2)}L${r2(bx - uy * half)},${r2(by + ux * half)}L${r2(bx + uy * half)},${r2(by - ux * half)}" fill="none" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
+      `<line data-i="${i}" x1="${r2(x1)}" y1="${r2(y1)}" x2="${r2(x2)}" y2="${r2(y2)}" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round"/>`,
+      `<path data-i="${i}" d="M${r2(x2)},${r2(y2)}L${r2(bx - uy * half)},${r2(by + ux * half)}L${r2(bx + uy * half)},${r2(by - ux * half)}" fill="none" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
     );
-    if (a.cls) parts.push(clsTag(a.cls, x1, y1 - 4 * k, color, k));
+    if (a.cls) parts.push(clsTag(a.cls, x1, y1 - 4 * k, color, k, i));
   }
 
   // 五、一句话:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
@@ -512,7 +517,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
   // 给了 tx,ty 就是**两个节点**:指示点(a.x,a.y)+ 文字的位置(a.tx,a.ty),
   // 中间拉一条引线 —— 引线拉多远就是多远,指示点也能单独挪。
   // 没给就还是老样子:胶囊落在给定的点上(老链接继续能用 ✓)。
-  for (const a of of('text')) {
+  for (const { a, i } of of('text')) {
     const color = a.color ?? DEFAULT_COLOR;
     const fs = 13 * k;
     const text = a.text ?? '';
@@ -528,20 +533,20 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const x = two ? frame.x + (a.tx! / 100) * frame.w : ax - bw / 2;
     const y = two ? frame.y + (a.ty! / 100) * frame.h : ay - bh / 2;
     parts.push(
-      `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-opacity="0.5" stroke-width="${r2(k)}"/>`,
+      `<rect data-i="${i}" x="${r2(x)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-opacity="0.5" stroke-width="${r2(k)}"/>`,
     );
     parts.push(
-      `<text x="${r2(x + bw / 2)}" y="${r2(y + bh / 2 + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" font-weight="500" fill="${color}">${esc(text)}</text>`,
+      `<text data-i="${i}" x="${r2(x + bw / 2)}" y="${r2(y + bh / 2 + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" font-weight="500" fill="${color}">${esc(text)}</text>`,
     );
     if (two) {
       // 引线 + 指示点(跟「评」共用这一份实现 ✓)
       parts.push(...leaderAndDot(ax, ay, x, y, bw, bh, color, k));
     }
-    if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k));
+    if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k, i));
   }
 
   // 六、一条评论:一条引线 + 一个多行的框(框自己挑位置:右边放不下就放左边)
-  for (const a of of('note')) {
+  for (const { a, i } of of('note')) {
     const color = a.color ?? NOTE_COLOR;
     const fs = 13 * k;
     const text = a.text ?? '';
@@ -573,16 +578,16 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     by = Math.min(Math.max(by, frame.y), Math.max(frame.y, frame.y + frame.h - bh));
     parts.push(
       // 引线 + 指示点(跟「字」共用这一份实现 ✓)
-      ...leaderAndDot(ax, ay, bx, by, bw, bh, color, k),
+      ...leaderAndDot(ax, ay, bx, by, bw, bh, color, k).map((x) => x.replace('<', `<g data-i="${i}">`).replace('</svg>', '</g>')),
       // 垫色:底下垫一块近黑的底 —— 压在什么颜色的图上都读得出(亮底上是深色小牌,暗底上融进背景)
-      `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(10 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
+      `<rect data-i="${i}" x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(10 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
     );
     lines.forEach((l, i) => {
       parts.push(
-        `<text x="${r2(bx + padX)}" y="${r2(by + padY + lh * i + fs * 0.82)}" font-size="${r2(fs)}" fill="${color}">${esc(l)}</text>`,
+        `<text data-i="${i}" x="${r2(bx + padX)}" y="${r2(by + padY + lh * i + fs * 0.82)}" font-size="${r2(fs)}" fill="${color}">${esc(l)}</text>`,
       );
     });
-    if (a.cls) parts.push(clsTag(a.cls, bx, by - 4 * k, color, k));
+    if (a.cls) parts.push(clsTag(a.cls, bx, by - 4 * k, color, k, i));
   }
 
   return `<g class="anno" data-anno="1">${parts.join('')}</g>`;
