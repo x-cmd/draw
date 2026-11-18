@@ -7,6 +7,8 @@
 //   &_oval=70,25,12,8,#22d3ee   同上,换个颜色
 //   &_text=70,12;发布抖动       写一句话
 //   &_text=70,12,#22d3ee;发布抖动
+//   &_text=70,12,40,30;发布抖动   两个节点:指示点(70,12)+ 文字的位置(40,30)
+//                                   ⇒ 中间拉一条引线,指示点也能单独挪
 //   &_hl=20,30,40,25            高亮一块区域(左上角 x,y;宽 w;高 h)
 //   &_hl=20,30,40,25,#fbbf24    同上,换个颜色
 //   &_note=62,44;这个尖峰是发布引起的   一条评论(从 62,44 拉一条线过去)
@@ -81,6 +83,56 @@ function pct(v: number, name: string, raw: string): number {
   return v;
 }
 
+/** 头尾拆开:「;」之前是坐标,之后是文字 */
+function head_of(raw: string): string {
+  const i = raw.indexOf(';');
+  return i < 0 ? raw : raw.slice(0, i);
+}
+
+function splitHead(raw: string): { head: string; body: string } {
+  const i = raw.indexOf(';');
+  return { head: i < 0 ? raw : raw.slice(0, i), body: i < 0 ? '' : raw.slice(i + 1) };
+}
+
+/**
+ * 「字」和「评」共用的头部解析。
+ *
+ *   x,y     = 指示点(指着哪儿 ✓)
+ *   tx,ty   = 文字的位置(**可省**;给了就是第二个自由度 —— 引线拉多远就是多远 ✓)
+ *   #color  = 颜色(可省)
+ *
+ * 给两个节点时,画出来是「指示点 + 引线 + 文字」;只给一个节点时,
+ * 文字就落在那个点上(老样子 ✓)。
+ */
+function parseHead(kind: string, raw: string, head: string): {
+  x: number; y: number; tx?: number; ty?: number; colorRaw?: string;
+} {
+  const nums = head.split(',').map((v) => v.trim());
+  if (nums.length < 2 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
+    const extra = kind === '_note' ? 'a ,tx,ty and ,#color may follow' : 'a ,tx,ty and ,#color may follow';
+    throw new ApiError(400, `"${kind}" expects x,y in percent of the canvas (${extra}), then the text after ";", e.g. ${kind}=70,12;the spike — got ${JSON.stringify(raw)}`);
+  }
+  let tx: number | undefined;
+  let ty: number | undefined;
+  let colorRaw: string | undefined;
+  for (const f of nums.slice(2)) {
+    if (!f) continue;
+    if (f.startsWith('#')) { colorRaw = f; continue; }
+    if (tx === undefined) tx = Number(f);
+    else if (ty === undefined) ty = Number(f);
+  }
+  if ((tx === undefined) !== (ty === undefined)) {
+    throw new ApiError(400, `"${kind}" needs both tx and ty for the text position, e.g. ${kind}=70,12,40,30;the spike — got ${JSON.stringify(raw)}`);
+  }
+  return {
+    x: pct(Number(nums[0]), kind, raw),
+    y: pct(Number(nums[1]), kind, raw),
+    tx: tx === undefined ? undefined : pct(tx, kind, raw),
+    ty: ty === undefined ? undefined : pct(ty, kind, raw),
+    colorRaw,
+  };
+}
+
 /**
  * 解析标注参数(都能写多次)。
  * 约定:第一个字段是逗号分隔的数,后面用分号分隔别的字段。
@@ -129,14 +181,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     });
   }
 
+  // 「字」和「评」的头部一样:x,y 是指示点,tx,ty 是文字的位置(可省),
+  // 后面可以跟一个颜色。两节点那个形式是给「引线拉多远就是多远」用的。
   for (const raw of texts) {
-    const i = raw.indexOf(';');
-    const head = i < 0 ? raw : raw.slice(0, i);
-    const body = i < 0 ? '' : raw.slice(i + 1);
-    const nums = head.split(',');
-    if (nums.length < 2 || nums.length > 3 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
-      throw new ApiError(400, `"_text" expects x,y in percent of the canvas (a ,#color may follow), then the text after ";", e.g. _text=70,12;the spike — got ${JSON.stringify(raw)}`);
-    }
+    const { body } = splitHead(raw);
+    const h = parseHead('_text', raw, head_of(raw));
     const text = body.slice(0, 80);
     if (!text.trim()) {
       throw new ApiError(400, `"_text" needs some text after ";", e.g. _text=70,12;the spike — got ${JSON.stringify(raw)}`);
@@ -144,10 +193,12 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (skip()) continue;
     out.push({
       kind: 'text',
-      x: pct(Number(nums[0]), '_text', raw),
-      y: pct(Number(nums[1]), '_text', raw),
+      x: h.x,
+      y: h.y,
+      tx: h.tx,
+      ty: h.ty,
       text,
-      color: colorOf(nums[2], '_text'),
+      color: colorOf(h.colorRaw, '_text'),
     });
   }
 
@@ -181,23 +232,7 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     const i = raw.indexOf(';');
     const head = i < 0 ? raw : raw.slice(0, i);
     const body = i < 0 ? '' : raw.slice(i + 1);
-    const nums = head.split(',').map((x) => x.trim());
-    if (nums.length < 2 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
-      throw new ApiError(400, `"_note" expects x,y in percent of the canvas (a ,tx,ty and ,#color may follow), then the comment after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
-    }
-    // 头里除了 x,y:带 # 的是颜色,其余两个数是文字框的位置 ✓
-    let tx: number | undefined;
-    let ty: number | undefined;
-    let colorRaw: string | undefined;
-    for (const f of nums.slice(2)) {
-      if (!f) continue;
-      if (f.startsWith('#')) { colorRaw = f; continue; }
-      if (tx === undefined) tx = Number(f);
-      else if (ty === undefined) ty = Number(f);
-    }
-    if ((tx === undefined) !== (ty === undefined)) {
-      throw new ApiError(400, `"_note" needs both tx and ty for the label box, e.g. _note=62,44,70,30;comment — got ${JSON.stringify(raw)}`);
-    }
+    const h = parseHead('_note', raw, head);
     const text = body.slice(0, 200);
     if (!text.trim()) {
       throw new ApiError(400, `"_note" needs some text after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
@@ -205,12 +240,12 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (skip()) continue;
     out.push({
       kind: 'note',
-      x: pct(Number(nums[0]), '_note', raw),
-      y: pct(Number(nums[1]), '_note', raw),
-      tx: tx === undefined ? undefined : pct(tx, '_note', raw),
-      ty: ty === undefined ? undefined : pct(ty, '_note', raw),
+      x: h.x,
+      y: h.y,
+      tx: h.tx,
+      ty: h.ty,
       text,
-      color: colorOf(colorRaw, '_note'),
+      color: colorOf(h.colorRaw, '_note'),
     });
   }
 
@@ -327,6 +362,24 @@ const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /**
+ * 引线 + 指示点 —— 「字」和「评」共用这一份实现。
+ *
+ * 两个节点:指示点(ax,ay)与文字框(x,y,w,h)。引线连到框上离落点最近的那一点,
+ * 落点上点一个小圆点 —— 那是「指着哪儿」的记号。
+ */
+function leaderAndDot(
+  ax: number, ay: number, x: number, y: number, w: number, h: number,
+  color: string, k: number,
+): string[] {
+  const px = Math.min(Math.max(ax, x), x + w);
+  const py = Math.min(Math.max(ay, y), y + h);
+  return [
+    `<line x1="${r2(ax)}" y1="${r2(ay)}" x2="${r2(px)}" y2="${r2(py)}" stroke="${color}" stroke-width="${r2(1.4 * k)}" stroke-opacity="0.85"/>`,
+    `<circle cx="${r2(ax)}" cy="${r2(ay)}" r="${r2(3.2 * k)}" fill="${color}"/>`,
+  ];
+}
+
+/**
  * 标注层 → SVG(画在画布坐标上)。
  * frame 是画布在 viewBox 里的位置与大小(标注的百分比按它换算)。
  *
@@ -405,6 +458,10 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
   }
 
   // 五、一句话:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
+  //
+  // 给了 tx,ty 就是**两个节点**:指示点(a.x,a.y)+ 文字的位置(a.tx,a.ty),
+  // 中间拉一条引线 —— 引线拉多远就是多远,指示点也能单独挪。
+  // 没给就还是老样子:胶囊落在给定的点上(老链接继续能用 ✓)。
   for (const a of of('text')) {
     const color = a.color ?? DEFAULT_COLOR;
     const fs = 13 * k;
@@ -414,16 +471,22 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const padY = 5 * k;
     const bw = tw + padX * 2;
     const bh = fs + padY * 2;
-    const cx = frame.x + (a.x / 100) * frame.w;
-    const cy = frame.y + (a.y / 100) * frame.h;
-    const x = cx - bw / 2;
-    const y = cy - bh / 2;
+    const ax = frame.x + (a.x / 100) * frame.w;
+    const ay = frame.y + (a.y / 100) * frame.h;
+    const two = a.tx !== undefined && a.ty !== undefined;
+    // 文字的位置:两个节点时是左上角给定的,一个节点时是胶囊中心落在给定点上
+    const x = two ? frame.x + (a.tx! / 100) * frame.w : ax - bw / 2;
+    const y = two ? frame.y + (a.ty! / 100) * frame.h : ay - bh / 2;
     parts.push(
       `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-opacity="0.5" stroke-width="${r2(k)}"/>`,
     );
     parts.push(
-      `<text x="${r2(cx)}" y="${r2(cy + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" font-weight="500" fill="${color}">${esc(text)}</text>`,
+      `<text x="${r2(x + bw / 2)}" y="${r2(y + bh / 2 + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" font-weight="500" fill="${color}">${esc(text)}</text>`,
     );
+    if (two) {
+      // 引线 + 指示点(跟「评」共用这一份实现 ✓)
+      parts.push(...leaderAndDot(ax, ay, x, y, bw, bh, color, k));
+    }
   }
 
   // 六、一条评论:一条引线 + 一个多行的框(框自己挑位置:右边放不下就放左边)
@@ -457,12 +520,9 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     // 夹回画布(太小放不下时宁可压边,也不能跑出去)
     bx = Math.min(Math.max(bx, frame.x), Math.max(frame.x, frame.x + frame.w - bw));
     by = Math.min(Math.max(by, frame.y), Math.max(frame.y, frame.y + frame.h - bh));
-    // 引线:从落点连到框上最近的那一点
-    const px = Math.min(Math.max(ax, bx), bx + bw);
-    const py = Math.min(Math.max(ay, by), by + bh);
     parts.push(
-      `<line x1="${r2(ax)}" y1="${r2(ay)}" x2="${r2(px)}" y2="${r2(py)}" stroke="${color}" stroke-width="${r2(1.4 * k)}" stroke-opacity="0.85"/>`,
-      `<circle cx="${r2(ax)}" cy="${r2(ay)}" r="${r2(3.2 * k)}" fill="${color}"/>`,
+      // 引线 + 指示点(跟「字」共用这一份实现 ✓)
+      ...leaderAndDot(ax, ay, bx, by, bw, bh, color, k),
       // 垫色:底下垫一块近黑的底 —— 压在什么颜色的图上都读得出(亮底上是深色小牌,暗底上融进背景)
       `<rect x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(10 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
     );

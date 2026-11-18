@@ -22,6 +22,23 @@ describe('标注层', () => {
     expect(a).toContain('the spike');
   });
 
+  it('_text 给两个节点:指示点 + 引线 + 文字(引线拉多远就是多远)', () => {
+    const svg = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_text=60,60,20,20;the%20spike');
+    expect(svg).toContain('the spike');
+    expect(svg).toContain('<line');      // 引线
+    expect(svg).toContain('<circle');    // 指示点
+  });
+
+  it('_text 只给一个节点时不画引线(老样子 ✓)', () => {
+    const svg = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_text=60,40;the%20spike');
+    expect(svg).toContain('the spike');
+    expect(svg).not.toContain('<circle');
+  });
+
+  it('_text 只给 tx 不给 ty 要报错', () => {
+    expect(() => svgOf('?type=bar&labels=Mon,Tue&values=1,2&_text=60,60,20;oops')).toThrow();
+  });
+
   it('四个标注能同时画', () => {
     const svg = svgOf(
       '?type=bar&labels=Mon,Tue&values=1,2&_oval=60,40,10,6&_text=20,20;hello&_hl=10,10,20,20&_note=70,70;why',
