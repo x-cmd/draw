@@ -159,6 +159,8 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
         }
         // 外端的数值:折线在柱之上,数值得等折线画完再画(否则被线盖住)
         const v = totals[i];
+        // 零长度的柱不写数字:那一格什么都没有,写个 "0" 只会把读者的眼睛拉到空处
+        if (!(v > 0)) return;
         const vx = dir < 0 ? centre - totalLen - 8 : centre + totalLen + 8;
         const vw = textW(fmtFull(v), 12);
         barLabelBoxes.push({
@@ -293,6 +295,8 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
           acc += len;
         }
         const v = totals[i];
+        // 零长度的柱不写数字(同上)
+        if (!(v > 0)) return;
         const vy = dir < 0 ? centreY - totalLen - 6 : centreY + totalLen + 6;
         tbLabels.push(
           `<text x="${r2(cx)}" y="${r2(vy + (dir < 0 ? 0 : 10))}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--d-text)" style="${TAB}">${esc(fmtFull(v))}</text>`,
