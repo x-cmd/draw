@@ -70,6 +70,8 @@ function pct(v: number, name: string, raw: string): number {
  * 约定:第一个字段是逗号分隔的数,后面用分号分隔别的字段。
  */
 export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
+  // 标注层总开关(explore 页那个按钮):画布标注与数据点标注一起藏 ✓
+  if (params.get('markhide') === '1') return undefined;
   // 新名(_oval/_text)是正式名;老名(oval/text)继续收 —— 旧链接不能断 ✓
   const legacyOvals = params.getAll('oval');
   const legacyTexts = params.getAll('text');
@@ -81,7 +83,14 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
   const hls = params.getAll('_hl');
   const notes = params.getAll('_note');
   if (!ovals.length && !texts.length && !hls.length && !notes.length) return undefined;
+  // 藏起来的:`_hide=0,2`(序号 = 解析出来的顺序,跨种类;explore 页的标注面板写这个参数)
+  const hidden = new Set(
+    (params.get('_hide') ?? '').split(',').filter(Boolean).map((n) => Number(n)).filter((n) => Number.isFinite(n)),
+  );
   const out: Anno[] = [];
+  // 序号按「本来会有几条」算(跳过的也算进去)—— 否则藏掉一条,后面的序号全错位
+  let seq = 0;
+  const skip = (): boolean => hidden.has(seq++);
 
   for (const raw of ovals) {
     const parts = raw.split(';');
@@ -89,6 +98,7 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (nums.length < 4 || nums.length > 5 || nums.slice(0, 4).some((n) => !Number.isFinite(Number(n)))) {
       throw new ApiError(400, `"_oval" expects cx,cy,rx,ry in percent of the canvas (a ,#color may follow), e.g. _oval=70,25,12,8 — got ${JSON.stringify(raw)}`);
     }
+    if (skip()) continue;
     out.push({
       kind: 'oval',
       x: pct(Number(nums[0]), '_oval', raw),
@@ -111,6 +121,7 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (!text.trim()) {
       throw new ApiError(400, `"_text" needs some text after ";", e.g. _text=70,12;the spike — got ${JSON.stringify(raw)}`);
     }
+    if (skip()) continue;
     out.push({
       kind: 'text',
       x: pct(Number(nums[0]), '_text', raw),
@@ -132,6 +143,7 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (w <= 0 || h <= 0) {
       throw new ApiError(400, `"_hl" width and height must be positive, e.g. _hl=20,30,40,25 — got ${JSON.stringify(raw)}`);
     }
+    if (skip()) continue;
     out.push({
       kind: 'hl',
       x: pct(Number(nums[0]), '_hl', raw),
@@ -155,6 +167,7 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (!text.trim()) {
       throw new ApiError(400, `"_note" needs some text after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
     }
+    if (skip()) continue;
     out.push({
       kind: 'note',
       x: pct(Number(nums[0]), '_note', raw),

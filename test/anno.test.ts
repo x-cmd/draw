@@ -31,6 +31,20 @@ describe('标注层', () => {
     expect(svg).toContain('why');
   });
 
+  it('_hide=0 藏起第一个标注', () => {
+    const both = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=10,10,5,5&_oval=80,80,5,5');
+    const hidden = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=10,10,5,5&_oval=80,80,5,5&_hide=0');
+    expect((both.match(/<ellipse/g) ?? []).length).toBe(2);
+    expect((hidden.match(/<ellipse/g) ?? []).length).toBe(1);
+  });
+
+  it('markhide=1 整层不画', () => {
+    const shown = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=10,10,5,5');
+    const hidden = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=10,10,5,5&markhide=1');
+    expect(shown).toContain('<ellipse');
+    expect(hidden).not.toContain('<ellipse');
+  });
+
   it('参数写错时报错只说新名字', () => {
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_oval=1,2')).toThrow(/_oval/);
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_text=1,2')).toThrow(/_text/);
