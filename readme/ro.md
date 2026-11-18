@@ -5,195 +5,119 @@
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
 
-Grafice SVG pentru era AI: un singur endpoint `/draw?type=...`, datele în URL și `<metadata>` lizibil de mașini în fiecare rezultat. Sistemul de stiluri urmează o specificație de design, cu mai multe variante pe tip de grafic.
+
+X-CMD Draw este un instrument open-source pentru generarea de grafice SVG: scrie datele și stilurile în URL pentru a crea grafice cu bare, linii, diagrame Sankey, diagrame de arhitectură, hărți mentale și multe altele.
+
+Graficele pot fi încorporate direct în README-uri, issue-uri, PR-uri, articole de blog și pagini web, fără exportarea sau încărcarea de fișiere imagine. Linkurile și SVG-urile păstrează date și parametri citibili automat: publicul vede graficul, iar un agent AI poate continua să îl citească, modifice și regenereze, fără recunoaștere de imagini.
 
 ## Previzualizare
 
-Toate datele trăiesc în URL — deschide în browser, inserează cu `<img>` sau lipește în README: SVG se randează instant.
+De la analiza performanței la proiectarea arhitecturii, de la hărți la planificări, definițiile graficelor sunt păstrate în linkuri. Dă clic pe o imagine pentru a vedea datele, a ajusta stilul și a regenera graficul. [Vezi mai multe exemple de grafice ↗](https://x-cmd.com/draw)
 
-### Sankey — ciclul de viață al PR (`type=sankey&t=pipeline`)
+| | |
+| --- | --- |
+| **Descărcări și creștere**<br>[![Descărcări și creștere](https://www.x-cmd.com/draw?type=combo&title=Desc%C4%83rc%C4%83ri+%C8%99i+cre%C8%99tere&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26)](https://www.x-cmd.com/draw/explore?type=combo&title=Desc%C4%83rc%C4%83ri+%C8%99i+cre%C8%99tere&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26) | **Comparația performanței algoritmilor de compresie**<br>[![Compresie: viteză vs. raport](https://www.x-cmd.com/draw/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Compresie%3A%20vitez%C4%83%20vs.%20raport%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20dimensiunea%20bulelor%20%3D%20viteza%20de%20decompresie%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Vitez%C4%83%20de%20compresie%20MB%2Fs%20%28mai%20rapid%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Raport%20%28rezultat%20mai%20mic%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Compresie%3A%20vitez%C4%83%20vs.%20raport%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20dimensiunea%20bulelor%20%3D%20viteza%20de%20decompresie%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Vitez%C4%83%20de%20compresie%20MB%2Fs%20%28mai%20rapid%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Raport%20%28rezultat%20mai%20mic%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D) |
+| [![Prezentare generală a arhitecturii proiectului OpenCode](https://www.x-cmd.com/draw/arch2?title=Prezentare%20general%C4%83%20a%20arhitecturii%20proiectului%20OpenCode&t=shadcn&n=tui%3Bfe%3BInterfa%C8%9B%C4%83%20de%20terminal%20TUI%3BInterac%C8%9Biune%20prin%20linia%20de%20comand%C4%83%3Br0c0&n=web%3Bfe%3BInterfa%C8%9B%C4%83%20web%3BAcces%20prin%20browser%3Br0c1&n=desktop%3Bfe%3BAplica%C8%9Bie%20desktop%3BClient%20Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript%20SDK%3BIntegrare%20programatic%C4%83%3Br1c0&n=server%3Bsvc%3BServiciul%20principal%20OpenCode%3BServicii%20CLI%20%C8%99i%20HTTP%3Br1c1&n=session%3Bsvc%3BSesiuni%20%C8%99i%20mesaje%3BGestionarea%20contextului%3Br2c0&n=agent%3Bsvc%3BSistem%20de%20agen%C8%9Bi%3BSubagen%C8%9Bi%20Build%20Plan%3Br2c1&n=provider%3Bsvc%3BFurnizori%20de%20modele%3BCereri%20%C8%99i%20r%C4%83spunsuri%20ale%20modelelor%3Br2c2&n=tools%3Bsvc%3BSistem%20de%20instrumente%3BCitire%2Fscriere%20fi%C8%99iere%20%C8%99i%20c%C4%83utare%20Bash%3Br3c0&n=mcp%3Bsvc%3BServicii%20MCP%3BConectare%20la%20instrumente%20externe%3Br3c1&n=plugin%3Bsvc%3BPluginuri%20%C8%99i%20extensii%3BHook-uri%20de%20evenimente%20%C8%99i%20personalizare%3Br3c2&n=storage%3Bdb%3BStocare%20local%C4%83%3BDate%20de%20sesiune%20SQLite%3Br4c1&e=tui%3Bserver%3BCereri%20din%20terminal&e=web%3Bserver%3BHTTP%20API&e=desktop%3Bserver%3BCereri%20din%20client&e=sdk%3Bserver%3BApeluri%20API&e=server%3Bsession%3BGestionare%20sesiuni&e=server%3Bagent%3BOrchestrare%20agen%C8%9Bi&e=agent%3Bprovider%3BCerere%20model&e=agent%3Btools%3BApelare%20instrumente&e=tools%3Bmcp%3BExtindere%20surse%20de%20instrumente&e=server%3Bplugin%3B%C3%8Enc%C4%83rcare%20extensii&e=session%3Bstorage%3BCitire%2Fscriere%20sesiuni&e=agent%3Bsession%3BContextul%20mesajelor&b=Puncte%20de%20acces%20client%3B%20tui%20web%20desktop%20sdk&b=Nivel%20principal%20de%20execu%C8%9Bie%3B%20server%20session%20agent%20provider&b=Extensii%20%C8%99i%20execu%C8%9Bie%3B%20tools%20mcp%20plugin&b=Persisten%C8%9Ba%20datelor%3B%20storage)](https://www.x-cmd.com/draw/explore/arch2?title=Prezentare%20general%C4%83%20a%20arhitecturii%20proiectului%20OpenCode&t=shadcn&n=tui%3Bfe%3BInterfa%C8%9B%C4%83%20de%20terminal%20TUI%3BInterac%C8%9Biune%20prin%20linia%20de%20comand%C4%83%3Br0c0&n=web%3Bfe%3BInterfa%C8%9B%C4%83%20web%3BAcces%20prin%20browser%3Br0c1&n=desktop%3Bfe%3BAplica%C8%9Bie%20desktop%3BClient%20Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript%20SDK%3BIntegrare%20programatic%C4%83%3Br1c0&n=server%3Bsvc%3BServiciul%20principal%20OpenCode%3BServicii%20CLI%20%C8%99i%20HTTP%3Br1c1&n=session%3Bsvc%3BSesiuni%20%C8%99i%20mesaje%3BGestionarea%20contextului%3Br2c0&n=agent%3Bsvc%3BSistem%20de%20agen%C8%9Bi%3BSubagen%C8%9Bi%20Build%20Plan%3Br2c1&n=provider%3Bsvc%3BFurnizori%20de%20modele%3BCereri%20%C8%99i%20r%C4%83spunsuri%20ale%20modelelor%3Br2c2&n=tools%3Bsvc%3BSistem%20de%20instrumente%3BCitire%2Fscriere%20fi%C8%99iere%20%C8%99i%20c%C4%83utare%20Bash%3Br3c0&n=mcp%3Bsvc%3BServicii%20MCP%3BConectare%20la%20instrumente%20externe%3Br3c1&n=plugin%3Bsvc%3BPluginuri%20%C8%99i%20extensii%3BHook-uri%20de%20evenimente%20%C8%99i%20personalizare%3Br3c2&n=storage%3Bdb%3BStocare%20local%C4%83%3BDate%20de%20sesiune%20SQLite%3Br4c1&e=tui%3Bserver%3BCereri%20din%20terminal&e=web%3Bserver%3BHTTP%20API&e=desktop%3Bserver%3BCereri%20din%20client&e=sdk%3Bserver%3BApeluri%20API&e=server%3Bsession%3BGestionare%20sesiuni&e=server%3Bagent%3BOrchestrare%20agen%C8%9Bi&e=agent%3Bprovider%3BCerere%20model&e=agent%3Btools%3BApelare%20instrumente&e=tools%3Bmcp%3BExtindere%20surse%20de%20instrumente&e=server%3Bplugin%3B%C3%8Enc%C4%83rcare%20extensii&e=session%3Bstorage%3BCitire%2Fscriere%20sesiuni&e=agent%3Bsession%3BContextul%20mesajelor&b=Puncte%20de%20acces%20client%3B%20tui%20web%20desktop%20sdk&b=Nivel%20principal%20de%20execu%C8%9Bie%3B%20server%20session%20agent%20provider&b=Extensii%20%C8%99i%20execu%C8%9Bie%3B%20tools%20mcp%20plugin&b=Persisten%C8%9Ba%20datelor%3B%20storage) | [![US states · GDP per capita 2024 · thousand USD](https://www.x-cmd.com/draw/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540) |
+| [![Panorama tehnologiilor LLM](https://www.x-cmd.com/draw/mindmap?style=radial&title=Panorama%20tehnologiilor%20LLM&n=LLM-uri%2FPreantrenare%2FDate%2FCur%C4%83%C8%9Bare%20%C8%99i%20deduplicare&n=LLM-uri%2FPreantrenare%2FDate%2FDate%20sintetice&n=LLM-uri%2FPreantrenare%2FAntrenare%2FArhitectur%C4%83%20MoE&n=LLM-uri%2FAliniere%2FSFT&n=LLM-uri%2FAliniere%2FRLHF&n=LLM-uri%2FAliniere%2FDPO&n=LLM-uri%2FInferen%C8%9B%C4%83%2FE%C8%99antionare%2Ftemperature&n=LLM-uri%2FInferen%C8%9B%C4%83%2FE%C8%99antionare%2Ftop-p&n=LLM-uri%2FInferen%C8%9B%C4%83%2FAccelerare%2FKV%20Cache&n=LLM-uri%2FInferen%C8%9B%C4%83%2FAccelerare%2FDecodare%20speculativ%C4%83&n=LLM-uri%2FInferen%C8%9B%C4%83%2FAccelerare%2FCuantizare&n=LLM-uri%2FInferen%C8%9B%C4%83%2FImplementare%2FvLLM&n=LLM-uri%2FRAG%2FBaz%C4%83%20de%20date%20vectorial%C4%83&n=LLM-uri%2FRAG%2FModel%20de%20embedding-uri&n=LLM-uri%2FRAG%2FReordonare&n=LLM-uri%2FAgen%C8%9Bi%2FApelarea%20instrumentelor&n=LLM-uri%2FAgen%C8%9Bi%2FPlanificarea%20sarcinilor&n=LLM-uri%2FAgen%C8%9Bi%2FMultiagent&n=LLM-uri%2FAgen%C8%9Bi%2FProtocol%20MCP&n=LLM-uri%2FFine-tuning%2FLoRA&n=LLM-uri%2FFine-tuning%2FFine-tuning%20pentru%20to%C8%9Bi%20parametrii&n=LLM-uri%2FFine-tuning%2FDistilarea%20cuno%C8%99tin%C8%9Belor&n=LLM-uri%2FEvaluare%2FMMLU&n=LLM-uri%2FEvaluare%2FHumanEval&n=LLM-uri%2FEvaluare%2FEvaluare%20cu%20LLM&n=LLM-uri%2FMultimodal%2FCodificator%20vizual&n=LLM-uri%2FMultimodal%2FVorbire&n=LLM-uri%2FMultimodal%2FVideo)](https://www.x-cmd.com/draw/explore/mindmap?style=radial&title=Panorama%20tehnologiilor%20LLM&n=LLM-uri%2FPreantrenare%2FDate%2FCur%C4%83%C8%9Bare%20%C8%99i%20deduplicare&n=LLM-uri%2FPreantrenare%2FDate%2FDate%20sintetice&n=LLM-uri%2FPreantrenare%2FAntrenare%2FArhitectur%C4%83%20MoE&n=LLM-uri%2FAliniere%2FSFT&n=LLM-uri%2FAliniere%2FRLHF&n=LLM-uri%2FAliniere%2FDPO&n=LLM-uri%2FInferen%C8%9B%C4%83%2FE%C8%99antionare%2Ftemperature&n=LLM-uri%2FInferen%C8%9B%C4%83%2FE%C8%99antionare%2Ftop-p&n=LLM-uri%2FInferen%C8%9B%C4%83%2FAccelerare%2FKV%20Cache&n=LLM-uri%2FInferen%C8%9B%C4%83%2FAccelerare%2FDecodare%20speculativ%C4%83&n=LLM-uri%2FInferen%C8%9B%C4%83%2FAccelerare%2FCuantizare&n=LLM-uri%2FInferen%C8%9B%C4%83%2FImplementare%2FvLLM&n=LLM-uri%2FRAG%2FBaz%C4%83%20de%20date%20vectorial%C4%83&n=LLM-uri%2FRAG%2FModel%20de%20embedding-uri&n=LLM-uri%2FRAG%2FReordonare&n=LLM-uri%2FAgen%C8%9Bi%2FApelarea%20instrumentelor&n=LLM-uri%2FAgen%C8%9Bi%2FPlanificarea%20sarcinilor&n=LLM-uri%2FAgen%C8%9Bi%2FMultiagent&n=LLM-uri%2FAgen%C8%9Bi%2FProtocol%20MCP&n=LLM-uri%2FFine-tuning%2FLoRA&n=LLM-uri%2FFine-tuning%2FFine-tuning%20pentru%20to%C8%9Bi%20parametrii&n=LLM-uri%2FFine-tuning%2FDistilarea%20cuno%C8%99tin%C8%9Belor&n=LLM-uri%2FEvaluare%2FMMLU&n=LLM-uri%2FEvaluare%2FHumanEval&n=LLM-uri%2FEvaluare%2FEvaluare%20cu%20LLM&n=LLM-uri%2FMultimodal%2FCodificator%20vizual&n=LLM-uri%2FMultimodal%2FVorbire&n=LLM-uri%2FMultimodal%2FVideo) | [![Structură chimică](https://www.x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O)](https://www.x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O) |
 
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=func%C8%9Bii,fixuri,documenta%C8%9Bie,altele,combinate,%C3%AEnchise,respinse,%3C1a,1%E2%80%932a,%3E2a&links=func%C8%9Bii%3Ecombinate:38;func%C8%9Bii%3E%C3%AEnchise:12;func%C8%9Bii%3Erespinse:8;fixuri%3Ecombinate:33;fixuri%3E%C3%AEnchise:6;fixuri%3Erespinse:2;documenta%C8%9Bie%3Ecombinate:16;documenta%C8%9Bie%3E%C3%AEnchise:4;altele%3Ecombinate:5;altele%3E%C3%AEnchise:6;altele%3Erespinse:6;combinate%3E%3C1a:52;combinate%3E1%E2%80%932a:28;combinate%3E%3E2a:12;%C3%AEnchise%3E%3C1a:14;%C3%AEnchise%3E1%E2%80%932a:9;%C3%AEnchise%3E%3E2a:5;respinse%3E%3C1a:9;respinse%3E1%E2%80%932a:5;respinse%3E%3E2a:2&title=Ciclul%20de%20via%C8%9B%C4%83%20al%20PR&unit=prs
-```
+## Început rapid
 
-[![Sankey — ciclul de viață al PR](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=func%C8%9Bii,fixuri,documenta%C8%9Bie,altele,combinate,%C3%AEnchise,respinse,%3C1a,1%E2%80%932a,%3E2a&links=func%C8%9Bii%3Ecombinate:38;func%C8%9Bii%3E%C3%AEnchise:12;func%C8%9Bii%3Erespinse:8;fixuri%3Ecombinate:33;fixuri%3E%C3%AEnchise:6;fixuri%3Erespinse:2;documenta%C8%9Bie%3Ecombinate:16;documenta%C8%9Bie%3E%C3%AEnchise:4;altele%3Ecombinate:5;altele%3E%C3%AEnchise:6;altele%3Erespinse:6;combinate%3E%3C1a:52;combinate%3E1%E2%80%932a:28;combinate%3E%3E2a:12;%C3%AEnchise%3E%3C1a:14;%C3%AEnchise%3E1%E2%80%932a:9;%C3%AEnchise%3E%3E2a:5;respinse%3E%3C1a:9;respinse%3E1%E2%80%932a:5;respinse%3E%3E2a:2&title=Ciclul%20de%20via%C8%9B%C4%83%20al%20PR&unit=prs)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=func%C8%9Bii,fixuri,documenta%C8%9Bie,altele,combinate,%C3%AEnchise,respinse,%3C1a,1%E2%80%932a,%3E2a&links=func%C8%9Bii%3Ecombinate:38;func%C8%9Bii%3E%C3%AEnchise:12;func%C8%9Bii%3Erespinse:8;fixuri%3Ecombinate:33;fixuri%3E%C3%AEnchise:6;fixuri%3Erespinse:2;documenta%C8%9Bie%3Ecombinate:16;documenta%C8%9Bie%3E%C3%AEnchise:4;altele%3Ecombinate:5;altele%3E%C3%AEnchise:6;altele%3Erespinse:6;combinate%3E%3C1a:52;combinate%3E1%E2%80%932a:28;combinate%3E%3E2a:12;%C3%AEnchise%3E%3C1a:14;%C3%AEnchise%3E1%E2%80%932a:9;%C3%AEnchise%3E%3E2a:5;respinse%3E%3C1a:9;respinse%3E1%E2%80%932a:5;respinse%3E%3E2a:2&title=Ciclul%20de%20via%C8%9B%C4%83%20al%20PR&unit=prs)
+### 1. Învață agentul să folosească draw
 
-### Hbar — debitul runtime (măsurat) (`type=hbar; draw() ops/s: deno 7238 · node 6553 · bun 4972, Apple Silicon`)
-
-```text
-https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
-```
-
-[![Hbar — debitul runtime (măsurat)](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)](https://x-cmd.com/draw/explore?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
-
-### Radar — comparație a trei editoare (`type=radar&t=evil`)
+Trimite promptul de mai jos unui agent care poate citi pagini web. Serviciul găzduit draw nu necesită cont sau cheie API:
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
-[![Radar — comparație a trei editoare](https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare)
+### 2. Spune ce ai nevoie
 
-### Combinat — descărcări și creștere (`type=combo`)
+Spune-i agentului ce date să folosească, ce relație să reprezinte și unde va fi folosit graficul:
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mie,Joi,Vin,S%C3%A2m,Dum&series=Desc%C4%83rc%C4%83ri:120,180,150,210,240,200,260&line=Cre%C8%99tere:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale&unit=dl
-```
-
-[![Combinat — descărcări și creștere](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mie,Joi,Vin,S%C3%A2m,Dum&series=Desc%C4%83rc%C4%83ri:120,180,150,210,240,200,260&line=Cre%C8%99tere:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Lun,Mar,Mie,Joi,Vin,S%C3%A2m,Dum&series=Desc%C4%83rc%C4%83ri:120,180,150,210,240,200,260&line=Cre%C8%99tere:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale&unit=dl)
-
-### Hbar — issue-uri deschise/închise (fluture) (`type=hbar&t=xcmd-issue`)
-
+Adaugă în README o diagramă de arhitectură care să arate traseul unei cereri de la CLI prin API până la baza de date.
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone
+
+Dacă îl folosești frecvent, instalează [`SKILL.md`](../SKILL.md) într-un agent care acceptă skill-uri locale. De exemplu, în Claude Code, salvează-l ca `~/.claude/skills/draw/SKILL.md`; după această configurare unică, poți descrie direct ce ai nevoie.
+
+## Funcționalități
+
+- **🔗 URL-ul este graficul**: datele și stilurile sunt texte lizibile, comparabile și care pot fi versionate, iar linkul poate fi încorporat direct în Markdown și pagini web.
+- **🤖 Citibil de oameni și AI**: SVG-ul prezintă graficul, iar datele și parametrii citibili automat permit modificarea și regenerarea fără a deduce datele dintr-o imagine.
+- **📊 Capacități grafice bogate**: include grafice de date, diagrame de flux, diagrame de arhitectură, hărți mentale, hărți și planificări; ECharts poate reprezenta și relații de date mai complexe.
+- **🖱️ Editare vizuală interactivă**: dă clic pe un exemplu pentru a deschide pagina interactivă, a vedea datele, a ajusta parametrii și stilurile și a copia noul link al graficului.
+- **🚀 Deschis și auto-găzduibil**: dezvoltat în TypeScript sub Apache-2.0; disponibil ca serviciu online, CLI, bibliotecă npm / JSR și implementare pe Cloudflare Workers.
+
+## Nu folosești un agent? Alege metoda de integrare potrivită
+
+### Grafice rapide: folosește URL-ul direct
+
+Potrivit pentru documentație, prezentări sau vizualizări ocazionale. Deschide [pagina demo și de editare interactivă](https://x-cmd.com/draw), ajustează datele și stilurile, apoi copiază linkul; poți modifica și direct parametrii URL-ului:
+
+```md
+![Exemplu de proporții](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
 ```
 
-[![Hbar — issue-uri deschise/închise (fluture)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,nucleu,documenta%C8%9Bie,ci,UI&series=deschise:12,8,15,4,9&series=%C3%AEnchise:38,52,20,11,26&title=Issue-uri%20pe%20zone)
+Cititorii văd graficul, iar tu păstrezi un text care poate fi modificat și revizuit.
 
-### Circular — cele mai mari orașe (`type=pie&t=market-mono`)
+### Generare în lot sau integrare în proiecte: folosește CLI-ul sau biblioteca
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3
+Potrivit pentru actualizarea automată a graficelor în CI, generarea de rapoarte în lot, utilizare offline și integrare în aplicații. CLI-ul și biblioteca folosesc aceiași parametri ca serviciul găzduit:
+
+```sh
+npx @x-cmd/draw --type pie --labels A,B --values 3,2 --out pie.svg
 ```
 
-[![Circular — cele mai mari orașe](https://x-cmd.com/draw?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Cele%20mai%20mari%20ora%C8%99e&unit=mil.&labels=Bucure%C8%99ti,Cluj-Napoca,Timi%C8%99oara,Ia%C8%99i&values=1.8,0.3,0.3,0.3)
-
-## Prompt — instrucțiuni pentru agentul AI (skill)
-
-Fără instalare: lipește acest prompt o singură dată într-un agent conectat la web, apoi descrie în limbaj natural graficul sau diagrama de care ai nevoie:
-
-```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
-```
-
-Apoi poți cere:
-
-> Desenează o diagramă circulară cu stelele pe limbaje — TypeScript 4821, Python 2312, Go 980
-
-Agenții care încarcă skill-uri nativ (Claude Code etc.): copiază [`SKILL.md`](../SKILL.md) o singură dată în folderul skills (`~/.claude/skills/draw/SKILL.md`); apoi cere direct grafice sau diagrame, fără să lipești promptul sau URL-ul.
-
-## Trei moduri de utilizare
-
-**Serviciu găzduit (zero instalare)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
-
-**Bibliotecă npm + CLI (offline, sincron)** (`npm i -g @x-cmd/draw` / `npx`):
+Pentru a genera SVG sincron în cod, instalează biblioteca și apelează `draw`:
 
 ```sh
 npm install @x-cmd/draw
 ```
 ```ts
 import { draw } from '@x-cmd/draw';
+
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// acceptă și query string: draw('?type=bar&labels=Lun,Mar&values=3,5')
-// array-uri = parametri repetați (etichete cu virgule)
-draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
-```
-```sh
-draw --type pie --labels "A,B,C" --values "3,2,1" --out pie.svg
-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # query string simplu
 ```
 
-**Self-hosting**:
+Utilizatorii Deno pot rula `deno add jsr:@x-cmd/draw`, apoi importa din `jsr:@x-cmd/draw`. Nucleul de randare nu accesează rețeaua sau fișiere, fiind potrivit pentru medii restricționate.
+
+### Controlează accesul și limitele datelor: rulează propriul serviciu
+
+Potrivit pentru un punct de acces unic în echipă, utilizare în rețele interne sau pentru a evita dependența de un serviciu public:
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve      # server Node local :8787 cu pagină demo
-npm run dev        # wrangler dev
-bash scripts/setup.sh   # deploy într-un click pe contul tău Cloudflare
+npm run serve           # Serviciu local: http://localhost:8787/draw
+bash scripts/setup.sh   # Implementare cu o singură comandă în contul tău Cloudflare
 ```
 
-Variabile de mediu (Node): `PORT` (8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (activează linkuri scurte POST).
+Configurează `DATA_REPO`, `DATA_BRANCH` și `GITHUB_TOKEN` pentru a activa linkuri scurte permanente; fără acestea, randarea GET obișnuită nu este afectată. Vezi [ghidul de self-hosting](../docs/1-overview/05-self-hosting/ro.md).
 
-**Deno** — nucleul de randare e pur, fără rețea — sandbox-ul fără permisiuni este granița de securitate:
+## Documentație și API
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+Lista completă a tipurilor de grafice, parametrilor și exemplelor este organizată pe teme în documentație:
 
-## Endpoint-uri
-
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — randează un grafic
-
-| type | | |
-|---|---|---|
-| `pie` | Inel; `donut=0` = plin<br><br>**<u>≤100 clase (>9 → Other)</u>** | [![example](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stele%20pe%20limbaj&w=360)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Stele%20pe%20limbaj) |
-| `bar` | Coloane grupate; `stack=1` stivuite<br><br>**<u>≤30 grupuri</u>** | [![example](https://x-cmd.com/draw?type=bar&labels=Lun,Mar,Mie&series=dev:12,18,9&series=ci:8,11,6&w=360)](https://x-cmd.com/draw/explore?type=bar&labels=Lun,Mar,Mie&series=dev:12,18,9&series=ci:8,11,6) |
-| `hbar` | Bare orizontale (clasamente)<br><br>**<u>≤30 bare</u>** | [![example](https://x-cmd.com/draw?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=42,31,18,9&title=Commit-uri%20pe%20zone&w=360)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,nucleu,documenta%C8%9Bie,UI&values=42,31,18,9&title=Commit-uri%20pe%20zone) |
-| `line` | Linie netedă + gradient / multilinie<br><br>**<u>≤60 puncte</u>** | [![example](https://x-cmd.com/draw?type=line&labels=Ian,Feb,Mar,Apr,Mai,Iun&values=12,19,15,25,22,30&title=Stele%20pe%20limbaj&w=360)](https://x-cmd.com/draw/explore?type=line&labels=Ian,Feb,Mar,Apr,Mai,Iun&values=12,19,15,25,22,30&title=Stele%20pe%20limbaj) |
-| `area` | Arie / multi-arii<br><br>**<u>≤60 puncte</u>** | [![example](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Desc%C4%83rc%C4%83ri&w=360)](https://x-cmd.com/draw/explore?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Desc%C4%83rc%C4%83ri) |
-| `radar` | Radar<br><br>**<u>3–12 axe</u>** | [![example](https://x-cmd.com/draw?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare&w=360)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=pornire,ecosistem,extensibilitate,memorie,u%C8%99urin%C8%9B%C4%83&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparare%20editoare) |
-| `gauge` | Indicator (arc 240°, valoare centrală)<br><br>**<u>value+max; inele ≤8</u>** | [![example](https://x-cmd.com/draw?type=gauge&title=Rat%C4%83%20CI&value=87&max=100&w=360)](https://x-cmd.com/draw/explore?type=gauge&title=Rat%C4%83%20CI&value=87&max=100) |
-| `scatter` | Împrăștiere, două axe numerice, negative ok<br><br>**<u>x=&y=, ≤200 puncte</u>** | [![example](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Laten%C8%9B%C4%83&w=360)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Laten%C8%9B%C4%83) |
-| `combo` | Coloane (`series=`) + linie (`line=`); dublă axă de la 5× diferență<br><br>**<u>≤30 grupuri, ≤6 serii</u>** | [![example](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mie,Joi,Vin,S%C3%A2m,Dum&series=Desc%C4%83rc%C4%83ri:120,180,150,210,240,200,260&line=Cre%C8%99tere:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale&unit=dl&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=Lun,Mar,Mie,Joi,Vin,S%C3%A2m,Dum&series=Desc%C4%83rc%C4%83ri:120,180,150,210,240,200,260&line=Cre%C8%99tere:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Desc%C4%83rc%C4%83ri%20s%C4%83pt%C4%83m%C3%A2nale&unit=dl) |
-| `sankey` | Diagramă de flux cu lățimi<br><br>**<u>labels=+links=A>B:30, ≤24 noduri</u>** | [![example](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=func%C8%9Bii,fixuri,documenta%C8%9Bie,altele,combinate,%C3%AEnchise,respinse,%3C1a,1%E2%80%932a,%3E2a&links=func%C8%9Bii%3Ecombinate:38;func%C8%9Bii%3E%C3%AEnchise:12;func%C8%9Bii%3Erespinse:8;fixuri%3Ecombinate:33;fixuri%3E%C3%AEnchise:6;fixuri%3Erespinse:2;documenta%C8%9Bie%3Ecombinate:16;documenta%C8%9Bie%3E%C3%AEnchise:4;altele%3Ecombinate:5;altele%3E%C3%AEnchise:6;altele%3Erespinse:6;combinate%3E%3C1a:52;combinate%3E1%E2%80%932a:28;combinate%3E%3E2a:12;%C3%AEnchise%3E%3C1a:14;%C3%AEnchise%3E1%E2%80%932a:9;%C3%AEnchise%3E%3E2a:5;respinse%3E%3C1a:9;respinse%3E1%E2%80%932a:5;respinse%3E%3E2a:2&title=Ciclul%20de%20via%C8%9B%C4%83%20al%20PR&unit=prs&w=360)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=func%C8%9Bii,fixuri,documenta%C8%9Bie,altele,combinate,%C3%AEnchise,respinse,%3C1a,1%E2%80%932a,%3E2a&links=func%C8%9Bii%3Ecombinate:38;func%C8%9Bii%3E%C3%AEnchise:12;func%C8%9Bii%3Erespinse:8;fixuri%3Ecombinate:33;fixuri%3E%C3%AEnchise:6;fixuri%3Erespinse:2;documenta%C8%9Bie%3Ecombinate:16;documenta%C8%9Bie%3E%C3%AEnchise:4;altele%3Ecombinate:5;altele%3E%C3%AEnchise:6;altele%3Erespinse:6;combinate%3E%3C1a:52;combinate%3E1%E2%80%932a:28;combinate%3E%3E2a:12;%C3%AEnchise%3E%3C1a:14;%C3%AEnchise%3E1%E2%80%932a:9;%C3%AEnchise%3E%3E2a:5;respinse%3E%3C1a:9;respinse%3E1%E2%80%932a:5;respinse%3E%3E2a:2&title=Ciclul%20de%20via%C8%9B%C4%83%20al%20PR&unit=prs) |
-| `qr` | Cod QR<br><br>**<u>d≤1000 caractere, fg/bg, title/unit</u>** | [![example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scaneaz%C4%83&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scaneaz%C4%83) |
-
-**`GET /draw`** — pagina demo · **`POST /draw?type=...`** — un body JSON/CSV creează un link scurt permanent · **`GET /draw/c/<hash>`** — randarea linkului scurt (immutable)
-
-## Stiluri (`?t=`)
-
-| type | |
-|---|---|
-| `pie` | opendata (implicit) · evil · evil-mono · market-mono · progress · revenue |
-| `bar` | evil (implicit) · base · grid |
-| `hbar` | base (implicit) · opendata (ref=) · xcmd · xcmd-issue · rank |
-| `line` | shadcn (implicit) · evil · evil-glow · evil-mono · opendata |
-| `area` | evil (implicit) · star · opendata · pixel · polka |
-| `radar` | base (implicit) · evil · xcmd |
-| `sankey` | base (implicit) · fund · pipeline |
-| `gauge` | base (implicit) · gradient · reliability |
-| `scatter/combo/qr` | base (combo are și evil) |
-
-## Transmiterea datelor
-
-```text
-https://x-cmd.com/draw?type=pie&title=Stele%20pe%20limbaj&labels=TypeScript,Python,Go&values=4821,2312,980
-```
-
-Etichete cu virgule: repetă parametrul (`labels=Q1, 2024&labels=Q2`). Date complexe: `?d=` + JSON codificat URL:
-
-```json
-{"title":"...","data":[{"label":"A","value":1}]}
-```
-
-## Linkuri scurte
-
-POST generează un link scurt permanent adresat de conținut (repo GitHub ca stocare):
-
-- aceleași date → același hash (idempotent, deduplicare)
-- limită 30 cereri/min/IP
-- stocare publică — nimic sensibil
-
-## Versionare
-
-- fără `v`: versiunea recentă, cache 300 s
-- `v=N`: versiune fixată, cache 1 zi
-- `immutable` doar pentru `/c/<hash>`
-
-## Prietenos cu AI
-
-Fiecare SVG include JSON: `{generator, template, version, spec}` — datele și parametrii fac round-trip direct; textul este `<text>` real.
-
-## Self-hosting într-un pas
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
-```
-
-Scriptul clonează, autentifică wrangler, face deploy și printează URL-ul `*.workers.dev`. Linkurile scurte (POST) se activează cu `DATA_REPO` + `GITHUB_TOKEN`.
+| Ce vrei să faci | Documentație |
+| --- | --- |
+| Explorezi toate tipurile și scenariile | [Prezentare generală a documentației](../docs/README.md) · [Exemple de referință](../docs/9-showcases/12-reference-examples/en.md) · [Exemple de arhitectură cloud](../docs/9-showcases/14-cloud-architecture/en.md) |
+| Consulți parametrii comuni și codificarea URL | [Referința parametrilor](../docs/1-overview/07-params/en.md) |
+| Folosești date JSON | [Formate de date și API](../docs/1-overview/04-data-and-api/ro.md) |
+| Creezi linkuri scurte sau configurezi stocarea lor | [Self-hosting și linkuri scurte](../docs/1-overview/05-self-hosting/ro.md) |
+| Desenezi diagrame de arhitectură, secvență, ERD și alte diagrame structurale | [Sintaxa URL pentru diagrame structurale](../docs/1-overview/06-diagram-urls/en.md) |
+| Rulezi local sau implementezi pe Cloudflare | [Ghid de self-hosting](../docs/1-overview/05-self-hosting/ro.md) |
+| Lași un agent să genereze grafice automat | [Agent Skill](../SKILL.md) |
 
 ## Dezvoltare
 
 ```sh
 npm install
-npm run dev      # wrangler dev
-npm test         # vitest (120)
-npm run check    # tsc ×3
-npm run build    # dist/
+npm run dev      # wrangler dev: server local
+npm test         # vitest
+npm run check    # tsc --noEmit × 3 (worker / node / build)
+npm run build    # generează dist/ (bibliotecă npm + CLI)
+npm run deploy   # wrangler deploy
 ```
 
 ## Licență
 
-Cod Apache-2.0; fonturi OFL — [LICENSE](../LICENSE) · Documentație completă: [README (EN)](../README.md)
+Codul este oferit sub [Apache-2.0](../LICENSE). Fonturile încorporate urmează propriile licențe: Inter (OFL, text integral în [`inter-OFL.txt`](../src/styles/inter-OFL.txt)) și Handlee (OFL, text integral în [`handlee-OFL.txt`](../src/styles/handlee-OFL.txt)).

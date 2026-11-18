@@ -5,195 +5,119 @@
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
 
-Yapay zekâ çağı için SVG grafikler: tek endpoint `/draw?type=...`, veriler URL’de ve her çıktıda makine tarafından okunabilir `<metadata>`. Stil sistemi bir tasarım spesifikasyonunu izler; her grafik türü için çeşitli varyantlar.
 
-## Önizleme
+X-CMD Draw, açık kaynaklı bir SVG grafik oluşturma aracıdır: verileri ve stilleri URL’ye ekleyerek sütun ve çizgi grafikler, Sankey diyagramları, sistem mimarisi şemaları, zihin haritaları ve daha birçok görsel oluşturabilirsiniz.
 
-Tüm veriler URL’nin içinde — tarayıcıda aç, `<img>` ile göm veya README’ye yapıştır: SVG anında çizilir.
+Grafikler doğrudan README, issue, PR, blog yazıları ve web sayfalarına gömülebilir; görsel dosyalarını dışa aktarmaya veya yüklemeye gerek yoktur. Bağlantılar ve SVG, makine tarafından okunabilir verileri ve parametreleri korur: okuyucular grafiği görürken AI Agent görüntüyü tanımadan okumaya, değiştirmeye ve yeniden oluşturmaya devam edebilir.
 
-### Sankey — PR yaşam döngüsü (`type=sankey&t=pipeline`)
+## Örnekler
 
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=%C3%B6zellik,d%C3%BCzeltme,belgeler,di%C4%9Fer,birle%C5%9Ftirilen,kapat%C4%B1lan,reddedilen,%3C1y,1%E2%80%932y,%3E2y&links=%C3%B6zellik%3Ebirle%C5%9Ftirilen:38;%C3%B6zellik%3Ekapat%C4%B1lan:12;%C3%B6zellik%3Ereddedilen:8;d%C3%BCzeltme%3Ebirle%C5%9Ftirilen:33;d%C3%BCzeltme%3Ekapat%C4%B1lan:6;d%C3%BCzeltme%3Ereddedilen:2;belgeler%3Ebirle%C5%9Ftirilen:16;belgeler%3Ekapat%C4%B1lan:4;di%C4%9Fer%3Ebirle%C5%9Ftirilen:5;di%C4%9Fer%3Ekapat%C4%B1lan:6;di%C4%9Fer%3Ereddedilen:6;birle%C5%9Ftirilen%3E%3C1y:52;birle%C5%9Ftirilen%3E1%E2%80%932y:28;birle%C5%9Ftirilen%3E%3E2y:12;kapat%C4%B1lan%3E%3C1y:14;kapat%C4%B1lan%3E1%E2%80%932y:9;kapat%C4%B1lan%3E%3E2y:5;reddedilen%3E%3C1y:9;reddedilen%3E1%E2%80%932y:5;reddedilen%3E%3E2y:2&title=PR%20ya%C5%9Fam%20d%C3%B6ng%C3%BCs%C3%BC&unit=prs
-```
+Performans analizinden mimari tasarıma, haritalardan zaman planlamasına kadar her grafiğin tanımı bağlantıda saklanır. Verileri görüntülemek, stili değiştirmek ve grafiği yeniden oluşturmak için görsele tıklayın. [Daha fazla grafik örneği ↗](https://x-cmd.com/draw)
 
-[![Sankey — PR yaşam döngüsü](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=%C3%B6zellik,d%C3%BCzeltme,belgeler,di%C4%9Fer,birle%C5%9Ftirilen,kapat%C4%B1lan,reddedilen,%3C1y,1%E2%80%932y,%3E2y&links=%C3%B6zellik%3Ebirle%C5%9Ftirilen:38;%C3%B6zellik%3Ekapat%C4%B1lan:12;%C3%B6zellik%3Ereddedilen:8;d%C3%BCzeltme%3Ebirle%C5%9Ftirilen:33;d%C3%BCzeltme%3Ekapat%C4%B1lan:6;d%C3%BCzeltme%3Ereddedilen:2;belgeler%3Ebirle%C5%9Ftirilen:16;belgeler%3Ekapat%C4%B1lan:4;di%C4%9Fer%3Ebirle%C5%9Ftirilen:5;di%C4%9Fer%3Ekapat%C4%B1lan:6;di%C4%9Fer%3Ereddedilen:6;birle%C5%9Ftirilen%3E%3C1y:52;birle%C5%9Ftirilen%3E1%E2%80%932y:28;birle%C5%9Ftirilen%3E%3E2y:12;kapat%C4%B1lan%3E%3C1y:14;kapat%C4%B1lan%3E1%E2%80%932y:9;kapat%C4%B1lan%3E%3E2y:5;reddedilen%3E%3C1y:9;reddedilen%3E1%E2%80%932y:5;reddedilen%3E%3E2y:2&title=PR%20ya%C5%9Fam%20d%C3%B6ng%C3%BCs%C3%BC&unit=prs)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=%C3%B6zellik,d%C3%BCzeltme,belgeler,di%C4%9Fer,birle%C5%9Ftirilen,kapat%C4%B1lan,reddedilen,%3C1y,1%E2%80%932y,%3E2y&links=%C3%B6zellik%3Ebirle%C5%9Ftirilen:38;%C3%B6zellik%3Ekapat%C4%B1lan:12;%C3%B6zellik%3Ereddedilen:8;d%C3%BCzeltme%3Ebirle%C5%9Ftirilen:33;d%C3%BCzeltme%3Ekapat%C4%B1lan:6;d%C3%BCzeltme%3Ereddedilen:2;belgeler%3Ebirle%C5%9Ftirilen:16;belgeler%3Ekapat%C4%B1lan:4;di%C4%9Fer%3Ebirle%C5%9Ftirilen:5;di%C4%9Fer%3Ekapat%C4%B1lan:6;di%C4%9Fer%3Ereddedilen:6;birle%C5%9Ftirilen%3E%3C1y:52;birle%C5%9Ftirilen%3E1%E2%80%932y:28;birle%C5%9Ftirilen%3E%3E2y:12;kapat%C4%B1lan%3E%3C1y:14;kapat%C4%B1lan%3E1%E2%80%932y:9;kapat%C4%B1lan%3E%3E2y:5;reddedilen%3E%3C1y:9;reddedilen%3E1%E2%80%932y:5;reddedilen%3E%3E2y:2&title=PR%20ya%C5%9Fam%20d%C3%B6ng%C3%BCs%C3%BC&unit=prs)
+| | |
+| --- | --- |
+| **İndirmeler ve büyüme**<br>[![İndirmeler ve büyüme](https://www.x-cmd.com/draw?type=combo&title=%C4%B0ndirmeler+ve+b%C3%BCy%C3%BCme&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26)](https://www.x-cmd.com/draw/explore?type=combo&title=%C4%B0ndirmeler+ve+b%C3%BCy%C3%BCme&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26) | **Sıkıştırma algoritmalarının performans karşılaştırması**<br>[![Sıkıştırma: hız ve oran](https://www.x-cmd.com/draw/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22S%C4%B1k%C4%B1%C5%9Ft%C4%B1rma%3A%20h%C4%B1z%20ve%20oran%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20baloncuk%20boyutu%20%3D%20a%C3%A7ma%20h%C4%B1z%C4%B1%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22S%C4%B1k%C4%B1%C5%9Ft%C4%B1rma%20h%C4%B1z%C4%B1%20MB%2Fs%20%28daha%20h%C4%B1zl%C4%B1%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Oran%20%28daha%20k%C3%BC%C3%A7%C3%BCk%20%C3%A7%C4%B1kt%C4%B1%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22S%C4%B1k%C4%B1%C5%9Ft%C4%B1rma%3A%20h%C4%B1z%20ve%20oran%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20baloncuk%20boyutu%20%3D%20a%C3%A7ma%20h%C4%B1z%C4%B1%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22S%C4%B1k%C4%B1%C5%9Ft%C4%B1rma%20h%C4%B1z%C4%B1%20MB%2Fs%20%28daha%20h%C4%B1zl%C4%B1%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Oran%20%28daha%20k%C3%BC%C3%A7%C3%BCk%20%C3%A7%C4%B1kt%C4%B1%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D) |
+| [![OpenCode projesinin genel mimarisi](https://www.x-cmd.com/draw/arch2?title=OpenCode+projesinin+genel+mimarisi&t=shadcn&n=tui%3Bfe%3BTerminal+aray%C3%BCz%C3%BC+TUI%3BKomut+sat%C4%B1r%C4%B1+etkile%C5%9Fimi%3Br0c0&n=web%3Bfe%3BWeb+aray%C3%BCz%C3%BC%3BTaray%C4%B1c%C4%B1+eri%C5%9Fimi%3Br0c1&n=desktop%3Bfe%3BMasa%C3%BCst%C3%BC+uygulamas%C4%B1%3BElectron+istemcisi%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3BProgramatik+entegrasyon%3Br1c0&n=server%3Bsvc%3BOpenCode+%C3%A7ekirdek+hizmeti%3BCLI+ve+HTTP+hizmeti%3Br1c1&n=session%3Bsvc%3BOturumlar+ve+mesajlar%3BBa%C4%9Flam+y%C3%B6netimi%3Br2c0&n=agent%3Bsvc%3BAgent+sistemi%3BBuild+Plan+alt+Agent%E2%80%99%C4%B1%3Br2c1&n=provider%3Bsvc%3BModel+sa%C4%9Flay%C4%B1c%C4%B1s%C4%B1%3BModel+istekleri+ve+yan%C4%B1tlar%C4%B1%3Br2c2&n=tools%3Bsvc%3BAra%C3%A7+sistemi%3BDosya+okuma+ve+yazma%2C+Bash%2C+arama%3Br3c0&n=mcp%3Bsvc%3BMCP+hizmeti%3BHarici+ara%C3%A7+ba%C4%9Flant%C4%B1s%C4%B1%3Br3c1&n=plugin%3Bsvc%3BEklentiler+ve+uzant%C4%B1lar%3BOlay+kancalar%C4%B1+ve+%C3%B6zel+yetenekler%3Br3c2&n=storage%3Bdb%3BYerel+depolama%3BSQLite+oturum+verileri%3Br4c1&e=tui%3Bserver%3BTerminal+iste%C4%9Fi&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3B%C4%B0stemci+iste%C4%9Fi&e=sdk%3Bserver%3BAPI+%C3%A7a%C4%9Fr%C4%B1s%C4%B1&e=server%3Bsession%3BOturumlar%C4%B1+y%C3%B6netme&e=server%3Bagent%3BAgent+orkestrasyonu&e=agent%3Bprovider%3BModel+iste%C4%9Fi&e=agent%3Btools%3BAra%C3%A7+%C3%A7a%C4%9F%C4%B1rma&e=tools%3Bmcp%3BAra%C3%A7+kaynaklar%C4%B1n%C4%B1+geni%C5%9Fletme&e=server%3Bplugin%3BUzant%C4%B1lar%C4%B1+y%C3%BCkleme&e=session%3Bstorage%3BOturumlar%C4%B1+okuma+ve+yazma&e=agent%3Bsession%3BMesaj+ba%C4%9Flam%C4%B1&b=%C4%B0stemci+giri%C5%9Fleri%3B+tui+web+desktop+sdk&b=%C3%87ekirdek+%C3%A7al%C4%B1%C5%9Fma+katman%C4%B1%3B+server+session+agent+provider&b=Uzant%C4%B1lar+ve+y%C3%BCr%C3%BCtme%3B+tools+mcp+plugin&b=Veri+kal%C4%B1c%C4%B1l%C4%B1%C4%9F%C4%B1%3B+storage)](https://www.x-cmd.com/draw/explore/arch2?title=OpenCode+projesinin+genel+mimarisi&t=shadcn&n=tui%3Bfe%3BTerminal+aray%C3%BCz%C3%BC+TUI%3BKomut+sat%C4%B1r%C4%B1+etkile%C5%9Fimi%3Br0c0&n=web%3Bfe%3BWeb+aray%C3%BCz%C3%BC%3BTaray%C4%B1c%C4%B1+eri%C5%9Fimi%3Br0c1&n=desktop%3Bfe%3BMasa%C3%BCst%C3%BC+uygulamas%C4%B1%3BElectron+istemcisi%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3BProgramatik+entegrasyon%3Br1c0&n=server%3Bsvc%3BOpenCode+%C3%A7ekirdek+hizmeti%3BCLI+ve+HTTP+hizmeti%3Br1c1&n=session%3Bsvc%3BOturumlar+ve+mesajlar%3BBa%C4%9Flam+y%C3%B6netimi%3Br2c0&n=agent%3Bsvc%3BAgent+sistemi%3BBuild+Plan+alt+Agent%E2%80%99%C4%B1%3Br2c1&n=provider%3Bsvc%3BModel+sa%C4%9Flay%C4%B1c%C4%B1s%C4%B1%3BModel+istekleri+ve+yan%C4%B1tlar%C4%B1%3Br2c2&n=tools%3Bsvc%3BAra%C3%A7+sistemi%3BDosya+okuma+ve+yazma%2C+Bash%2C+arama%3Br3c0&n=mcp%3Bsvc%3BMCP+hizmeti%3BHarici+ara%C3%A7+ba%C4%9Flant%C4%B1s%C4%B1%3Br3c1&n=plugin%3Bsvc%3BEklentiler+ve+uzant%C4%B1lar%3BOlay+kancalar%C4%B1+ve+%C3%B6zel+yetenekler%3Br3c2&n=storage%3Bdb%3BYerel+depolama%3BSQLite+oturum+verileri%3Br4c1&e=tui%3Bserver%3BTerminal+iste%C4%9Fi&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3B%C4%B0stemci+iste%C4%9Fi&e=sdk%3Bserver%3BAPI+%C3%A7a%C4%9Fr%C4%B1s%C4%B1&e=server%3Bsession%3BOturumlar%C4%B1+y%C3%B6netme&e=server%3Bagent%3BAgent+orkestrasyonu&e=agent%3Bprovider%3BModel+iste%C4%9Fi&e=agent%3Btools%3BAra%C3%A7+%C3%A7a%C4%9F%C4%B1rma&e=tools%3Bmcp%3BAra%C3%A7+kaynaklar%C4%B1n%C4%B1+geni%C5%9Fletme&e=server%3Bplugin%3BUzant%C4%B1lar%C4%B1+y%C3%BCkleme&e=session%3Bstorage%3BOturumlar%C4%B1+okuma+ve+yazma&e=agent%3Bsession%3BMesaj+ba%C4%9Flam%C4%B1&b=%C4%B0stemci+giri%C5%9Fleri%3B+tui+web+desktop+sdk&b=%C3%87ekirdek+%C3%A7al%C4%B1%C5%9Fma+katman%C4%B1%3B+server+session+agent+provider&b=Uzant%C4%B1lar+ve+y%C3%BCr%C3%BCtme%3B+tools+mcp+plugin&b=Veri+kal%C4%B1c%C4%B1l%C4%B1%C4%9F%C4%B1%3B+storage) | [![US states · GDP per capita 2024 · thousand USD](https://www.x-cmd.com/draw/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540) |
+| [![Büyük dil modeli teknolojilerine genel bakış](https://www.x-cmd.com/draw/mindmap?style=radial&title=B%C3%BCy%C3%BCk+dil+modeli+teknolojilerine+genel+bak%C4%B1%C5%9F&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%96n+e%C4%9Fitim%2FVeriler%2FTemizleme+ve+yinelenenleri+kald%C4%B1rma&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%96n+e%C4%9Fitim%2FVeriler%2FSentetik+veriler&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%96n+e%C4%9Fitim%2FE%C4%9Fitim%2FMoE+mimarisi&n=B%C3%BCy%C3%BCk+dil+modelleri%2FHizalama%2FSFT&n=B%C3%BCy%C3%BCk+dil+modelleri%2FHizalama%2FRLHF&n=B%C3%BCy%C3%BCk+dil+modelleri%2FHizalama%2FDPO&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2F%C3%96rnekleme%2Ftemperature&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2F%C3%96rnekleme%2Ftop-p&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FH%C4%B1zland%C4%B1rma%2FKV+Cache&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FH%C4%B1zland%C4%B1rma%2FSpek%C3%BClatif+kod+%C3%A7%C3%B6zme&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FH%C4%B1zland%C4%B1rma%2FNiceleme&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FDa%C4%9F%C4%B1t%C4%B1m%2FvLLM&n=B%C3%BCy%C3%BCk+dil+modelleri%2FRAG%2FVekt%C3%B6r+veritaban%C4%B1&n=B%C3%BCy%C3%BCk+dil+modelleri%2FRAG%2FG%C3%B6mme+modeli&n=B%C3%BCy%C3%BCk+dil+modelleri%2FRAG%2FYeniden+s%C4%B1ralama&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2FAra%C3%A7+%C3%A7a%C4%9F%C4%B1rma&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2FG%C3%B6rev+planlama&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2F%C3%87oklu+ajan+sistemleri&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2FMCP+protokol%C3%BC&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C4%B0nce+ayar%2FLoRA&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C4%B0nce+ayar%2FTam+parametre+ince+ayar%C4%B1&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C4%B0nce+ayar%2FBilgi+dam%C4%B1tma&n=B%C3%BCy%C3%BCk+dil+modelleri%2FDe%C4%9Ferlendirme%2FMMLU&n=B%C3%BCy%C3%BCk+dil+modelleri%2FDe%C4%9Ferlendirme%2FHumanEval&n=B%C3%BCy%C3%BCk+dil+modelleri%2FDe%C4%9Ferlendirme%2FLLM+ile+de%C4%9Ferlendirme&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87ok+modlu+yap%C4%B1%2FG%C3%B6rsel+kodlay%C4%B1c%C4%B1&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87ok+modlu+yap%C4%B1%2FKonu%C5%9Fma&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87ok+modlu+yap%C4%B1%2FVideo)](https://www.x-cmd.com/draw/explore/mindmap?style=radial&title=B%C3%BCy%C3%BCk+dil+modeli+teknolojilerine+genel+bak%C4%B1%C5%9F&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%96n+e%C4%9Fitim%2FVeriler%2FTemizleme+ve+yinelenenleri+kald%C4%B1rma&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%96n+e%C4%9Fitim%2FVeriler%2FSentetik+veriler&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%96n+e%C4%9Fitim%2FE%C4%9Fitim%2FMoE+mimarisi&n=B%C3%BCy%C3%BCk+dil+modelleri%2FHizalama%2FSFT&n=B%C3%BCy%C3%BCk+dil+modelleri%2FHizalama%2FRLHF&n=B%C3%BCy%C3%BCk+dil+modelleri%2FHizalama%2FDPO&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2F%C3%96rnekleme%2Ftemperature&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2F%C3%96rnekleme%2Ftop-p&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FH%C4%B1zland%C4%B1rma%2FKV+Cache&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FH%C4%B1zland%C4%B1rma%2FSpek%C3%BClatif+kod+%C3%A7%C3%B6zme&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FH%C4%B1zland%C4%B1rma%2FNiceleme&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87%C4%B1kar%C4%B1m%2FDa%C4%9F%C4%B1t%C4%B1m%2FvLLM&n=B%C3%BCy%C3%BCk+dil+modelleri%2FRAG%2FVekt%C3%B6r+veritaban%C4%B1&n=B%C3%BCy%C3%BCk+dil+modelleri%2FRAG%2FG%C3%B6mme+modeli&n=B%C3%BCy%C3%BCk+dil+modelleri%2FRAG%2FYeniden+s%C4%B1ralama&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2FAra%C3%A7+%C3%A7a%C4%9F%C4%B1rma&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2FG%C3%B6rev+planlama&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2F%C3%87oklu+ajan+sistemleri&n=B%C3%BCy%C3%BCk+dil+modelleri%2FAgent%2FMCP+protokol%C3%BC&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C4%B0nce+ayar%2FLoRA&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C4%B0nce+ayar%2FTam+parametre+ince+ayar%C4%B1&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C4%B0nce+ayar%2FBilgi+dam%C4%B1tma&n=B%C3%BCy%C3%BCk+dil+modelleri%2FDe%C4%9Ferlendirme%2FMMLU&n=B%C3%BCy%C3%BCk+dil+modelleri%2FDe%C4%9Ferlendirme%2FHumanEval&n=B%C3%BCy%C3%BCk+dil+modelleri%2FDe%C4%9Ferlendirme%2FLLM+ile+de%C4%9Ferlendirme&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87ok+modlu+yap%C4%B1%2FG%C3%B6rsel+kodlay%C4%B1c%C4%B1&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87ok+modlu+yap%C4%B1%2FKonu%C5%9Fma&n=B%C3%BCy%C3%BCk+dil+modelleri%2F%C3%87ok+modlu+yap%C4%B1%2FVideo) | [![Kimyasal yapı](https://www.x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O)](https://www.x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O) |
 
-### Hbar — çalışma zamanı verimi (ölçüm) (`type=hbar; draw() ops/s: deno 7238 · node 6553 · bun 4972, Apple Silicon`)
+## Hızlı başlangıç
 
-```text
-https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
-```
+### 1. Agent’ın draw kullanmasını sağlayın
 
-[![Hbar — çalışma zamanı verimi (ölçüm)](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)](https://x-cmd.com/draw/explore?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
-
-### Radar — üç editör karşılaştırması (`type=radar&t=evil`)
+Aşağıdaki istemi web sayfalarını okuyabilen bir Agent’a gönderin. draw’ın hosted hizmeti için hesap açmak veya API Key almak gerekmez:
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
-[![Radar — üç editör karşılaştırması](https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1)
+### 2. İhtiyacınızı açıklayın
 
-### Kombine — indirme ve büyüme (`type=combo`)
+Agent’a hangi verileri kullanacağını, hangi ilişkileri göstereceğini ve grafiğin nerede kullanılacağını belirtin:
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl
-```
-
-[![Kombine — indirme ve büyüme](https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl)
-
-### Hbar — açık/kapalı issue (kelebek) (`type=hbar&t=xcmd-issue`)
-
+README’ye, bir isteğin CLI’dan API üzerinden veritabanına uzanan yolunu gösteren bir mimari diyagramı ekle.
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,%C3%A7ekirdek,belgeler,ci,UI&series=a%C3%A7%C4%B1k:12,8,15,4,9&series=kapal%C4%B1:38,52,20,11,26&title=Alana%20g%C3%B6re%20issue%E2%80%99lar
+
+draw’ı sık kullanıyorsanız [`SKILL.md`](../SKILL.md) dosyasını yerel skills destekleyen bir Agent’a kurabilirsiniz. Örneğin Claude Code’da dosyayı `~/.claude/skills/draw/SKILL.md` olarak kaydedin; bir kez yapılandırdıktan sonra ihtiyacınızı doğrudan açıklayabilirsiniz.
+
+## Özellikler
+
+- **🔗 URL’nin kendisi grafiktir**: veriler ve stiller okunabilen, karşılaştırılabilen ve sürüm kontrolüne alınabilen metinlerdir; bağlantılar doğrudan Markdown’a ve web sayfalarına gömülebilir.
+- **🤖 İnsanlar ve yapay zekâ için okunabilir**: SVG görüntülemeyi sağlar; makine tarafından okunabilir veriler ve parametreler düzenlemeye ve yeniden oluşturmaya devam etmeyi sağlar, verileri görüntüden çıkarmak gerekmez.
+- **📊 Zengin grafik yetenekleri**: veri grafikleri, akış şemaları, mimari diyagramlar, zihin haritaları, haritalar ve zaman planları; ECharts ile daha karmaşık veri ilişkileri de ifade edilebilir.
+- **🖱️ Görsel ve etkileşimli düzenleme**: etkileşimli sayfayı açmak, verileri görüntülemek, parametreleri ve stilleri ayarlamak ve yeni grafik bağlantısını kopyalamak için bir örneğe tıklayın.
+- **🚀 Açık ve self-host edilebilir**: TypeScript ile geliştirilmiştir ve Apache-2.0 lisanslıdır; çevrimiçi hizmet, CLI, npm / JSR kütüphanesi ve Cloudflare Workers dağıtımını destekler.
+
+## Agent kullanmıyor musunuz? Size uygun bağlantı yöntemini seçin
+
+### Hızlı grafik oluşturma: URL’yi doğrudan kullanın
+
+Belge yazmak, sunum yapmak veya geçici görselleştirmeler için uygundur. [Demo ve etkileşimli düzenleyiciyi](https://x-cmd.com/draw) açın, verileri ve stili ayarladıktan sonra bağlantıyı kopyalayın; URL parametrelerini doğrudan da değiştirebilirsiniz:
+
+```md
+![Oran grafiği örneği](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
 ```
 
-[![Hbar — açık/kapalı issue (kelebek)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,%C3%A7ekirdek,belgeler,ci,UI&series=a%C3%A7%C4%B1k:12,8,15,4,9&series=kapal%C4%B1:38,52,20,11,26&title=Alana%20g%C3%B6re%20issue%E2%80%99lar)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,%C3%A7ekirdek,belgeler,ci,UI&series=a%C3%A7%C4%B1k:12,8,15,4,9&series=kapal%C4%B1:38,52,20,11,26&title=Alana%20g%C3%B6re%20issue%E2%80%99lar)
+Okuyucu grafiği görür; sizde ise değiştirilebilir ve incelenebilir bir metin kalır.
 
-### Pasta — en büyük şehirler (`type=pie&t=market-mono`)
+### Toplu oluşturma veya proje entegrasyonu: CLI ya da kütüphane
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1
+CI’da grafikleri otomatik güncellemek, toplu raporlar oluşturmak, çevrimdışı kullanmak ve uygulamalara entegre etmek için uygundur. CLI ve kütüphane, hosted hizmetle aynı parametreleri kullanır:
+
+```sh
+npx @x-cmd/draw --type pie --labels A,B --values 3,2 --out pie.svg
 ```
 
-[![Pasta — en büyük şehirler](https://x-cmd.com/draw?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=En%20b%C3%BCy%C3%BCk%20%C5%9Fehirler&unit=mn&labels=%C4%B0stanbul,Ankara,%C4%B0zmir,Bursa&values=15.8,5.8,4.4,2.1)
-
-## Prompt — AI ajanınıza talimat verin (skill)
-
-Kurulum yok: bu promptu web bağlantılı herhangi bir ajana bir kez yapıştırın; sonrasında ihtiyacınız olan grafik veya diyagramı doğal dille anlatın:
-
-```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
-```
-
-Sonrasında şöyle sorabilirsiniz:
-
-> Programlama dillerinin yıldız sayılarını pasta grafik olarak çiz — TypeScript 4821, Python 2312, Go 980
-
-Skill'leri yerel olarak yükleyen ajanlar (Claude Code vb.): [`SKILL.md`](../SKILL.md) dosyasını skills klasörünüze (`~/.claude/skills/draw/SKILL.md`) bir kez koyun; sonrasında prompt veya URL yapıştırmadan doğrudan grafik ya da diyagram isteyin.
-
-## Üç kullanım yolu
-
-**Hosted servis (kurulum yok)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
-
-**npm kütüphanesi + CLI (çevrimdışı, eşzamanlı)** (`npm i -g @x-cmd/draw` / `npx`):
+Kod içinde eşzamanlı SVG oluşturmak için kütüphaneyi kurun ve `draw` işlevini çağırın:
 
 ```sh
 npm install @x-cmd/draw
 ```
 ```ts
 import { draw } from '@x-cmd/draw';
+
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// sorgu dizisi de kabul edilir: draw('?type=bar&labels=Pzt,Sal&values=3,5')
-// diziler = tekrarlanan parametreler (virgüllü etiketler)
-draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
-```
-```sh
-draw --type pie --labels "A,B,C" --values "3,2,1" --out pie.svg
-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # çıplak sorgu dizisi
 ```
 
-**Self-host**:
+Deno kullanıcıları `deno add jsr:@x-cmd/draw` komutunu çalıştırabilir ve ardından `jsr:@x-cmd/draw` üzerinden içe aktarabilir. Oluşturma çekirdeği ağa veya dosyalara erişmediğinden kısıtlı ortamlarda çalışmaya uygundur.
+
+### Giriş noktasını ve veri sınırlarını kontrol edin: kendi hizmetinizi çalıştırın
+
+Ekip için ortak bir giriş noktası, kurum içi ağ kullanımı veya genel hizmete bağımlı kalmak istemediğiniz durumlar için uygundur:
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve      # yerel Node sunucusu :8787 (demo sayfasıyla)
-npm run dev        # wrangler dev
-bash scripts/setup.sh   # Cloudflare hesabına tek tıkla dağıtım
+npm run serve           # yerel hizmet: http://localhost:8787/draw
+bash scripts/setup.sh   # kendi Cloudflare hesabınıza tek komutla dağıtım
 ```
 
-Ortam değişkenleri (Node): `PORT` (8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (POST kısa bağlantılarını etkinleştirir).
+`DATA_REPO`, `DATA_BRANCH` ve `GITHUB_TOKEN` yapılandırıldığında kalıcı kısa bağlantılar etkinleştirilebilir; yapılandırılmadığında normal GET oluşturma işlemi etkilenmez. Ayrıntılar için [self-hosting kılavuzuna](../docs/1-overview/05-self-hosting/tr.md) bakın.
 
-**Deno** — işleme çekirdeği saf, ağ yok — izinsiz sandbox güvenlik sınırdır:
+## Belgeler ve API
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+Tüm grafik türleri, parametreler ve örnekler belgelerde konulara göre düzenlenmiştir:
 
-## Endpoint’ler
-
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — grafik çiz
-
-| type | | |
-|---|---|---|
-| `pie` | Halka; `donut=0` = dolu pasta<br><br>**<u>≤100 sınıf (>9 → Other)</u>** | [![example](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar&w=360)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar) |
-| `bar` | Gruplu kolonlar; `stack=1` istifli<br><br>**<u>≤30 grup</u>** | [![example](https://x-cmd.com/draw?type=bar&labels=Pzt,Sal,%C3%87ar&series=dev:12,18,9&series=ci:8,11,6&w=360)](https://x-cmd.com/draw/explore?type=bar&labels=Pzt,Sal,%C3%87ar&series=dev:12,18,9&series=ci:8,11,6) |
-| `hbar` | Yatay çubuklar (sıralama)<br><br>**<u>≤30 çubuk</u>** | [![example](https://x-cmd.com/draw?type=hbar&labels=CLI,%C3%A7ekirdek,belgeler,UI&values=42,31,18,9&title=Alana%20g%C3%B6re%20commit%E2%80%99ler&w=360)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,%C3%A7ekirdek,belgeler,UI&values=42,31,18,9&title=Alana%20g%C3%B6re%20commit%E2%80%99ler) |
-| `line` | Pürüzsüz çizgi + gradyan / çoklu çizgi<br><br>**<u>≤60 nokta</u>** | [![example](https://x-cmd.com/draw?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,19,15,25,22,30&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar&w=360)](https://x-cmd.com/draw/explore?type=line&labels=Oca,%C5%9Eub,Mar,Nis,May,Haz&values=12,19,15,25,22,30&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar) |
-| `area` | Alan / çoklu alan<br><br>**<u>≤60 nokta</u>** | [![example](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=%C4%B0ndirmeler&w=360)](https://x-cmd.com/draw/explore?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=%C4%B0ndirmeler) |
-| `radar` | Radar<br><br>**<u>3–12 eksen</u>** | [![example](https://x-cmd.com/draw?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1&w=360)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=ba%C5%9Flang%C4%B1%C3%A7,ekosistem,geni%C5%9Fletilebilirlik,bellek,kolayl%C4%B1k&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Edit%C3%B6r%20kar%C5%9F%C4%B1la%C5%9Ft%C4%B1rmas%C4%B1) |
-| `gauge` | Gösterge (240° yay, merkezde değer)<br><br>**<u>value+max; halka ≤8</u>** | [![example](https://x-cmd.com/draw?type=gauge&title=CI%20oran%C4%B1&value=87&max=100&w=360)](https://x-cmd.com/draw/explore?type=gauge&title=CI%20oran%C4%B1&value=87&max=100) |
-| `scatter` | Saçılım, iki sayısal eksen, negatif ok<br><br>**<u>x=&y=, ≤200 nokta</u>** | [![example](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Gecikme&w=360)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Gecikme) |
-| `combo` | Kolon (`series=`) + çizgi (`line=`); 5× farktan itibaren çift eksen<br><br>**<u>≤30 grup, ≤6 seri</u>** | [![example](https://x-cmd.com/draw?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=Pzt,Sal,%C3%87ar,Per,Cum,Cmt,Paz&series=%C4%B0ndirme:120,180,150,210,240,200,260&line=B%C3%BCy%C3%BCme:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Haftal%C4%B1k%20indirmeler&unit=dl) |
-| `sankey` | Akış diyagramı (kalınlık = miktar)<br><br>**<u>labels=+links=A>B:30, ≤24 düğüm</u>** | [![example](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=%C3%B6zellik,d%C3%BCzeltme,belgeler,di%C4%9Fer,birle%C5%9Ftirilen,kapat%C4%B1lan,reddedilen,%3C1y,1%E2%80%932y,%3E2y&links=%C3%B6zellik%3Ebirle%C5%9Ftirilen:38;%C3%B6zellik%3Ekapat%C4%B1lan:12;%C3%B6zellik%3Ereddedilen:8;d%C3%BCzeltme%3Ebirle%C5%9Ftirilen:33;d%C3%BCzeltme%3Ekapat%C4%B1lan:6;d%C3%BCzeltme%3Ereddedilen:2;belgeler%3Ebirle%C5%9Ftirilen:16;belgeler%3Ekapat%C4%B1lan:4;di%C4%9Fer%3Ebirle%C5%9Ftirilen:5;di%C4%9Fer%3Ekapat%C4%B1lan:6;di%C4%9Fer%3Ereddedilen:6;birle%C5%9Ftirilen%3E%3C1y:52;birle%C5%9Ftirilen%3E1%E2%80%932y:28;birle%C5%9Ftirilen%3E%3E2y:12;kapat%C4%B1lan%3E%3C1y:14;kapat%C4%B1lan%3E1%E2%80%932y:9;kapat%C4%B1lan%3E%3E2y:5;reddedilen%3E%3C1y:9;reddedilen%3E1%E2%80%932y:5;reddedilen%3E%3E2y:2&title=PR%20ya%C5%9Fam%20d%C3%B6ng%C3%BCs%C3%BC&unit=prs&w=360)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=%C3%B6zellik,d%C3%BCzeltme,belgeler,di%C4%9Fer,birle%C5%9Ftirilen,kapat%C4%B1lan,reddedilen,%3C1y,1%E2%80%932y,%3E2y&links=%C3%B6zellik%3Ebirle%C5%9Ftirilen:38;%C3%B6zellik%3Ekapat%C4%B1lan:12;%C3%B6zellik%3Ereddedilen:8;d%C3%BCzeltme%3Ebirle%C5%9Ftirilen:33;d%C3%BCzeltme%3Ekapat%C4%B1lan:6;d%C3%BCzeltme%3Ereddedilen:2;belgeler%3Ebirle%C5%9Ftirilen:16;belgeler%3Ekapat%C4%B1lan:4;di%C4%9Fer%3Ebirle%C5%9Ftirilen:5;di%C4%9Fer%3Ekapat%C4%B1lan:6;di%C4%9Fer%3Ereddedilen:6;birle%C5%9Ftirilen%3E%3C1y:52;birle%C5%9Ftirilen%3E1%E2%80%932y:28;birle%C5%9Ftirilen%3E%3E2y:12;kapat%C4%B1lan%3E%3C1y:14;kapat%C4%B1lan%3E1%E2%80%932y:9;kapat%C4%B1lan%3E%3E2y:5;reddedilen%3E%3C1y:9;reddedilen%3E1%E2%80%932y:5;reddedilen%3E%3E2y:2&title=PR%20ya%C5%9Fam%20d%C3%B6ng%C3%BCs%C3%BC&unit=prs) |
-| `qr` | QR kod<br><br>**<u>d≤1000 karakter, fg/bg, title/unit</u>** | [![example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=tarat&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=tarat) |
-
-**`GET /draw`** — demo sayfası · **`POST /draw?type=...`** — JSON/CSV gövdesi kalıcı kısa bağlantı üretir · **`GET /draw/c/<hash>`** — kısa bağlantı çizimi (immutable)
-
-## Stiller (`?t=`)
-
-| type | |
-|---|---|
-| `pie` | opendata (varsayılan) · evil · evil-mono · market-mono · progress · revenue |
-| `bar` | evil (varsayılan) · base · grid |
-| `hbar` | base (varsayılan) · opendata (ref=) · xcmd · xcmd-issue · rank |
-| `line` | shadcn (varsayılan) · evil · evil-glow · evil-mono · opendata |
-| `area` | evil (varsayılan) · star · opendata · pixel · polka |
-| `radar` | base (varsayılan) · evil · xcmd |
-| `sankey` | base (varsayılan) · fund · pipeline |
-| `gauge` | base (varsayılan) · gradient · reliability |
-| `scatter/combo/qr` | base (combo’da evil de var) |
-
-## Veri geçirme
-
-```text
-https://x-cmd.com/draw?type=pie&title=Dile%20g%C3%B6re%20y%C4%B1ld%C4%B1zlar&labels=TypeScript,Python,Go&values=4821,2312,980
-```
-
-Virgüllü etiketler: parametreyi tekrarla (`labels=Q1, 2024&labels=Q2`). Karmaşık veri: `?d=` + URL kodlu JSON:
-
-```json
-{"title":"...","data":[{"label":"A","value":1}]}
-```
-
-## Kısa bağlantılar
-
-POST, içerik adresli kalıcı bir kısa bağlantı üretir (depo olarak GitHub):
-
-- aynı veri → aynı hash (idempotent, tekilleştirme)
-- dakikada 30 istek/IP sınırı
-- genel depo — hassas veri yok
-
-## Sürümleme
-
-- `v` yok: en yeni sürüm, 300 sn önbellek
-- `v=N`: sabit sürüm, 1 gün önbellek
-- `immutable` yalnızca `/c/<hash>`
-
-## YZ-dostu
-
-Her SVG bir JSON gömer: `{generator, template, version, spec}` — veri ve parametreler doğrudan gider-döner; metin gerçek `<text>`.
-
-## Tek adımda self-host
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
-```
-
-Betik klonlar, wrangler’ı oturumlar, dağıtır ve `*.workers.dev` URL’ni yazdırır. Kısa bağlantılar (POST) `DATA_REPO` + `GITHUB_TOKEN` ile açılır.
+| Öğrenmek istediğiniz konu | Belge |
+| --- | --- |
+| Tüm grafik türlerini ve senaryolarını inceleme | [Belgelere genel bakış](../docs/README.md) · [Referans örnekler](../docs/9-showcases/12-reference-examples/en.md) · [Bulut mimarisi örnekleri](../docs/9-showcases/14-cloud-architecture/en.md) |
+| Genel parametreleri ve URL kodlamasını sorgulama | [Parametre açıklamaları](../docs/1-overview/07-params/en.md) |
+| JSON verileri kullanma | [Veri biçimleri ve API](../docs/1-overview/04-data-and-api/tr.md) |
+| Kısa bağlantılar oluşturma veya depolamalarını yapılandırma | [Self-hosting ve kısa bağlantı yapılandırması](../docs/1-overview/05-self-hosting/tr.md) |
+| Mimari, sıra ve ERD gibi yapısal diyagramlar çizme | [Yapısal diyagram URL sözdizimi](../docs/1-overview/06-diagram-urls/en.md) |
+| Yerel olarak çalıştırma veya Cloudflare’e dağıtma | [Self-hosting kılavuzu](../docs/1-overview/05-self-hosting/tr.md) |
+| Agent ile otomatik grafik oluşturma | [Agent Skill](../SKILL.md) |
 
 ## Geliştirme
 
 ```sh
 npm install
-npm run dev      # wrangler dev
-npm test         # vitest (120)
-npm run check    # tsc ×3
-npm run build    # dist/
+npm run dev      # wrangler dev ile yerel hizmeti başlat
+npm test         # vitest
+npm run check    # tsc --noEmit × 3 (worker / node / build)
+npm run build    # dist/ çıktısını üret (npm kütüphanesi + CLI)
+npm run deploy   # wrangler deploy
 ```
 
 ## Lisans
 
-Kod Apache-2.0; fontlar OFL — [LICENSE](../LICENSE) · Tam dokümantasyon: [README (EN)](../README.md)
+Kod [Apache-2.0](../LICENSE) lisansıyla sunulur. Gömülü yazı tipleri kendi lisanslarına tabidir: Inter (OFL, tam metin: [`inter-OFL.txt`](../src/styles/inter-OFL.txt)) ve Handlee (OFL, tam metin: [`handlee-OFL.txt`](../src/styles/handlee-OFL.txt)).

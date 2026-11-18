@@ -5,195 +5,119 @@
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
 
-Des graphiques SVG pour l’ère de l’IA : un seul endpoint `/draw?type=...`, les données dans l’URL et un `<metadata>` lisible par machine dans chaque sortie. Le système de styles suit une spec de design, avec plusieurs variantes par type de graphique.
 
-## Aperçu
+X-CMD Draw est un outil open source de génération de graphiques SVG : inscrivez les données et les styles dans l’URL pour créer des histogrammes, des courbes, des diagrammes de Sankey, des architectures système, des cartes mentales et bien d’autres graphiques.
 
-Toutes les données vivent dans l’URL — ouvrez-la dans un navigateur, intégrez-la en `<img>` ou collez-la dans votre README : le SVG se génère aussitôt.
+Les graphiques peuvent être intégrés directement dans des README, issues, PR, articles de blog et pages web, sans exporter ni téléverser de fichiers image. Les liens et les SVG conservent des données et paramètres lisibles par machine : les lecteurs voient le graphique, tandis que l’agent IA peut continuer à le lire, le modifier et le régénérer sans analyser d’image.
 
-### Sankey — cycle de vie des PR (`type=sankey&t=pipeline`)
+## Aperçu rapide
 
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=fonction,correctif,documentation,divers,fusionn%C3%A9s,ferm%C3%A9s,rejet%C3%A9s,%3C1a,1%E2%80%932a,%3E2a&links=fonction%3Efusionn%C3%A9s:38;fonction%3Eferm%C3%A9s:12;fonction%3Erejet%C3%A9s:8;correctif%3Efusionn%C3%A9s:33;correctif%3Eferm%C3%A9s:6;correctif%3Erejet%C3%A9s:2;documentation%3Efusionn%C3%A9s:16;documentation%3Eferm%C3%A9s:4;divers%3Efusionn%C3%A9s:5;divers%3Eferm%C3%A9s:6;divers%3Erejet%C3%A9s:6;fusionn%C3%A9s%3E%3C1a:52;fusionn%C3%A9s%3E1%E2%80%932a:28;fusionn%C3%A9s%3E%3E2a:12;ferm%C3%A9s%3E%3C1a:14;ferm%C3%A9s%3E1%E2%80%932a:9;ferm%C3%A9s%3E%3E2a:5;rejet%C3%A9s%3E%3C1a:9;rejet%C3%A9s%3E1%E2%80%932a:5;rejet%C3%A9s%3E%3E2a:2&title=Cycle%20de%20vie%20des%20PR&unit=prs
-```
+De l’analyse de performances à la conception d’architectures, des cartes aux plannings, les définitions graphiques sont conservées dans les liens. Cliquez sur une image pour consulter les données, ajuster les styles et régénérer le graphique. [Voir plus d’exemples de graphiques ↗](https://x-cmd.com/draw)
 
-[![Sankey — cycle de vie des PR](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=fonction,correctif,documentation,divers,fusionn%C3%A9s,ferm%C3%A9s,rejet%C3%A9s,%3C1a,1%E2%80%932a,%3E2a&links=fonction%3Efusionn%C3%A9s:38;fonction%3Eferm%C3%A9s:12;fonction%3Erejet%C3%A9s:8;correctif%3Efusionn%C3%A9s:33;correctif%3Eferm%C3%A9s:6;correctif%3Erejet%C3%A9s:2;documentation%3Efusionn%C3%A9s:16;documentation%3Eferm%C3%A9s:4;divers%3Efusionn%C3%A9s:5;divers%3Eferm%C3%A9s:6;divers%3Erejet%C3%A9s:6;fusionn%C3%A9s%3E%3C1a:52;fusionn%C3%A9s%3E1%E2%80%932a:28;fusionn%C3%A9s%3E%3E2a:12;ferm%C3%A9s%3E%3C1a:14;ferm%C3%A9s%3E1%E2%80%932a:9;ferm%C3%A9s%3E%3E2a:5;rejet%C3%A9s%3E%3C1a:9;rejet%C3%A9s%3E1%E2%80%932a:5;rejet%C3%A9s%3E%3E2a:2&title=Cycle%20de%20vie%20des%20PR&unit=prs)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=fonction,correctif,documentation,divers,fusionn%C3%A9s,ferm%C3%A9s,rejet%C3%A9s,%3C1a,1%E2%80%932a,%3E2a&links=fonction%3Efusionn%C3%A9s:38;fonction%3Eferm%C3%A9s:12;fonction%3Erejet%C3%A9s:8;correctif%3Efusionn%C3%A9s:33;correctif%3Eferm%C3%A9s:6;correctif%3Erejet%C3%A9s:2;documentation%3Efusionn%C3%A9s:16;documentation%3Eferm%C3%A9s:4;divers%3Efusionn%C3%A9s:5;divers%3Eferm%C3%A9s:6;divers%3Erejet%C3%A9s:6;fusionn%C3%A9s%3E%3C1a:52;fusionn%C3%A9s%3E1%E2%80%932a:28;fusionn%C3%A9s%3E%3E2a:12;ferm%C3%A9s%3E%3C1a:14;ferm%C3%A9s%3E1%E2%80%932a:9;ferm%C3%A9s%3E%3E2a:5;rejet%C3%A9s%3E%3C1a:9;rejet%C3%A9s%3E1%E2%80%932a:5;rejet%C3%A9s%3E%3E2a:2&title=Cycle%20de%20vie%20des%20PR&unit=prs)
+| | |
+| --- | --- |
+| **Téléchargements et croissance**<br>[![Téléchargements et croissance](https://www.x-cmd.com/draw?type=combo&title=T%C3%A9l%C3%A9chargements+et+croissance&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26)](https://www.x-cmd.com/draw/explore?type=combo&title=T%C3%A9l%C3%A9chargements+et+croissance&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26) | **Comparaison des performances des algorithmes de compression**<br>[![Compression : vitesse et taux](https://www.x-cmd.com/draw/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Compression+%3A+vitesse+par+rapport+au+taux%22%2C%22subtext%22%3A%22Silesia+%C2%B7+i7-9700K+%C2%B7+lzbench+%C2%B7+taille+des+bulles+%3D+vitesse+de+d%C3%A9compression%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Vitesse+de+compression+Mo%2Fs+%28plus+rapide+%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Taux+de+compression+%28fichier+plus+petit+%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd+-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd+--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd+--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli+-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib+-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Compression+%3A+vitesse+par+rapport+au+taux%22%2C%22subtext%22%3A%22Silesia+%C2%B7+i7-9700K+%C2%B7+lzbench+%C2%B7+taille+des+bulles+%3D+vitesse+de+d%C3%A9compression%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Vitesse+de+compression+Mo%2Fs+%28plus+rapide+%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Taux+de+compression+%28fichier+plus+petit+%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd+-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd+--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd+--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli+-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib+-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D) |
+| [![Vue d’ensemble de l’architecture du projet OpenCode](https://www.x-cmd.com/draw/arch2?title=Vue+d%E2%80%99ensemble+de+l%E2%80%99architecture+du+projet+OpenCode&t=shadcn&n=tui%3Bfe%3BInterface+terminal+TUI%3BInteraction+en+ligne+de+commande%3Br0c0&n=web%3Bfe%3BInterface+web%3BAcc%C3%A8s+via+le+navigateur%3Br0c1&n=desktop%3Bfe%3BApplication+de+bureau%3BClient+Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3BInt%C3%A9gration+programmatique%3Br1c0&n=server%3Bsvc%3BService+central+OpenCode%3BServices+CLI+et+HTTP%3Br1c1&n=session%3Bsvc%3BSessions+et+messages%3BGestion+du+contexte%3Br2c0&n=agent%3Bsvc%3BSyst%C3%A8me+d%E2%80%99agents%3BSous-agents+Build+Plan%3Br2c1&n=provider%3Bsvc%3BFournisseurs+de+mod%C3%A8les%3BRequ%C3%AAtes+et+r%C3%A9ponses+des+mod%C3%A8les%3Br2c2&n=tools%3Bsvc%3BSyst%C3%A8me+d%E2%80%99outils%3BLecture%2F%C3%A9criture+de+fichiers%2C+Bash+et+recherche%3Br3c0&n=mcp%3Bsvc%3BServices+MCP%3BConnexion+d%E2%80%99outils+externes%3Br3c1&n=plugin%3Bsvc%3BPlugins+et+extensions%3BHooks+d%E2%80%99%C3%A9v%C3%A9nements+et+fonctions+personnalis%C3%A9es%3Br3c2&n=storage%3Bdb%3BStockage+local%3BDonn%C3%A9es+de+session+SQLite%3Br4c1&e=tui%3Bserver%3BRequ%C3%AAtes+du+terminal&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3BRequ%C3%AAtes+du+client&e=sdk%3Bserver%3BAppels+API&e=server%3Bsession%3BG%C3%A9rer+les+sessions&e=server%3Bagent%3BOrchestrer+les+agents&e=agent%3Bprovider%3BInterroger+les+mod%C3%A8les&e=agent%3Btools%3BAppeler+les+outils&e=tools%3Bmcp%3B%C3%89tendre+les+sources+d%E2%80%99outils&e=server%3Bplugin%3BCharger+les+extensions&e=session%3Bstorage%3BLire%2F%C3%A9crire+les+sessions&e=agent%3Bsession%3BContexte+des+messages&b=Points+d%E2%80%99entr%C3%A9e+client%3B+tui+web+desktop+sdk&b=C%C5%93ur+d%E2%80%99ex%C3%A9cution%3B+server+session+agent+provider&b=Extensions+et+ex%C3%A9cution%3B+tools+mcp+plugin&b=Persistance+des+donn%C3%A9es%3B+storage)](https://www.x-cmd.com/draw/explore/arch2?title=Vue+d%E2%80%99ensemble+de+l%E2%80%99architecture+du+projet+OpenCode&t=shadcn&n=tui%3Bfe%3BInterface+terminal+TUI%3BInteraction+en+ligne+de+commande%3Br0c0&n=web%3Bfe%3BInterface+web%3BAcc%C3%A8s+via+le+navigateur%3Br0c1&n=desktop%3Bfe%3BApplication+de+bureau%3BClient+Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3BInt%C3%A9gration+programmatique%3Br1c0&n=server%3Bsvc%3BService+central+OpenCode%3BServices+CLI+et+HTTP%3Br1c1&n=session%3Bsvc%3BSessions+et+messages%3BGestion+du+contexte%3Br2c0&n=agent%3Bsvc%3BSyst%C3%A8me+d%E2%80%99agents%3BSous-agents+Build+Plan%3Br2c1&n=provider%3Bsvc%3BFournisseurs+de+mod%C3%A8les%3BRequ%C3%AAtes+et+r%C3%A9ponses+des+mod%C3%A8les%3Br2c2&n=tools%3Bsvc%3BSyst%C3%A8me+d%E2%80%99outils%3BLecture%2F%C3%A9criture+de+fichiers%2C+Bash+et+recherche%3Br3c0&n=mcp%3Bsvc%3BServices+MCP%3BConnexion+d%E2%80%99outils+externes%3Br3c1&n=plugin%3Bsvc%3BPlugins+et+extensions%3BHooks+d%E2%80%99%C3%A9v%C3%A9nements+et+fonctions+personnalis%C3%A9es%3Br3c2&n=storage%3Bdb%3BStockage+local%3BDonn%C3%A9es+de+session+SQLite%3Br4c1&e=tui%3Bserver%3BRequ%C3%AAtes+du+terminal&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3BRequ%C3%AAtes+du+client&e=sdk%3Bserver%3BAppels+API&e=server%3Bsession%3BG%C3%A9rer+les+sessions&e=server%3Bagent%3BOrchestrer+les+agents&e=agent%3Bprovider%3BInterroger+les+mod%C3%A8les&e=agent%3Btools%3BAppeler+les+outils&e=tools%3Bmcp%3B%C3%89tendre+les+sources+d%E2%80%99outils&e=server%3Bplugin%3BCharger+les+extensions&e=session%3Bstorage%3BLire%2F%C3%A9crire+les+sessions&e=agent%3Bsession%3BContexte+des+messages&b=Points+d%E2%80%99entr%C3%A9e+client%3B+tui+web+desktop+sdk&b=C%C5%93ur+d%E2%80%99ex%C3%A9cution%3B+server+session+agent+provider&b=Extensions+et+ex%C3%A9cution%3B+tools+mcp+plugin&b=Persistance+des+donn%C3%A9es%3B+storage) | [![US states · GDP per capita 2024 · thousand USD](https://www.x-cmd.com/draw/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540) |
+| [![Panorama technologique des grands modèles de langage](https://www.x-cmd.com/draw/mindmap?style=radial&title=Panorama+technologique+des+grands+mod%C3%A8les+de+langage&n=Grands+mod%C3%A8les+de+langage%2FPr%C3%A9entra%C3%AEnement%2FDonn%C3%A9es%2FNettoyage+et+d%C3%A9duplication&n=Grands+mod%C3%A8les+de+langage%2FPr%C3%A9entra%C3%AEnement%2FDonn%C3%A9es%2FDonn%C3%A9es+synth%C3%A9tiques&n=Grands+mod%C3%A8les+de+langage%2FPr%C3%A9entra%C3%AEnement%2FEntra%C3%AEnement%2FArchitecture+MoE&n=Grands+mod%C3%A8les+de+langage%2FAlignement%2FSFT&n=Grands+mod%C3%A8les+de+langage%2FAlignement%2FRLHF&n=Grands+mod%C3%A8les+de+langage%2FAlignement%2FDPO&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2F%C3%89chantillonnage%2Ftemperature&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2F%C3%89chantillonnage%2Ftop-p&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FAcc%C3%A9l%C3%A9ration%2FCache+KV&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FAcc%C3%A9l%C3%A9ration%2FD%C3%A9codage+sp%C3%A9culatif&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FAcc%C3%A9l%C3%A9ration%2FQuantification&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FD%C3%A9ploiement%2FvLLM&n=Grands+mod%C3%A8les+de+langage%2FRAG%2FBase+vectorielle&n=Grands+mod%C3%A8les+de+langage%2FRAG%2FMod%C3%A8le+d%E2%80%99embedding&n=Grands+mod%C3%A8les+de+langage%2FRAG%2FReclassement&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FAppels+d%E2%80%99outils&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FPlanification+des+t%C3%A2ches&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FSyst%C3%A8mes+multi-agents&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FProtocole+MCP&n=Grands+mod%C3%A8les+de+langage%2FAjustement+fin%2FLoRA&n=Grands+mod%C3%A8les+de+langage%2FAjustement+fin%2FAjustement+fin+de+tous+les+param%C3%A8tres&n=Grands+mod%C3%A8les+de+langage%2FAjustement+fin%2FDistillation+des+connaissances&n=Grands+mod%C3%A8les+de+langage%2F%C3%89valuation%2FMMLU&n=Grands+mod%C3%A8les+de+langage%2F%C3%89valuation%2FHumanEval&n=Grands+mod%C3%A8les+de+langage%2F%C3%89valuation%2F%C3%89valuation+par+LLM&n=Grands+mod%C3%A8les+de+langage%2FMultimodal%2FEncodeur+visuel&n=Grands+mod%C3%A8les+de+langage%2FMultimodal%2FParole&n=Grands+mod%C3%A8les+de+langage%2FMultimodal%2FVid%C3%A9o)](https://www.x-cmd.com/draw/explore/mindmap?style=radial&title=Panorama+technologique+des+grands+mod%C3%A8les+de+langage&n=Grands+mod%C3%A8les+de+langage%2FPr%C3%A9entra%C3%AEnement%2FDonn%C3%A9es%2FNettoyage+et+d%C3%A9duplication&n=Grands+mod%C3%A8les+de+langage%2FPr%C3%A9entra%C3%AEnement%2FDonn%C3%A9es%2FDonn%C3%A9es+synth%C3%A9tiques&n=Grands+mod%C3%A8les+de+langage%2FPr%C3%A9entra%C3%AEnement%2FEntra%C3%AEnement%2FArchitecture+MoE&n=Grands+mod%C3%A8les+de+langage%2FAlignement%2FSFT&n=Grands+mod%C3%A8les+de+langage%2FAlignement%2FRLHF&n=Grands+mod%C3%A8les+de+langage%2FAlignement%2FDPO&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2F%C3%89chantillonnage%2Ftemperature&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2F%C3%89chantillonnage%2Ftop-p&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FAcc%C3%A9l%C3%A9ration%2FCache+KV&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FAcc%C3%A9l%C3%A9ration%2FD%C3%A9codage+sp%C3%A9culatif&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FAcc%C3%A9l%C3%A9ration%2FQuantification&n=Grands+mod%C3%A8les+de+langage%2FInf%C3%A9rence%2FD%C3%A9ploiement%2FvLLM&n=Grands+mod%C3%A8les+de+langage%2FRAG%2FBase+vectorielle&n=Grands+mod%C3%A8les+de+langage%2FRAG%2FMod%C3%A8le+d%E2%80%99embedding&n=Grands+mod%C3%A8les+de+langage%2FRAG%2FReclassement&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FAppels+d%E2%80%99outils&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FPlanification+des+t%C3%A2ches&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FSyst%C3%A8mes+multi-agents&n=Grands+mod%C3%A8les+de+langage%2FAgent%2FProtocole+MCP&n=Grands+mod%C3%A8les+de+langage%2FAjustement+fin%2FLoRA&n=Grands+mod%C3%A8les+de+langage%2FAjustement+fin%2FAjustement+fin+de+tous+les+param%C3%A8tres&n=Grands+mod%C3%A8les+de+langage%2FAjustement+fin%2FDistillation+des+connaissances&n=Grands+mod%C3%A8les+de+langage%2F%C3%89valuation%2FMMLU&n=Grands+mod%C3%A8les+de+langage%2F%C3%89valuation%2FHumanEval&n=Grands+mod%C3%A8les+de+langage%2F%C3%89valuation%2F%C3%89valuation+par+LLM&n=Grands+mod%C3%A8les+de+langage%2FMultimodal%2FEncodeur+visuel&n=Grands+mod%C3%A8les+de+langage%2FMultimodal%2FParole&n=Grands+mod%C3%A8les+de+langage%2FMultimodal%2FVid%C3%A9o) | [![Structure chimique](https://www.x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O)](https://www.x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O) |
 
-### Hbar — débit du runtime (mesuré) (`type=hbar; draw() ops/s : deno 7238 · node 6553 · bun 4972, Apple Silicon`)
+## Démarrage rapide
 
-```text
-https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
-```
+### 1. Apprenez à votre agent à utiliser draw
 
-[![Hbar — débit du runtime (mesuré)](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)](https://x-cmd.com/draw/explore?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
-
-### Radar — comparaison de trois éditeurs (`type=radar&t=evil`)
+Envoyez le prompt suivant à un agent capable de lire des pages web. Le service hébergé de draw ne nécessite ni inscription ni clé API :
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=d%C3%A9marrage,%C3%A9cosyst%C3%A8me,extensibilit%C3%A9,m%C3%A9moire,simplicit%C3%A9&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaison%20d%E2%80%99%C3%A9diteurs
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
-[![Radar — comparaison de trois éditeurs](https://x-cmd.com/draw?type=radar&t=evil&labels=d%C3%A9marrage,%C3%A9cosyst%C3%A8me,extensibilit%C3%A9,m%C3%A9moire,simplicit%C3%A9&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaison%20d%E2%80%99%C3%A9diteurs)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=d%C3%A9marrage,%C3%A9cosyst%C3%A8me,extensibilit%C3%A9,m%C3%A9moire,simplicit%C3%A9&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaison%20d%E2%80%99%C3%A9diteurs)
+### 2. Décrivez votre besoin
 
-### Combiné — téléchargements et croissance (`type=combo`)
+Indiquez à l’agent quelles données utiliser, quelles relations exprimer et où le graphique sera utilisé :
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl
-```
-
-[![Combiné — téléchargements et croissance](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl)
-
-### Hbar — issues ouvertes/fermées (papillon) (`type=hbar&t=xcmd-issue`)
-
+Ajoutez au README un diagramme d’architecture montrant le chemin d’une requête de la CLI vers l’API, puis la base de données.
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine
+
+Si vous l’utilisez souvent, vous pouvez installer [`SKILL.md`](../SKILL.md) dans un agent prenant en charge les skills locales. Pour Claude Code, par exemple, enregistrez-le sous `~/.claude/skills/draw/SKILL.md` ; après cette configuration unique, vous pourrez décrire directement vos besoins.
+
+## Fonctionnalités
+
+- **🔗 L’URL fait office de graphique** : les données et les styles sont un texte lisible, comparable et versionnable ; le lien peut être intégré directement dans Markdown et les pages web.
+- **🤖 Lisible par les humains et l’IA** : le SVG assure l’affichage ; les données et paramètres lisibles par machine permettent de poursuivre les modifications et la régénération sans déduire les données d’une image.
+- **📊 De riches capacités graphiques** : couvre les graphiques de données, organigrammes, diagrammes d’architecture, cartes mentales, cartes géographiques et plannings ; ECharts permet aussi d’exprimer des relations de données plus complexes.
+- **🖱️ Édition visuelle interactive** : cliquez sur un exemple pour ouvrir la page interactive, consulter les données, ajuster les paramètres et les styles, puis copier le nouveau lien du graphique.
+- **🚀 Ouvert et auto-hébergeable** : basé sur TypeScript et sous licence Apache-2.0 ; compatible avec le service en ligne, la CLI, les bibliothèques npm/JSR et le déploiement sur Cloudflare Workers.
+
+## Vous n’utilisez pas d’agent ? Choisissez le mode d’intégration adapté
+
+### Graphique rapide : utilisez directement l’URL
+
+Idéal pour rédiger de la documentation, partager une présentation ou créer une visualisation ponctuelle. Ouvrez la [page de démonstration et d’édition interactive](https://x-cmd.com/draw), ajustez les données et les styles puis copiez le lien ; vous pouvez aussi modifier directement les paramètres de l’URL :
+
+```md
+![Exemple de répartition](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
 ```
 
-[![Hbar — issues ouvertes/fermées (papillon)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,c%C5%93ur,documentation,ci,UI&series=ouvertes:12,8,15,4,9&series=ferm%C3%A9es:38,52,20,11,26&title=Issues%20par%20domaine)
+Le lecteur voit le graphique ; vous conservez un texte modifiable et vérifiable.
 
-### Anneau — plus grandes villes (`type=pie&t=market-mono`)
+### Génération en lot ou intégration à un projet : utilisez la CLI ou la bibliothèque
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5
+Idéal pour mettre à jour automatiquement des graphiques en CI, générer des rapports en lot, travailler hors ligne et intégrer des applications. La CLI et la bibliothèque utilisent les mêmes paramètres que le service hébergé :
+
+```sh
+npx @x-cmd/draw --type pie --labels A,B --values 3,2 --out pie.svg
 ```
 
-[![Anneau — plus grandes villes](https://x-cmd.com/draw?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Plus%20grandes%20villes&unit=M%20hab.&labels=Paris,Marseille,Lyon,Toulouse&values=2.1,0.9,0.5,0.5)
-
-## Prompt — donner les instructions à votre agent IA (skill)
-
-Zéro installation : collez ce prompt une seule fois dans un agent connecté au web, puis décrivez en langage naturel le graphique ou le diagramme souhaité :
-
-```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
-```
-
-Ensuite, vous pouvez demander :
-
-> Représente les étoiles par langage dans un graphique circulaire — TypeScript 4821, Python 2312, Go 980
-
-Les agents qui chargent nativement les skills (Claude Code, etc.) : placez [`SKILL.md`](../SKILL.md) une seule fois dans votre dossier de skills (`~/.claude/skills/draw/SKILL.md`), puis demandez directement vos graphiques ou diagrammes, sans prompt ni URL.
-
-## Trois façons de l’utiliser
-
-**Service hébergé (zéro installation)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
-
-**Bibliothèque npm + CLI (hors ligne, synchrone)** (`npm i -g @x-cmd/draw` / `npx`):
+Pour générer des SVG de manière synchrone dans votre code, installez la bibliothèque et appelez `draw` :
 
 ```sh
 npm install @x-cmd/draw
 ```
 ```ts
 import { draw } from '@x-cmd/draw';
+
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// chaîne de requête acceptée aussi : draw('?type=bar&labels=Lun,Mar&values=3,5')
-// tableaux = paramètres répétés (libellés avec virgules)
-draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
-```
-```sh
-draw --type pie --labels "A,B,C" --values "3,2,1" --out pie.svg
-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # chaîne de requête brute
 ```
 
-**Auto-hébergement**:
+Les utilisateurs de Deno peuvent exécuter `deno add jsr:@x-cmd/draw`, puis importer depuis `jsr:@x-cmd/draw`. Le cœur de rendu n’accède ni au réseau ni aux fichiers, ce qui le rend adapté aux environnements restreints.
+
+### Maîtrisez le point d’entrée et le périmètre des données : exécutez votre propre service
+
+Adapté à un point d’entrée commun pour l’équipe, à une utilisation sur l’intranet ou si vous ne souhaitez pas dépendre d’un service public :
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve      # serveur Node local :8787 avec page démo
-npm run dev        # wrangler dev
-bash scripts/setup.sh   # déploiement en un clic sur votre compte Cloudflare
+npm run serve           # Service local : http://localhost:8787/draw
+bash scripts/setup.sh   # Déploiement en une commande sur votre compte Cloudflare
 ```
 
-Variables d’environnement (Node) : `PORT` (8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (active les liens courts POST).
+Après avoir configuré `DATA_REPO`, `DATA_BRANCH` et `GITHUB_TOKEN`, vous pouvez activer des liens courts permanents ; sans cette configuration, le rendu GET classique reste disponible. Voir le [guide d’auto-hébergement](../docs/1-overview/05-self-hosting/fr.md).
 
-**Deno** — le cœur de rendu est pur, sans réseau — le sandbox sans permission est la frontière de sécurité:
+## Documentation et API
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+Tous les types de graphiques, paramètres et exemples sont organisés par thème dans la documentation :
 
-## Endpoints
-
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — rendre un graphique
-
-| type | | |
-|---|---|---|
-| `pie` | Donut ; `donut=0` = camembert plein<br><br>**<u>≤100 classes (>9 → Other)</u>** | [![example](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=%C3%89toiles%20par%20langage&w=360)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=%C3%89toiles%20par%20langage) |
-| `bar` | Colonnes groupées ; `stack=1` empilées<br><br>**<u>≤30 groupes</u>** | [![example](https://x-cmd.com/draw?type=bar&labels=Lun,Mar,Mer&series=dev:12,18,9&series=ci:8,11,6&w=360)](https://x-cmd.com/draw/explore?type=bar&labels=Lun,Mar,Mer&series=dev:12,18,9&series=ci:8,11,6) |
-| `hbar` | Barres horizontales (classements)<br><br>**<u>≤30 barres</u>** | [![example](https://x-cmd.com/draw?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42,31,18,9&title=Commits%20par%20domaine&w=360)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,c%C5%93ur,documentation,UI&values=42,31,18,9&title=Commits%20par%20domaine) |
-| `line` | Courbe lisse + dégradé / multicourbes<br><br>**<u>≤60 points</u>** | [![example](https://x-cmd.com/draw?type=line&labels=Jan,F%C3%A9v,Mar,Avr,Mai,Juin&values=12,19,15,25,22,30&title=%C3%89toiles%20par%20langage&w=360)](https://x-cmd.com/draw/explore?type=line&labels=Jan,F%C3%A9v,Mar,Avr,Mai,Juin&values=12,19,15,25,22,30&title=%C3%89toiles%20par%20langage) |
-| `area` | Aire / multi-aires<br><br>**<u>≤60 points</u>** | [![example](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=T%C3%A9l%C3%A9chargements&w=360)](https://x-cmd.com/draw/explore?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=T%C3%A9l%C3%A9chargements) |
-| `radar` | Radar<br><br>**<u>3–12 axes</u>** | [![example](https://x-cmd.com/draw?type=radar&t=evil&labels=d%C3%A9marrage,%C3%A9cosyst%C3%A8me,extensibilit%C3%A9,m%C3%A9moire,simplicit%C3%A9&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaison%20d%E2%80%99%C3%A9diteurs&w=360)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=d%C3%A9marrage,%C3%A9cosyst%C3%A8me,extensibilit%C3%A9,m%C3%A9moire,simplicit%C3%A9&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Comparaison%20d%E2%80%99%C3%A9diteurs) |
-| `gauge` | Jauge (arc 240°, valeur centrale)<br><br>**<u>value+max ; anneaux ≤8</u>** | [![example](https://x-cmd.com/draw?type=gauge&title=Taux%20de%20CI&value=87&max=100&w=360)](https://x-cmd.com/draw/explore?type=gauge&title=Taux%20de%20CI&value=87&max=100) |
-| `scatter` | Nuage de points, deux axes numériques, négatifs ok<br><br>**<u>x=&y=, ≤200 points</u>** | [![example](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latence&w=360)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latence) |
-| `combo` | Colonnes (`series=`) + ligne (`line=`) ; double axe au-delà de 5× d’écart<br><br>**<u>≤30 groupes, ≤6 séries</u>** | [![example](https://x-cmd.com/draw?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=Lun,Mar,Mer,Jeu,Ven,Sam,Dim&series=T%C3%A9l%C3%A9chargements:120,180,150,210,240,200,260&line=Croissance:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%A9l%C3%A9chargements%20hebdo&unit=dl) |
-| `sankey` | Diagramme de flux pondéré<br><br>**<u>labels=+links=A>B:30, ≤24 nœuds</u>** | [![example](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=fonction,correctif,documentation,divers,fusionn%C3%A9s,ferm%C3%A9s,rejet%C3%A9s,%3C1a,1%E2%80%932a,%3E2a&links=fonction%3Efusionn%C3%A9s:38;fonction%3Eferm%C3%A9s:12;fonction%3Erejet%C3%A9s:8;correctif%3Efusionn%C3%A9s:33;correctif%3Eferm%C3%A9s:6;correctif%3Erejet%C3%A9s:2;documentation%3Efusionn%C3%A9s:16;documentation%3Eferm%C3%A9s:4;divers%3Efusionn%C3%A9s:5;divers%3Eferm%C3%A9s:6;divers%3Erejet%C3%A9s:6;fusionn%C3%A9s%3E%3C1a:52;fusionn%C3%A9s%3E1%E2%80%932a:28;fusionn%C3%A9s%3E%3E2a:12;ferm%C3%A9s%3E%3C1a:14;ferm%C3%A9s%3E1%E2%80%932a:9;ferm%C3%A9s%3E%3E2a:5;rejet%C3%A9s%3E%3C1a:9;rejet%C3%A9s%3E1%E2%80%932a:5;rejet%C3%A9s%3E%3E2a:2&title=Cycle%20de%20vie%20des%20PR&unit=prs&w=360)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=fonction,correctif,documentation,divers,fusionn%C3%A9s,ferm%C3%A9s,rejet%C3%A9s,%3C1a,1%E2%80%932a,%3E2a&links=fonction%3Efusionn%C3%A9s:38;fonction%3Eferm%C3%A9s:12;fonction%3Erejet%C3%A9s:8;correctif%3Efusionn%C3%A9s:33;correctif%3Eferm%C3%A9s:6;correctif%3Erejet%C3%A9s:2;documentation%3Efusionn%C3%A9s:16;documentation%3Eferm%C3%A9s:4;divers%3Efusionn%C3%A9s:5;divers%3Eferm%C3%A9s:6;divers%3Erejet%C3%A9s:6;fusionn%C3%A9s%3E%3C1a:52;fusionn%C3%A9s%3E1%E2%80%932a:28;fusionn%C3%A9s%3E%3E2a:12;ferm%C3%A9s%3E%3C1a:14;ferm%C3%A9s%3E1%E2%80%932a:9;ferm%C3%A9s%3E%3E2a:5;rejet%C3%A9s%3E%3C1a:9;rejet%C3%A9s%3E1%E2%80%932a:5;rejet%C3%A9s%3E%3E2a:2&title=Cycle%20de%20vie%20des%20PR&unit=prs) |
-| `qr` | QR code<br><br>**<u>d≤1000 caractères, fg/bg, title/unit</u>** | [![example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=scannez&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=scannez) |
-
-**`GET /draw`** — page démo · **`POST /draw?type=...`** — un body JSON/CSV crée un lien court permanent · **`GET /draw/c/<hash>`** — rendu du lien court (immuable)
-
-## Styles (`?t=`)
-
-| type | |
-|---|---|
-| `pie` | opendata (défaut) · evil · evil-mono · market-mono · progress · revenue |
-| `bar` | evil (défaut) · base · grid |
-| `hbar` | base (défaut) · opendata (ref=) · xcmd · xcmd-issue · rank |
-| `line` | shadcn (défaut) · evil · evil-glow · evil-mono · opendata |
-| `area` | evil (défaut) · star · opendata · pixel · polka |
-| `radar` | base (défaut) · evil · xcmd |
-| `sankey` | base (défaut) · fund · pipeline |
-| `gauge` | base (défaut) · gradient · reliability |
-| `scatter/combo/qr` | base (combo a aussi evil) |
-
-## Transmettre les données
-
-```text
-https://x-cmd.com/draw?type=pie&title=%C3%89toiles%20par%20langage&labels=TypeScript,Python,Go&values=4821,2312,980
-```
-
-Libellés avec virgules : répétez le paramètre (`labels=Q1, 2024&labels=Q2`). Données complexes : `?d=` + JSON encodé URL :
-
-```json
-{"title":"...","data":[{"label":"A","value":1}]}
-```
-
-## Liens courts
-
-POST génère un lien court permanent adressé par le contenu (dépôt GitHub comme stockage) :
-
-- mêmes données → même hash (idempotent, dédupliqué)
-- limite 30 requêtes/min/IP
-- stockage public — rien de sensible
-
-## Versionnage
-
-- sans `v` : dernière version, cache 300 s
-- `v=N` : version épinglée, cache 1 jour
-- `immutable` uniquement pour `/c/<hash>`
-
-## Adapté à l’IA
-
-Chaque SVG embarque du JSON : `{generator, template, version, spec}` — données et paramètres font l’aller-retour directement ; le texte est du vrai `<text>`.
-
-## Auto-hébergement en une étape
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
-```
-
-Le script clone, connecte wrangler, déploie et affiche votre URL `*.workers.dev`. Les liens courts (POST) s’activent via `DATA_REPO` + `GITHUB_TOKEN`.
+| Besoin | Documentation |
+| --- | --- |
+| Parcourir tous les types de graphiques et cas d’usage | [Vue d’ensemble de la documentation](../docs/README.md) · [Exemples de référence](../docs/9-showcases/12-reference-examples/en.md) · [Exemples d’architecture cloud](../docs/9-showcases/14-cloud-architecture/en.md) |
+| Consulter les paramètres généraux et l’encodage des URL | [Description des paramètres](../docs/1-overview/07-params/en.md) |
+| Utiliser des données JSON | [Formats de données et API](../docs/1-overview/04-data-and-api/fr.md) |
+| Créer des liens courts ou configurer leur stockage | [Auto-hébergement et configuration des liens courts](../docs/1-overview/05-self-hosting/fr.md) |
+| Créer des diagrammes d’architecture, de séquence, des ERD et d’autres diagrammes structurels | [Syntaxe d’URL des diagrammes structurels](../docs/1-overview/06-diagram-urls/en.md) |
+| Exécuter localement ou déployer sur Cloudflare | [Guide d’auto-hébergement](../docs/1-overview/05-self-hosting/fr.md) |
+| Générer automatiquement des graphiques avec un agent | [Skill pour agent](../SKILL.md) |
 
 ## Développement
 
 ```sh
 npm install
-npm run dev      # wrangler dev
-npm test         # vitest (120)
-npm run check    # tsc ×3
-npm run build    # dist/
+npm run dev      # wrangler dev démarre le service local
+npm test         # vitest
+npm run check    # tsc --noEmit × 3 (worker / node / build)
+npm run build    # génère dist/ (bibliothèque npm + CLI)
+npm run deploy   # wrangler deploy
 ```
 
 ## Licence
 
-Code Apache-2.0 ; polices OFL — [LICENSE](../LICENSE) · Documentation complète: [README (EN)](../README.md)
+Le code est sous [Apache-2.0](../LICENSE). Les polices intégrées suivent leurs licences respectives : Inter (OFL, texte intégral dans [`inter-OFL.txt`](../src/styles/inter-OFL.txt)) et Handlee (OFL, texte intégral dans [`handlee-OFL.txt`](../src/styles/handlee-OFL.txt)).

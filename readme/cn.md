@@ -5,245 +5,107 @@
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
 
-AI 时代的 SVG 图表生成服务(狗粮原型)。单端点 `/draw?type=...`,数据在 URL 里、输出带机器可读 `<metadata>`、Cloudflare Workers + TypeScript 直生成 SVG。风格体系对齐设计师规范(13 张 SVG),每图种多风格变体。
+
+X-CMD Draw 是一个开源的 SVG 图表生成工具：把数据和样式写进 URL，就能生成柱状图、折线图、桑基图、系统架构图、思维导图等多种图形。
+
+图表可以直接嵌入 README、issue、PR、博文和网页，无需导出或上传图片文件。链接与 SVG 中保留了机器可读的数据和参数：观众看到的是图，AI Agent 可以继续读取、修改和重新生成，无需识别图片。
 
 ## 先睹为快
 
-数据全在 URL 里 — 浏览器打开、`<img>` 嵌入、贴进仓库 README,SVG 直接渲染:
+从性能分析到架构设计，从地图到排期，图形定义都保存在链接中。点击图片即可查看数据、调整样式并重新生成。[查看更多图表示例 ↗](https://x-cmd.com/draw)
 
-### 桑基图 — PR 生命周期:类型 → 结果 → 时段 (`type=sankey&t=pipeline`)
+| | |
+| --- | --- |
+| **下载量与增长**<br>[![下载量与增长](https://www.x-cmd.com/draw?type=combo&title=%E4%B8%8B%E8%BD%BD%E9%87%8F%E4%B8%8E%E5%A2%9E%E9%95%BF&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26)](https://www.x-cmd.com/draw/explore?type=combo&title=%E4%B8%8B%E8%BD%BD%E9%87%8F%E4%B8%8E%E5%A2%9E%E9%95%BF&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26) | **压缩算法性能对比**<br>[![Compression: speed vs ratio](https://www.x-cmd.com/draw/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Compression%3A%20speed%20vs%20ratio%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20bubble%20size%20%3D%20decompression%20speed%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Compression%20speed%20MB%2Fs%20(faster%20%E2%86%92)%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Ratio%20(smaller%20output%20%E2%86%91)%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Compression%3A%20speed%20vs%20ratio%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20bubble%20size%20%3D%20decompression%20speed%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Compression%20speed%20MB%2Fs%20(faster%20%E2%86%92)%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Ratio%20(smaller%20output%20%E2%86%91)%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D) |
+| [![OpenCode 项目架构全景图](https://www.x-cmd.com/draw/arch2?title=OpenCode+%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E5%85%A8%E6%99%AF%E5%9B%BE&t=shadcn&n=tui%3Bfe%3B%E7%BB%88%E7%AB%AF%E7%95%8C%E9%9D%A2+TUI%3B%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%3Br0c0&n=web%3Bfe%3B%E7%BD%91%E9%A1%B5%E7%95%8C%E9%9D%A2%3B%E6%B5%8F%E8%A7%88%E5%99%A8%E8%AE%BF%E9%97%AE%3Br0c1&n=desktop%3Bfe%3B%E6%A1%8C%E9%9D%A2%E5%BA%94%E7%94%A8%3BElectron+%E5%AE%A2%E6%88%B7%E7%AB%AF%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3B%E7%A8%8B%E5%BA%8F%E5%8C%96%E6%8E%A5%E5%85%A5%3Br1c0&n=server%3Bsvc%3BOpenCode+%E6%A0%B8%E5%BF%83%E6%9C%8D%E5%8A%A1%3BCLI+%E4%B8%8E+HTTP+%E6%9C%8D%E5%8A%A1%3Br1c1&n=session%3Bsvc%3B%E4%BC%9A%E8%AF%9D%E4%B8%8E%E6%B6%88%E6%81%AF%3B%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%3Br2c0&n=agent%3Bsvc%3BAgent+%E7%B3%BB%E7%BB%9F%3BBuild+Plan+%E5%AD%90+Agent%3Br2c1&n=provider%3Bsvc%3B%E6%A8%A1%E5%9E%8B%E6%8F%90%E4%BE%9B%E5%95%86%3B%E6%A8%A1%E5%9E%8B%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94%3Br2c2&n=tools%3Bsvc%3B%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F%3B%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6+Bash+%E6%90%9C%E7%B4%A2%3Br3c0&n=mcp%3Bsvc%3BMCP+%E6%9C%8D%E5%8A%A1%3B%E5%A4%96%E9%83%A8%E5%B7%A5%E5%85%B7%E8%BF%9E%E6%8E%A5%3Br3c1&n=plugin%3Bsvc%3B%E6%8F%92%E4%BB%B6%E4%B8%8E%E6%89%A9%E5%B1%95%3B%E4%BA%8B%E4%BB%B6%E9%92%A9%E5%AD%90%E4%B8%8E%E8%87%AA%E5%AE%9A%E4%B9%89%E8%83%BD%E5%8A%9B%3Br3c2&n=storage%3Bdb%3B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%3BSQLite+%E4%BC%9A%E8%AF%9D%E6%95%B0%E6%8D%AE%3Br4c1&e=tui%3Bserver%3B%E7%BB%88%E7%AB%AF%E8%AF%B7%E6%B1%82&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3B%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82&e=sdk%3Bserver%3BAPI+%E8%B0%83%E7%94%A8&e=server%3Bsession%3B%E7%AE%A1%E7%90%86%E4%BC%9A%E8%AF%9D&e=server%3Bagent%3B%E8%B0%83%E5%BA%A6+Agent&e=agent%3Bprovider%3B%E8%AF%B7%E6%B1%82%E6%A8%A1%E5%9E%8B&e=agent%3Btools%3B%E8%B0%83%E7%94%A8%E5%B7%A5%E5%85%B7&e=tools%3Bmcp%3B%E6%89%A9%E5%B1%95%E5%B7%A5%E5%85%B7%E6%9D%A5%E6%BA%90&e=server%3Bplugin%3B%E5%8A%A0%E8%BD%BD%E6%89%A9%E5%B1%95&e=session%3Bstorage%3B%E8%AF%BB%E5%86%99%E4%BC%9A%E8%AF%9D&e=agent%3Bsession%3B%E6%B6%88%E6%81%AF%E4%B8%8A%E4%B8%8B%E6%96%87&b=%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%85%A5%E5%8F%A3%3B+tui+web+desktop+sdk&b=%E6%A0%B8%E5%BF%83%E8%BF%90%E8%A1%8C%E5%B1%82%3B+server+session+agent+provider&b=%E6%89%A9%E5%B1%95%E4%B8%8E%E6%89%A7%E8%A1%8C%3B+tools+mcp+plugin&b=%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%3B+storage)](https://www.x-cmd.com/draw/explore/arch2?title=OpenCode+%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E5%85%A8%E6%99%AF%E5%9B%BE&t=shadcn&n=tui%3Bfe%3B%E7%BB%88%E7%AB%AF%E7%95%8C%E9%9D%A2+TUI%3B%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%3Br0c0&n=web%3Bfe%3B%E7%BD%91%E9%A1%B5%E7%95%8C%E9%9D%A2%3B%E6%B5%8F%E8%A7%88%E5%99%A8%E8%AE%BF%E9%97%AE%3Br0c1&n=desktop%3Bfe%3B%E6%A1%8C%E9%9D%A2%E5%BA%94%E7%94%A8%3BElectron+%E5%AE%A2%E6%88%B7%E7%AB%AF%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3B%E7%A8%8B%E5%BA%8F%E5%8C%96%E6%8E%A5%E5%85%A5%3Br1c0&n=server%3Bsvc%3BOpenCode+%E6%A0%B8%E5%BF%83%E6%9C%8D%E5%8A%A1%3BCLI+%E4%B8%8E+HTTP+%E6%9C%8D%E5%8A%A1%3Br1c1&n=session%3Bsvc%3B%E4%BC%9A%E8%AF%9D%E4%B8%8E%E6%B6%88%E6%81%AF%3B%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%3Br2c0&n=agent%3Bsvc%3BAgent+%E7%B3%BB%E7%BB%9F%3BBuild+Plan+%E5%AD%90+Agent%3Br2c1&n=provider%3Bsvc%3B%E6%A8%A1%E5%9E%8B%E6%8F%90%E4%BE%9B%E5%95%86%3B%E6%A8%A1%E5%9E%8B%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94%3Br2c2&n=tools%3Bsvc%3B%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F%3B%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6+Bash+%E6%90%9C%E7%B4%A2%3Br3c0&n=mcp%3Bsvc%3BMCP+%E6%9C%8D%E5%8A%A1%3B%E5%A4%96%E9%83%A8%E5%B7%A5%E5%85%B7%E8%BF%9E%E6%8E%A5%3Br3c1&n=plugin%3Bsvc%3B%E6%8F%92%E4%BB%B6%E4%B8%8E%E6%89%A9%E5%B1%95%3B%E4%BA%8B%E4%BB%B6%E9%92%A9%E5%AD%90%E4%B8%8E%E8%87%AA%E5%AE%9A%E4%B9%89%E8%83%BD%E5%8A%9B%3Br3c2&n=storage%3Bdb%3B%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%3BSQLite+%E4%BC%9A%E8%AF%9D%E6%95%B0%E6%8D%AE%3Br4c1&e=tui%3Bserver%3B%E7%BB%88%E7%AB%AF%E8%AF%B7%E6%B1%82&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3B%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82&e=sdk%3Bserver%3BAPI+%E8%B0%83%E7%94%A8&e=server%3Bsession%3B%E7%AE%A1%E7%90%86%E4%BC%9A%E8%AF%9D&e=server%3Bagent%3B%E8%B0%83%E5%BA%A6+Agent&e=agent%3Bprovider%3B%E8%AF%B7%E6%B1%82%E6%A8%A1%E5%9E%8B&e=agent%3Btools%3B%E8%B0%83%E7%94%A8%E5%B7%A5%E5%85%B7&e=tools%3Bmcp%3B%E6%89%A9%E5%B1%95%E5%B7%A5%E5%85%B7%E6%9D%A5%E6%BA%90&e=server%3Bplugin%3B%E5%8A%A0%E8%BD%BD%E6%89%A9%E5%B1%95&e=session%3Bstorage%3B%E8%AF%BB%E5%86%99%E4%BC%9A%E8%AF%9D&e=agent%3Bsession%3B%E6%B6%88%E6%81%AF%E4%B8%8A%E4%B8%8B%E6%96%87&b=%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%85%A5%E5%8F%A3%3B+tui+web+desktop+sdk&b=%E6%A0%B8%E5%BF%83%E8%BF%90%E8%A1%8C%E5%B1%82%3B+server+session+agent+provider&b=%E6%89%A9%E5%B1%95%E4%B8%8E%E6%89%A7%E8%A1%8C%3B+tools+mcp+plugin&b=%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%3B+storage) | [![US states · GDP per capita 2024 · thousand USD](https://www.x-cmd.com/draw/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540) |
+| [![大模型技术全景](https://www.x-cmd.com/draw/mindmap?style=radial&title=%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%85%A8%E6%99%AF&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E9%A2%84%E8%AE%AD%E7%BB%83%2F%E6%95%B0%E6%8D%AE%2F%E6%B8%85%E6%B4%97%E5%8E%BB%E9%87%8D&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E9%A2%84%E8%AE%AD%E7%BB%83%2F%E6%95%B0%E6%8D%AE%2F%E5%90%88%E6%88%90%E6%95%B0%E6%8D%AE&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E9%A2%84%E8%AE%AD%E7%BB%83%2F%E8%AE%AD%E7%BB%83%2FMoE%E6%9E%B6%E6%9E%84&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%AF%B9%E9%BD%90%2FSFT&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%AF%B9%E9%BD%90%2FRLHF&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%AF%B9%E9%BD%90%2FDPO&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E9%87%87%E6%A0%B7%2Ftemperature&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E9%87%87%E6%A0%B7%2Ftop-p&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E5%8A%A0%E9%80%9F%2FKV+Cache&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E5%8A%A0%E9%80%9F%2F%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E5%8A%A0%E9%80%9F%2F%E9%87%8F%E5%8C%96&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E9%83%A8%E7%BD%B2%2FvLLM&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FRAG%2F%E5%90%91%E9%87%8F%E5%BA%93&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FRAG%2F%E5%B5%8C%E5%85%A5%E6%A8%A1%E5%9E%8B&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FRAG%2F%E9%87%8D%E6%8E%92%E5%BA%8F&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2F%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2F%E4%BB%BB%E5%8A%A1%E8%A7%84%E5%88%92&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2F%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2FMCP%E5%8D%8F%E8%AE%AE&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%BE%AE%E8%B0%83%2FLoRA&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%BE%AE%E8%B0%83%2F%E5%85%A8%E5%8F%82%E6%95%B0%E5%BE%AE%E8%B0%83&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%BE%AE%E8%B0%83%2F%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E8%AF%84%E6%B5%8B%2FMMLU&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E8%AF%84%E6%B5%8B%2FHumanEval&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E8%AF%84%E6%B5%8B%2FLLM%E8%AF%84%E5%AE%A1&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%A4%9A%E6%A8%A1%E6%80%81%2F%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%A4%9A%E6%A8%A1%E6%80%81%2F%E8%AF%AD%E9%9F%B3&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%A4%9A%E6%A8%A1%E6%80%81%2F%E8%A7%86%E9%A2%91)](https://www.x-cmd.com/draw/explore/mindmap?style=radial&title=%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%85%A8%E6%99%AF&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E9%A2%84%E8%AE%AD%E7%BB%83%2F%E6%95%B0%E6%8D%AE%2F%E6%B8%85%E6%B4%97%E5%8E%BB%E9%87%8D&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E9%A2%84%E8%AE%AD%E7%BB%83%2F%E6%95%B0%E6%8D%AE%2F%E5%90%88%E6%88%90%E6%95%B0%E6%8D%AE&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E9%A2%84%E8%AE%AD%E7%BB%83%2F%E8%AE%AD%E7%BB%83%2FMoE%E6%9E%B6%E6%9E%84&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%AF%B9%E9%BD%90%2FSFT&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%AF%B9%E9%BD%90%2FRLHF&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%AF%B9%E9%BD%90%2FDPO&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E9%87%87%E6%A0%B7%2Ftemperature&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E9%87%87%E6%A0%B7%2Ftop-p&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E5%8A%A0%E9%80%9F%2FKV+Cache&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E5%8A%A0%E9%80%9F%2F%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E5%8A%A0%E9%80%9F%2F%E9%87%8F%E5%8C%96&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E6%8E%A8%E7%90%86%2F%E9%83%A8%E7%BD%B2%2FvLLM&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FRAG%2F%E5%90%91%E9%87%8F%E5%BA%93&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FRAG%2F%E5%B5%8C%E5%85%A5%E6%A8%A1%E5%9E%8B&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FRAG%2F%E9%87%8D%E6%8E%92%E5%BA%8F&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2F%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2F%E4%BB%BB%E5%8A%A1%E8%A7%84%E5%88%92&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2F%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2FAgent%2FMCP%E5%8D%8F%E8%AE%AE&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%BE%AE%E8%B0%83%2FLoRA&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%BE%AE%E8%B0%83%2F%E5%85%A8%E5%8F%82%E6%95%B0%E5%BE%AE%E8%B0%83&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%BE%AE%E8%B0%83%2F%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E8%AF%84%E6%B5%8B%2FMMLU&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E8%AF%84%E6%B5%8B%2FHumanEval&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E8%AF%84%E6%B5%8B%2FLLM%E8%AF%84%E5%AE%A1&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%A4%9A%E6%A8%A1%E6%80%81%2F%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%A4%9A%E6%A8%A1%E6%80%81%2F%E8%AF%AD%E9%9F%B3&n=%E5%A4%A7%E6%A8%A1%E5%9E%8B%2F%E5%A4%9A%E6%A8%A1%E6%80%81%2F%E8%A7%86%E9%A2%91) | [![Chemical structure](https://www.x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O)](https://www.x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O) |
 
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=%E5%8A%9F%E8%83%BD,%E4%BF%AE%E5%A4%8D,%E6%96%87%E6%A1%A3,%E6%9D%82%E5%8A%A1,%E5%B7%B2%E5%90%88%E5%B9%B6,%E5%B7%B2%E5%85%B3%E9%97%AD,%E5%B7%B2%E6%8B%92%E7%BB%9D,1%E5%B9%B4%E5%86%85,1%E2%80%932%E5%B9%B4,2%E5%B9%B4%E4%BB%A5%E4%B8%8A&links=%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%90%88%E5%B9%B6:38;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%85%B3%E9%97%AD:12;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:8;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%90%88%E5%B9%B6:33;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:2;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%90%88%E5%B9%B6:16;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%85%B3%E9%97%AD:4;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%90%88%E5%B9%B6:5;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:6;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E5%B9%B4%E5%86%85:52;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E2%80%932%E5%B9%B4:28;%E5%B7%B2%E5%90%88%E5%B9%B6%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:12;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E5%B9%B4%E5%86%85:14;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E2%80%932%E5%B9%B4:9;%E5%B7%B2%E5%85%B3%E9%97%AD%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E5%B9%B4%E5%86%85:9;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E2%80%932%E5%B9%B4:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:2&title=PR%20%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&unit=prs
-```
+## 快速开始
 
-[![桑基图:PR 生命周期](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=%E5%8A%9F%E8%83%BD,%E4%BF%AE%E5%A4%8D,%E6%96%87%E6%A1%A3,%E6%9D%82%E5%8A%A1,%E5%B7%B2%E5%90%88%E5%B9%B6,%E5%B7%B2%E5%85%B3%E9%97%AD,%E5%B7%B2%E6%8B%92%E7%BB%9D,1%E5%B9%B4%E5%86%85,1%E2%80%932%E5%B9%B4,2%E5%B9%B4%E4%BB%A5%E4%B8%8A&links=%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%90%88%E5%B9%B6:38;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%85%B3%E9%97%AD:12;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:8;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%90%88%E5%B9%B6:33;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:2;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%90%88%E5%B9%B6:16;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%85%B3%E9%97%AD:4;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%90%88%E5%B9%B6:5;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:6;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E5%B9%B4%E5%86%85:52;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E2%80%932%E5%B9%B4:28;%E5%B7%B2%E5%90%88%E5%B9%B6%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:12;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E5%B9%B4%E5%86%85:14;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E2%80%932%E5%B9%B4:9;%E5%B7%B2%E5%85%B3%E9%97%AD%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E5%B9%B4%E5%86%85:9;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E2%80%932%E5%B9%B4:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:2&title=PR%20%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&unit=prs)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=%E5%8A%9F%E8%83%BD,%E4%BF%AE%E5%A4%8D,%E6%96%87%E6%A1%A3,%E6%9D%82%E5%8A%A1,%E5%B7%B2%E5%90%88%E5%B9%B6,%E5%B7%B2%E5%85%B3%E9%97%AD,%E5%B7%B2%E6%8B%92%E7%BB%9D,1%E5%B9%B4%E5%86%85,1%E2%80%932%E5%B9%B4,2%E5%B9%B4%E4%BB%A5%E4%B8%8A&links=%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%90%88%E5%B9%B6:38;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%85%B3%E9%97%AD:12;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:8;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%90%88%E5%B9%B6:33;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:2;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%90%88%E5%B9%B6:16;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%85%B3%E9%97%AD:4;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%90%88%E5%B9%B6:5;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:6;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E5%B9%B4%E5%86%85:52;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E2%80%932%E5%B9%B4:28;%E5%B7%B2%E5%90%88%E5%B9%B6%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:12;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E5%B9%B4%E5%86%85:14;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E2%80%932%E5%B9%B4:9;%E5%B7%B2%E5%85%B3%E9%97%AD%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E5%B9%B4%E5%86%85:9;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E2%80%932%E5%B9%B4:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:2&title=PR%20%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&unit=prs)
+### 1. 让 Agent 学会使用 draw
 
-### 水平柱 — 运行时吞吐,真实实测 (`type=hbar`; deno 7238 · node 6553 · bun 4972 ops/s, Apple Silicon)
-
-```text
-https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
-```
-
-[![水平柱:运行时吞吐](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)](https://x-cmd.com/draw/explore?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
-
-### 雷达图 — 三软件对比 (`type=radar&t=evil`, 多系列)
+将下面的 Prompt 发给能够读取网页的 Agent。draw 的托管服务无需注册账号或申请 API Key：
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=%E5%90%AF%E5%8A%A8,%E7%94%9F%E6%80%81,%E6%89%A9%E5%B1%95%E6%80%A7,%E5%86%85%E5%AD%98,%E6%98%93%E7%94%A8&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=%E7%BC%96%E8%BE%91%E5%99%A8%E5%AF%B9%E6%AF%94
+读取并遵循 https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md ，以后写 README、issue、pull request、博文或者聊天消息时，需要图表就用 x-cmd Draw 生成链接，并用图片语法嵌入，不要贴图片文件。
 ```
 
-[![雷达图:编辑器对比](https://x-cmd.com/draw?type=radar&t=evil&labels=%E5%90%AF%E5%8A%A8,%E7%94%9F%E6%80%81,%E6%89%A9%E5%B1%95%E6%80%A7,%E5%86%85%E5%AD%98,%E6%98%93%E7%94%A8&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=%E7%BC%96%E8%BE%91%E5%99%A8%E5%AF%B9%E6%AF%94)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=%E5%90%AF%E5%8A%A8,%E7%94%9F%E6%80%81,%E6%89%A9%E5%B1%95%E6%80%A7,%E5%86%85%E5%AD%98,%E6%98%93%E7%94%A8&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=%E7%BC%96%E8%BE%91%E5%99%A8%E5%AF%B9%E6%AF%94)
+### 2. 说出你的需求
 
-### 混合图 — 周下载 vs 星标增速 (`type=combo`, 量级差自动双 y 轴)
+告诉 Agent 使用什么数据、表达什么关系，以及图表要用在哪里：
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89,%E5%91%A8%E5%9B%9B,%E5%91%A8%E4%BA%94,%E5%91%A8%E5%85%AD,%E5%91%A8%E6%97%A5&series=%E4%B8%8B%E8%BD%BD:120,180,150,210,240,200,260&line=%E5%A2%9E%E9%95%BF%E7%8E%87:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%E6%AF%8F%E5%91%A8%E4%B8%8B%E8%BD%BD%E9%87%8F&unit=dl
-```
-
-[![混合图:周下载与星标增速](https://x-cmd.com/draw?type=combo&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89,%E5%91%A8%E5%9B%9B,%E5%91%A8%E4%BA%94,%E5%91%A8%E5%85%AD,%E5%91%A8%E6%97%A5&series=%E4%B8%8B%E8%BD%BD:120,180,150,210,240,200,260&line=%E5%A2%9E%E9%95%BF%E7%8E%87:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%E6%AF%8F%E5%91%A8%E4%B8%8B%E8%BD%BD%E9%87%8F&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89,%E5%91%A8%E5%9B%9B,%E5%91%A8%E4%BA%94,%E5%91%A8%E5%85%AD,%E5%91%A8%E6%97%A5&series=%E4%B8%8B%E8%BD%BD:120,180,150,210,240,200,260&line=%E5%A2%9E%E9%95%BF%E7%8E%87:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%E6%AF%8F%E5%91%A8%E4%B8%8B%E8%BD%BD%E9%87%8F&unit=dl)
-
-### 水平柱 — 分区 issue 开/闭蝴蝶图 (`type=hbar&t=xcmd-issue`)
-
+在 README 里补一张架构图，画出请求从 CLI 到 API、数据库的调用链路。
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=%E5%91%BD%E4%BB%A4%E8%A1%8C,%E6%A0%B8%E5%BF%83,%E6%96%87%E6%A1%A3,ci,%E7%95%8C%E9%9D%A2&series=%E6%89%93%E5%BC%80:12,8,15,4,9&series=%E5%85%B3%E9%97%AD:38,52,20,11,26&title=%E5%90%84%E6%A8%A1%E5%9D%97%20issue
+
+如果经常使用，可以将 [`SKILL.md`](../SKILL.md) 安装到支持本地 skills 的 Agent 中。以 Claude Code 为例，保存为 `~/.claude/skills/draw/SKILL.md`，完成一次配置后即可直接描述需求。
+
+## 功能特点
+
+- **🔗 URL 即图表**：数据和样式都是可阅读、可比较、可纳入版本管理的文本，链接可以直接嵌入 Markdown 和网页。
+- **🤖 人与 AI 都能读**：SVG 用于展示，机器可读的数据与参数用于继续修改和重新生成，不必从图片反推数据。
+- **📊 丰富的图形能力**：覆盖数据图表、流程图、架构图、思维导图、地图和排期，也可通过 ECharts 表达更复杂的数据关系。
+- **🖱️ 可视化交互编辑**：点击示例进入交互页，查看数据、调整参数和样式，并复制新的图表链接。
+- **🚀 开放且可自托管**：基于 TypeScript，采用 Apache-2.0 协议；支持在线服务、CLI、npm / JSR 库和 Cloudflare Workers 部署。
+
+## 不使用 Agent？选择适合你的接入方式
+
+### 快速出图：直接使用 URL
+
+适合写文档、做分享或临时可视化。打开 [演示与交互编辑页](https://x-cmd.com/draw)，调整数据和样式后复制链接；也可以直接修改 URL 参数：
+
+```md
+![占比示例](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
 ```
 
-[![水平柱:分区 issue 开闭](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=%E5%91%BD%E4%BB%A4%E8%A1%8C,%E6%A0%B8%E5%BF%83,%E6%96%87%E6%A1%A3,ci,%E7%95%8C%E9%9D%A2&series=%E6%89%93%E5%BC%80:12,8,15,4,9&series=%E5%85%B3%E9%97%AD:38,52,20,11,26&title=%E5%90%84%E6%A8%A1%E5%9D%97%20issue)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=%E5%91%BD%E4%BB%A4%E8%A1%8C,%E6%A0%B8%E5%BF%83,%E6%96%87%E6%A1%A3,ci,%E7%95%8C%E9%9D%A2&series=%E6%89%93%E5%BC%80:12,8,15,4,9&series=%E5%85%B3%E9%97%AD:38,52,20,11,26&title=%E5%90%84%E6%A8%A1%E5%9D%97%20issue)
+读者看到的是图，你保留的是一份可修改、可审查的文本。
 
-### 环形图 — 语言构成 (`type=pie&t=market-mono`)
+### 批量生成或接入项目：使用 CLI 或库
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3
+适合 CI 自动更新图表、批量生成报告、离线使用和应用集成。CLI 与库跟托管服务使用同一套参数：
+
+```sh
+npx @x-cmd/draw --type pie --labels A,B --values 3,2 --out pie.svg
 ```
 
-[![环形图:语言构成](https://x-cmd.com/draw?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Languages&unit=%25&labels=TypeScript,Shell,JavaScript,Rust,Other&values=68,14,9,6,3)
-
-## 给 AI Agent 的 Prompt（skill）
-
-零安装：将下面的 prompt 粘贴一次给任意可联网的 agent，之后直接用自然语言描述需要的图表或示意图：
-
-```text
-读取并遵循 https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md ，之后需要画图时使用 x-cmd Draw。
-```
-
-之后你可以这样问：
-
-> 把各语言的星标数画成饼图 —— TypeScript 4821、Python 2312、Go 980
-
-原生加载 skill 的 agent（Claude Code 等）：将 [`SKILL.md`](../SKILL.md) 放入 skills 目录（`~/.claude/skills/draw/SKILL.md`）一次；之后直接提出画图需求即可，无需再粘贴 prompt 或 URL。
-
-## 三种使用方式(同一份渲染核心)
-
-**托管服务**(零安装):直接拼 URL — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
-
-**npm 库**(离线/嵌入,同步无网络,参数与 URL 完全一致):
+需要在代码中同步生成 SVG 时，安装库并调用 `draw`：
 
 ```sh
 npm install @x-cmd/draw
 ```
 ```ts
 import { draw } from '@x-cmd/draw';
+
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// 也接受查询串: draw('?type=bar&labels=Mon,Tue&values=3,5')
-// 数组值 = 重复参数(labels 含逗号时): draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
 ```
 
-**CLI**(`npm i -g @x-cmd/draw` 后可用,或 `npx`):
+Deno 用户可以使用 `deno add jsr:@x-cmd/draw`，再从 `jsr:@x-cmd/draw` 导入。渲染核心不访问网络或文件，适合在受限环境中运行。
 
-```sh
-draw --type pie --labels "TypeScript,Python,Go" --values "4821,2312,980" --out pie.svg
-draw --type hbar --labels a,b,c --values 3,2,1 --theme xcmd              # 长参数(--theme/--width/--height)
-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # 裸查询串,与 URL 同参
-```
+### 掌握入口和数据边界：运行自己的服务
 
-**自托管**:三种入口任选 —
+适合团队统一入口、内网使用，或不希望依赖公共服务的场景：
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve                    # Node 本地服务(默认 http://localhost:8787/draw,含演示页)
-npm run dev                      # Cloudflare wrangler 本地开发
-bash scripts/setup.sh            # 一键部署到你自己的 Cloudflare 账号
+npm run serve           # 本地服务：http://localhost:8787/draw
+bash scripts/setup.sh   # 一键部署到自己的 Cloudflare 账号
 ```
 
-环境变量(Node 服务):`PORT`(默认 8787)· `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN`(配置后 POST 短链同样可用,未配置时与线上自部署一样优雅降级)。
+配置 `DATA_REPO`、`DATA_BRANCH` 和 `GITHUB_TOKEN` 后可以启用永久短链；未配置时，常规 GET 渲染不受影响。详见[自托管指南](../docs/1-overview/05-self-hosting/cn.md)。
 
-**Deno**(原生 TS;渲染核心是纯函数 — 不碰网络/文件,零权限沙盒即安全边界):
+## 文档与 API
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";   // JSR(Deno 原生注册表)
-// 或 npm:import { draw } from "npm:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+完整的图种、参数和示例按主题维护在文档中：
 
-```sh
-deno add jsr:@x-cmd/draw
-# 仓库内直跑源码(免构建):
-deno task cli --type pie --labels A,B --values 3,2 --out pie.svg   # 仅需 --allow-write
-deno task serve                                                    # 本地服务(同 npm run serve)
-# 渲染零权限可证:deno eval 默认无任何授权,直接 import 即渲染成功
-```
-
-## 端点
-
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — 渲染图表
-
-| type | 图表 | 示例 |
-|---|---|---|
-| `pie` | 环形图;`donut=0` 变实心饼<br><br>**<u>≤100 类(>9 自动合并 Other)</u>** | [![pie example](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=%E5%90%84%E8%AF%AD%E8%A8%80%E6%98%9F%E6%A0%87&w=360)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=%E5%90%84%E8%AF%AD%E8%A8%80%E6%98%9F%E6%A0%87) |
-| `bar` | 柱状图/分组并排;多系列加 `stack=1` 变堆叠柱<br><br>**<u>≤30 组</u>** | [![bar example](https://x-cmd.com/draw?type=bar&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89&series=%E5%BC%80%E5%8F%91:12,18,9&series=CI:8,11,6&w=360)](https://x-cmd.com/draw/explore?type=bar&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89&series=%E5%BC%80%E5%8F%91:12,18,9&series=CI:8,11,6) |
-| `hbar` | 水平柱状图(排行场景,标签左值右)<br><br>**<u>≤30 条,单系列(部分风格双系列)</u>** | [![hbar example](https://x-cmd.com/draw?type=hbar&labels=%E5%91%BD%E4%BB%A4%E8%A1%8C,%E6%A0%B8%E5%BF%83,%E6%96%87%E6%A1%A3,%E7%95%8C%E9%9D%A2&values=42,31,18,9&title=%E5%90%84%E6%A8%A1%E5%9D%97%E6%8F%90%E4%BA%A4&w=360)](https://x-cmd.com/draw/explore?type=hbar&labels=%E5%91%BD%E4%BB%A4%E8%A1%8C,%E6%A0%B8%E5%BF%83,%E6%96%87%E6%A1%A3,%E7%95%8C%E9%9D%A2&values=42,31,18,9&title=%E5%90%84%E6%A8%A1%E5%9D%97%E6%8F%90%E4%BA%A4) |
-| `line` | 折线图(平滑+渐变面积)/多折线<br><br>**<u>≤60 点</u>** | [![line example](https://x-cmd.com/draw?type=line&labels=1%E6%9C%88,2%E6%9C%88,3%E6%9C%88,4%E6%9C%88,5%E6%9C%88,6%E6%9C%88&values=12,19,15,25,22,30&title=%E6%98%9F%E6%A0%87%E5%A2%9E%E9%95%BF&w=360)](https://x-cmd.com/draw/explore?type=line&labels=1%E6%9C%88,2%E6%9C%88,3%E6%9C%88,4%E6%9C%88,5%E6%9C%88,6%E6%9C%88&values=12,19,15,25,22,30&title=%E6%98%9F%E6%A0%87%E5%A2%9E%E9%95%BF) |
-| `area` | 面积图/多系列面积(渐变填充)<br><br>**<u>≤60 点</u>** | [![area example](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=%E4%B8%8B%E8%BD%BD%E9%87%8F&w=360)](https://x-cmd.com/draw/explore?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=%E4%B8%8B%E8%BD%BD%E9%87%8F) |
-| `radar` | 雷达图<br><br>**<u>3-12 维</u>** | [![radar example](https://x-cmd.com/draw?type=radar&t=evil&labels=%E5%90%AF%E5%8A%A8,%E7%94%9F%E6%80%81,%E6%89%A9%E5%B1%95%E6%80%A7,%E5%86%85%E5%AD%98,%E6%98%93%E7%94%A8&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=%E7%BC%96%E8%BE%91%E5%99%A8%E5%AF%B9%E6%AF%94&w=360)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=%E5%90%AF%E5%8A%A8,%E7%94%9F%E6%80%81,%E6%89%A9%E5%B1%95%E6%80%A7,%E5%86%85%E5%AD%98,%E6%98%93%E7%94%A8&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=%E7%BC%96%E8%BE%91%E5%99%A8%E5%AF%B9%E6%AF%94) |
-| `gauge` | 仪表盘(240° 弧+中心数值)<br><br>**<u>`value`+`max`(默认100),value≤max;多环 ≤8</u>** | [![gauge example](https://x-cmd.com/draw?type=gauge&title=CI%20%E9%80%9A%E8%BF%87%E7%8E%87&value=87&max=100&w=360)](https://x-cmd.com/draw/explore?type=gauge&title=CI%20%E9%80%9A%E8%BF%87%E7%8E%87&value=87&max=100) |
-| `scatter` | 散点图(双数值轴,支持负值;默认不标数值)<br><br>**<u>`x=&y=`,≤200 点</u>** | [![scatter example](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E5%BB%B6%E8%BF%9F&w=360)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=%E5%BB%B6%E8%BF%9F) |
-| `combo` | 混合图:柱(`series=`)+线(`line=`)同图,`stack=1` 变堆叠柱<br><br>**<u>≤30 组,共 ≤6 系列</u>** | [![combo example](https://x-cmd.com/draw?type=combo&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89,%E5%91%A8%E5%9B%9B,%E5%91%A8%E4%BA%94,%E5%91%A8%E5%85%AD,%E5%91%A8%E6%97%A5&series=%E4%B8%8B%E8%BD%BD:120,180,150,210,240,200,260&line=%E5%A2%9E%E9%95%BF%E7%8E%87:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%E6%AF%8F%E5%91%A8%E4%B8%8B%E8%BD%BD%E9%87%8F&unit=dl&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=%E5%91%A8%E4%B8%80,%E5%91%A8%E4%BA%8C,%E5%91%A8%E4%B8%89,%E5%91%A8%E5%9B%9B,%E5%91%A8%E4%BA%94,%E5%91%A8%E5%85%AD,%E5%91%A8%E6%97%A5&series=%E4%B8%8B%E8%BD%BD:120,180,150,210,240,200,260&line=%E5%A2%9E%E9%95%BF%E7%8E%87:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=%E6%AF%8F%E5%91%A8%E4%B8%8B%E8%BD%BD%E9%87%8F&unit=dl) |
-| `sankey` | 桑基图(流向带宽)<br><br>**<u>`labels=`+`links=A>B:30`,≤24 节点/60 链接</u>** | [![sankey example](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=%E5%8A%9F%E8%83%BD,%E4%BF%AE%E5%A4%8D,%E6%96%87%E6%A1%A3,%E6%9D%82%E5%8A%A1,%E5%B7%B2%E5%90%88%E5%B9%B6,%E5%B7%B2%E5%85%B3%E9%97%AD,%E5%B7%B2%E6%8B%92%E7%BB%9D,1%E5%B9%B4%E5%86%85,1%E2%80%932%E5%B9%B4,2%E5%B9%B4%E4%BB%A5%E4%B8%8A&links=%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%90%88%E5%B9%B6:38;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%85%B3%E9%97%AD:12;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:8;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%90%88%E5%B9%B6:33;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:2;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%90%88%E5%B9%B6:16;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%85%B3%E9%97%AD:4;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%90%88%E5%B9%B6:5;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:6;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E5%B9%B4%E5%86%85:52;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E2%80%932%E5%B9%B4:28;%E5%B7%B2%E5%90%88%E5%B9%B6%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:12;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E5%B9%B4%E5%86%85:14;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E2%80%932%E5%B9%B4:9;%E5%B7%B2%E5%85%B3%E9%97%AD%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E5%B9%B4%E5%86%85:9;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E2%80%932%E5%B9%B4:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:2&title=PR%20%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&unit=prs&w=360)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=%E5%8A%9F%E8%83%BD,%E4%BF%AE%E5%A4%8D,%E6%96%87%E6%A1%A3,%E6%9D%82%E5%8A%A1,%E5%B7%B2%E5%90%88%E5%B9%B6,%E5%B7%B2%E5%85%B3%E9%97%AD,%E5%B7%B2%E6%8B%92%E7%BB%9D,1%E5%B9%B4%E5%86%85,1%E2%80%932%E5%B9%B4,2%E5%B9%B4%E4%BB%A5%E4%B8%8A&links=%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%90%88%E5%B9%B6:38;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E5%85%B3%E9%97%AD:12;%E5%8A%9F%E8%83%BD%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:8;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%90%88%E5%B9%B6:33;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E4%BF%AE%E5%A4%8D%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:2;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%90%88%E5%B9%B6:16;%E6%96%87%E6%A1%A3%3E%E5%B7%B2%E5%85%B3%E9%97%AD:4;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%90%88%E5%B9%B6:5;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E5%85%B3%E9%97%AD:6;%E6%9D%82%E5%8A%A1%3E%E5%B7%B2%E6%8B%92%E7%BB%9D:6;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E5%B9%B4%E5%86%85:52;%E5%B7%B2%E5%90%88%E5%B9%B6%3E1%E2%80%932%E5%B9%B4:28;%E5%B7%B2%E5%90%88%E5%B9%B6%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:12;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E5%B9%B4%E5%86%85:14;%E5%B7%B2%E5%85%B3%E9%97%AD%3E1%E2%80%932%E5%B9%B4:9;%E5%B7%B2%E5%85%B3%E9%97%AD%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E5%B9%B4%E5%86%85:9;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E1%E2%80%932%E5%B9%B4:5;%E5%B7%B2%E6%8B%92%E7%BB%9D%3E2%E5%B9%B4%E4%BB%A5%E4%B8%8A:2&title=PR%20%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&unit=prs) |
-| `qr` | 二维码<br><br>**<u>`d`=文本(≤1000 字符),`fg`/`bg` 配色,`title`/`unit` 标注</u>** | [![qr example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=%E6%89%AB%E7%A0%81&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=%E6%89%AB%E7%A0%81) |
-
-**`GET /draw`**(无参数)或 `?tab=pie` — 演示页(11 图种分类、全部风格变体、URL 双形态面板)
-**`POST /draw?type=...`** — 提交 JSON/CSV body 创建永久短链
-**`GET /draw/c/<hash>`** — 短链渲染(immutable)
-
-通用参数:
-
-- `t` 风格家族(见下节,按图种取用;该图种未做时回退默认)
-- `scheme` 明暗:`auto`(默认,跟随系统)/ `dark` / `light`
-- `v` 钉住版本;`w`/`h` 尺寸(200–1600 / 140–1200,qr 为 120–1000 / 140–1000)
-- `num` 数值标注:`all` / `peak`(仅最高)/ `none`。默认跟随风格(设计规范变体多为 `none`,`?num=all` 显式全标)。适用于 pie/bar/hbar/line/area/scatter/combo;radar/gauge/sankey/qr 忽略
-- `subtitle` 编辑式副标题(仅 area 的编辑式标题风格 `t=opendata` 渲染)、`source` 数据来源脚注(仅 area 渲染,任意 `t`);其余图种解析但忽略
-
-## 风格(`?t=`)
-
-按图种提供变体,明暗双配色自动切换:
-
-| type | 可用家族 |
-|---|---|
-| `pie` | `opendata`(默认,标签全外)、`evil`(圆角环+内标值)、`evil-mono`(实心饼+引线外标)、`market-mono`(灰阶+环心总计)、`progress`(点状进度环)、`revenue`(渐变扇区+虚线内圈) |
-| `bar` | `evil`(默认,分组柱)、`base`(卡片柱)、`grid`(表格柱) |
-| `hbar` | `base`(默认)、`opendata`(支持 `ref=`/`reflabel=` 参考线)、`xcmd`(像素条,值为 %)、`xcmd-issue`(双系列蝴蝶)、`rank`(双系列实底+斜纹) |
-| `line` | `shadcn`(默认)、`evil`、`evil-glow`(发光)、`evil-mono`、`opendata`(线端标签) |
-| `area` | `evil`(默认,双系列虚线面积)、`star`(手绘风)、`opendata`(浓渐变+编辑标题)、`pixel`、`polka` |
-| `radar` | `base`(默认)、`evil`(多系列)、`xcmd` |
-| `sankey` | `base`(默认)、`fund`、`pipeline` |
-| `gauge` | `base`(默认)、`gradient`、`reliability`(分区环仪表) |
-| `scatter` / `combo` / `qr` | `base`(combo 另有 `evil`) |
-
-## 传数据的两种方式
-
-**扁平参数(URL 永远可读,推荐)**:
-
-```
-/draw?type=pie&title=Stars by language&unit=stars&labels=TypeScript,Python,Go,Rust&values=4821,2312,980,645
-/draw?type=bar&title=Weekly downloads&labels=Mon,Tue&values=1200,1800
-```
-
-标签含逗号时用重复参数:`labels=Q1, 2024&labels=Q2&values=1&values=2`
-
-**多系列对比**(type=bar 分组/堆叠、type=line 多折线、type=area 多面积,≤6 系列):
-
-```
-/draw?type=area&labels=Mon,Tue,Wed&series=Desktop:120,180,150&series=Mobile:80,90,85
-```
-
-**JSON 形态(复杂数据)**:`?d=` + URL 编码的 JSON:
-
-```json
-{"title":"Stars by language","unit":"stars","data":[{"label":"TypeScript","value":4821},{"label":"Python","value":2312}]}
-```
-
-多系列 JSON:`{"labels":["Mon","Tue"],"series":[{"name":"draw","values":[120,180]},{"name":"qc","values":[80,90]}]}`
-
-二维码:`/draw?type=qr&d=https://github.com/tzw&fg=%236366f1`
-
-仪表盘:`/draw?type=gauge&title=Build pass rate&value=87&max=100`
-
-散点图:`/draw?type=scatter&x=10,20,30&y=5,8,7`
-
-混合图:`/draw?type=combo&labels=Mon,Tue&series=dl:120,180&line=growth:5,8`(柱与线量级差 >5 倍时自动启用双 y 轴)
-
-## 短链接(数据存 GitHub 仓库,内容寻址、永不过期)
-
-```
-POST /draw?type=pie                body = 图表 spec JSON
-POST /draw?type=bar&t=evil         body = CSV(text/csv,首行表头)
-→ 201 {"hash":"a3f9c2d4e5f60718","url":"https://x-cmd.com/draw/c/a3f9c2d4e5f60718"}
-
-GET /draw/c/<hash>                 → SVG,永久 immutable 缓存
-```
-
-- 指纹 = 规范化数据(template+theme+spec,递归排序 key)的 SHA-256 前 16 位;相同数据 → 相同短链(自动去重、幂等);读取时复核指纹,存档被改即拒绝
-- 多系列支持 bar/line/area/radar,以及 hbar(仅 `t=xcmd-issue`/`t=rank`,恰好 2 系列);其余 type 提交多系列会被 400 拒绝;POST 限 30 次/分钟/IP
-- 服务端配置:`DATA_REPO`(公开仓,`owner/name`,wrangler.jsonc)、`GITHUB_TOKEN`(secret,fine-grained PAT 仅授该仓 **Contents 写**;读取走 raw 免 token);数据文件存于 `charts/<hash>.json`
-- 可见性:数据仓是公开的,任何人可浏览目录——**请勿创建含敏感数据的短链**(私有存储方案规划中,将收费提供)
-- 对比 quickchart:短链会过期(6个月/数天),我们的永不过期
-
-## 版本语义
-
-- 不带 `v`:渲染**最新版**,`Cache-Control: max-age=300`(链接随升级变化)
-- `?v=1`:钉住版本,`Cache-Control: max-age=86400`(1 天;渲染仍随部署演进,不承诺永久冻结)。`v` 取值 1..当前版本,超出报 400
-- `immutable` 仅用于短链 `/c/<hash>`(内容寻址,输出真正永不变化;短链忽略 `v` 参数)
-
-## AI 可读
-
-每个 SVG 内嵌 `<metadata>`(转义 JSON):`{generator, template, version, spec}`,数据与参数可直接 round-trip。文字全部用 `<text>`(真文本)。
-
-## 自部署(一键)
-
-部署一套自己的 draw 到你的 Cloudflare 账号(免费计划即可,只需 CF 账号):
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
-```
-
-脚本流程:克隆仓库 → wrangler 浏览器登录 → 部署 → 冒烟测试,结束打印你的 `*.workers.dev` 地址。GET 渲染全家桶(11 图种、全部风格)开箱即用。
-
-- **短链(POST)第一阶段未默认启用**,调用会返回"未配置"提示。启用方法:建一个公开仓存数据 → 本地 wrangler.jsonc 的 vars 设 `DATA_REPO=owner/name` → `npx wrangler secret put GITHUB_TOKEN`(fine-grained PAT 仅授该仓 Contents 写)→ 重新部署
-- 已 clone 仓库的,在仓库目录里跑 `npm run setup` 即可(跳过克隆)
-- 路径前缀自动适配:workers.dev 根路径与 `/draw` 子路由都能用,无需改代码;也可用 `BASE_PATH` var 显式钉死
-- 绑自有域名:dashboard → Workers → Settings → Domains & Routes 加 route(任意路径前缀)
-- Windows 请用 WSL 或 Git Bash 运行
+| 想了解 | 文档 |
+| --- | --- |
+| 浏览全部图种与场景 | [文档总览](../docs/README.md) · [参考图例](../docs/9-showcases/12-reference-examples/cn.md) · [云架构示例](../docs/9-showcases/14-cloud-architecture/cn.md) |
+| 查询通用参数与 URL 编码 | [参数说明](../docs/1-overview/07-params/cn.md) |
+| 使用 JSON 数据 | [数据格式与 API](../docs/1-overview/04-data-and-api/cn.md) |
+| 创建短链或配置短链存储 | [自托管与短链配置](../docs/1-overview/05-self-hosting/cn.md) |
+| 绘制架构图、时序图、ERD 等结构图 | [结构图 URL 语法](../docs/1-overview/06-diagram-urls/cn.md) |
+| 本地运行或部署到 Cloudflare | [自托管指南](../docs/1-overview/05-self-hosting/cn.md) |
+| 让 Agent 自动生成图表 | [Agent Skill](../SKILL.md) |
 
 ## 开发
 
@@ -258,4 +120,4 @@ npm run deploy   # wrangler deploy
 
 ## 许可
 
-代码 [Apache-2.0](../LICENSE)。内嵌字体遵循各自许可:Inter(OFL,全文见 `src/styles/inter-OFL.txt`)、Handlee(OFL)。
+代码采用 [Apache-2.0](../LICENSE)。内嵌字体遵循各自许可：Inter（OFL，全文见 [`inter-OFL.txt`](../src/styles/inter-OFL.txt)）和 Handlee（OFL，全文见 [`handlee-OFL.txt`](../src/styles/handlee-OFL.txt)）。

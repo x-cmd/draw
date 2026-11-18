@@ -5,195 +5,119 @@
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
 
-Grafik SVG untuk era AI: satu endpoint `/draw?type=...`, data di URL, dan `<metadata>` yang dapat dibaca mesin di setiap keluaran. Sistem gaya mengikuti spesifikasi desain, dengan beberapa varian per jenis grafik.
 
-## Pratinjau
+X-CMD Draw adalah alat open source untuk membuat diagram SVG: masukkan data dan gaya ke dalam URL untuk membuat diagram batang, diagram garis, diagram Sankey, diagram arsitektur sistem, peta pikiran, dan berbagai visual lainnya.
 
-Semua data hidup di URL — buka di browser, sematkan dengan `<img>` atau tempel di README: SVG langsung dirender.
+Diagram dapat disematkan langsung di README, issue, PR, posting blog, dan halaman web tanpa mengekspor atau mengunggah file gambar. Tautan dan SVG menyimpan data serta parameter yang dapat dibaca mesin: pembaca melihat diagram, sedangkan AI Agent dapat terus membaca, mengubah, dan membuatnya ulang tanpa mengenali gambar.
 
-### Sankey — siklus hidup PR (`type=sankey&t=pipeline`)
+## Contoh
 
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=fitur,fix,dokumentasi,lainnya,digabungkan,ditutup,ditolak,%3C1th,1%E2%80%932th,%3E2th&links=fitur%3Edigabungkan:38;fitur%3Editutup:12;fitur%3Editolak:8;fix%3Edigabungkan:33;fix%3Editutup:6;fix%3Editolak:2;dokumentasi%3Edigabungkan:16;dokumentasi%3Editutup:4;lainnya%3Edigabungkan:5;lainnya%3Editutup:6;lainnya%3Editolak:6;digabungkan%3E%3C1th:52;digabungkan%3E1%E2%80%932th:28;digabungkan%3E%3E2th:12;ditutup%3E%3C1th:14;ditutup%3E1%E2%80%932th:9;ditutup%3E%3E2th:5;ditolak%3E%3C1th:9;ditolak%3E1%E2%80%932th:5;ditolak%3E%3E2th:2&title=Siklus%20hidup%20PR&unit=prs
-```
+Dari analisis performa hingga desain arsitektur, dari peta hingga jadwal, definisi setiap diagram tersimpan dalam tautan. Klik gambar untuk melihat data, menyesuaikan gaya, dan membuat diagram ulang. [Lihat lebih banyak contoh diagram ↗](https://x-cmd.com/draw)
 
-[![Sankey — siklus hidup PR](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=fitur,fix,dokumentasi,lainnya,digabungkan,ditutup,ditolak,%3C1th,1%E2%80%932th,%3E2th&links=fitur%3Edigabungkan:38;fitur%3Editutup:12;fitur%3Editolak:8;fix%3Edigabungkan:33;fix%3Editutup:6;fix%3Editolak:2;dokumentasi%3Edigabungkan:16;dokumentasi%3Editutup:4;lainnya%3Edigabungkan:5;lainnya%3Editutup:6;lainnya%3Editolak:6;digabungkan%3E%3C1th:52;digabungkan%3E1%E2%80%932th:28;digabungkan%3E%3E2th:12;ditutup%3E%3C1th:14;ditutup%3E1%E2%80%932th:9;ditutup%3E%3E2th:5;ditolak%3E%3C1th:9;ditolak%3E1%E2%80%932th:5;ditolak%3E%3E2th:2&title=Siklus%20hidup%20PR&unit=prs)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=fitur,fix,dokumentasi,lainnya,digabungkan,ditutup,ditolak,%3C1th,1%E2%80%932th,%3E2th&links=fitur%3Edigabungkan:38;fitur%3Editutup:12;fitur%3Editolak:8;fix%3Edigabungkan:33;fix%3Editutup:6;fix%3Editolak:2;dokumentasi%3Edigabungkan:16;dokumentasi%3Editutup:4;lainnya%3Edigabungkan:5;lainnya%3Editutup:6;lainnya%3Editolak:6;digabungkan%3E%3C1th:52;digabungkan%3E1%E2%80%932th:28;digabungkan%3E%3E2th:12;ditutup%3E%3C1th:14;ditutup%3E1%E2%80%932th:9;ditutup%3E%3E2th:5;ditolak%3E%3C1th:9;ditolak%3E1%E2%80%932th:5;ditolak%3E%3E2th:2&title=Siklus%20hidup%20PR&unit=prs)
+| | |
+| --- | --- |
+| **Unduhan dan pertumbuhan**<br>[![Unduhan dan pertumbuhan](https://www.x-cmd.com/draw?type=combo&title=Unduhan+dan+pertumbuhan&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26)](https://www.x-cmd.com/draw/explore?type=combo&title=Unduhan+dan+pertumbuhan&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26) | **Perbandingan kinerja algoritma kompresi**<br>[![Kompresi: kecepatan vs rasio](https://www.x-cmd.com/draw/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Kompresi%3A%20kecepatan%20vs%20rasio%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20ukuran%20gelembung%20%3D%20kecepatan%20dekompresi%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Kecepatan%20kompresi%20MB%2Fs%20%28lebih%20cepat%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Rasio%20%28hasil%20lebih%20kecil%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Kompresi%3A%20kecepatan%20vs%20rasio%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20ukuran%20gelembung%20%3D%20kecepatan%20dekompresi%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Kecepatan%20kompresi%20MB%2Fs%20%28lebih%20cepat%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Rasio%20%28hasil%20lebih%20kecil%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D) |
+| [![Arsitektur menyeluruh proyek OpenCode](https://www.x-cmd.com/draw/arch2?title=Arsitektur+menyeluruh+proyek+OpenCode&t=shadcn&n=tui%3Bfe%3BAntarmuka+terminal+TUI%3BInteraksi+baris+perintah%3Br0c0&n=web%3Bfe%3BAntarmuka+web%3BAkses+browser%3Br0c1&n=desktop%3Bfe%3BAplikasi+desktop%3BKlien+Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3BIntegrasi+terprogram%3Br1c0&n=server%3Bsvc%3BLayanan+inti+OpenCode%3BLayanan+CLI+dan+HTTP%3Br1c1&n=session%3Bsvc%3BSesi+dan+pesan%3BPengelolaan+konteks%3Br2c0&n=agent%3Bsvc%3BSistem+agen%3BSub-agen+Build+Plan%3Br2c1&n=provider%3Bsvc%3BPenyedia+model%3BPermintaan+dan+respons+model%3Br2c2&n=tools%3Bsvc%3BSistem+alat%3BMembaca+dan+menulis+file%2C+Bash%2C+pencarian%3Br3c0&n=mcp%3Bsvc%3BLayanan+MCP%3BKoneksi+alat+eksternal%3Br3c1&n=plugin%3Bsvc%3BPlugin+dan+ekstensi%3BHook+peristiwa+dan+kemampuan+kustom%3Br3c2&n=storage%3Bdb%3BPenyimpanan+lokal%3BData+sesi+SQLite%3Br4c1&e=tui%3Bserver%3BPermintaan+terminal&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3BPermintaan+klien&e=sdk%3Bserver%3BPanggilan+API&e=server%3Bsession%3BMengelola+sesi&e=server%3Bagent%3BOrkestrasi+agen&e=agent%3Bprovider%3BPermintaan+model&e=agent%3Btools%3BMemanggil+alat&e=tools%3Bmcp%3BMemperluas+sumber+alat&e=server%3Bplugin%3BMemuat+ekstensi&e=session%3Bstorage%3BMembaca+dan+menulis+sesi&e=agent%3Bsession%3BKonteks+pesan&b=Titik+masuk+klien%3B+tui+web+desktop+sdk&b=Lapisan+runtime+inti%3B+server+session+agent+provider&b=Ekstensi+dan+eksekusi%3B+tools+mcp+plugin&b=Persistensi+data%3B+storage)](https://www.x-cmd.com/draw/explore/arch2?title=Arsitektur+menyeluruh+proyek+OpenCode&t=shadcn&n=tui%3Bfe%3BAntarmuka+terminal+TUI%3BInteraksi+baris+perintah%3Br0c0&n=web%3Bfe%3BAntarmuka+web%3BAkses+browser%3Br0c1&n=desktop%3Bfe%3BAplikasi+desktop%3BKlien+Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript+SDK%3BIntegrasi+terprogram%3Br1c0&n=server%3Bsvc%3BLayanan+inti+OpenCode%3BLayanan+CLI+dan+HTTP%3Br1c1&n=session%3Bsvc%3BSesi+dan+pesan%3BPengelolaan+konteks%3Br2c0&n=agent%3Bsvc%3BSistem+agen%3BSub-agen+Build+Plan%3Br2c1&n=provider%3Bsvc%3BPenyedia+model%3BPermintaan+dan+respons+model%3Br2c2&n=tools%3Bsvc%3BSistem+alat%3BMembaca+dan+menulis+file%2C+Bash%2C+pencarian%3Br3c0&n=mcp%3Bsvc%3BLayanan+MCP%3BKoneksi+alat+eksternal%3Br3c1&n=plugin%3Bsvc%3BPlugin+dan+ekstensi%3BHook+peristiwa+dan+kemampuan+kustom%3Br3c2&n=storage%3Bdb%3BPenyimpanan+lokal%3BData+sesi+SQLite%3Br4c1&e=tui%3Bserver%3BPermintaan+terminal&e=web%3Bserver%3BHTTP+API&e=desktop%3Bserver%3BPermintaan+klien&e=sdk%3Bserver%3BPanggilan+API&e=server%3Bsession%3BMengelola+sesi&e=server%3Bagent%3BOrkestrasi+agen&e=agent%3Bprovider%3BPermintaan+model&e=agent%3Btools%3BMemanggil+alat&e=tools%3Bmcp%3BMemperluas+sumber+alat&e=server%3Bplugin%3BMemuat+ekstensi&e=session%3Bstorage%3BMembaca+dan+menulis+sesi&e=agent%3Bsession%3BKonteks+pesan&b=Titik+masuk+klien%3B+tui+web+desktop+sdk&b=Lapisan+runtime+inti%3B+server+session+agent+provider&b=Ekstensi+dan+eksekusi%3B+tools+mcp+plugin&b=Persistensi+data%3B+storage) | [![US states · GDP per capita 2024 · thousand USD](https://www.x-cmd.com/draw/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540) |
+| [![Gambaran teknologi model bahasa besar](https://www.x-cmd.com/draw/mindmap?style=radial&title=Gambaran+teknologi+model+bahasa+besar&n=Model+bahasa+besar%2FPra-pelatihan%2FData%2FPembersihan+dan+deduplikasi&n=Model+bahasa+besar%2FPra-pelatihan%2FData%2FData+sintetis&n=Model+bahasa+besar%2FPra-pelatihan%2FPelatihan%2FArsitektur+MoE&n=Model+bahasa+besar%2FPenyelarasan%2FSFT&n=Model+bahasa+besar%2FPenyelarasan%2FRLHF&n=Model+bahasa+besar%2FPenyelarasan%2FDPO&n=Model+bahasa+besar%2FInferensi%2FPengambilan+sampel%2Ftemperature&n=Model+bahasa+besar%2FInferensi%2FPengambilan+sampel%2Ftop-p&n=Model+bahasa+besar%2FInferensi%2FAkselerasi%2FKV+Cache&n=Model+bahasa+besar%2FInferensi%2FAkselerasi%2FDekoding+spekulatif&n=Model+bahasa+besar%2FInferensi%2FAkselerasi%2FKuantisasi&n=Model+bahasa+besar%2FInferensi%2FPenerapan%2FvLLM&n=Model+bahasa+besar%2FRAG%2FBasis+data+vektor&n=Model+bahasa+besar%2FRAG%2FModel+embedding&n=Model+bahasa+besar%2FRAG%2FPemeringkatan+ulang&n=Model+bahasa+besar%2FAgent%2FPemanggilan+alat&n=Model+bahasa+besar%2FAgent%2FPerencanaan+tugas&n=Model+bahasa+besar%2FAgent%2FSistem+multi-agen&n=Model+bahasa+besar%2FAgent%2FProtokol+MCP&n=Model+bahasa+besar%2FPenyetelan+halus%2FLoRA&n=Model+bahasa+besar%2FPenyetelan+halus%2FPenyetelan+semua+parameter&n=Model+bahasa+besar%2FPenyetelan+halus%2FDistilasi+pengetahuan&n=Model+bahasa+besar%2FEvaluasi%2FMMLU&n=Model+bahasa+besar%2FEvaluasi%2FHumanEval&n=Model+bahasa+besar%2FEvaluasi%2FEvaluasi+dengan+LLM&n=Model+bahasa+besar%2FMultimodal%2FEncoder+visual&n=Model+bahasa+besar%2FMultimodal%2FUcapan&n=Model+bahasa+besar%2FMultimodal%2FVideo)](https://www.x-cmd.com/draw/explore/mindmap?style=radial&title=Gambaran+teknologi+model+bahasa+besar&n=Model+bahasa+besar%2FPra-pelatihan%2FData%2FPembersihan+dan+deduplikasi&n=Model+bahasa+besar%2FPra-pelatihan%2FData%2FData+sintetis&n=Model+bahasa+besar%2FPra-pelatihan%2FPelatihan%2FArsitektur+MoE&n=Model+bahasa+besar%2FPenyelarasan%2FSFT&n=Model+bahasa+besar%2FPenyelarasan%2FRLHF&n=Model+bahasa+besar%2FPenyelarasan%2FDPO&n=Model+bahasa+besar%2FInferensi%2FPengambilan+sampel%2Ftemperature&n=Model+bahasa+besar%2FInferensi%2FPengambilan+sampel%2Ftop-p&n=Model+bahasa+besar%2FInferensi%2FAkselerasi%2FKV+Cache&n=Model+bahasa+besar%2FInferensi%2FAkselerasi%2FDekoding+spekulatif&n=Model+bahasa+besar%2FInferensi%2FAkselerasi%2FKuantisasi&n=Model+bahasa+besar%2FInferensi%2FPenerapan%2FvLLM&n=Model+bahasa+besar%2FRAG%2FBasis+data+vektor&n=Model+bahasa+besar%2FRAG%2FModel+embedding&n=Model+bahasa+besar%2FRAG%2FPemeringkatan+ulang&n=Model+bahasa+besar%2FAgent%2FPemanggilan+alat&n=Model+bahasa+besar%2FAgent%2FPerencanaan+tugas&n=Model+bahasa+besar%2FAgent%2FSistem+multi-agen&n=Model+bahasa+besar%2FAgent%2FProtokol+MCP&n=Model+bahasa+besar%2FPenyetelan+halus%2FLoRA&n=Model+bahasa+besar%2FPenyetelan+halus%2FPenyetelan+semua+parameter&n=Model+bahasa+besar%2FPenyetelan+halus%2FDistilasi+pengetahuan&n=Model+bahasa+besar%2FEvaluasi%2FMMLU&n=Model+bahasa+besar%2FEvaluasi%2FHumanEval&n=Model+bahasa+besar%2FEvaluasi%2FEvaluasi+dengan+LLM&n=Model+bahasa+besar%2FMultimodal%2FEncoder+visual&n=Model+bahasa+besar%2FMultimodal%2FUcapan&n=Model+bahasa+besar%2FMultimodal%2FVideo) | [![Struktur kimia](https://www.x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O)](https://www.x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O) |
 
-### Hbar — throughput runtime (terukur) (`type=hbar; draw() ops/s: deno 7238 · node 6553 · bun 4972, Apple Silicon`)
+## Memulai cepat
 
-```text
-https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
-```
+### 1. Ajari Agent menggunakan draw
 
-[![Hbar — throughput runtime (terukur)](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)](https://x-cmd.com/draw/explore?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
-
-### Radar — perbandingan tiga editor (`type=radar&t=evil`)
+Kirim prompt berikut kepada Agent yang dapat membaca halaman web. Layanan hosted draw tidak memerlukan pendaftaran akun atau API Key:
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
-[![Radar — perbandingan tiga editor](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor)
+### 2. Jelaskan kebutuhan Anda
 
-### Kombo — unduhan dan pertumbuhan (`type=combo`)
+Beritahu Agent data yang harus digunakan, hubungan yang perlu ditampilkan, dan tempat diagram akan digunakan:
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl
-```
-
-[![Kombo — unduhan dan pertumbuhan](https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl)
-
-### Hbar — issue terbuka/ditutup (kupu-kupu) (`type=hbar&t=xcmd-issue`)
-
+Tambahkan diagram arsitektur ke README yang menunjukkan alur permintaan dari CLI melalui API ke database.
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,inti,dokumentasi,ci,UI&series=terbuka:12,8,15,4,9&series=ditutup:38,52,20,11,26&title=Issue%20per%20area
+
+Jika sering digunakan, Anda dapat memasang [`SKILL.md`](../SKILL.md) pada Agent yang mendukung skills lokal. Sebagai contoh, di Claude Code simpan sebagai `~/.claude/skills/draw/SKILL.md`; setelah satu kali konfigurasi, Anda dapat langsung menjelaskan kebutuhan Anda.
+
+## Fitur
+
+- **🔗 URL adalah diagram**: data dan gaya berupa teks yang dapat dibaca, dibandingkan, dan dikelola dengan version control; tautan dapat disematkan langsung ke Markdown dan halaman web.
+- **🤖 Dapat dibaca manusia dan AI**: SVG digunakan untuk tampilan, sedangkan data dan parameter yang dapat dibaca mesin memungkinkan pengeditan dan pembuatan ulang tanpa perlu menyimpulkan data dari gambar.
+- **📊 Kemampuan grafik yang beragam**: mencakup grafik data, diagram alir, diagram arsitektur, peta pikiran, peta, dan jadwal; ECharts juga dapat digunakan untuk menyatakan hubungan data yang lebih kompleks.
+- **🖱️ Penyuntingan interaktif visual**: klik contoh untuk membuka halaman interaktif, melihat data, menyesuaikan parameter dan gaya, lalu menyalin tautan diagram baru.
+- **🚀 Terbuka dan dapat di-self-host**: berbasis TypeScript dengan lisensi Apache-2.0; mendukung layanan online, CLI, pustaka npm / JSR, dan deployment ke Cloudflare Workers.
+
+## Tidak menggunakan Agent? Pilih cara integrasi yang sesuai
+
+### Membuat grafik dengan cepat: gunakan URL secara langsung
+
+Cocok untuk menulis dokumentasi, presentasi, atau visualisasi sementara. Buka [halaman demo dan penyunting interaktif](https://x-cmd.com/draw), sesuaikan data dan gaya, lalu salin tautannya; Anda juga dapat mengubah parameter URL secara langsung:
+
+```md
+![Contoh diagram proporsi](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
 ```
 
-[![Hbar — issue terbuka/ditutup (kupu-kupu)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,inti,dokumentasi,ci,UI&series=terbuka:12,8,15,4,9&series=ditutup:38,52,20,11,26&title=Issue%20per%20area)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,inti,dokumentasi,ci,UI&series=terbuka:12,8,15,4,9&series=ditutup:38,52,20,11,26&title=Issue%20per%20area)
+Pembaca melihat diagram, sedangkan Anda menyimpan teks yang dapat diubah dan ditinjau.
 
-### Pie — kota terbesar (`type=pie&t=market-mono`)
+### Pembuatan massal atau integrasi proyek: gunakan CLI atau pustaka
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5
+Cocok untuk memperbarui diagram secara otomatis di CI, membuat laporan massal, penggunaan offline, dan integrasi aplikasi. CLI dan pustaka menggunakan parameter yang sama dengan layanan hosted:
+
+```sh
+npx @x-cmd/draw --type pie --labels A,B --values 3,2 --out pie.svg
 ```
 
-[![Pie — kota terbesar](https://x-cmd.com/draw?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Kota%20terbesar&unit=jt&labels=Jakarta,Surabaya,Bandung,Medan&values=10.6,2.9,2.5,2.5)
-
-## Prompt — beri tahu agen AI Anda (skill)
-
-Tanpa instalasi: tempel prompt ini sekali ke agen mana pun yang terhubung ke web, lalu jelaskan grafik atau diagram yang Anda butuhkan dengan bahasa alami:
-
-```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
-```
-
-Setelah itu, Anda bisa bertanya:
-
-> Buat diagram pai jumlah bintang per bahasa — TypeScript 4821, Python 2312, Go 980
-
-Agen yang memuat skill secara native (Claude Code, dll.): simpan [`SKILL.md`](../SKILL.md) sekali ke folder skills Anda (`~/.claude/skills/draw/SKILL.md`); kemudian cukup minta grafik atau diagram secara langsung, tanpa menempelkan prompt atau URL.
-
-## Tiga cara pakai
-
-**Layanan hosted (tanpa instalasi)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
-
-**Pustaka npm + CLI (offline, sinkron)** (`npm i -g @x-cmd/draw` / `npx`):
+Untuk membuat SVG secara sinkron dalam kode, pasang pustaka dan panggil `draw`:
 
 ```sh
 npm install @x-cmd/draw
 ```
 ```ts
 import { draw } from '@x-cmd/draw';
+
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// menerima query string juga: draw('?type=bar&labels=Sen,Sel&values=3,5')
-// array = parameter berulang (label berkoma)
-draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
-```
-```sh
-draw --type pie --labels "A,B,C" --values "3,2,1" --out pie.svg
-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # query string polos
 ```
 
-**Self-hosting**:
+Pengguna Deno dapat menjalankan `deno add jsr:@x-cmd/draw`, lalu mengimpor dari `jsr:@x-cmd/draw`. Inti rendering tidak mengakses jaringan atau file sehingga cocok dijalankan di lingkungan terbatas.
+
+### Kendalikan titik masuk dan batas data: jalankan layanan sendiri
+
+Cocok untuk titik masuk tim yang terpadu, penggunaan jaringan internal, atau saat Anda tidak ingin bergantung pada layanan publik:
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve      # server Node lokal :8787 dengan halaman demo
-npm run dev        # wrangler dev
-bash scripts/setup.sh   # deploy sekali klik ke akun Cloudflare-mu
+npm run serve           # layanan lokal: http://localhost:8787/draw
+bash scripts/setup.sh   # deployment satu perintah ke akun Cloudflare Anda
 ```
 
-Variabel lingkungan (Node): `PORT` (8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (mengaktifkan tautan pendek POST).
+Setelah `DATA_REPO`, `DATA_BRANCH`, dan `GITHUB_TOKEN` dikonfigurasi, tautan pendek permanen dapat diaktifkan; tanpa konfigurasi tersebut, rendering GET biasa tetap berjalan. Lihat [panduan self-hosting](../docs/1-overview/05-self-hosting/id.md) untuk detailnya.
 
-**Deno** — inti render murni, tanpa jaringan — sandbox tanpa izin adalah batas keamanan:
+## Dokumentasi dan API
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+Jenis diagram, parameter, dan contoh lengkap dikelola berdasarkan topik dalam dokumentasi:
 
-## Endpoint
-
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — render grafik
-
-| type | | |
-|---|---|---|
-| `pie` | Donat; `donut=0` = pie penuh<br><br>**<u>≤100 kelas (>9 → Other)</u>** | [![example](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Bintang%20per%20bahasa&w=360)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Bintang%20per%20bahasa) |
-| `bar` | Kolom berkelompok; `stack=1` bertumpuk<br><br>**<u>≤30 grup</u>** | [![example](https://x-cmd.com/draw?type=bar&labels=Sen,Sel,Rab&series=dev:12,18,9&series=ci:8,11,6&w=360)](https://x-cmd.com/draw/explore?type=bar&labels=Sen,Sel,Rab&series=dev:12,18,9&series=ci:8,11,6) |
-| `hbar` | Batang horizontal (peringkat)<br><br>**<u>≤30 batang</u>** | [![example](https://x-cmd.com/draw?type=hbar&labels=CLI,inti,dokumentasi,UI&values=42,31,18,9&title=Commit%20per%20area&w=360)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,inti,dokumentasi,UI&values=42,31,18,9&title=Commit%20per%20area) |
-| `line` | Garis halus + gradien / multigaris<br><br>**<u>≤60 titik</u>** | [![example](https://x-cmd.com/draw?type=line&labels=Jan,Feb,Mar,Apr,Mei,Jun&values=12,19,15,25,22,30&title=Bintang%20per%20bahasa&w=360)](https://x-cmd.com/draw/explore?type=line&labels=Jan,Feb,Mar,Apr,Mei,Jun&values=12,19,15,25,22,30&title=Bintang%20per%20bahasa) |
-| `area` | Area / multi-area<br><br>**<u>≤60 titik</u>** | [![example](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Unduhan&w=360)](https://x-cmd.com/draw/explore?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Unduhan) |
-| `radar` | Radar<br><br>**<u>3–12 sumbu</u>** | [![example](https://x-cmd.com/draw?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor&w=360)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=startup,ekosistem,ekstensibilitas,memori,kemudahan&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Perbandingan%20editor) |
-| `gauge` | Meter (busur 240°, nilai tengah)<br><br>**<u>value+max; cincin ≤8</u>** | [![example](https://x-cmd.com/draw?type=gauge&title=Tingkat%20CI&value=87&max=100&w=360)](https://x-cmd.com/draw/explore?type=gauge&title=Tingkat%20CI&value=87&max=100) |
-| `scatter` | Sebaran, dua sumbu angka, negatif ok<br><br>**<u>x=&y=, ≤200 titik</u>** | [![example](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi&w=360)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latensi) |
-| `combo` | Kolom (`series=`) + garis (`line=`); sumbu ganda saat beda 5×<br><br>**<u>≤30 grup, ≤6 seri</u>** | [![example](https://x-cmd.com/draw?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=Sen,Sel,Rab,Kam,Jum,Sab,Min&series=Unduhan:120,180,150,210,240,200,260&line=Pertumbuhan:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=Unduhan%20mingguan&unit=dl) |
-| `sankey` | Diagram alur dengan lebar<br><br>**<u>labels=+links=A>B:30, ≤24 simpul</u>** | [![example](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=fitur,fix,dokumentasi,lainnya,digabungkan,ditutup,ditolak,%3C1th,1%E2%80%932th,%3E2th&links=fitur%3Edigabungkan:38;fitur%3Editutup:12;fitur%3Editolak:8;fix%3Edigabungkan:33;fix%3Editutup:6;fix%3Editolak:2;dokumentasi%3Edigabungkan:16;dokumentasi%3Editutup:4;lainnya%3Edigabungkan:5;lainnya%3Editutup:6;lainnya%3Editolak:6;digabungkan%3E%3C1th:52;digabungkan%3E1%E2%80%932th:28;digabungkan%3E%3E2th:12;ditutup%3E%3C1th:14;ditutup%3E1%E2%80%932th:9;ditutup%3E%3E2th:5;ditolak%3E%3C1th:9;ditolak%3E1%E2%80%932th:5;ditolak%3E%3E2th:2&title=Siklus%20hidup%20PR&unit=prs&w=360)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=fitur,fix,dokumentasi,lainnya,digabungkan,ditutup,ditolak,%3C1th,1%E2%80%932th,%3E2th&links=fitur%3Edigabungkan:38;fitur%3Editutup:12;fitur%3Editolak:8;fix%3Edigabungkan:33;fix%3Editutup:6;fix%3Editolak:2;dokumentasi%3Edigabungkan:16;dokumentasi%3Editutup:4;lainnya%3Edigabungkan:5;lainnya%3Editutup:6;lainnya%3Editolak:6;digabungkan%3E%3C1th:52;digabungkan%3E1%E2%80%932th:28;digabungkan%3E%3E2th:12;ditutup%3E%3C1th:14;ditutup%3E1%E2%80%932th:9;ditutup%3E%3E2th:5;ditolak%3E%3C1th:9;ditolak%3E1%E2%80%932th:5;ditolak%3E%3E2th:2&title=Siklus%20hidup%20PR&unit=prs) |
-| `qr` | Kode QR<br><br>**<u>d≤1000 karakter, fg/bg, title/unit</u>** | [![example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=pindai&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=pindai) |
-
-**`GET /draw`** — halaman demo · **`POST /draw?type=...`** — body JSON/CSV membuat tautan pendek permanen · **`GET /draw/c/<hash>`** — render tautan pendek (immutable)
-
-## Gaya (`?t=`)
-
-| type | |
-|---|---|
-| `pie` | opendata (bawaan) · evil · evil-mono · market-mono · progress · revenue |
-| `bar` | evil (bawaan) · base · grid |
-| `hbar` | base (bawaan) · opendata (ref=) · xcmd · xcmd-issue · rank |
-| `line` | shadcn (bawaan) · evil · evil-glow · evil-mono · opendata |
-| `area` | evil (bawaan) · star · opendata · pixel · polka |
-| `radar` | base (bawaan) · evil · xcmd |
-| `sankey` | base (bawaan) · fund · pipeline |
-| `gauge` | base (bawaan) · gradient · reliability |
-| `scatter/combo/qr` | base (combo juga evil) |
-
-## Mengirim data
-
-```text
-https://x-cmd.com/draw?type=pie&title=Bintang%20per%20bahasa&labels=TypeScript,Python,Go&values=4821,2312,980
-```
-
-Label berkoma: ulangi parameter (`labels=Q1, 2024&labels=Q2`). Data kompleks: `?d=` + JSON terenkode URL:
-
-```json
-{"title":"...","data":[{"label":"A","value":1}]}
-```
-
-## Tautan pendek
-
-POST membuat tautan pendek permanen berbasis konten (repositori GitHub sebagai penyimpanan):
-
-- data sama → hash sama (idempoten, dedup)
-- batas 30 permintaan/menit/IP
-- penyimpanan publik — jangan data sensitif
-
-## Versi
-
-- tanpa `v`: versi terbaru, cache 300 dtk
-- `v=N`: versi terkunci, cache 1 hari
-- `immutable` hanya untuk `/c/<hash>`
-
-## Ramah AI
-
-Setiap SVG menyematkan JSON: `{generator, template, version, spec}` — data dan parameter bolak-balik langsung; teks adalah `<text>` sungguhan.
-
-## Self-hosting satu langkah
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
-```
-
-Skrip meng-kloning, login wrangler, deploy, dan mencetak URL `*.workers.dev` milikmu. Tautan pendek (POST) diaktifkan lewat `DATA_REPO` + `GITHUB_TOKEN`.
+| Yang ingin diketahui | Dokumentasi |
+| --- | --- |
+| Menelusuri semua jenis diagram dan skenario | [Ringkasan dokumentasi](../docs/README.md) · [Contoh referensi](../docs/9-showcases/12-reference-examples/en.md) · [Contoh arsitektur cloud](../docs/9-showcases/14-cloud-architecture/en.md) |
+| Mencari parameter umum dan encoding URL | [Penjelasan parameter](../docs/1-overview/07-params/en.md) |
+| Menggunakan data JSON | [Format data dan API](../docs/1-overview/04-data-and-api/id.md) |
+| Membuat tautan pendek atau mengonfigurasi penyimpanannya | [Self-hosting dan konfigurasi tautan pendek](../docs/1-overview/05-self-hosting/id.md) |
+| Menggambar diagram arsitektur, diagram urutan, ERD, dan diagram struktural lainnya | [Sintaks URL diagram struktural](../docs/1-overview/06-diagram-urls/en.md) |
+| Menjalankan secara lokal atau melakukan deployment ke Cloudflare | [Panduan self-hosting](../docs/1-overview/05-self-hosting/id.md) |
+| Membuat diagram secara otomatis dengan Agent | [Agent Skill](../SKILL.md) |
 
 ## Pengembangan
 
 ```sh
 npm install
-npm run dev      # wrangler dev
-npm test         # vitest (120)
-npm run check    # tsc ×3
-npm run build    # dist/
+npm run dev      # menjalankan layanan lokal dengan wrangler dev
+npm test         # vitest
+npm run check    # tsc --noEmit × 3 (worker / node / build)
+npm run build    # menghasilkan dist/ (pustaka npm + CLI)
+npm run deploy   # wrangler deploy
 ```
 
 ## Lisensi
 
-Kode Apache-2.0; font OFL — [LICENSE](../LICENSE) · Dokumentasi lengkap: [README (EN)](../README.md)
+Kode menggunakan lisensi [Apache-2.0](../LICENSE). Font yang disertakan mengikuti lisensinya masing-masing: Inter (OFL, teks lengkap di [`inter-OFL.txt`](../src/styles/inter-OFL.txt)) dan Handlee (OFL, teks lengkap di [`handlee-OFL.txt`](../src/styles/handlee-OFL.txt)).

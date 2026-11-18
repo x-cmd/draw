@@ -5,195 +5,119 @@
 [![JSR score](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.jsr.io%2Fscopes%2Fx-cmd%2Fpackages%2Fdraw&query=%24.score&label=JSR%20score&color=yellowgreen)](https://jsr.io/@x-cmd/draw/score)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/x-cmd/draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/x-cmd/draw)
 
-SVG grafy pro éru AI: jediný endpoint `/draw?type=...`, data v URL a strojově čitelný `<metadata>` v každém výstupu. Systém stylů odpovídá designerské specifikaci, s více variantami pro každý typ grafu.
 
-## Náhled
+X-CMD Draw je open-source nástroj pro generování SVG grafů: zapište data a styly do URL a vytvořte sloupcové a spojnicové grafy, Sankeyovy diagramy, diagramy systémové architektury, myšlenkové mapy a další.
 
-Všechna data žijí v URL — otevřete v prohlížeči, vložte jako `<img>` nebo do README: SVG se vykreslí okamžitě.
+Grafy lze vkládat přímo do README, issue, PR, blogových příspěvků a webových stránek bez exportování nebo nahrávání obrazových souborů. Odkazy a SVG zachovávají strojově čitelná data a parametry: čtenáři vidí graf a agent AI jej může dále číst, upravovat a znovu generovat, aniž by musel rozpoznávat obrázek.
 
-### Sankey — životní cyklus PR (`type=sankey&t=pipeline`)
+## Rychlý náhled
 
-```text
-https://x-cmd.com/draw?type=sankey&t=pipeline&labels=featury,fixy,dokumentace,jin%C3%A9,slou%C4%8Deno,zav%C5%99eno,zam%C3%ADtnuto,%3C1r,1%E2%80%932r,%3E2r&links=featury%3Eslou%C4%8Deno:38;featury%3Ezav%C5%99eno:12;featury%3Ezam%C3%ADtnuto:8;fixy%3Eslou%C4%8Deno:33;fixy%3Ezav%C5%99eno:6;fixy%3Ezam%C3%ADtnuto:2;dokumentace%3Eslou%C4%8Deno:16;dokumentace%3Ezav%C5%99eno:4;jin%C3%A9%3Eslou%C4%8Deno:5;jin%C3%A9%3Ezav%C5%99eno:6;jin%C3%A9%3Ezam%C3%ADtnuto:6;slou%C4%8Deno%3E%3C1r:52;slou%C4%8Deno%3E1%E2%80%932r:28;slou%C4%8Deno%3E%3E2r:12;zav%C5%99eno%3E%3C1r:14;zav%C5%99eno%3E1%E2%80%932r:9;zav%C5%99eno%3E%3E2r:5;zam%C3%ADtnuto%3E%3C1r:9;zam%C3%ADtnuto%3E1%E2%80%932r:5;zam%C3%ADtnuto%3E%3E2r:2&title=%C5%BDivotn%C3%AD%20cyklus%20PR&unit=prs
-```
+Od analýzy výkonu po návrh architektury, od map po harmonogramy – definice grafů zůstávají uložené v odkazech. Kliknutím na obrázek zobrazíte data, upravíte styl a graf znovu vygenerujete. [Zobrazit další příklady grafů ↗](https://x-cmd.com/draw)
 
-[![Sankey — životní cyklus PR](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=featury,fixy,dokumentace,jin%C3%A9,slou%C4%8Deno,zav%C5%99eno,zam%C3%ADtnuto,%3C1r,1%E2%80%932r,%3E2r&links=featury%3Eslou%C4%8Deno:38;featury%3Ezav%C5%99eno:12;featury%3Ezam%C3%ADtnuto:8;fixy%3Eslou%C4%8Deno:33;fixy%3Ezav%C5%99eno:6;fixy%3Ezam%C3%ADtnuto:2;dokumentace%3Eslou%C4%8Deno:16;dokumentace%3Ezav%C5%99eno:4;jin%C3%A9%3Eslou%C4%8Deno:5;jin%C3%A9%3Ezav%C5%99eno:6;jin%C3%A9%3Ezam%C3%ADtnuto:6;slou%C4%8Deno%3E%3C1r:52;slou%C4%8Deno%3E1%E2%80%932r:28;slou%C4%8Deno%3E%3E2r:12;zav%C5%99eno%3E%3C1r:14;zav%C5%99eno%3E1%E2%80%932r:9;zav%C5%99eno%3E%3E2r:5;zam%C3%ADtnuto%3E%3C1r:9;zam%C3%ADtnuto%3E1%E2%80%932r:5;zam%C3%ADtnuto%3E%3E2r:2&title=%C5%BDivotn%C3%AD%20cyklus%20PR&unit=prs)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=featury,fixy,dokumentace,jin%C3%A9,slou%C4%8Deno,zav%C5%99eno,zam%C3%ADtnuto,%3C1r,1%E2%80%932r,%3E2r&links=featury%3Eslou%C4%8Deno:38;featury%3Ezav%C5%99eno:12;featury%3Ezam%C3%ADtnuto:8;fixy%3Eslou%C4%8Deno:33;fixy%3Ezav%C5%99eno:6;fixy%3Ezam%C3%ADtnuto:2;dokumentace%3Eslou%C4%8Deno:16;dokumentace%3Ezav%C5%99eno:4;jin%C3%A9%3Eslou%C4%8Deno:5;jin%C3%A9%3Ezav%C5%99eno:6;jin%C3%A9%3Ezam%C3%ADtnuto:6;slou%C4%8Deno%3E%3C1r:52;slou%C4%8Deno%3E1%E2%80%932r:28;slou%C4%8Deno%3E%3E2r:12;zav%C5%99eno%3E%3C1r:14;zav%C5%99eno%3E1%E2%80%932r:9;zav%C5%99eno%3E%3E2r:5;zam%C3%ADtnuto%3E%3C1r:9;zam%C3%ADtnuto%3E1%E2%80%932r:5;zam%C3%ADtnuto%3E%3E2r:2&title=%C5%BDivotn%C3%AD%20cyklus%20PR&unit=prs)
+| | |
+| --- | --- |
+| **Stahování a růst**<br>[![Stahování a růst](https://www.x-cmd.com/draw?type=combo&title=Stahov%C3%A1n%C3%AD+a+r%C5%AFst&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26)](https://www.x-cmd.com/draw/explore?type=combo&title=Stahov%C3%A1n%C3%AD+a+r%C5%AFst&labels=Jan%2CFeb%2CMar%2CApr%2CMay%2CJun%2CJul%2CAug%2CSep%2COct%2CNov%2CDec&series=downloads%3A900%2C1200%2C1050%2C1600%2C1400%2C1800%2C2100%2C1950%2C2200%2C2500%2C2300%2C2700&line=growth%3A5%2C8%2C6%2C12%2C10%2C15%2C18%2C16%2C20%2C23%2C21%2C26) | **Porovnání výkonu kompresních algoritmů**<br>[![Komprese: rychlost vs. poměr](https://www.x-cmd.com/draw/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Komprese%3A%20rychlost%20vs.%20pom%C4%9Br%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20velikost%20bubliny%20%3D%20rychlost%20dekomprese%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Rychlost%20komprese%20MB%2Fs%20%28rychlej%C5%A1%C3%AD%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Pom%C4%9Br%20%28men%C5%A1%C3%AD%20v%C3%BDstup%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22backgroundColor%22%3A%22%230f172a%22%2C%22title%22%3A%7B%22text%22%3A%22Komprese%3A%20rychlost%20vs.%20pom%C4%9Br%22%2C%22subtext%22%3A%22Silesia%20%C2%B7%20i7-9700K%20%C2%B7%20lzbench%20%C2%B7%20velikost%20bubliny%20%3D%20rychlost%20dekomprese%22%2C%22left%22%3A%22center%22%2C%22textStyle%22%3A%7B%22color%22%3A%22%23f8fafc%22%7D%2C%22subtextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%7D%2C%22grid%22%3A%7B%22left%22%3A70%2C%22right%22%3A40%2C%22top%22%3A80%2C%22bottom%22%3A60%7D%2C%22xAxis%22%3A%7B%22name%22%3A%22Rychlost%20komprese%20MB%2Fs%20%28rychlej%C5%A1%C3%AD%20%E2%86%92%29%22%2C%22min%22%3A0%2C%22max%22%3A800%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A32%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22yAxis%22%3A%7B%22name%22%3A%22Pom%C4%9Br%20%28men%C5%A1%C3%AD%20v%C3%BDstup%20%E2%86%91%29%22%2C%22min%22%3A1.9%2C%22max%22%3A3%2C%22nameLocation%22%3A%22middle%22%2C%22nameGap%22%3A45%2C%22nameTextStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22axisLabel%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22splitLine%22%3A%7B%22lineStyle%22%3A%7B%22color%22%3A%22%231e293b%22%7D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22scatter%22%2C%22data%22%3A%5B%7B%22name%22%3A%22zstd%20-1%22%2C%22value%22%3A%5B510%2C2.896%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D1%22%2C%22value%22%3A%5B545%2C2.439%5D%2C%22symbolSize%22%3A30%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zstd%20--fast%3D4%22%2C%22value%22%3A%5B665%2C2.146%5D%2C%22symbolSize%22%3A31%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2322d3ee%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22brotli%20-1%22%2C%22value%22%3A%5B290%2C2.883%5D%2C%22symbolSize%22%3A21%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23a78bfa%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22zlib%20-1%22%2C%22value%22%3A%5B105%2C2.743%5D%2C%22symbolSize%22%3A20%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23f87171%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lz4%22%2C%22value%22%3A%5B675%2C2.101%5D%2C%22symbolSize%22%3A38%2C%22itemStyle%22%3A%7B%22color%22%3A%22%23fbbf24%22%7D%2C%22label%22%3A%7B%22position%22%3A%22right%22%7D%7D%2C%7B%22name%22%3A%22lzo1x%22%2C%22value%22%3A%5B650%2C2.106%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22left%22%7D%7D%2C%7B%22name%22%3A%22snappy%22%2C%22value%22%3A%5B520%2C2.089%5D%2C%22symbolSize%22%3A28%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%2C%7B%22name%22%3A%22quicklz%22%2C%22value%22%3A%5B520%2C2.238%5D%2C%22symbolSize%22%3A23%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22top%22%7D%7D%2C%7B%22name%22%3A%22lzf%22%2C%22value%22%3A%5B410%2C2.077%5D%2C%22symbolSize%22%3A24%2C%22itemStyle%22%3A%7B%22color%22%3A%22%2394a3b8%22%7D%2C%22label%22%3A%7B%22position%22%3A%22bottom%22%7D%7D%5D%2C%22itemStyle%22%3A%7B%22opacity%22%3A0.85%2C%22borderColor%22%3A%22%23fff%22%2C%22borderWidth%22%3A1%7D%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22formatter%22%3A%22%7Bb%7D%22%2C%22color%22%3A%22%23e2e8f0%22%2C%22fontSize%22%3A12%7D%7D%5D%7D) |
+| [![Celková architektura projektu OpenCode](https://www.x-cmd.com/draw/arch2?title=Celkov%C3%A1%20architektura%20projektu%20OpenCode&t=shadcn&n=tui%3Bfe%3BTermin%C3%A1lov%C3%A9%20rozhran%C3%AD%20TUI%3BInterakce%20p%C5%99es%20p%C5%99%C3%ADkazov%C3%BD%20%C5%99%C3%A1dek%3Br0c0&n=web%3Bfe%3BWebov%C3%A9%20rozhran%C3%AD%3BP%C5%99%C3%ADstup%20p%C5%99es%20prohl%C3%AD%C5%BEe%C4%8D%3Br0c1&n=desktop%3Bfe%3BDesktopov%C3%A1%20aplikace%3BKlient%20Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript%20SDK%3BProgramov%C3%A1%20integrace%3Br1c0&n=server%3Bsvc%3BHlavn%C3%AD%20slu%C5%BEba%20OpenCode%3BSlu%C5%BEby%20CLI%20a%20HTTP%3Br1c1&n=session%3Bsvc%3BRelace%20a%20zpr%C3%A1vy%3BSpr%C3%A1va%20kontextu%3Br2c0&n=agent%3Bsvc%3BSyst%C3%A9m%20agent%C5%AF%3BSubagenti%20Build%20Plan%3Br2c1&n=provider%3Bsvc%3BPoskytovatel%C3%A9%20model%C5%AF%3BPo%C5%BEadavky%20a%20odpov%C4%9Bdi%20model%C5%AF%3Br2c2&n=tools%3Bsvc%3BSyst%C3%A9m%20n%C3%A1stroj%C5%AF%3B%C4%8Cten%C3%AD%20a%20z%C3%A1pis%20soubor%C5%AF%2C%20hled%C3%A1n%C3%AD%20Bashem%3Br3c0&n=mcp%3Bsvc%3BSlu%C5%BEby%20MCP%3BP%C5%99ipojen%C3%AD%20extern%C3%ADch%20n%C3%A1stroj%C5%AF%3Br3c1&n=plugin%3Bsvc%3BPluginy%20a%20roz%C5%A1%C3%AD%C5%99en%C3%AD%3BUd%C3%A1lostn%C3%AD%20hooky%20a%20vlastn%C3%AD%20funkce%3Br3c2&n=storage%3Bdb%3BM%C3%ADstn%C3%AD%20%C3%BAlo%C5%BEi%C5%A1t%C4%9B%3BData%20relac%C3%AD%20SQLite%3Br4c1&e=tui%3Bserver%3BPo%C5%BEadavky%20z%20termin%C3%A1lu&e=web%3Bserver%3BHTTP%20API&e=desktop%3Bserver%3BPo%C5%BEadavky%20klienta&e=sdk%3Bserver%3BVol%C3%A1n%C3%AD%20API&e=server%3Bsession%3BSpr%C3%A1va%20relac%C3%AD&e=server%3Bagent%3BOrchestrace%20agent%C5%AF&e=agent%3Bprovider%3BPo%C5%BEadavek%20na%20model&e=agent%3Btools%3BVol%C3%A1n%C3%AD%20n%C3%A1stroj%C5%AF&e=tools%3Bmcp%3BRoz%C5%A1%C3%AD%C5%99en%C3%AD%20zdroj%C5%AF%20n%C3%A1stroj%C5%AF&e=server%3Bplugin%3BNa%C4%8D%C3%ADt%C3%A1n%C3%AD%20roz%C5%A1%C3%AD%C5%99en%C3%AD&e=session%3Bstorage%3B%C4%8Cten%C3%AD%2Fz%C3%A1pis%20relac%C3%AD&e=agent%3Bsession%3BKontext%20zpr%C3%A1v&b=Klientsk%C3%A9%20vstupy%3B%20tui%20web%20desktop%20sdk&b=Hlavn%C3%AD%20b%C4%9Bhov%C3%A1%20vrstva%3B%20server%20session%20agent%20provider&b=Roz%C5%A1%C3%AD%C5%99en%C3%AD%20a%20prov%C3%A1d%C4%9Bn%C3%AD%3B%20tools%20mcp%20plugin&b=Perzistence%20dat%3B%20storage)](https://www.x-cmd.com/draw/explore/arch2?title=Celkov%C3%A1%20architektura%20projektu%20OpenCode&t=shadcn&n=tui%3Bfe%3BTermin%C3%A1lov%C3%A9%20rozhran%C3%AD%20TUI%3BInterakce%20p%C5%99es%20p%C5%99%C3%ADkazov%C3%BD%20%C5%99%C3%A1dek%3Br0c0&n=web%3Bfe%3BWebov%C3%A9%20rozhran%C3%AD%3BP%C5%99%C3%ADstup%20p%C5%99es%20prohl%C3%AD%C5%BEe%C4%8D%3Br0c1&n=desktop%3Bfe%3BDesktopov%C3%A1%20aplikace%3BKlient%20Electron%3Br0c2&n=sdk%3Bbe%3BJavaScript%20SDK%3BProgramov%C3%A1%20integrace%3Br1c0&n=server%3Bsvc%3BHlavn%C3%AD%20slu%C5%BEba%20OpenCode%3BSlu%C5%BEby%20CLI%20a%20HTTP%3Br1c1&n=session%3Bsvc%3BRelace%20a%20zpr%C3%A1vy%3BSpr%C3%A1va%20kontextu%3Br2c0&n=agent%3Bsvc%3BSyst%C3%A9m%20agent%C5%AF%3BSubagenti%20Build%20Plan%3Br2c1&n=provider%3Bsvc%3BPoskytovatel%C3%A9%20model%C5%AF%3BPo%C5%BEadavky%20a%20odpov%C4%9Bdi%20model%C5%AF%3Br2c2&n=tools%3Bsvc%3BSyst%C3%A9m%20n%C3%A1stroj%C5%AF%3B%C4%8Cten%C3%AD%20a%20z%C3%A1pis%20soubor%C5%AF%2C%20hled%C3%A1n%C3%AD%20Bashem%3Br3c0&n=mcp%3Bsvc%3BSlu%C5%BEby%20MCP%3BP%C5%99ipojen%C3%AD%20extern%C3%ADch%20n%C3%A1stroj%C5%AF%3Br3c1&n=plugin%3Bsvc%3BPluginy%20a%20roz%C5%A1%C3%AD%C5%99en%C3%AD%3BUd%C3%A1lostn%C3%AD%20hooky%20a%20vlastn%C3%AD%20funkce%3Br3c2&n=storage%3Bdb%3BM%C3%ADstn%C3%AD%20%C3%BAlo%C5%BEi%C5%A1t%C4%9B%3BData%20relac%C3%AD%20SQLite%3Br4c1&e=tui%3Bserver%3BPo%C5%BEadavky%20z%20termin%C3%A1lu&e=web%3Bserver%3BHTTP%20API&e=desktop%3Bserver%3BPo%C5%BEadavky%20klienta&e=sdk%3Bserver%3BVol%C3%A1n%C3%AD%20API&e=server%3Bsession%3BSpr%C3%A1va%20relac%C3%AD&e=server%3Bagent%3BOrchestrace%20agent%C5%AF&e=agent%3Bprovider%3BPo%C5%BEadavek%20na%20model&e=agent%3Btools%3BVol%C3%A1n%C3%AD%20n%C3%A1stroj%C5%AF&e=tools%3Bmcp%3BRoz%C5%A1%C3%AD%C5%99en%C3%AD%20zdroj%C5%AF%20n%C3%A1stroj%C5%AF&e=server%3Bplugin%3BNa%C4%8D%C3%ADt%C3%A1n%C3%AD%20roz%C5%A1%C3%AD%C5%99en%C3%AD&e=session%3Bstorage%3B%C4%8Cten%C3%AD%2Fz%C3%A1pis%20relac%C3%AD&e=agent%3Bsession%3BKontext%20zpr%C3%A1v&b=Klientsk%C3%A9%20vstupy%3B%20tui%20web%20desktop%20sdk&b=Hlavn%C3%AD%20b%C4%9Bhov%C3%A1%20vrstva%3B%20server%20session%20agent%20provider&b=Roz%C5%A1%C3%AD%C5%99en%C3%AD%20a%20prov%C3%A1d%C4%9Bn%C3%AD%3B%20tools%20mcp%20plugin&b=Perzistence%20dat%3B%20storage) | [![US states · GDP per capita 2024 · thousand USD](https://www.x-cmd.com/draw/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540)](https://www.x-cmd.com/draw/explore/echarts?d=%7B%22title%22%3A%7B%22text%22%3A%22US%20states%20%C2%B7%20GDP%20per%20capita%202024%20%C2%B7%20thousand%20USD%22%7D%2C%22visualMap%22%3A%7B%22min%22%3A50%2C%22max%22%3A120%2C%22orient%22%3A%22horizontal%22%2C%22left%22%3A%22center%22%2C%22bottom%22%3A8%2C%22text%22%3A%5B%22high%22%2C%22low%22%5D%2C%22itemWidth%22%3A12%2C%22itemHeight%22%3A200%2C%22inRange%22%3A%7B%22color%22%3A%5B%22%23eff6ff%22%2C%22%23bfdbfe%22%2C%22%2393c5fd%22%2C%22%2360a5fa%22%5D%7D%7D%2C%22series%22%3A%5B%7B%22type%22%3A%22map%22%2C%22map%22%3A%22USA%22%2C%22label%22%3A%7B%22show%22%3Atrue%2C%22fontSize%22%3A9%2C%22formatter%22%3A%22%7Bb%7D%5Cn%7Bc%7D%22%2C%22color%22%3A%22%230f172a%22%7D%2C%22labelLayout%22%3A%7B%22hideOverlap%22%3Atrue%7D%2C%22itemStyle%22%3A%7B%22areaColor%22%3A%22%23f1f5f9%22%2C%22borderColor%22%3A%22%23ffffff%22%2C%22borderWidth%22%3A0.6%7D%2C%22data%22%3A%5B%7B%22name%22%3A%22New%20York%22%2C%22value%22%3A117%7D%2C%7B%22name%22%3A%22Massachusetts%22%2C%22value%22%3A109%7D%2C%7B%22name%22%3A%22Washington%22%2C%22value%22%3A108%7D%2C%7B%22name%22%3A%22Delaware%22%2C%22value%22%3A105%7D%2C%7B%22name%22%3A%22California%22%2C%22value%22%3A103%7D%2C%7B%22name%22%3A%22North%20Dakota%22%2C%22value%22%3A101%7D%2C%7B%22name%22%3A%22Connecticut%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Alaska%22%2C%22value%22%3A97%7D%2C%7B%22name%22%3A%22Nebraska%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Colorado%22%2C%22value%22%3A94%7D%2C%7B%22name%22%3A%22Illinois%22%2C%22value%22%3A90%7D%2C%7B%22name%22%3A%22New%20Jersey%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Texas%22%2C%22value%22%3A89%7D%2C%7B%22name%22%3A%22Wyoming%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Minnesota%22%2C%22value%22%3A88%7D%2C%7B%22name%22%3A%22Maryland%22%2C%22value%22%3A87%7D%2C%7B%22name%22%3A%22Virginia%22%2C%22value%22%3A86%7D%2C%7B%22name%22%3A%22Utah%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22New%20Hampshire%22%2C%22value%22%3A85%7D%2C%7B%22name%22%3A%22South%20Dakota%22%2C%22value%22%3A83%7D%2C%7B%22name%22%3A%22Nevada%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Iowa%22%2C%22value%22%3A82%7D%2C%7B%22name%22%3A%22Hawaii%22%2C%22value%22%3A81%7D%2C%7B%22name%22%3A%22Georgia%22%2C%22value%22%3A79%7D%2C%7B%22name%22%3A%22Ohio%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Tennessee%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Kansas%22%2C%22value%22%3A78%7D%2C%7B%22name%22%3A%22Oregon%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22Pennsylvania%22%2C%22value%22%3A77%7D%2C%7B%22name%22%3A%22North%20Carolina%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Wisconsin%22%2C%22value%22%3A76%7D%2C%7B%22name%22%3A%22Arizona%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Indiana%22%2C%22value%22%3A75%7D%2C%7B%22name%22%3A%22Florida%22%2C%22value%22%3A74%7D%2C%7B%22name%22%3A%22Rhode%20Island%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Missouri%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Louisiana%22%2C%22value%22%3A72%7D%2C%7B%22name%22%3A%22Vermont%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Maine%22%2C%22value%22%3A71%7D%2C%7B%22name%22%3A%22Michigan%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22New%20Mexico%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22Montana%22%2C%22value%22%3A69%7D%2C%7B%22name%22%3A%22South%20Carolina%22%2C%22value%22%3A65%7D%2C%7B%22name%22%3A%22Idaho%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Oklahoma%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Kentucky%22%2C%22value%22%3A64%7D%2C%7B%22name%22%3A%22Alabama%22%2C%22value%22%3A63%7D%2C%7B%22name%22%3A%22Arkansas%22%2C%22value%22%3A61%7D%2C%7B%22name%22%3A%22West%20Virginia%22%2C%22value%22%3A60%7D%2C%7B%22name%22%3A%22Mississippi%22%2C%22value%22%3A54%7D%5D%7D%5D%7D&w=960&h=540) |
+| [![Přehled technologií LLM](https://www.x-cmd.com/draw/mindmap?style=radial&title=P%C5%99ehled%20technologi%C3%AD%20LLM&n=LLM%2FP%C5%99edtr%C3%A9nov%C3%A1n%C3%AD%2FData%2F%C4%8Ci%C5%A1t%C4%9Bn%C3%AD%20a%20deduplikace&n=LLM%2FP%C5%99edtr%C3%A9nov%C3%A1n%C3%AD%2FData%2FSyntetick%C3%A1%20data&n=LLM%2FP%C5%99edtr%C3%A9nov%C3%A1n%C3%AD%2FTr%C3%A9nov%C3%A1n%C3%AD%2FArchitektura%20MoE&n=LLM%2FSlad%C4%9Bn%C3%AD%2FSFT&n=LLM%2FSlad%C4%9Bn%C3%AD%2FRLHF&n=LLM%2FSlad%C4%9Bn%C3%AD%2FDPO&n=LLM%2FInference%2FVzorkov%C3%A1n%C3%AD%2Ftemperature&n=LLM%2FInference%2FVzorkov%C3%A1n%C3%AD%2Ftop-p&n=LLM%2FInference%2FZrychlen%C3%AD%2FKV%20Cache&n=LLM%2FInference%2FZrychlen%C3%AD%2FSpekulativn%C3%AD%20dek%C3%B3dov%C3%A1n%C3%AD&n=LLM%2FInference%2FZrychlen%C3%AD%2FKvantizace&n=LLM%2FInference%2FNasazen%C3%AD%2FvLLM&n=LLM%2FRAG%2FVektorov%C3%A1%20datab%C3%A1ze&n=LLM%2FRAG%2FEmbeddingov%C3%BD%20model&n=LLM%2FRAG%2FP%C5%99ehodnocen%C3%AD%20po%C5%99ad%C3%AD&n=LLM%2FAgenti%2FVol%C3%A1n%C3%AD%20n%C3%A1stroj%C5%AF&n=LLM%2FAgenti%2FPl%C3%A1nov%C3%A1n%C3%AD%20%C3%BAloh&n=LLM%2FAgenti%2FMultiagentn%C3%AD%20syst%C3%A9my&n=LLM%2FAgenti%2FProtokol%20MCP&n=LLM%2FDolad%C4%9Bn%C3%AD%2FLoRA&n=LLM%2FDolad%C4%9Bn%C3%AD%2FDolad%C4%9Bn%C3%AD%20v%C5%A1ech%20parametr%C5%AF&n=LLM%2FDolad%C4%9Bn%C3%AD%2FDestilace%20znalost%C3%AD&n=LLM%2FHodnocen%C3%AD%2FMMLU&n=LLM%2FHodnocen%C3%AD%2FHumanEval&n=LLM%2FHodnocen%C3%AD%2FHodnocen%C3%AD%20pomoc%C3%AD%20LLM&n=LLM%2FMultimodalita%2FVizu%C3%A1ln%C3%AD%20kod%C3%A9r&n=LLM%2FMultimodalita%2F%C5%98e%C4%8D&n=LLM%2FMultimodalita%2FVideo)](https://www.x-cmd.com/draw/explore/mindmap?style=radial&title=P%C5%99ehled%20technologi%C3%AD%20LLM&n=LLM%2FP%C5%99edtr%C3%A9nov%C3%A1n%C3%AD%2FData%2F%C4%8Ci%C5%A1t%C4%9Bn%C3%AD%20a%20deduplikace&n=LLM%2FP%C5%99edtr%C3%A9nov%C3%A1n%C3%AD%2FData%2FSyntetick%C3%A1%20data&n=LLM%2FP%C5%99edtr%C3%A9nov%C3%A1n%C3%AD%2FTr%C3%A9nov%C3%A1n%C3%AD%2FArchitektura%20MoE&n=LLM%2FSlad%C4%9Bn%C3%AD%2FSFT&n=LLM%2FSlad%C4%9Bn%C3%AD%2FRLHF&n=LLM%2FSlad%C4%9Bn%C3%AD%2FDPO&n=LLM%2FInference%2FVzorkov%C3%A1n%C3%AD%2Ftemperature&n=LLM%2FInference%2FVzorkov%C3%A1n%C3%AD%2Ftop-p&n=LLM%2FInference%2FZrychlen%C3%AD%2FKV%20Cache&n=LLM%2FInference%2FZrychlen%C3%AD%2FSpekulativn%C3%AD%20dek%C3%B3dov%C3%A1n%C3%AD&n=LLM%2FInference%2FZrychlen%C3%AD%2FKvantizace&n=LLM%2FInference%2FNasazen%C3%AD%2FvLLM&n=LLM%2FRAG%2FVektorov%C3%A1%20datab%C3%A1ze&n=LLM%2FRAG%2FEmbeddingov%C3%BD%20model&n=LLM%2FRAG%2FP%C5%99ehodnocen%C3%AD%20po%C5%99ad%C3%AD&n=LLM%2FAgenti%2FVol%C3%A1n%C3%AD%20n%C3%A1stroj%C5%AF&n=LLM%2FAgenti%2FPl%C3%A1nov%C3%A1n%C3%AD%20%C3%BAloh&n=LLM%2FAgenti%2FMultiagentn%C3%AD%20syst%C3%A9my&n=LLM%2FAgenti%2FProtokol%20MCP&n=LLM%2FDolad%C4%9Bn%C3%AD%2FLoRA&n=LLM%2FDolad%C4%9Bn%C3%AD%2FDolad%C4%9Bn%C3%AD%20v%C5%A1ech%20parametr%C5%AF&n=LLM%2FDolad%C4%9Bn%C3%AD%2FDestilace%20znalost%C3%AD&n=LLM%2FHodnocen%C3%AD%2FMMLU&n=LLM%2FHodnocen%C3%AD%2FHumanEval&n=LLM%2FHodnocen%C3%AD%2FHodnocen%C3%AD%20pomoc%C3%AD%20LLM&n=LLM%2FMultimodalita%2FVizu%C3%A1ln%C3%AD%20kod%C3%A9r&n=LLM%2FMultimodalita%2F%C5%98e%C4%8D&n=LLM%2FMultimodalita%2FVideo) | [![Chemická struktura](https://www.x-cmd.com/draw/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O)](https://www.x-cmd.com/draw/explore/chem?smiles=CC%28%3DO%29Oc1ccccc1C%28%3DO%29O) |
 
-### Hbar — propustnost runtime (měřeno) (`type=hbar; draw() ops/s: deno 7238 · node 6553 · bun 4972, Apple Silicon`)
+## Rychlý start
 
-```text
-https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs
-```
+### 1. Naučte agenta používat draw
 
-[![Hbar — propustnost runtime (měřeno)](https://x-cmd.com/draw?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)](https://x-cmd.com/draw/explore?type=hbar&labels=deno,node,bun&values=7238,6553,4972&title=Runtime%20throughput&unit=ops%2Fs)
-
-### Radar — srovnání tří editorů (`type=radar&t=evil`)
+Pošlete následující prompt agentovi, který umí číst webové stránky. Hostovaná služba draw nevyžaduje registraci ani API klíč:
 
 ```text
-https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
-[![Radar — srovnání tří editorů](https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF)
+### 2. Popište, co potřebujete
 
-### Kombinovaný — stažení a růst (`type=combo`)
+Řekněte agentovi, jaká data použít, jaký vztah vyjádřit a kde bude graf použit:
 
 ```text
-https://x-cmd.com/draw?type=combo&labels=Po,%C3%9At,St,%C4%8Ct,P%C3%A1,So,Ne&series=Sta%C5%BEen%C3%AD:120,180,150,210,240,200,260&line=R%C5%AFst:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%BDdenn%C3%AD%20sta%C5%BEen%C3%AD&unit=dl
-```
-
-[![Kombinovaný — stažení a růst](https://x-cmd.com/draw?type=combo&labels=Po,%C3%9At,St,%C4%8Ct,P%C3%A1,So,Ne&series=Sta%C5%BEen%C3%AD:120,180,150,210,240,200,260&line=R%C5%AFst:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%BDdenn%C3%AD%20sta%C5%BEen%C3%AD&unit=dl)](https://x-cmd.com/draw/explore?type=combo&labels=Po,%C3%9At,St,%C4%8Ct,P%C3%A1,So,Ne&series=Sta%C5%BEen%C3%AD:120,180,150,210,240,200,260&line=R%C5%AFst:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%BDdenn%C3%AD%20sta%C5%BEen%C3%AD&unit=dl)
-
-### Hbar — otevřené/zavřené issue (motýlek) (`type=hbar&t=xcmd-issue`)
-
+Přidej do README architektonický diagram znázorňující cestu požadavku z CLI přes API do databáze.
 ```text
-https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,j%C3%A1dro,dokumentace,ci,UI&series=otev%C5%99en%C3%A9:12,8,15,4,9&series=zav%C5%99en%C3%A9:38,52,20,11,26&title=Issue%20podle%20oblasti
+
+Při častém použití můžete nainstalovat [`SKILL.md`](../SKILL.md) do agenta s podporou místních skillů. Například v Claude Code jej uložte jako `~/.claude/skills/draw/SKILL.md`; po jednorázovém nastavení stačí přímo popsat, co potřebujete.
+
+## Funkce
+
+- **🔗 URL je graf**: data a styly jsou čitelné, porovnatelné a verzovatelné texty a odkaz lze vložit přímo do Markdownu a webových stránek.
+- **🤖 Čitelné pro lidi i AI**: SVG slouží k zobrazení a strojově čitelná data a parametry umožňují další úpravy a opětovné generování bez odvozování dat z obrázku.
+- **📊 Bohaté možnosti grafů**: zahrnuje datové grafy, vývojové diagramy, diagramy architektury, myšlenkové mapy, mapy a harmonogramy; ECharts umožňuje vyjádřit i složitější datové vztahy.
+- **🖱️ Vizuální interaktivní úpravy**: kliknutím na příklad otevřete interaktivní stránku, zobrazíte data, upravíte parametry a styly a zkopírujete nový odkaz na graf.
+- **🚀 Otevřený a připravený pro self-hosting**: postaveno na TypeScriptu pod licencí Apache-2.0; dostupné jako online služba, CLI, knihovna npm / JSR a nasazení na Cloudflare Workers.
+
+## Nepoužíváte agenta? Vyberte si vhodný způsob integrace
+
+### Rychlý graf: použijte URL přímo
+
+Vhodné pro dokumentaci, prezentace nebo jednorázové vizualizace. Otevřete [ukázkovou stránku s interaktivními úpravami](https://x-cmd.com/draw), upravte data a styly a zkopírujte odkaz; můžete také přímo změnit parametry URL:
+
+```md
+![Příklad podílů](https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2)
 ```
 
-[![Hbar — otevřené/zavřené issue (motýlek)](https://x-cmd.com/draw?type=hbar&t=xcmd-issue&labels=CLI,j%C3%A1dro,dokumentace,ci,UI&series=otev%C5%99en%C3%A9:12,8,15,4,9&series=zav%C5%99en%C3%A9:38,52,20,11,26&title=Issue%20podle%20oblasti)](https://x-cmd.com/draw/explore?type=hbar&t=xcmd-issue&labels=CLI,j%C3%A1dro,dokumentace,ci,UI&series=otev%C5%99en%C3%A9:12,8,15,4,9&series=zav%C5%99en%C3%A9:38,52,20,11,26&title=Issue%20podle%20oblasti)
+Čtenáři vidí graf a vy si ponecháte text, který lze upravovat a kontrolovat.
 
-### Koláč — největší města (`type=pie&t=market-mono`)
+### Hromadné generování nebo integrace do projektu: použijte CLI nebo knihovnu
 
-```text
-https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2
+Vhodné pro automatickou aktualizaci grafů v CI, hromadné reporty, offline použití a integraci do aplikací. CLI a knihovna používají stejné parametry jako hostovaná služba:
+
+```sh
+npx @x-cmd/draw --type pie --labels A,B --values 3,2 --out pie.svg
 ```
 
-[![Koláč — největší města](https://x-cmd.com/draw?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)](https://x-cmd.com/draw/explore?type=pie&t=market-mono&title=Nejv%C4%9Bt%C5%A1%C3%AD%20m%C4%9Bsta&unit=mil.&labels=Praha,Brno,Ostrava,Plze%C5%88&values=1.4,0.4,0.3,0.2)
-
-## Prompt — zadání pro AI agenta (skill)
-
-Nulová instalace: vložte tento prompt jednou do libovolného agenta připojeného k webu a poté přirozeným jazykem popište graf nebo diagram, který potřebujete:
-
-```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md, and use x-cmd Draw whenever you need to draw a chart or diagram.
-```
-
-Poté můžete napsat například:
-
-> Vykresli hvězdičky jednotlivých jazyků jako koláčový graf — TypeScript 4821, Python 2312, Go 980
-
-Agenti s nativním načítáním skillů (Claude Code atd.): uložte [`SKILL.md`](../SKILL.md) jednou do složky skills (`~/.claude/skills/draw/SKILL.md`); poté stačí přímo požádat o graf nebo diagram, bez promptu nebo URL.
-
-## Tři způsoby použití
-
-**Hostovaná služba (nulová instalace)** — `https://x-cmd.com/draw?type=pie&labels=A,B&values=3,2`
-
-**Knihovna npm + CLI (offline, synchronní)** (`npm i -g @x-cmd/draw` / `npx`):
+Chcete-li v kódu generovat SVG synchronně, nainstalujte knihovnu a zavolejte `draw`:
 
 ```sh
 npm install @x-cmd/draw
 ```
 ```ts
 import { draw } from '@x-cmd/draw';
+
 const { svg } = draw({ type: 'pie', labels: 'A,B', values: '3,2', t: 'evil', scheme: 'dark' });
-// přijímá i query string: draw('?type=bar&labels=Po,Út&values=3,5')
-// pole = opakované parametry (popisky s čárkami)
-draw({ type: 'bar', labels: ['Q1, 2024', 'Q2'], values: [1, 2] })
-```
-```sh
-draw --type pie --labels "A,B,C" --values "3,2,1" --out pie.svg
-draw "?type=hbar&labels=a,b,c&values=3,2,1&t=xcmd"   # holý query string
 ```
 
-**Self-hosting**:
+Uživatelé Deno mohou použít `deno add jsr:@x-cmd/draw` a poté importovat z `jsr:@x-cmd/draw`. Jádro vykreslování nepřistupuje k síti ani souborům, takže je vhodné pro omezená prostředí.
+
+### Mějte pod kontrolou vstup a hranice dat: spusťte vlastní službu
+
+Vhodné pro jednotný týmový vstup, interní sítě nebo situace, kdy nechcete záviset na veřejné službě:
 
 ```sh
 git clone https://github.com/x-cmd/draw && cd draw && npm install
-npm run serve      # lokální Node server :8787 s demo stránkou
-npm run dev        # wrangler dev
-bash scripts/setup.sh   # deploy na jedno kliknutí na váš Cloudflare účet
+npm run serve           # Místní služba: http://localhost:8787/draw
+bash scripts/setup.sh   # Nasazení jedním příkazem do vašeho účtu Cloudflare
 ```
 
-Proměnné prostředí (Node): `PORT` (8787) · `BASE_PATH` · `DATA_REPO`/`DATA_BRANCH`/`GITHUB_TOKEN` (aktivuje POST krátké odkazy).
+Nastavením `DATA_REPO`, `DATA_BRANCH` a `GITHUB_TOKEN` povolíte trvalé krátké odkazy; bez nastavení není běžné vykreslování GET ovlivněno. Podrobnosti najdete v [průvodci self-hostingem](../docs/1-overview/05-self-hosting/cs.md).
 
-**Deno** — renderovací jádro je čisté, bez sítě — sandbox bez oprávnění je bezpečnostní hranice:
+## Dokumentace a API
 
-```ts
-import { draw } from "jsr:@x-cmd/draw";
-const { svg } = draw({ type: "pie", labels: "A,B", values: "3,2" });
-```
+Úplný seznam typů grafů, parametrů a příkladů je v dokumentaci uspořádaný podle témat:
 
-## Endpointy
-
-**`GET /draw?type=<pie|bar|hbar|line|area|radar|gauge|scatter|combo|sankey|qr>`** — vykreslit graf
-
-| type | | |
-|---|---|---|
-| `pie` | Donut; `donut=0` = plný koláč<br><br>**<u>≤100 tříd (>9 → Other)</u>** | [![example](https://x-cmd.com/draw?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Hv%C4%9Bzdy%20podle%20jazyka&w=360)](https://x-cmd.com/draw/explore?type=pie&labels=TS,Py,Go,Rust&values=4821,2312,980,645&title=Hv%C4%9Bzdy%20podle%20jazyka) |
-| `bar` | Skupinové sloupce; `stack=1` naskládané<br><br>**<u>≤30 skupin</u>** | [![example](https://x-cmd.com/draw?type=bar&labels=Po,%C3%9At,St&series=dev:12,18,9&series=ci:8,11,6&w=360)](https://x-cmd.com/draw/explore?type=bar&labels=Po,%C3%9At,St&series=dev:12,18,9&series=ci:8,11,6) |
-| `hbar` | Vodorovné pruhy (žebříčky)<br><br>**<u>≤30 pruhů</u>** | [![example](https://x-cmd.com/draw?type=hbar&labels=CLI,j%C3%A1dro,dokumentace,UI&values=42,31,18,9&title=Commity%20podle%20oblasti&w=360)](https://x-cmd.com/draw/explore?type=hbar&labels=CLI,j%C3%A1dro,dokumentace,UI&values=42,31,18,9&title=Commity%20podle%20oblasti) |
-| `line` | Hladká čára + gradient / více čar<br><br>**<u>≤60 bodů</u>** | [![example](https://x-cmd.com/draw?type=line&labels=Led,%C3%9Ano,B%C5%99e,Dub,Kv%C4%9B,%C4%8Cer&values=12,19,15,25,22,30&title=Hv%C4%9Bzdy%20podle%20jazyka&w=360)](https://x-cmd.com/draw/explore?type=line&labels=Led,%C3%9Ano,B%C5%99e,Dub,Kv%C4%9B,%C4%8Cer&values=12,19,15,25,22,30&title=Hv%C4%9Bzdy%20podle%20jazyka) |
-| `area` | Plocha / více ploch<br><br>**<u>≤60 bodů</u>** | [![example](https://x-cmd.com/draw?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Sta%C5%BEen%C3%AD&w=360)](https://x-cmd.com/draw/explore?type=area&labels=Q1,Q2,Q3,Q4&values=8,14,23,37&title=Sta%C5%BEen%C3%AD) |
-| `radar` | Radar<br><br>**<u>3–12 os</u>** | [![example](https://x-cmd.com/draw?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF&w=360)](https://x-cmd.com/draw/explore?type=radar&t=evil&labels=start,ekosyst%C3%A9m,roz%C5%A1i%C5%99itelnost,pam%C4%9B%C5%A5,jednoduchost&series=vscode:60,95,90,55,80&series=neovim:95,65,85,95,35&series=zed:92,50,55,90,60&title=Porovn%C3%A1n%C3%AD%20editor%C5%AF) |
-| `gauge` | Ukazatel (oblouk 240°, středová hodnota)<br><br>**<u>value+max; prstenců ≤8</u>** | [![example](https://x-cmd.com/draw?type=gauge&title=%C3%9Asp%C4%9B%C5%A1nost%20CI&value=87&max=100&w=360)](https://x-cmd.com/draw/explore?type=gauge&title=%C3%9Asp%C4%9B%C5%A1nost%20CI&value=87&max=100) |
-| `scatter` | Bodový, dvě číselné osy, záporné ok<br><br>**<u>x=&y=, ≤200 bodů</u>** | [![example](https://x-cmd.com/draw?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latence&w=360)](https://x-cmd.com/draw/explore?type=scatter&x=1,2,3,4,5&y=4,5,3,6,5&title=Latence) |
-| `combo` | Sloupce (`series=`) + čára (`line=`); dvě osy od 5× rozdílu<br><br>**<u>≤30 skupin, ≤6 řad</u>** | [![example](https://x-cmd.com/draw?type=combo&labels=Po,%C3%9At,St,%C4%8Ct,P%C3%A1,So,Ne&series=Sta%C5%BEen%C3%AD:120,180,150,210,240,200,260&line=R%C5%AFst:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%BDdenn%C3%AD%20sta%C5%BEen%C3%AD&unit=dl&w=360)](https://x-cmd.com/draw/explore?type=combo&labels=Po,%C3%9At,St,%C4%8Ct,P%C3%A1,So,Ne&series=Sta%C5%BEen%C3%AD:120,180,150,210,240,200,260&line=R%C5%AFst:3.1,3.4,3.2,3.8,4.1,3.9,4.5&title=T%C3%BDdenn%C3%AD%20sta%C5%BEen%C3%AD&unit=dl) |
-| `sankey` | Tokový diagram s šířkami<br><br>**<u>labels=+links=A>B:30, ≤24 uzlů</u>** | [![example](https://x-cmd.com/draw?type=sankey&t=pipeline&labels=featury,fixy,dokumentace,jin%C3%A9,slou%C4%8Deno,zav%C5%99eno,zam%C3%ADtnuto,%3C1r,1%E2%80%932r,%3E2r&links=featury%3Eslou%C4%8Deno:38;featury%3Ezav%C5%99eno:12;featury%3Ezam%C3%ADtnuto:8;fixy%3Eslou%C4%8Deno:33;fixy%3Ezav%C5%99eno:6;fixy%3Ezam%C3%ADtnuto:2;dokumentace%3Eslou%C4%8Deno:16;dokumentace%3Ezav%C5%99eno:4;jin%C3%A9%3Eslou%C4%8Deno:5;jin%C3%A9%3Ezav%C5%99eno:6;jin%C3%A9%3Ezam%C3%ADtnuto:6;slou%C4%8Deno%3E%3C1r:52;slou%C4%8Deno%3E1%E2%80%932r:28;slou%C4%8Deno%3E%3E2r:12;zav%C5%99eno%3E%3C1r:14;zav%C5%99eno%3E1%E2%80%932r:9;zav%C5%99eno%3E%3E2r:5;zam%C3%ADtnuto%3E%3C1r:9;zam%C3%ADtnuto%3E1%E2%80%932r:5;zam%C3%ADtnuto%3E%3E2r:2&title=%C5%BDivotn%C3%AD%20cyklus%20PR&unit=prs&w=360)](https://x-cmd.com/draw/explore?type=sankey&t=pipeline&labels=featury,fixy,dokumentace,jin%C3%A9,slou%C4%8Deno,zav%C5%99eno,zam%C3%ADtnuto,%3C1r,1%E2%80%932r,%3E2r&links=featury%3Eslou%C4%8Deno:38;featury%3Ezav%C5%99eno:12;featury%3Ezam%C3%ADtnuto:8;fixy%3Eslou%C4%8Deno:33;fixy%3Ezav%C5%99eno:6;fixy%3Ezam%C3%ADtnuto:2;dokumentace%3Eslou%C4%8Deno:16;dokumentace%3Ezav%C5%99eno:4;jin%C3%A9%3Eslou%C4%8Deno:5;jin%C3%A9%3Ezav%C5%99eno:6;jin%C3%A9%3Ezam%C3%ADtnuto:6;slou%C4%8Deno%3E%3C1r:52;slou%C4%8Deno%3E1%E2%80%932r:28;slou%C4%8Deno%3E%3E2r:12;zav%C5%99eno%3E%3C1r:14;zav%C5%99eno%3E1%E2%80%932r:9;zav%C5%99eno%3E%3E2r:5;zam%C3%ADtnuto%3E%3C1r:9;zam%C3%ADtnuto%3E1%E2%80%932r:5;zam%C3%ADtnuto%3E%3E2r:2&title=%C5%BDivotn%C3%AD%20cyklus%20PR&unit=prs) |
-| `qr` | QR kód<br><br>**<u>d≤1000 znaků, fg/bg, title/unit</u>** | [![example](https://x-cmd.com/draw?type=qr&d=https://github.com/x-cmd/draw&title=skenuj&w=360)](https://x-cmd.com/draw/explore?type=qr&d=https://github.com/x-cmd/draw&title=skenuj) |
-
-**`GET /draw`** — demo stránka · **`POST /draw?type=...`** — JSON/CSV body vytvoří trvalý krátký odkaz · **`GET /draw/c/<hash>`** — vykreslení krátkého odkazu (immutable)
-
-## Styly (`?t=`)
-
-| type | |
-|---|---|
-| `pie` | opendata (výchozí) · evil · evil-mono · market-mono · progress · revenue |
-| `bar` | evil (výchozí) · base · grid |
-| `hbar` | base (výchozí) · opendata (ref=) · xcmd · xcmd-issue · rank |
-| `line` | shadcn (výchozí) · evil · evil-glow · evil-mono · opendata |
-| `area` | evil (výchozí) · star · opendata · pixel · polka |
-| `radar` | base (výchozí) · evil · xcmd |
-| `sankey` | base (výchozí) · fund · pipeline |
-| `gauge` | base (výchozí) · gradient · reliability |
-| `scatter/combo/qr` | base (combo i evil) |
-
-## Předávání dat
-
-```text
-https://x-cmd.com/draw?type=pie&title=Hv%C4%9Bzdy%20podle%20jazyka&labels=TypeScript,Python,Go&values=4821,2312,980
-```
-
-Popisky s čárkami: opakujte parametr (`labels=Q1, 2024&labels=Q2`). Složitá data: `?d=` + URL-kódované JSON:
-
-```json
-{"title":"...","data":[{"label":"A","value":1}]}
-```
-
-## Krátké odkazy
-
-POST vytvoří trvalý krátký odkaz adresovaný obsahem (GitHub repozitář jako úložiště):
-
-- stejná data → stejný hash (idempotentní, deduplikace)
-- limit 30 požadavků/min/IP
-- veřejné úložiště — nic citlivého
-
-## Verzování
-
-- bez `v`: nejnovější verze, cache 300 s
-- `v=N`: připnutá verze, cache 1 den
-- `immutable` jen pro `/c/<hash>`
-
-## AI-friendly
-
-Každé SVG obsahuje JSON: `{generator, template, version, spec}` — data a parametry jdou přímo tam a zpět; text je skutečné `<text>`.
-
-## Self-hosting na jeden krok
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/x-cmd/draw/main/scripts/setup.sh | bash
-```
-
-Skript naklonuje, přihlásí wrangler, nasadí a vypíše vaši `*.workers.dev` URL. Krátké odkazy (POST) aktivujete přes `DATA_REPO` + `GITHUB_TOKEN`.
+| Co chcete udělat | Dokumentace |
+| --- | --- |
+| Procházet všechny typy a scénáře | [Přehled dokumentace](../docs/README.md) · [Referenční příklady](../docs/9-showcases/12-reference-examples/en.md) · [Příklady cloudové architektury](../docs/9-showcases/14-cloud-architecture/en.md) |
+| Vyhledat obecné parametry a kódování URL | [Reference parametrů](../docs/1-overview/07-params/en.md) |
+| Používat data JSON | [Datové formáty a API](../docs/1-overview/04-data-and-api/cs.md) |
+| Vytvářet krátké odkazy nebo nastavit jejich úložiště | [Self-hosting a krátké odkazy](../docs/1-overview/05-self-hosting/cs.md) |
+| Kreslit diagramy architektury, sekvencí, ERD a další strukturní diagramy | [Syntaxe URL strukturních diagramů](../docs/1-overview/06-diagram-urls/en.md) |
+| Spustit lokálně nebo nasadit na Cloudflare | [Průvodce self-hostingem](../docs/1-overview/05-self-hosting/cs.md) |
+| Nechat agenta automaticky generovat grafy | [Agent Skill](../SKILL.md) |
 
 ## Vývoj
 
 ```sh
 npm install
-npm run dev      # wrangler dev
-npm test         # vitest (120)
-npm run check    # tsc ×3
-npm run build    # dist/
+npm run dev      # wrangler dev: místní server
+npm test         # vitest
+npm run check    # tsc --noEmit × 3 (worker / node / build)
+npm run build    # vytvoří dist/ (knihovna npm + CLI)
+npm run deploy   # wrangler deploy
 ```
 
 ## Licence
 
-Kód Apache-2.0; fonty OFL — [LICENSE](../LICENSE) · Kompletní dokumentace: [README (EN)](../README.md)
+Kód je dostupný pod licencí [Apache-2.0](../LICENSE). Vložená písma podléhají vlastním licencím: Inter (OFL, úplné znění v [`inter-OFL.txt`](../src/styles/inter-OFL.txt)) a Handlee (OFL, úplné znění v [`handlee-OFL.txt`](../src/styles/handlee-OFL.txt)).
