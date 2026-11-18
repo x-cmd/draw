@@ -90,6 +90,19 @@ describe('标注层', () => {
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_note=20,50,70;hi')).toThrow(/_note/);
   });
 
+  it('_cls/_c 给标注定类别,类别牌画在图上', () => {
+    const a = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=60,40,10,6&_cls=anomaly,trend&_c=0:anomaly');
+    expect(a).toContain('anomaly');
+    const b = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=60,40,10,6');
+    expect(a).not.toBe(b);          // 有类别 ⇒ 多一块牌 ✓
+  });
+
+  it('藏掉的标注不占类别的序号', () => {
+    const a = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_oval=10,10,5,5&_oval=80,80,5,5&_hide=0&_c=1:second');
+    expect(a).toContain('second');
+    expect(a).not.toContain('first');
+  });
+
   it('参数写错时报错只说新名字', () => {
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_oval=1,2')).toThrow(/_oval/);
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_text=1,2')).toThrow(/_text/);

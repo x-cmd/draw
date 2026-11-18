@@ -318,11 +318,6 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
       color: colorOf(colorRaw ?? parts[1], '_path'),
     });
   }
-  // 给每一条补上它的类别(序号 = 解析顺序 ✓)
-  for (const a of out) {
-    const c = classes.get(idxOf());
-    if (c) a.cls = c;
-  }
   return out;
 }
 
@@ -410,6 +405,22 @@ function leaderAndDot(
   ];
 }
 
+
+/**
+ * 类别牌(训练数据 ✓):一小块深色牌,写着这一条属于哪一类 ✓。
+ * 锚点给的是牌的**左下角**(牌画在它上面 ✓)—— 不压着标注本身 ✓。
+ */
+function clsTag(text: string, x: number, y: number, color: string, k: number): string {
+  const fs = 10 * k;
+  const padX = 5 * k;
+  const padY = 3 * k;
+  const bw = textWidth(text, fs) + padX * 2;
+  const bh = fs + padY * 2;
+  const by = y - bh;
+  return `<rect x="${r2(x)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(bh / 2)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`
+    + `<text x="${r2(x + bw / 2)}" y="${r2(by + bh / 2 + fs * 0.35)}" text-anchor="middle" font-size="${r2(fs)}" fill="${color}">${esc(text)}</text>`;
+}
+
 /**
  * 标注层 → SVG(画在画布坐标上)。
  * frame 是画布在 viewBox 里的位置与大小(标注的百分比按它换算)。
@@ -435,6 +446,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     parts.push(
       `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(10 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
     );
+    if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k));
   }
 
   // 二、圈一个点
@@ -447,6 +459,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     parts.push(
       `<ellipse cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="${r2(2.5 * k)}" stroke-opacity="0.95"/>`,
     );
+    if (a.cls) parts.push(clsTag(a.cls, cx - rx, cy - ry - 4 * k, color, k));
   }
 
   // 三、手绘的一笔:_path= 折线(笔触)
@@ -460,6 +473,11 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     parts.push(
       `<path d="${d}" fill="none" stroke="${color}" stroke-width="${r2(2.2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
     );
+    if (a.cls) {
+      const fx = frame.x + (pts[0][0] / 100) * frame.w;
+      const fy = frame.y + (pts[0][1] / 100) * frame.h;
+      parts.push(clsTag(a.cls, fx + 4 * k, fy - 4 * k, color, k));
+    }
   }
 
   // 四、一支箭头:_arrow= 起点、终点(末端一个箭头)
@@ -486,6 +504,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
       `<line x1="${r2(x1)}" y1="${r2(y1)}" x2="${r2(x2)}" y2="${r2(y2)}" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round"/>`,
       `<path d="M${r2(x2)},${r2(y2)}L${r2(bx - uy * half)},${r2(by + ux * half)}L${r2(bx + uy * half)},${r2(by - ux * half)}" fill="none" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
     );
+    if (a.cls) parts.push(clsTag(a.cls, x1, y1 - 4 * k, color, k));
   }
 
   // 五、一句话:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
@@ -518,6 +537,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
       // 引线 + 指示点(跟「评」共用这一份实现 ✓)
       parts.push(...leaderAndDot(ax, ay, x, y, bw, bh, color, k));
     }
+    if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k));
   }
 
   // 六、一条评论:一条引线 + 一个多行的框(框自己挑位置:右边放不下就放左边)
@@ -562,6 +582,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
         `<text x="${r2(bx + padX)}" y="${r2(by + padY + lh * i + fs * 0.82)}" font-size="${r2(fs)}" fill="${color}">${esc(l)}</text>`,
       );
     });
+    if (a.cls) parts.push(clsTag(a.cls, bx, by - 4 * k, color, k));
   }
 
   return `<g class="anno" data-anno="1">${parts.join('')}</g>`;
