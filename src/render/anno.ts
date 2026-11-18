@@ -45,6 +45,9 @@ export interface Anno {
   /** 箭头的终点 */
   x2?: number;
   y2?: number;
+  /** 文字框的位置(评论的框;缺省 = 自己挑地方 ✓) */
+  tx?: number;
+  ty?: number;
   /** 手绘的折线(百分比坐标) */
   pts?: [number, number][];
   text?: string;
@@ -171,14 +174,29 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     });
   }
 
-  // 一条评论:_note=x,y;评论正文(引线落在 x,y 上)
+  // 一条评论:_note=x,y[,tx,ty][,#color];评论正文
+  //   x,y   = 指示点(指着哪儿 ✓)
+  //   tx,ty = 文字框的**左上角**(可省 ⇒ 自己挑 ✓;给了 ⇒ 引线拉多远就是多远 ✓)
   for (const raw of notes) {
     const i = raw.indexOf(';');
     const head = i < 0 ? raw : raw.slice(0, i);
     const body = i < 0 ? '' : raw.slice(i + 1);
-    const nums = head.split(',');
-    if (nums.length < 2 || nums.length > 3 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
-      throw new ApiError(400, `"_note" expects x,y in percent of the canvas (a ,#color may follow), then the comment after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
+    const nums = head.split(',').map((x) => x.trim());
+    if (nums.length < 2 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
+      throw new ApiError(400, `"_note" expects x,y in percent of the canvas (a ,tx,ty and ,#color may follow), then the comment after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
+    }
+    // 头里除了 x,y:带 # 的是颜色,其余两个数是文字框的位置 ✓
+    let tx: number | undefined;
+    let ty: number | undefined;
+    let colorRaw: string | undefined;
+    for (const f of nums.slice(2)) {
+      if (!f) continue;
+      if (f.startsWith('#')) { colorRaw = f; continue; }
+      if (tx === undefined) tx = Number(f);
+      else if (ty === undefined) ty = Number(f);
+    }
+    if ((tx === undefined) !== (ty === undefined)) {
+      throw new ApiError(400, `"_note" needs both tx and ty for the label box, e.g. _note=62,44,70,30;comment — got ${JSON.stringify(raw)}`);
     }
     const text = body.slice(0, 200);
     if (!text.trim()) {
@@ -189,8 +207,10 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
       kind: 'note',
       x: pct(Number(nums[0]), '_note', raw),
       y: pct(Number(nums[1]), '_note', raw),
+      tx: tx === undefined ? undefined : pct(tx, '_note', raw),
+      ty: ty === undefined ? undefined : pct(ty, '_note', raw),
       text,
-      color: colorOf(nums[2], '_note'),
+      color: colorOf(colorRaw, '_note'),
     });
   }
 
@@ -421,11 +441,19 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const ax = frame.x + (a.x / 100) * frame.w;
     const ay = frame.y + (a.y / 100) * frame.h;
     const gap = 16 * k;
-    // 框放在引线的哪一侧:先试右边,再试左边;上面放不下就放下面
-    let bx = ax + gap;
-    if (bx + bw > frame.x + frame.w) bx = ax - gap - bw;
-    let by = ay - gap - bh;
-    if (by < frame.y) by = ay + gap;
+    let bx: number;
+    let by: number;
+    if (a.tx !== undefined && a.ty !== undefined) {
+      // 文字框的**左上角**是给定的 ⇒ 引线拉多远就是多远 ✓
+      bx = frame.x + (a.tx / 100) * frame.w;
+      by = frame.y + (a.ty / 100) * frame.h;
+    } else {
+      // 缺省:框放在引线的哪一侧 —— 先试右边,再试左边;上面放不下就放下面
+      bx = ax + gap;
+      if (bx + bw > frame.x + frame.w) bx = ax - gap - bw;
+      by = ay - gap - bh;
+      if (by < frame.y) by = ay + gap;
+    }
     // 夹回画布(太小放不下时宁可压边,也不能跑出去)
     bx = Math.min(Math.max(bx, frame.x), Math.max(frame.x, frame.x + frame.w - bw));
     by = Math.min(Math.max(by, frame.y), Math.max(frame.y, frame.y + frame.h - bh));

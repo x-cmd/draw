@@ -62,6 +62,17 @@ describe('标注层', () => {
     expect(svg).not.toContain('#F87171');
   });
 
+  it('_note 能带文字框的位置(引线拉多远就是多远)', () => {
+    const placed = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_note=20,50,70,20;hello');
+    const auto = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_note=20,50;hello');
+    expect(placed).toContain('hello');
+    expect(placed).not.toBe(auto);       // 框的位置不同 ⇒ 画得不一样 ✓
+  });
+
+  it('_note 只给一半的文字框位置 ⇒ 报错', () => {
+    expect(() => svgOf('?type=bar&labels=Mon&values=1&_note=20,50,70;hi')).toThrow(/_note/);
+  });
+
   it('参数写错时报错只说新名字', () => {
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_oval=1,2')).toThrow(/_oval/);
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_text=1,2')).toThrow(/_text/);
