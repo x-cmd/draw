@@ -8,6 +8,10 @@
     ".": {
       "types": "./dist/lib.d.ts",
       "default": "./dist/lib.js"
+    },
+    "./anno": {
+      "types": "./dist/render/anno.d.ts",
+      "default": "./dist/render/anno.js"
     }
   },
   "bin": {

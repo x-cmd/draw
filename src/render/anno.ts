@@ -27,7 +27,9 @@
 //
 // 这层是画在图**上面**的一层(g.anno),不改动图本身 —— 图还是那张图,只是上面多了几笔。
 
-import { ApiError } from '../specs/index.js';
+// 只依赖 base.ts(不引整个 specs 桶)—— 站里的客户端要单独引这一块
+// (`@x-cmd/draw/anno`),把渲染库整个打进浏览器包不合适 ✓。
+import { ApiError } from '../specs/base.js';
 
 export interface Anno {
   kind: 'oval' | 'text' | 'hl' | 'note' | 'arrow' | 'path';
