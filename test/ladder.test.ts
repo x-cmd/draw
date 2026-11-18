@@ -59,39 +59,32 @@ describe('双翼天梯图(butterfly-ladder)', () => {
     expect(spec.left?.items[0].value).toBe(3264);
   });
 
-  it('一侧行数少时,多出来的行留空,不挪位', () => {
+  it('完全错位:两翼合成一条梯子,每行只有一张卡', () => {
     const rows = matchLadderRows(
-      [{ value: 10 }, { value: 9 }, { value: 8 }],
-      [{ value: 7 }],
+      [{ value: 10, label: 'L1' }, { value: 8, label: 'L2' }],
+      [{ value: 9, label: 'R1' }, { value: 7, label: 'R2' }],
       'rank',
     );
-    expect(rows.length).toBe(3);
-    expect(rows[0][0]?.value).toBe(10);
-    expect(rows[0][1]?.value).toBe(7);
-    expect(rows[1][1]).toBeUndefined();
-    expect(rows[2][1]).toBeUndefined();
+    // 整体按强弱排:10,9,8,7 —— 不是「左 10 对右 9」
+    expect(rows.map((r) => r[0]?.value ?? r[1]?.value)).toEqual([10, 9, 8, 7]);
+    // 每一行只有一边有卡
+    expect(rows[0][0]?.label).toBe('L1');
+    expect(rows[0][1]).toBeUndefined();
+    expect(rows[1][0]).toBeUndefined();
+    expect(rows[1][1]?.label).toBe('R1');
+    expect(rows[2][0]?.label).toBe('L2');
+    expect(rows[3][1]?.label).toBe('R2');
   });
 
-  it('匹配排序:值相近的排在同一行', () => {
+  it('匹配排序:值相近的排在同一行(两边都有)', () => {
     const rows = matchLadderRows(
       [{ value: 100, label: 'A' }, { value: 50, label: 'B' }],
       [{ value: 98, label: 'C' }, { value: 52, label: 'D' }],
       'value',
     );
-    // A(100)配 C(98),B(50)配 D(52)—— 不是按名次(A 配 D ✗)
     expect(rows[0][0]?.label).toBe('A');
     expect(rows[0][1]?.label).toBe('C');
     expect(rows[1][0]?.label).toBe('B');
-    expect(rows[1][1]?.label).toBe('D');
-  });
-
-  it('完全错位:第 k 行对第 k 行', () => {
-    const rows = matchLadderRows(
-      [{ value: 100, label: 'A' }, { value: 50, label: 'B' }],
-      [{ value: 98, label: 'C' }, { value: 52, label: 'D' }],
-      'rank',
-    );
-    expect(rows[0][1]?.label).toBe('C');
     expect(rows[1][1]?.label).toBe('D');
   });
 

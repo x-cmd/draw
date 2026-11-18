@@ -11,7 +11,8 @@ core_features:
   - Two chart types: **ladder** (one side, ranked) and **butterfly ladder** (two sides, two models per row)
   - Per-side data model: `items[]` of `{label, value, tier}` — names and values no longer live apart
   - **Tiers group consecutive rows**, with a separator between tiers and the tier name in a column on the left
-  - Two row pairings: `match=rank` (each side ranked on its own, fully offset) and `match=value` (close values on the same row)
+  - The ordering is **global** — both wings form one ladder — but split into two groups
+  - Two ways to sort: `match=rank` (fully offset: one ladder, each row holds a single card on its own side) and `match=value` (close values on the same row, both wings)
   - When one side has fewer rows the extra rows stay empty — **nothing shifts**
   - `src=<url>` fetches the spec from a file — a thousand rows fit in a link
   - Short form (`left=NVIDIA:3264,2851&llabels=…`) as well as the JSON form
@@ -25,8 +26,7 @@ highlights:
   - `tier` is a property of the row, not part of the name — read the chart tier first, strength second
   - `match=value` answers "these two are about equal, which is faster?"; `match=rank`
     answers "who is the strongest on each side?"
-  - Extra rows on the shorter side are left empty rather than shifted, so "row k
-    against row k" keeps its meaning
+  - In `rank` mode the two wings share one scale, so lengths are comparable across them
   - `src=` follows onepage's rules: github blob links convert to raw, loopback and
     private addresses are refused, 1MB maximum
 

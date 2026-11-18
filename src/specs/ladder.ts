@@ -47,9 +47,10 @@ export interface LadderSpec {
   left?: LadderSide;
   right?: LadderSide;
   /**
-   * 双翼的行怎么配对:
-   *   rank(缺省)—— 两侧各自按强弱排,第 k 行对第 k 行(完全错位)
-   *   value      —— 值相近的排在同一行(匹配排序)
+   * 双翼怎么排:
+   *   rank(缺省)—— **完全错位**:两翼合成一条梯子,整体按强弱排,
+   *                 每一行只有一张卡,在它自己那一侧
+   *   value      —— **匹配排序**:值相近的排在同一行,两翼都有
    */
   match?: 'rank' | 'value';
 }
@@ -223,28 +224,30 @@ function splitNumbers(raws: string[]): number[] {
 }
 
 /**
- * 双翼的行怎么配对。
+ * 双翼的行怎么排。
  *
- *   rank —— 两侧各自按强弱排,第 k 行对第 k 行(**完全错位**):
- *           左边最强的对右边最强的,一行里的两张卡可能差很远
- *   value—— **值相近的排在同一行**(**匹配排序**):
- *           左边每张卡配右边数值最接近它的那张;配不上的行留空
+ *   rank —— **完全错位**:两侧的卡合成**一条**梯子,谁强谁在前;
+ *           每一行只有一张卡,在它自己那一侧,另一边空着。
+ *   value—— **匹配排序**:**值相近的排在同一行**;
+ *           左边每张卡配右边数值最接近它的那张,配不上的行留空。
  *
- * 一侧行数少时,多出来的行是空的 —— **不挪位**(挪位会让「第 k 行对第 k 行」
- * 这个含义失效)。
+ * rank 那一种,两翼共用一把标尺(不然跨翼的长度没法比)。
  */
 export function matchLadderRows(
   left: LadderItem[],
   right: LadderItem[],
   match: 'rank' | 'value' = 'rank',
 ): [LadderItem | undefined, LadderItem | undefined][] {
-  const n = Math.max(left.length, right.length);
   if (match !== 'value') {
-    const rows: [LadderItem | undefined, LadderItem | undefined][] = [];
-    for (let i = 0; i < n; i++) rows.push([left[i], right[i]]);
-    return rows;
+    const all: { item: LadderItem; side: 0 | 1 }[] = [
+      ...left.map((item) => ({ item, side: 0 as const })),
+      ...right.map((item) => ({ item, side: 1 as const })),
+    ];
+    all.sort((a, b) => b.item.value - a.item.value);
+    return all.map((x) => (x.side === 0 ? [x.item, undefined] : [undefined, x.item]));
   }
   // 匹配排序:按左边的次序,给每张卡找右边数值最接近的那张
+  const n = Math.max(left.length, right.length);
   const usedRight = new Set<number>();
   const rows: [LadderItem | undefined, LadderItem | undefined][] = [];
   for (let i = 0; i < n; i++) {

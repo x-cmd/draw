@@ -241,9 +241,10 @@ function renderFromUrlInner(url: URL): DrawResult {
     const width = clampInt(url.searchParams, 'w', lw, 200, 1600);
     const height = clampInt(url.searchParams, 'h', lh, 140, 1200);
     const aria = kind === 'ladder' ? 'ladder' : 'butterfly ladder';
+    const autoHeight = url.searchParams.get('h') === null;
     const svg = kind === 'ladder'
-      ? renderLadder(spec, { width, height, version: v.version, skin, interactive: true })
-      : renderButterflyLadder(spec, { width, height, version: v.version, skin, interactive: true });
+      ? renderLadder(spec, { width, height, version: v.version, skin, interactive: true, autoHeight })
+      : renderButterflyLadder(spec, { width, height, version: v.version, skin, interactive: true, autoHeight });
     return svgResult(svg, v);
   }
 

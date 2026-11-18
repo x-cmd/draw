@@ -28,12 +28,14 @@ data:
           cn: "match= 是干什么的?"
         answer:
           en: >
-            It decides how the two sides are paired row by row. `rank` (the default) ranks each side on its
-            own, so row k is the k-th strongest on each side — fully offset. `value` puts cards with close
-            values on the same row, which answers "these two are about equal, which is faster?".
+            The cards of both wings form one ladder, sorted overall. `rank` (the default) is fully offset:
+            strongest first, and each row holds a single card on its own side. `value` puts cards with close
+            values on the same row, which answers "these two are about equal, which is faster?". In `rank`
+            mode the two wings share one scale, so lengths are comparable across them.
           cn: >
-            它决定两侧怎么一行一行配对。`rank`(缺省)是两侧各自排序,第 k 行对第 k 行 —— 完全错位;
-            `value` 把值相近的卡排在同一行,回答的是「这两张差不多,谁快一点」。
+            两翼的卡合成一条梯子,整体按强弱排。`rank`(缺省)是完全错位:谁强谁在前,
+            每一行只有一张卡,在它自己那一侧;`value` 把值相近的卡排在同一行,回答的是
+            「这两张差不多,谁快一点」。rank 那种排法下两翼共用一把标尺,跨翼的长度才能比。
         confidence: 9
         reference:
           - docs/2-data-charts/13-ladder/en.md

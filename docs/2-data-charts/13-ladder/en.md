@@ -19,7 +19,7 @@ x-json-ld:
 | Chart | Shape | When |
 |---|---|---|
 | **Ladder** `type=ladder` | one side, ranked | one vendor's ranking (GPUs, CPUs) |
-| **Butterfly ladder** `type=butterfly-ladder` | both sides, two models per row | two vendors head to head (NVIDIA vs AMD/Intel) |
+| **Butterfly ladder** `type=butterfly-ladder` | both wings form one ladder | two vendors head to head (NVIDIA vs AMD/Intel) |
 
 The difference from `type=butterfly`: butterfly is a **general** two-series chart
 (population pyramids, "on vs off" by age) whose two sides **share one set of row
@@ -60,15 +60,18 @@ in the column on the left.
 
 So you read it as "first the tier, then who is stronger inside it".
 
-## Two ways to pair the rows
+## The ordering is global, but it splits into two groups
 
-| `match=` | Pairing | What you read |
+The cards of both wings form **one ladder** — sorted **overall** by strength, not
+two separate rankings:
+
+| `match=` | How it is sorted | What you read |
 |---|---|---|
-| `rank` (default) | each side ranked on its own, row k against row k (**fully offset**) | "the strongest NVIDIA card against the strongest AMD card" |
-| `value` | **cards with close values on the same row** (matched) | "these two are about equal — which is faster?" |
+| `rank` (default) | **fully offset**: one ladder, strongest first; **each row holds a single card**, on its own side, the other side empty | one ladder you can scan top to bottom |
+| `value` | **matched**: cards with close values on the same row, both wings | "these two are about equal — which is faster?" |
 
-**When one side has fewer rows, the extra rows stay empty and nothing shifts** —
-shifting would break the meaning of "row k against row k".
+In `rank` mode the two wings **share one scale**, so their lengths are comparable
+across them.
 
 ## Data in a file: `src=`
 

@@ -59,14 +59,13 @@ function tierLabels(
   return parts;
 }
 
-/** 一根柱 + 柱尾的数值 */
+/** 一根柱 */
 function bar(
-  x0: number, y: number, len: number, color: string, tip: string | undefined,
+  x0: number, y: number, len: number, h: number, color: string, tip: string | undefined,
 ): string[] {
-  const out = [
-    `<rect x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${BAR_H}" rx="4" fill="${color}"${tip ? ` data-tip="${esc(tip)}"` : ''}/>`,
+  return [
+    `<rect x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tip ? ` data-tip="${esc(tip)}"` : ''}/>`,
   ];
-  return out;
 }
 
 /**
@@ -76,12 +75,19 @@ function bar(
  * 档与档之间一条分隔线,档名在左边那一列。
  */
 export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
-  const { width, height, version, skin } = o;
+  const { width, version, skin } = o;
   const cap = spec.labelmax ?? 22;
   const side = spec.side;
   const items = side?.items ?? [];
   const n = items.length;
-  if (!n) return svgDoc(width, height, 'ladder', version, 'ladder', spec, skin, '');
+  if (!n) return svgDoc(width, o.height, 'ladder', version, 'ladder', spec, skin, '');
+  // 行多的时候自动拉高 —— 行距压到 16 以下,行标签就叠在一起了
+  let height = o.height;
+  if (o.autoHeight) {
+    const head = PAD + (spec.title ? 32 : 0) + 8 + (side?.name ? LEGEND_H : 0);
+    const need = head + PAD + 26 + n * 16;
+    if (height < need) height = Math.min(need, 4000);
+  }
 
   const titleH = spec.title ? titleBlock(spec.title).length / 40 : 0;  // 粗略,下面重算
   const legendItems = side?.name ? [{ name: side.name, color: 'var(--d-s1)' }] : [];
@@ -131,7 +137,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     const tip = o.interactive
       ? ` data-tip="${esc(`${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
       : '';
-    parts.push(...bar(left, y, len, color, tip));
+    parts.push(...bar(left, y, len, barH, color, tip));
     if (it.label) {
       parts.push(`<text x="${r2(PAD + TIER_W + labelW)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(it.label, cap))}</text>`);
     }
@@ -149,21 +155,31 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
 }
 
 /**
- * 双翼天梯图:左边 N 卡、右边 AMD/Intel,一行两个型号。
+ * 双翼天梯图:左边 N 卡、右边 AMD/Intel。
  *
- * 行的配对有两种:
- *   rank(缺省)—— 两侧各自按强弱排,第 k 行对第 k 行(**完全错位**)
- *   value      —— 值相近的排在同一行(**匹配排序**)
+ * 两翼的卡合成**一条**梯子,整体按强弱排:
+ *   rank(缺省)—— **完全错位**:每一行只有一张卡,在它自己那一侧
+ *   value      —— **匹配排序**:值相近的排在同一行,两翼都有
+ *
+ * 两翼共用一把标尺 —— 不然跨翼的长度没法比。
  */
 export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
-  const { width, height, version, skin } = o;
+  const { width, version, skin } = o;
   const cap = spec.labelmax ?? 22;
   const leftItems = spec.left?.items ?? [];
   const rightItems = spec.right?.items ?? [];
   const rows = matchLadderRows(leftItems, rightItems, spec.match ?? 'rank');
   const n = rows.length;
   if (!n) {
-    return svgDoc(width, height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin, '');
+    return svgDoc(width, o.height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin, '');
+  }
+  // 行多的时候自动拉高(同上)
+  let height = o.height;
+  if (o.autoHeight) {
+    const legend = (spec.left?.name ? 1 : 0) + (spec.right?.name ? 1 : 0);
+    const head = PAD + (spec.title ? 32 : 0) + 8 + (legend ? LEGEND_H : 0);
+    const need = head + PAD + 26 + n * 16;
+    if (height < need) height = Math.min(need, 4000);
   }
 
   const legendItems = [
@@ -185,17 +201,16 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   const centre = (plotL + plotR) / 2;
   const half = (plotR - plotL) / 2;
 
+  // **一把标尺**:两翼合起来是一条梯子,长度要能跨着比
   const lMax = Math.max(...leftItems.map((it) => it.value), 0);
   const rMax = Math.max(...rightItems.map((it) => it.value), 0);
-  const each = spec.match !== 'value';
+  const leftMax = Math.max(lMax, rMax);
+  const rightMax = leftMax;
 
   const bg = card(width, height);
   const parts: string[] = [];
 
-  // 刻度:两侧各自一套(除非 scale=shared)
-  const shared = !each;
-  const leftMax = shared ? Math.max(lMax, rMax) : lMax;
-  const rightMax = shared ? leftMax : rMax;
+  // 刻度:两侧同一套(共用一把标尺)
   const grid = (max: number, dir: -1 | 1): void => {
     if (max <= 0) return;
     const ticks = niceTicks(max, 4);
@@ -230,7 +245,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       const tip = o.interactive
         ? ` data-tip="${esc(`${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
         : '';
-      parts.push(...bar(centre - len, y, len, sVar(0), tip));
+      parts.push(...bar(centre - len, y, len, barH, sVar(0), tip));
       if (l.label) {
         parts.push(`<text x="${r2(plotL - VALUE_W - 10)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(l.label, cap))}</text>`);
       }
@@ -244,7 +259,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       const tip = o.interactive
         ? ` data-tip="${esc(`${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
         : '';
-      parts.push(...bar(centre, y, len, sVar(1), tip));
+      parts.push(...bar(centre, y, len, barH, sVar(1), tip));
       if (r.label) {
         parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(r.label, cap))}</text>`);
       }
