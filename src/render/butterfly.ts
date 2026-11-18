@@ -89,11 +89,24 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
     // 行名列
     // 标签上限可调(labelmax=):名字长的数据,名字本身就是信息,截了等于没说
     const lcap = spec.labelmax ?? 22;
-    const labelW = Math.max(...spec.labels.map((l) => textW(trunc(l, lcap), 13)), 0);
+    // 两侧各自带行名时(天梯图:左边 N 卡、右边 A 卡,一行两个型号),
+    // 共用那列标签就不画了 —— 各画各的外缘。
+    const leftLabels = spec.left?.labels ?? [];
+    const rightLabels = spec.right?.labels ?? [];
+    const ownLabels = leftLabels.length > 0 || rightLabels.length > 0;
+    const labelW = ownLabels
+      ? 0
+      : Math.max(...spec.labels.map((l) => textW(trunc(l, lcap), 13)), 0);
     const labelX = PAD;
     const labelEnd = labelX + labelW;
-    const plotL = labelEnd + VALUE_W + 10;
-    const plotR = width - PAD - VALUE_W - 10;
+    const leftNameW = leftLabels.length
+      ? Math.max(...leftLabels.map((l) => textW(trunc(l, lcap), 13)), 0)
+      : 0;
+    const rightNameW = rightLabels.length
+      ? Math.max(...rightLabels.map((l) => textW(trunc(l, lcap), 13)), 0)
+      : 0;
+    const plotL = labelEnd + leftNameW + VALUE_W + 10;
+    const plotR = width - PAD - rightNameW - VALUE_W - 10;
     const centre = (plotL + plotR) / 2;
     const half = (plotR - plotL) / 2;
     // 行高:行多时压缩
@@ -139,7 +152,18 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
     const barLabels: string[] = [];
     spec.labels.forEach((label, i) => {
       const y = contentTop + i * pitch + (pitch - barH) / 2;
-      parts.push(`<text x="${r2(labelX)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(label, lcap))}</text>`);
+      if (!ownLabels) {
+        parts.push(`<text x="${r2(labelX)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(label, lcap))}</text>`);
+      }
+      // 两侧自己的名字:画在这一侧的外缘(左边的右对齐,右边的左对齐)
+      const ly = leftLabels[i];
+      if (ly !== undefined) {
+        parts.push(`<text x="${r2(plotL - VALUE_W - 10)}" y="${r2(y + barH * 0.74)}" text-anchor="end" font-size="13" fill="var(--d-ink)">${esc(trunc(ly, lcap))}</text>`);
+      }
+      const ry = rightLabels[i];
+      if (ry !== undefined) {
+        parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(ry, lcap))}</text>`);
+      }
       // 两侧:轨道 + 段(自中轴往外堆叠)
       const drawSide = (segs: Painted[], totals: number[], dir: -1 | 1): void => {
         if (!segs.length) return;

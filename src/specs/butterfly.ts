@@ -41,6 +41,14 @@ export interface BflySide {
   values?: number[];
   /** 多段:自中轴往外堆叠 */
   segments?: BflySegment[];
+  /**
+   * 这一侧**自己的**行标签(左右版才用)。
+   *
+   * 共用一套 labels 的话,一行只能有一个名字 —— 而「左边是 N 卡、右边是 A 卡」
+   * 的天梯图,一行要显示的是两个不同的型号。给了它,这一侧的名字就画在这一侧
+   * 的外缘,共用那列标签不再画。
+   */
+  labels?: string[];
 }
 
 export interface BflyLine {
@@ -96,6 +104,9 @@ function parseSide(v: unknown, where: string): BflySide | undefined {
   const out: BflySide = {};
   if (typeof v.name === 'string') out.name = v.name;
   if (Array.isArray(v.values)) out.values = v.values.map((x) => Number(x) || 0);
+  if (Array.isArray(v.labels)) {
+    out.labels = v.labels.map((x) => String(x));
+  }
   if (Array.isArray(v.segments)) {
     out.segments = v.segments.map((sg, i) => {
       if (!isObj(sg)) throw new ApiError(400, `"${where}.segments[${i}]" must be an object with "values".`);
@@ -146,6 +157,11 @@ export function butterflySpecFromParams(params: URLSearchParams): string | null 
   const spec: Record<string, unknown> = { labels };
   const left = sideFrom(leftRaw, 'Left');
   const right = sideFrom(rightRaw, 'Right');
+  // 两侧各自的名字:llabels= / rlabels=(左边的行名 / 右边的行名)
+  const lLabels = params.getAll('llabels').flatMap((s) => s.split(',')).map((s) => s.trim()).filter(Boolean);
+  const rLabels = params.getAll('rlabels').flatMap((s) => s.split(',')).map((s) => s.trim()).filter(Boolean);
+  if (left && lLabels.length) left.labels = lLabels;
+  if (right && rLabels.length) right.labels = rLabels;
   if (left) spec.left = left;
   if (right) spec.right = right;
   if (lineRaw) {
@@ -204,7 +220,13 @@ export function parseButterflySpec(raw: string): ButterflySpec {
     if (typeof obj.line.name === 'string') line.name = obj.line.name;
   }
   if (!labels.length) {
-    throw new ApiError(400, `"labels" is required. Example: ${BUTTERFLY_EXAMPLE}`);
+    // 两侧各自带行名时,共用那列标签可以不给(天梯图就是这么用的)
+    const own = left?.labels?.length ? left.labels : right?.labels;
+    if (own?.length) {
+      labels.push(...own);
+    } else {
+      throw new ApiError(400, `"labels" is required. Example: ${BUTTERFLY_EXAMPLE}`);
+    }
   }
   if (!left && !right && !line) {
     throw new ApiError(400, `need at least one side ("left" or "right"). Example: ${BUTTERFLY_EXAMPLE}`);

@@ -72,11 +72,29 @@ https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20close
 
 [![Issues opened vs closed, with scale](https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
 
+## 0. Names per side (for a ladder)
+
+By default both sides share one set of row names. But a ladder where the left
+wing is NVIDIA cards and the right wing is AMD cards needs **two different
+model names per row** — so give each side its own:
+
+```
+https://x-cmd.com/draw?type=butterfly&title=Ladder:%20left%20NVIDIA,%20right%20AMD&llabels=RTX%205090,RTX%204090,RTX%204080&rlabels=RX%207900%20XTX,RX%207800%20XT,RX%209060&left=NVIDIA:3261,2863,2210&right=AMD:2092,1875,1690&w=1100&h=420
+```
+
+[![Ladder: left NVIDIA, right AMD](https://x-cmd.com/draw?type=butterfly&title=Ladder%3A%20left%20NVIDIA%2C%20right%20AMD&llabels=RTX%205090%2CRTX%204090%2CRTX%204080&rlabels=RX%207900%20XTX%2CRX%207800%20XT%2CRX%209060&left=NVIDIA%3A3261%2C2863%2C2210&right=AMD%3A2092%2C1875%2C1690&w=1100&h=420)](https://x-cmd.com/draw/explore?type=butterfly&title=Ladder%3A%20left%20NVIDIA%2C%20right%20AMD&llabels=RTX%205090%2CRTX%204090%2CRTX%204080&rlabels=RX%207900%20XTX%2CRX%207800%20XT%2CRX%209060&left=NVIDIA%3A3261%2C2863%2C2210&right=AMD%3A2092%2C1875%2C1690&w=1100&h=420)
+
+Once either side has its own names, the shared label column is dropped — each
+side is labelled on its own outer edge. In the JSON form these are
+`left.labels` / `right.labels`.
+
 ## 1. Parameters
 
 | param | meaning | default |
 |---|---|---|
 | `labels=` | the categories — rows in `lr`, columns in `tb` | — |
+| `llabels=` | the **left** side's own row names (for a ladder where one row is an NVIDIA card and an AMD card) | shared `labels` |
+| `rlabels=` | the **right** side's own row names | shared `labels` |
 | `left=` | the first series: `Name:v,v,v`, or `name:v,v;name:v,v` to stack | — |
 | `right=` | the second series, same shape | — |
 | `line=` | a line on its own scale: `Name:v,v,v` | — |

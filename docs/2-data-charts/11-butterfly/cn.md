@@ -69,11 +69,27 @@ https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20close
 
 [![Issues opened vs closed, with scale](https://x-cmd.com/draw?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6&w=760&h=440)](https://x-cmd.com/draw/explore?type=butterfly&t=scale&title=Issues%20opened%20vs%20closed&labels=0-30d,30-60d,60-90d,90-180d,180-360d,360-720d&left=Opened:7,8,2,7,6,7&right=Closed:5,6,2,7,5,6)
 
+## 0. 两侧各自的名字(天梯图)
+
+默认两侧共用一行一套名字。但「左边是 N 卡、右边是 A 卡」的天梯图,一行要显示
+的是**两个不同的型号** —— 这时给两侧各带一套名字:
+
+```
+https://x-cmd.com/draw?type=butterfly&title=天梯:左边 NVIDIA,右边 AMD&llabels=RTX%205090,RTX%204090,RTX%204080&rlabels=RX%207900%20XTX,RX%207800%20XT,RX%209060&left=NVIDIA:3261,2863,2210&right=AMD:2092,1875,1690&w=1100&h=420
+```
+
+[![天梯:左边 NVIDIA,右边 AMD](https://x-cmd.com/draw?type=butterfly&title=%E5%A4%A9%E6%A2%AF%3A%E5%B7%A6%E8%BE%B9%20NVIDIA%2C%E5%8F%B3%E8%BE%B9%20AMD&llabels=RTX%205090%2CRTX%204090%2CRTX%204080&rlabels=RX%207900%20XTX%2CRX%207800%20XT%2CRX%209060&left=NVIDIA%3A3261%2C2863%2C2210&right=AMD%3A2092%2C1875%2C1690&w=1100&h=420)](https://x-cmd.com/draw/explore?type=butterfly&title=%E5%A4%A9%E6%A2%AF%3A%E5%B7%A6%E8%BE%B9%20NVIDIA%2C%E5%8F%B3%E8%BE%B9%20AMD&llabels=RTX%205090%2CRTX%204090%2CRTX%204080&rlabels=RX%207900%20XTX%2CRX%207800%20XT%2CRX%209060&left=NVIDIA%3A3261%2C2863%2C2210&right=AMD%3A2092%2C1875%2C1690&w=1100&h=420)
+
+给了任一侧的名字,共用那列标签就不画了 —— 各画各的外缘。
+JSON 形态里对应 `left.labels` / `right.labels`。
+
 ## 1. 参数
 
 | 参数 | 意思 | 缺省 |
 |---|---|---|
 | `labels=` | 类别 —— `lr` 时是行,`tb` 时是列 | — |
+| `llabels=` | **左侧自己的**行名(天梯图:左边 N 卡、右边 A 卡,一行两个型号) | 共用 `labels` |
+| `rlabels=` | **右侧自己的**行名 | 共用 `labels` |
 | `left=` | 一侧:`名字:v,v,v`;堆叠写 `名字:v,v;名字:v,v` | — |
 | `right=` | 另一侧,写法同上 | — |
 | `line=` | 一条自己标尺的折线:`名字:v,v,v` | — |

@@ -17,6 +17,28 @@ describe('butterfly(双翼条形图)', () => {
     for (const v of ['7', '8', '5', '6']) expect(texts(svg)).toContain(v);
   });
 
+  it('两侧各自带行名时:各画各的外缘,共用那列不画', () => {
+    const { svg } = renderFromUrl(url(
+      'type=butterfly&llabels=RTX5090,RTX4090&rlabels=RX7900XTX,RX7800XT' +
+      '&left=NVIDIA:3261,2863&right=AMD:2092,1875',
+    ));
+    const t = texts(svg);
+    expect(t).toContain('RTX5090');
+    expect(t).toContain('RX7900XTX');
+    // 共用那列标签不画(没有「RTX5090,RX7900XTX」这种合起来的标签)
+    expect(t.filter((x) => x === 'RTX5090').length).toBe(1);
+  });
+
+  it('llabels/rlabels 走 JSON 形态也是一份实现', () => {
+    const spec = parseButterflySpec(JSON.stringify({
+      labels: ['a', 'b'],
+      left: { name: 'N', values: [1, 2], labels: ['L1', 'L2'] },
+      right: { name: 'A', values: [3, 4], labels: ['R1', 'R2'] },
+    }));
+    expect(spec.left?.labels).toEqual(['L1', 'L2']);
+    expect(spec.right?.labels).toEqual(['R1', 'R2']);
+  });
+
   it('单位进图例(不放轴上 —— 「1k」配 MB 会读错)', () => {
     const { svg } = renderFromUrl(url('type=butterfly&labels=A&left=mem:12&right=disk:30&unit=MB'));
     expect(texts(svg)).toContain('mem (MB)');
