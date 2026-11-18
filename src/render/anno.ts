@@ -540,7 +540,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     );
     if (two) {
       // 引线 + 指示点(跟「评」共用这一份实现 ✓)
-      parts.push(...leaderAndDot(ax, ay, x, y, bw, bh, color, k));
+      parts.push(...leaderAndDot(ax, ay, x, y, bw, bh, color, k, i));
     }
     if (a.cls) parts.push(clsTag(a.cls, x, y - 4 * k, color, k, i));
   }
@@ -578,13 +578,13 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     by = Math.min(Math.max(by, frame.y), Math.max(frame.y, frame.y + frame.h - bh));
     parts.push(
       // 引线 + 指示点(跟「字」共用这一份实现 ✓)
-      ...leaderAndDot(ax, ay, bx, by, bw, bh, color, k).map((x) => x.replace('<', `<g data-i="${i}">`).replace('</svg>', '</g>')),
+      ...leaderAndDot(ax, ay, bx, by, bw, bh, color, k, i),
       // 垫色:底下垫一块近黑的底 —— 压在什么颜色的图上都读得出(亮底上是深色小牌,暗底上融进背景)
       `<rect data-i="${i}" x="${r2(bx)}" y="${r2(by)}" width="${r2(bw)}" height="${r2(bh)}" rx="${r2(10 * k)}" fill="#0b0c0f" fill-opacity="0.86" stroke="${color}" stroke-opacity="0.6" stroke-width="${r2(k)}"/>`,
     );
-    lines.forEach((l, i) => {
+    lines.forEach((l, ln) => {
       parts.push(
-        `<text data-i="${i}" x="${r2(bx + padX)}" y="${r2(by + padY + lh * i + fs * 0.82)}" font-size="${r2(fs)}" fill="${color}">${esc(l)}</text>`,
+        `<text data-i="${i}" x="${r2(bx + padX)}" y="${r2(by + padY + lh * ln + fs * 0.82)}" font-size="${r2(fs)}" fill="${color}">${esc(l)}</text>`,
       );
     });
     if (a.cls) parts.push(clsTag(a.cls, bx, by - 4 * k, color, k, i));
