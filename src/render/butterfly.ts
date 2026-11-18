@@ -87,7 +87,9 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
   /* ---- 左右版:类别是行,柱自中轴往两侧长 */
   if (!tb) {
     // 行名列
-    const labelW = Math.max(...spec.labels.map((l) => textW(l, 13)), 0);
+    // 标签上限可调(labelmax=):名字长的数据,名字本身就是信息,截了等于没说
+    const lcap = spec.labelmax ?? 22;
+    const labelW = Math.max(...spec.labels.map((l) => textW(trunc(l, lcap), 13)), 0);
     const labelX = PAD;
     const labelEnd = labelX + labelW;
     const plotL = labelEnd + VALUE_W + 10;
@@ -137,7 +139,7 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
     const barLabels: string[] = [];
     spec.labels.forEach((label, i) => {
       const y = contentTop + i * pitch + (pitch - barH) / 2;
-      parts.push(`<text x="${r2(labelX)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(label, 22))}</text>`);
+      parts.push(`<text x="${r2(labelX)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(label, lcap))}</text>`);
       // 两侧:轨道 + 段(自中轴往外堆叠)
       const drawSide = (segs: Painted[], totals: number[], dir: -1 | 1): void => {
         if (!segs.length) return;

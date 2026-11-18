@@ -18,7 +18,9 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
 
   const pad = 24;
   const contentTop = pad + (spec.title ? 32 : 0) + 8;
-  const labelW = Math.min(160, Math.max(...spec.data.map((d) => textW(trunc(d.label, 16), 12.5))) + 4);
+  // 标签上限可调(labelmax=):名字长的数据,名字本身就是信息,截了等于没说
+  const cap = spec.labelmax ?? 16;
+  const labelW = Math.min(160 + Math.max(0, cap - 16) * 7, Math.max(...spec.data.map((d) => textW(trunc(d.label, cap), 12.5))) + 4);
   const left = pad + labelW + 14;
   const right = width - pad - 44; // 右侧留给数值标注
   const bottom = height - pad - 28;
@@ -54,7 +56,7 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
       `V${r2(y + barH - m)}Q${r2(x1)} ${r2(y + barH)} ${r2(x1 - m)} ${r2(y + barH)}H${r2(x0)}Z`;
     const tip = o.interactive ? ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"` : '';
     parts.push(`<path d="${path}" fill="url(#dg-bar)"${tip}/>`);
-    parts.push(`<text x="${r2(pad + labelW)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(d.label, 16))}</text>`);
+    parts.push(`<text x="${r2(pad + labelW)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(d.label, cap))}</text>`);
     if (d.value > 0 && (num === 'all' || (num === 'peak' && isPeak))) { // 零值不标(标注克制)
       parts.push(`<text x="${r2(x1 + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="${isPeak ? 13 : 11}" ${isPeak ? 'font-weight="600" fill="' + 'var(--d-ink)' + '"' : 'fill="' + 'var(--d-text)' + '"'} style="${TAB}">${fmtNum(d.value)}</text>`);
     }

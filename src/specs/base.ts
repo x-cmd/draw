@@ -56,6 +56,9 @@ export interface ChartSpec {
   subtitle?: string; // 编辑式副标题(规范 area-3:16px 灰,随大标题)
   source?: string;   // 数据来源脚注(规范 area-3:13px,左下)
   unit?: string;
+  /** 标签最多显示几个字。缺省由各图自己定(hbar 16 / butterfly 22);
+   *  名字长的数据(型号、公司名)要调大,不然名字本身就是信息,被截了等于没说。 */
+  labelmax?: number;
   data: Datum[];
 }
 
@@ -70,6 +73,7 @@ export const LIMITS = {
   unit: 16,
   axisName: 48,   // 轴标题(X/Y 轴叫什么)
   label: 64,
+  labelmax: 48,
   maxPie: 100,
   maxBar: 30,
   maxLine: 60,
@@ -143,6 +147,15 @@ export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' 
     source = clip(o.source, LIMITS.source);
   }
 
+  let labelmax: number | undefined;
+  if (o.labelmax !== undefined) {
+    const n = Number(o.labelmax);
+    if (!Number.isFinite(n) || n < 4 || n > LIMITS.labelmax) {
+      throw new ApiError(400, `"labelmax" must be a number between 4 and ${LIMITS.labelmax}, got ${jsonType(o.labelmax)}`);
+    }
+    labelmax = Math.floor(n);
+  }
+
   if (!Array.isArray(o.data) || o.data.length === 0) {
     throw new ApiError(400, `"data" must be a non-empty array of {"label":string,"value":number}`);
   }
@@ -181,7 +194,7 @@ export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' 
     throw new ApiError(400, `"data" values must sum to more than 0, got ${total}`);
   }
 
-  return { title, subtitle, source, unit, data };
+  return { title, subtitle, source, unit, labelmax, data };
 }
 
 // 扁平参数 → JSON 字符串:让 URL 永远可读,无需百分号编码。
@@ -223,6 +236,8 @@ export function specFromParams(params: URLSearchParams, kind: 'pie' | 'bar' | 'h
   if (source) obj.source = source;
   const unit = params.get('unit');
   if (unit) obj.unit = unit;
+  const labelmax = params.get('labelmax');
+  if (labelmax) obj.labelmax = labelmax;
   return JSON.stringify(obj);
 }
 
