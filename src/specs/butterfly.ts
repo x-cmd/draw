@@ -158,8 +158,13 @@ export function butterflySpecFromParams(params: URLSearchParams): string | null 
   const left = sideFrom(leftRaw, 'Left');
   const right = sideFrom(rightRaw, 'Right');
   // 两侧各自的名字:llabels= / rlabels=(左边的行名 / 右边的行名)
-  const lLabels = params.getAll('llabels').flatMap((s) => s.split(',')).map((s) => s.trim()).filter(Boolean);
-  const rLabels = params.getAll('rlabels').flatMap((s) => s.split(',')).map((s) => s.trim()).filter(Boolean);
+  //
+  // **中间的空要留着** —— 某一侧这一行没有东西,位置还得在,
+  // 过滤掉会让后面的名字全部错位(行对不上行)。
+  const splitNames = (raws: string[]): string[] =>
+    raws.flatMap((s) => s.split(',')).map((s) => s.trim()).filter((s, i, a) => s !== '' || a.length > 1);
+  const lLabels = splitNames(params.getAll('llabels'));
+  const rLabels = splitNames(params.getAll('rlabels'));
   if (left && lLabels.length) left.labels = lLabels;
   if (right && rLabels.length) right.labels = rLabels;
   if (left) spec.left = left;

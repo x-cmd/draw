@@ -54,6 +54,8 @@ export interface Anno {
   pts?: [number, number][];
   text?: string;
   color?: string;
+  /** 类别(训练数据用 ✓):词表在 `_cls=`,归属在 `_c=` ✓ */
+  cls?: string;
 }
 
 const HEX_RE = /^#?[0-9a-fA-F]{6}$/;
@@ -159,9 +161,21 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
   const hidden = new Set(
     (params.get('_hide') ?? '').split(',').filter(Boolean).map((n) => Number(n)).filter((n) => Number.isFinite(n)),
   );
+  // 类别(训练数据 ✓):`_cls=异常,趋势`(词表 ✓)+ `_c=0:异常,2:趋势`(第几条属于哪类 ✓)
+  //  ⇒ 序号跟 `_hide=` 同一套 ✓(解析顺序 ✓)
+  const classes = new Map<number, string>();
+  for (const pair of (params.get('_c') ?? '').split(',').filter(Boolean)) {
+    const i = pair.indexOf(':');
+    if (i < 0) continue;
+    const n = Number(pair.slice(0, i));
+    const name = pair.slice(i + 1).trim();
+    if (Number.isFinite(n) && name) classes.set(n, name);
+  }
   const out: Anno[] = [];
   // 序号按「本来会有几条」算(跳过的也算进去)—— 否则藏掉一条,后面的序号全错位
   let seq = 0;
+  /** 这一条的序号(藏起来的也算进去 ✓ —— 跟 `_hide=` 同一套 ✓) */
+  const idx = (): number => seq;
   const skip = (): boolean => hidden.has(seq++);
 
   for (const raw of ovals) {
@@ -170,9 +184,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (nums.length < 4 || nums.length > 5 || nums.slice(0, 4).some((n) => !Number.isFinite(Number(n)))) {
       throw new ApiError(400, `"_oval" expects cx,cy,rx,ry in percent of the canvas (a ,#color may follow), e.g. _oval=70,25,12,8 — got ${JSON.stringify(raw)}`);
     }
+    const ai = idx();
     if (skip()) continue;
     out.push({
       kind: 'oval',
+      cls: classes.get(ai),
       x: pct(Number(nums[0]), '_oval', raw),
       y: pct(Number(nums[1]), '_oval', raw),
       rx: Math.abs(Number(nums[2])),
@@ -190,9 +206,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (!text.trim()) {
       throw new ApiError(400, `"_text" needs some text after ";", e.g. _text=70,12;the spike — got ${JSON.stringify(raw)}`);
     }
+    const ai = idx();
     if (skip()) continue;
     out.push({
       kind: 'text',
+      cls: classes.get(ai),
       x: h.x,
       y: h.y,
       tx: h.tx,
@@ -214,9 +232,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (w <= 0 || h <= 0) {
       throw new ApiError(400, `"_hl" width and height must be positive, e.g. _hl=20,30,40,25 — got ${JSON.stringify(raw)}`);
     }
+    const ai = idx();
     if (skip()) continue;
     out.push({
       kind: 'hl',
+      cls: classes.get(ai),
       x: pct(Number(nums[0]), '_hl', raw),
       y: pct(Number(nums[1]), '_hl', raw),
       w,
@@ -237,9 +257,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (!text.trim()) {
       throw new ApiError(400, `"_note" needs some text after ";", e.g. _note=62,44;this spike came from the release — got ${JSON.stringify(raw)}`);
     }
+    const ai = idx();
     if (skip()) continue;
     out.push({
       kind: 'note',
+      cls: classes.get(ai),
       x: h.x,
       y: h.y,
       tx: h.tx,
@@ -256,9 +278,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     if (nums.length < 4 || nums.length > 5 || nums.slice(0, 4).some((n) => !Number.isFinite(Number(n)))) {
       throw new ApiError(400, `"_arrow" expects x1,y1,x2,y2 in percent of the canvas (a ,#color may follow), e.g. _arrow=20,60,60,20 — got ${JSON.stringify(raw)}`);
     }
+    const ai = idx();
     if (skip()) continue;
     out.push({
       kind: 'arrow',
+      cls: classes.get(ai),
       x: pct(Number(nums[0]), '_arrow', raw),
       y: pct(Number(nums[1]), '_arrow', raw),
       x2: pct(Number(nums[2]), '_arrow', raw),
@@ -283,14 +307,21 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     for (let i = 0; i + 1 < nums.length; i += 2) {
       pts.push([pct(Number(nums[i]), '_path', raw), pct(Number(nums[i + 1]), '_path', raw)]);
     }
+    const ai = idx();
     if (skip()) continue;
     out.push({
       kind: 'path',
+      cls: classes.get(ai),
       x: pts[0][0],
       y: pts[0][1],
       pts,
       color: colorOf(colorRaw ?? parts[1], '_path'),
     });
+  }
+  // 给每一条补上它的类别(序号 = 解析顺序 ✓)
+  for (const a of out) {
+    const c = classes.get(idxOf());
+    if (c) a.cls = c;
   }
   return out;
 }
