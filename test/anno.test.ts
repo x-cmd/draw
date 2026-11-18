@@ -45,8 +45,30 @@ describe('标注层', () => {
     expect(hidden).not.toContain('<ellipse');
   });
 
+  it('_arrow 画出一支箭头(线 + 箭头)', () => {
+    const svg = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_arrow=20,60,60,20');
+    expect(svg).toContain('<line');
+    expect(svg).toMatch(/<path d="M[^"]*L[^"]*L/);
+  });
+
+  it('_path 画出一条折线', () => {
+    const svg = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_path=10,10,20,20,30,15');
+    expect(svg).toMatch(/<path d="M[^"]*L[^"]*L/);
+  });
+
+  it('_path 末尾带 # 的那段是颜色,不是坐标', () => {
+    const svg = svgOf('?type=bar&labels=Mon,Tue&values=1,2&_path=10,10,20,20,#F87171');
+    expect(svg).toContain('#f87171');
+    expect(svg).not.toContain('#F87171');
+  });
+
   it('参数写错时报错只说新名字', () => {
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_oval=1,2')).toThrow(/_oval/);
     expect(() => svgOf('?type=bar&labels=Mon&values=1&_text=1,2')).toThrow(/_text/);
+  });
+
+  it('箭头/折线写错时报错', () => {
+    expect(() => svgOf('?type=bar&labels=Mon&values=1&_arrow=1,2,3')).toThrow(/_arrow/);
+    expect(() => svgOf('?type=bar&labels=Mon&values=1&_path=1,2,3')).toThrow(/_path/);
   });
 });

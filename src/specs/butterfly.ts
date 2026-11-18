@@ -53,6 +53,8 @@ export interface BflyLine {
 export interface ButterflySpec {
   title?: string;
   unit?: string;
+  /** 标签最多显示几个字(缺省 22)。名字长的数据用 labelmax= 调大。 */
+  labelmax?: number;
   dir: 'lr' | 'tb';
   /** 两侧的标尺:shared(默认,长度可比)或 each(两侧各自一套 —— 两侧单位不同时用) */
   scale?: 'shared' | 'each';
@@ -170,6 +172,8 @@ export function butterflySpecFromParams(params: URLSearchParams): string | null 
   if (title) spec.title = title;
   const unit = params.get('unit');
   if (unit) spec.unit = unit;
+  const labelmax = params.get('labelmax');
+  if (labelmax) spec.labelmax = labelmax;
   return JSON.stringify(spec);
 }
 
@@ -217,6 +221,13 @@ export function parseButterflySpec(raw: string): ButterflySpec {
   if (scale === 'each') spec.scale = 'each';
   if (typeof obj.title === 'string') spec.title = obj.title;
   if (typeof obj.unit === 'string') spec.unit = obj.unit;
+  if (obj.labelmax !== undefined) {
+    const n = Number(obj.labelmax);
+    if (!Number.isFinite(n) || n < 4 || n > 48) {
+      throw new ApiError(400, `"labelmax" must be a number between 4 and 48, got ${JSON.stringify(obj.labelmax)}`);
+    }
+    spec.labelmax = Math.floor(n);
+  }
   if (left) spec.left = left;
   if (right) spec.right = right;
   if (line) spec.line = line;

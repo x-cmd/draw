@@ -11,6 +11,10 @@
 //   &_hl=20,30,40,25,#fbbf24    同上,换个颜色
 //   &_note=62,44;这个尖峰是发布引起的   一条评论(从 62,44 拉一条线过去)
 //   &_note=62,44,#60a5fa;…      同上,换个颜色
+//   &_arrow=20,60,60,20          一支箭头(起点 20,60;终点 60,20)
+//   &_arrow=20,60,60,20,#60a5fa  同上,换个颜色
+//   &_path=12,30,20,25,31,28,…  手绘的一笔(折线,坐标连着写)
+//   &_path=12,30,20,25,#F87171   同上,换个颜色
 //
 // 坐标是**百分比**(0-100),相对整张画布 —— 换尺寸、换图种,标注都还在原来的地方。
 // 颜色只收 6 位 hex(# 要 URL 编码成 %23)。
@@ -26,8 +30,8 @@
 import { ApiError } from '../specs/index.js';
 
 export interface Anno {
-  kind: 'oval' | 'text' | 'hl' | 'note';
-  /** 椭圆:中心;文字:标签中心;高亮:左上角;评论:引线的落点(都是百分比) */
+  kind: 'oval' | 'text' | 'hl' | 'note' | 'arrow' | 'path';
+  /** 椭圆:中心;文字:标签中心;高亮:左上角;评论:引线的落点;箭头:起点;折线:第一点(都是百分比) */
   x: number;
   y: number;
   /** 椭圆的半径(百分比) */
@@ -36,6 +40,11 @@ export interface Anno {
   /** 高亮的宽高(百分比) */
   w?: number;
   h?: number;
+  /** 箭头的终点 */
+  x2?: number;
+  y2?: number;
+  /** 手绘的折线(百分比坐标) */
+  pts?: [number, number][];
   text?: string;
   color?: string;
 }
@@ -46,6 +55,8 @@ const DEFAULT_COLOR = '#F87171';
 const HL_COLOR = '#FBBF24';
 /** 评论默认取站上的强调色(蓝) */
 const NOTE_COLOR = '#60A5FA';
+/** 箭头也用强调色(蓝)—— 跟评论一族 */
+const ARROW_COLOR = '#60A5FA';
 
 const r2 = (v: number): number => Math.round(v * 100) / 100;
 
@@ -82,7 +93,11 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
   const texts = [...params.getAll('_text'), ...legacyTexts];
   const hls = params.getAll('_hl');
   const notes = params.getAll('_note');
-  if (!ovals.length && !texts.length && !hls.length && !notes.length) return undefined;
+  const arrows = params.getAll('_arrow');
+  const paths = params.getAll('_path');
+  if (!ovals.length && !texts.length && !hls.length && !notes.length && !arrows.length && !paths.length) {
+    return undefined;
+  }
   // 藏起来的:`_hide=0,2`(序号 = 解析出来的顺序,跨种类;explore 页的标注面板写这个参数)
   const hidden = new Set(
     (params.get('_hide') ?? '').split(',').filter(Boolean).map((n) => Number(n)).filter((n) => Number.isFinite(n)),
@@ -176,6 +191,50 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
       color: colorOf(nums[2], '_note'),
     });
   }
+
+  // 一支箭头:_arrow=x1,y1,x2,y2(起点、终点;# 之后可带颜色)
+  for (const raw of arrows) {
+    const parts = raw.split(';');
+    const nums = parts[0].split(',');
+    if (nums.length < 4 || nums.length > 5 || nums.slice(0, 4).some((n) => !Number.isFinite(Number(n)))) {
+      throw new ApiError(400, `"_arrow" expects x1,y1,x2,y2 in percent of the canvas (a ,#color may follow), e.g. _arrow=20,60,60,20 — got ${JSON.stringify(raw)}`);
+    }
+    if (skip()) continue;
+    out.push({
+      kind: 'arrow',
+      x: pct(Number(nums[0]), '_arrow', raw),
+      y: pct(Number(nums[1]), '_arrow', raw),
+      x2: pct(Number(nums[2]), '_arrow', raw),
+      y2: pct(Number(nums[3]), '_arrow', raw),
+      color: colorOf(nums[4] ?? parts[1], '_arrow'),
+    });
+  }
+
+  // 手绘的一笔:_path=x1,y1,x2,y2,…(折线;末尾若带 # 就是颜色)
+  for (const raw of paths) {
+    const parts = raw.split(';');
+    const nums = parts[0].split(',');
+    // 末尾那一段若带 # ⇒ 是颜色,摘出来
+    let colorRaw: string | undefined;
+    if (nums.length > 3 && nums[nums.length - 1].trim().startsWith('#')) {
+      colorRaw = nums.pop();
+    }
+    if (nums.length < 4 || nums.length % 2 !== 0 || nums.some((n) => !Number.isFinite(Number(n)))) {
+      throw new ApiError(400, `"_path" expects a polyline x1,y1,x2,y2,… in percent of the canvas (a ,#color may follow), e.g. _path=12,30,20,25,31,28 — got ${JSON.stringify(raw)}`);
+    }
+    const pts: [number, number][] = [];
+    for (let i = 0; i + 1 < nums.length; i += 2) {
+      pts.push([pct(Number(nums[i]), '_path', raw), pct(Number(nums[i + 1]), '_path', raw)]);
+    }
+    if (skip()) continue;
+    out.push({
+      kind: 'path',
+      x: pts[0][0],
+      y: pts[0][1],
+      pts,
+      color: colorOf(colorRaw ?? parts[1], '_path'),
+    });
+  }
   return out;
 }
 
@@ -249,7 +308,7 @@ const esc = (s: string): string =>
  * 标注层 → SVG(画在画布坐标上)。
  * frame 是画布在 viewBox 里的位置与大小(标注的百分比按它换算)。
  *
- * 画的时候按kind分批:高亮(区域)在最底下,圈与文字在上面,评论(带引线)最上。
+ * 画的时候按kind分批:高亮(区域)在最底下,圈、笔、箭头居中,文字与评论(带引线)最上。
  *
  * k 是「一个用户单位 = 多少像素」的倒数 —— 画布的 viewBox 跟它的像素尺寸
  * 不一定一样(化学结构那张:viewBox 只有 119 个单位,画布 560 像素),
@@ -284,7 +343,46 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     );
   }
 
-  // 三、一句话:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
+  // 三、手绘的一笔:_path= 折线(笔触)
+  for (const a of of('path')) {
+    const color = a.color ?? DEFAULT_COLOR;
+    const pts = a.pts ?? [];
+    if (pts.length < 2) continue;
+    const d = pts
+      .map(([px, py], i) => `${i ? 'L' : 'M'}${r2(frame.x + (px / 100) * frame.w)},${r2(frame.y + (py / 100) * frame.h)}`)
+      .join(' ');
+    parts.push(
+      `<path d="${d}" fill="none" stroke="${color}" stroke-width="${r2(2.2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
+    );
+  }
+
+  // 四、一支箭头:_arrow= 起点、终点(末端一个箭头)
+  for (const a of of('arrow')) {
+    const color = a.color ?? ARROW_COLOR;
+    const x1 = frame.x + (a.x / 100) * frame.w;
+    const y1 = frame.y + (a.y / 100) * frame.h;
+    const x2 = frame.x + ((a.x2 ?? a.x) / 100) * frame.w;
+    const y2 = frame.y + ((a.y2 ?? a.y) / 100) * frame.h;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len = Math.hypot(dx, dy);
+    if (len < 1e-6) {
+      parts.push(`<circle cx="${r2(x2)}" cy="${r2(y2)}" r="${r2(3 * k)}" fill="${color}"/>`);
+      continue;
+    }
+    const ux = dx / len;
+    const uy = dy / len;
+    const head = Math.min(12 * k, len * 0.7);       // 箭头别比线还长
+    const bx = x2 - ux * head;
+    const by = y2 - uy * head;
+    const half = head * 0.42;                       // 张开的角度
+    parts.push(
+      `<line x1="${r2(x1)}" y1="${r2(y1)}" x2="${r2(x2)}" y2="${r2(y2)}" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round"/>`,
+      `<path d="M${r2(x2)},${r2(y2)}L${r2(bx - uy * half)},${r2(by + ux * half)}L${r2(bx + uy * half)},${r2(by - ux * half)}" fill="none" stroke="${color}" stroke-width="${r2(2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
+    );
+  }
+
+  // 五、一句话:一颗胶囊(底下垫一块半透明的底,压在什么颜色上都读得出)
   for (const a of of('text')) {
     const color = a.color ?? DEFAULT_COLOR;
     const fs = 13 * k;
@@ -306,7 +404,7 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     );
   }
 
-  // 四、一条评论:一条引线 + 一个多行的框(框自己挑位置:右边放不下就放左边)
+  // 六、一条评论:一条引线 + 一个多行的框(框自己挑位置:右边放不下就放左边)
   for (const a of of('note')) {
     const color = a.color ?? NOTE_COLOR;
     const fs = 13 * k;

@@ -87,7 +87,9 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
   /* ---- 左右版:类别是行,柱自中轴往两侧长 */
   if (!tb) {
     // 行名列
-    const labelW = Math.max(...spec.labels.map((l) => textW(l, 13)), 0);
+    // 标签上限可调(labelmax=):名字长的数据,名字本身就是信息,截了等于没说
+    const lcap = spec.labelmax ?? 22;
+    const labelW = Math.max(...spec.labels.map((l) => textW(trunc(l, lcap), 13)), 0);
     const labelX = PAD;
     const labelEnd = labelX + labelW;
     const plotL = labelEnd + VALUE_W + 10;
@@ -137,7 +139,7 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
     const barLabels: string[] = [];
     spec.labels.forEach((label, i) => {
       const y = contentTop + i * pitch + (pitch - barH) / 2;
-      parts.push(`<text x="${r2(labelX)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(label, 22))}</text>`);
+      parts.push(`<text x="${r2(labelX)}" y="${r2(y + barH * 0.74)}" font-size="13" fill="var(--d-ink)">${esc(trunc(label, lcap))}</text>`);
       // 两侧:轨道 + 段(自中轴往外堆叠)
       const drawSide = (segs: Painted[], totals: number[], dir: -1 | 1): void => {
         if (!segs.length) return;
@@ -159,6 +161,8 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
         }
         // 外端的数值:折线在柱之上,数值得等折线画完再画(否则被线盖住)
         const v = totals[i];
+        // 零长度的柱不写数字:那一格什么都没有,写个 "0" 只会把读者的眼睛拉到空处
+        if (!(v > 0)) return;
         const vx = dir < 0 ? centre - totalLen - 8 : centre + totalLen + 8;
         const vw = textW(fmtFull(v), 12);
         barLabelBoxes.push({
@@ -293,6 +297,8 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
           acc += len;
         }
         const v = totals[i];
+        // 零长度的柱不写数字(同上)
+        if (!(v > 0)) return;
         const vy = dir < 0 ? centreY - totalLen - 6 : centreY + totalLen + 6;
         tbLabels.push(
           `<text x="${r2(cx)}" y="${r2(vy + (dir < 0 ? 0 : 10))}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--d-text)" style="${TAB}">${esc(fmtFull(v))}</text>`,

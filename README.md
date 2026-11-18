@@ -36,7 +36,7 @@ Tell the agent what data to use, what relationship to express, and where the cha
 
 ```text
 Add an architecture diagram to the README, showing the request path from the CLI through the API to the database.
-```text
+```
 
 For regular use, install [`SKILL.md`](SKILL.md) in an agent that supports local skills. For Claude Code, save it as `~/.claude/skills/draw/SKILL.md`; after this one-time setup, you can describe your request directly.
 
