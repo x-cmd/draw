@@ -320,18 +320,20 @@ Any chart can be marked up without touching the chart itself — the marks are d
 
 | param | draws | example |
 |---|---|---|
-| `oval=` | an ellipse around a spot (`cx,cy,rx,ry`) | `oval=70,25,12,8` |
-| `text=` | a short label (`x,y;text`) | `text=70,12;the spike` |
+| `_oval=` | an ellipse around a spot (`cx,cy,rx,ry`) | `_oval=70,25,12,8` |
+| `_text=` | a short label (`x,y;text`) | `_text=70,12;the spike` |
 | `_hl=` | a highlighted region (`x,y,w,h`) | `_hl=20,30,40,25` |
 | `_note=` | a comment, with a leader line to the point (`x,y;text`) | `_note=62,44;this spike came from the release` |
 
 All four can be repeated, and each takes an optional 6-digit hex color (`#` URL-encoded as `%23`):
 
 ```
-/draw?type=bar&labels=Mon,Tue,Wed&values=12,18,9&_hl=8,20,42,55&_note=72,62;the%20spike%20was%20the%20release&oval=72,62,7,6
+/draw?type=bar&labels=Mon,Tue,Wed&values=12,18,9&_hl=8,20,42,55&_note=72,62;the%20spike%20was%20the%20release&_oval=72,62,7,6
 ```
 
-`_hl=` and `_note=` are prefixed with `_` so they can never collide with a chart's own params (`smiles=`, `d=`, `theme=`, …) — see [#33](https://github.com/x-cmd/draw/issues/33). `format=png` rasterizes the marks too.
+All four are prefixed with `_` so they can never collide with a chart's own params (`smiles=`, `d=`, `theme=`, …) — see [#33](https://github.com/x-cmd/draw/issues/33). `format=png` rasterizes the marks too.
+
+The older spellings `oval=` and `text=` (no underscore) still work, so existing links keep rendering; the log line says which name to use instead.
 
 ## Styles (`?t=`)
 

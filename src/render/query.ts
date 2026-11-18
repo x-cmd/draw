@@ -181,7 +181,7 @@ export function renderFromUrl(url: URL): DrawResult {
   return withAnnos(renderFromUrlInner(url), url);
 }
 
-/** 标注层(oval=/text=):在画好的 SVG 上面再叠一层 —— 图还是那张图 */
+/** 标注层(_oval=/_text=):在画好的 SVG 上面再叠一层 —— 图还是那张图 */
 function withAnnos(r: DrawResult, url: URL): DrawResult {
   const annos = parseAnnos(url.searchParams);
   if (!annos?.length) return r;

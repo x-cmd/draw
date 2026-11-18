@@ -76,7 +76,7 @@ function svgResponse(result: DrawResult, extra?: Record<string, string>): Respon
 // ?format=png(x-cmd-hub/draw#24):位图没有自适应明暗,scheme 强制固化(缺省 light;
 // 显式 auto 亦落 light)。所有 SVG 产出点(核心/echarts/archmap/mindmap/短链)共用。
 //
-// 标注层(oval=/text=/_hl=/_note=)在这一层统一叠 —— 所有端点通用(x-cmd/draw#33)。
+// 标注层(_oval=/_text=/_hl=/_note=)在这一层统一叠 —— 所有端点通用(x-cmd/draw#33)。
 // 核心图走 renderFromUrl 时已经叠过一层,injectAnnos 认得 data-anno="1",不会叠两遍。
 async function chartResponse(url: URL, result: DrawResult, extra?: Record<string, string>): Promise<Response> {
   const format = url.searchParams.get('format');

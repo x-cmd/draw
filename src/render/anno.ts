@@ -3,10 +3,10 @@
 // 用途:AI(或人)拿到一张图,想在上面指出点东西 —— 「那次抖动是发布引起的」。
 // 于是 URL 后面可以再挂几个参数(都能写多次):
 //
-//   &oval=70,25,12,8            圈一个椭圆(中心 70,25;半径 12,8)
-//   &oval=70,25,12,8,#22d3ee    同上,换个颜色
-//   &text=70,12;发布抖动        写一句话
-//   &text=70,12,#22d3ee;发布抖动
+//   &_oval=70,25,12,8           圈一个椭圆(中心 70,25;半径 12,8)
+//   &_oval=70,25,12,8,#22d3ee   同上,换个颜色
+//   &_text=70,12;发布抖动       写一句话
+//   &_text=70,12,#22d3ee;发布抖动
 //   &_hl=20,30,40,25            高亮一块区域(左上角 x,y;宽 w;高 h)
 //   &_hl=20,30,40,25,#fbbf24    同上,换个颜色
 //   &_note=62,44;这个尖峰是发布引起的   一条评论(从 62,44 拉一条线过去)
@@ -15,8 +15,11 @@
 // 坐标是**百分比**(0-100),相对整张画布 —— 换尺寸、换图种,标注都还在原来的地方。
 // 颜色只收 6 位 hex(# 要 URL 编码成 %23)。
 //
-// 通用扩展用 `_` 开头(oval/text 是老名字,不改):这样不会跟各图种自己的参数
-// (smiles= d= theme= …)打架 —— 见 x-cmd/draw#33。
+// 通用扩展一律用 `_` 开头:这样不会跟各图种自己的参数(smiles= d= theme= …)打架
+// —— 见 x-cmd/draw#33。
+//
+// 老名字(`oval=` / `text=`,没有下划线)**继续能用**(兼容旧链接 ✓),但正式名是
+// `_oval=` / `_text=` ✓;用了老名字会在日志里留一句(便于以后统计、什么时候下掉)✓。
 //
 // 这层是画在图**上面**的一层(g.anno),不改动图本身 —— 图还是那张图,只是上面多了几笔。
 
@@ -67,8 +70,14 @@ function pct(v: number, name: string, raw: string): number {
  * 约定:第一个字段是逗号分隔的数,后面用分号分隔别的字段。
  */
 export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
-  const ovals = params.getAll('oval');
-  const texts = params.getAll('text');
+  // 新名(_oval/_text)是正式名;老名(oval/text)继续收 —— 旧链接不能断 ✓
+  const legacyOvals = params.getAll('oval');
+  const legacyTexts = params.getAll('text');
+  if (legacyOvals.length || legacyTexts.length) {
+    console.warn('[draw] 标注层用了老名字(oval=/text=);正式名是 _oval=/_text= —— 见 x-cmd/draw#33');
+  }
+  const ovals = [...params.getAll('_oval'), ...legacyOvals];
+  const texts = [...params.getAll('_text'), ...legacyTexts];
   const hls = params.getAll('_hl');
   const notes = params.getAll('_note');
   if (!ovals.length && !texts.length && !hls.length && !notes.length) return undefined;
@@ -78,15 +87,15 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     const parts = raw.split(';');
     const nums = parts[0].split(',');
     if (nums.length < 4 || nums.length > 5 || nums.slice(0, 4).some((n) => !Number.isFinite(Number(n)))) {
-      throw new ApiError(400, `"oval" expects cx,cy,rx,ry in percent of the canvas (a ,#color may follow), e.g. oval=70,25,12,8 — got ${JSON.stringify(raw)}`);
+      throw new ApiError(400, `"_oval" expects cx,cy,rx,ry in percent of the canvas (a ,#color may follow), e.g. _oval=70,25,12,8 — got ${JSON.stringify(raw)}`);
     }
     out.push({
       kind: 'oval',
-      x: pct(Number(nums[0]), 'oval', raw),
-      y: pct(Number(nums[1]), 'oval', raw),
+      x: pct(Number(nums[0]), '_oval', raw),
+      y: pct(Number(nums[1]), '_oval', raw),
       rx: Math.abs(Number(nums[2])),
       ry: Math.abs(Number(nums[3])),
-      color: colorOf(nums[4] ?? parts[1], 'oval'),
+      color: colorOf(nums[4] ?? parts[1], '_oval'),
     });
   }
 
@@ -96,18 +105,18 @@ export function parseAnnos(params: URLSearchParams): Anno[] | undefined {
     const body = i < 0 ? '' : raw.slice(i + 1);
     const nums = head.split(',');
     if (nums.length < 2 || nums.length > 3 || nums.slice(0, 2).some((n) => !Number.isFinite(Number(n)))) {
-      throw new ApiError(400, `"text" expects x,y in percent of the canvas (a ,#color may follow), then the text after ";", e.g. text=70,12;the spike — got ${JSON.stringify(raw)}`);
+      throw new ApiError(400, `"_text" expects x,y in percent of the canvas (a ,#color may follow), then the text after ";", e.g. _text=70,12;the spike — got ${JSON.stringify(raw)}`);
     }
     const text = body.slice(0, 80);
     if (!text.trim()) {
-      throw new ApiError(400, `"text" needs some text after ";", e.g. text=70,12;the spike — got ${JSON.stringify(raw)}`);
+      throw new ApiError(400, `"_text" needs some text after ";", e.g. _text=70,12;the spike — got ${JSON.stringify(raw)}`);
     }
     out.push({
       kind: 'text',
-      x: pct(Number(nums[0]), 'text', raw),
-      y: pct(Number(nums[1]), 'text', raw),
+      x: pct(Number(nums[0]), '_text', raw),
+      y: pct(Number(nums[1]), '_text', raw),
       text,
-      color: colorOf(nums[2], 'text'),
+      color: colorOf(nums[2], '_text'),
     });
   }
 
