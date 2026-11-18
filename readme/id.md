@@ -8,8 +8,6 @@
 
 X-CMD Draw adalah alat open source untuk membuat diagram SVG: masukkan data dan gaya ke dalam URL untuk membuat diagram batang, diagram garis, diagram Sankey, diagram arsitektur sistem, peta pikiran, dan berbagai visual lainnya.
 
-![Contoh diagram X-CMD Draw](../docs/assets/draw.png)
-
 Diagram dapat disematkan langsung di README, issue, PR, posting blog, dan halaman web tanpa mengekspor atau mengunggah file gambar. Tautan dan SVG menyimpan data serta parameter yang dapat dibaca mesin: pembaca melihat diagram, sedangkan AI Agent dapat terus membaca, mengubah, dan membuatnya ulang tanpa mengenali gambar.
 
 ## Contoh

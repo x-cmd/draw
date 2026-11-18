@@ -8,8 +8,6 @@
 
 X-CMD Draw là một công cụ tạo biểu đồ SVG mã nguồn mở: chỉ cần viết dữ liệu và kiểu dáng vào URL là bạn có thể tạo biểu đồ cột, biểu đồ đường, sơ đồ Sankey, sơ đồ kiến trúc hệ thống, sơ đồ tư duy và nhiều loại hình khác.
 
-![Ví dụ biểu đồ X-CMD Draw](../docs/assets/draw.png)
-
 Bạn có thể nhúng biểu đồ trực tiếp vào README, issue, PR, bài blog và trang web mà không cần xuất hay tải tệp hình ảnh lên. Liên kết và SVG vẫn giữ dữ liệu cùng tham số ở dạng máy đọc được: người xem nhìn thấy hình, còn AI Agent có thể tiếp tục đọc, chỉnh sửa và tạo lại mà không cần nhận diện hình ảnh.
 
 ## Xem trước

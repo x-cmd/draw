@@ -8,8 +8,6 @@
 
 X-CMD Draw is an open-source SVG chart generator: put your data and styling in a URL to create bar charts, line charts, Sankey diagrams, system architecture diagrams, mind maps, and more.
 
-![X-CMD Draw chart examples](docs/assets/draw.png)
-
 Embed charts directly in READMEs, issues, PRs, blog posts, and web pages without exporting or uploading image files. Links and SVGs retain machine-readable data and parameters: readers see the chart, while AI agents can read, modify, and regenerate it without image recognition.
 
 ## Sneak peek

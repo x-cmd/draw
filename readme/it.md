@@ -8,8 +8,6 @@
 
 X-CMD Draw è uno strumento open source per generare grafici SVG: inserisci dati e stili nell’URL per creare grafici a barre e a linee, diagrammi di Sankey, architetture di sistema, mappe mentali e molti altri tipi di grafici.
 
-![Esempi di grafici X-CMD Draw](../docs/assets/draw.png)
-
 I grafici possono essere incorporati direttamente in README, issue, PR, articoli di blog e pagine web, senza esportare o caricare file immagine. I link e gli SVG conservano dati e parametri leggibili dalle macchine: i lettori vedono il grafico, mentre l’agente IA può continuare a leggerlo, modificarlo e rigenerarlo senza interpretare un’immagine.
 
 ## Anteprima

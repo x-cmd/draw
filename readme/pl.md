@@ -8,8 +8,6 @@
 
 X-CMD Draw to narzędzie open source do generowania wykresów SVG: umieść dane i style w adresie URL, aby tworzyć wykresy słupkowe i liniowe, diagramy Sankeya, diagramy architektury systemów, mapy myśli i wiele innych.
 
-![Przykłady wykresów X-CMD Draw](../docs/assets/draw.png)
-
 Wykresy można osadzać bezpośrednio w plikach README, zgłoszeniach, PR-ach, wpisach na blogu i stronach internetowych bez eksportowania lub przesyłania plików graficznych. Linki i pliki SVG zachowują dane oraz parametry czytelne maszynowo: odbiorcy widzą wykres, a agent AI może go dalej odczytywać, modyfikować i generować ponownie bez rozpoznawania obrazu.
 
 ## Zobacz przykłady
