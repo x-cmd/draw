@@ -27,7 +27,7 @@ X-CMD Draw는 오픈 소스 SVG 차트 생성 도구입니다. 데이터와 스�
 웹 페이지를 읽을 수 있는 Agent에 아래 Prompt를 보내세요. draw의 호스티드 서비스는 계정 가입이나 API Key 신청 없이 사용할 수 있습니다.
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. 원하는 내용 설명하기
@@ -38,7 +38,7 @@ Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From
 README에 아키텍처 다이어그램을 추가하고, 요청이 CLI에서 API를 거쳐 데이터베이스로 이어지는 경로를 그려 주세요.
 ```text
 
-자주 사용한다면 로컬 skills를 지원하는 Agent에 [`SKILL.md`](../SKILL.md)를 설치할 수 있습니다. Claude Code를 예로 들면 `~/.claude/skills/draw/SKILL.md`로 저장해 한 번만 설정하면, 이후에는 요구 사항을 바로 설명하면 됩니다.
+자주 사용한다면 로컬 skills를 지원하는 Agent에 [`SKILL.md`](../skills/x-cmd-draw/SKILL.md)를 설치할 수 있습니다. Claude Code를 예로 들면 `~/.claude/skills/draw/SKILL.md`로 저장해 한 번만 설정하면, 이후에는 요구 사항을 바로 설명하면 됩니다.
 
 ## 주요 기능
 
@@ -105,7 +105,7 @@ bash scripts/setup.sh   # 자신의 Cloudflare 계정에 원클릭 배포
 | 단축 링크 생성 또는 저장소 설정 | [셀프 호스팅 및 단축 링크 설정](../docs/1-overview/05-self-hosting/ko.md) |
 | 아키텍처 다이어그램, 시퀀스 다이어그램, ERD 등 구조 다이어그램 그리기 | [구조 다이어그램 URL 구문](../docs/1-overview/06-diagram-urls/en.md) |
 | 로컬 실행 또는 Cloudflare 배포 | [셀프 호스팅 가이드](../docs/1-overview/05-self-hosting/ko.md) |
-| Agent가 차트를 자동 생성하도록 설정 | [Agent Skill](../SKILL.md) |
+| Agent가 차트를 자동 생성하도록 설정 | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## 개발
 

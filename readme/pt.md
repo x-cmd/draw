@@ -27,7 +27,7 @@ Da análise de desempenho ao design de arquitetura, de mapas a cronogramas, as d
 Envie o prompt abaixo a um agente capaz de ler páginas web. O serviço hospedado do draw não exige cadastro nem chave de API:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Descreva o que você precisa
@@ -38,7 +38,7 @@ Informe ao agente quais dados usar, que relação representar e onde o gráfico 
 Adicione ao README um diagrama de arquitetura que mostre o caminho de uma solicitação da CLI, passando pela API, até o banco de dados.
 ```text
 
-Se você usar com frequência, instale [`SKILL.md`](../SKILL.md) em um agente compatível com skills locais. No Claude Code, por exemplo, salve-o como `~/.claude/skills/draw/SKILL.md`; depois dessa configuração única, basta descrever o que precisa.
+Se você usar com frequência, instale [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) em um agente compatível com skills locais. No Claude Code, por exemplo, salve-o como `~/.claude/skills/draw/SKILL.md`; depois dessa configuração única, basta descrever o que precisa.
 
 ## Funcionalidades
 
@@ -105,7 +105,7 @@ A lista completa de tipos de gráfico, parâmetros e exemplos está organizada p
 | Criar links curtos ou configurar seu armazenamento | [Auto-hospedagem e links curtos](../docs/1-overview/05-self-hosting/pt.md) |
 | Criar diagramas de arquitetura, sequência, ERD e outros diagramas estruturais | [Sintaxe de URL para diagramas estruturais](../docs/1-overview/06-diagram-urls/en.md) |
 | Executar localmente ou implantar no Cloudflare | [Guia de auto-hospedagem](../docs/1-overview/05-self-hosting/pt.md) |
-| Permitir que um agente gere gráficos automaticamente | [Agent Skill](../SKILL.md) |
+| Permitir que um agente gere gráficos automaticamente | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Desenvolvimento
 

@@ -129,12 +129,12 @@ describe('handleRequest · /draw/x-cmd/onepage', () => {
   });
 
   it('toRawGithub: blob/raw 页面链接转 raw 直链,其余原样(ppt 逻辑①)', () => {
-    expect(toRawGithub('https://github.com/x-cmd/draw/blob/main/onepage.SKILL.md'))
-      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md');
-    expect(toRawGithub('https://github.com/x-cmd/draw/raw/main/onepage.SKILL.md'))
-      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md');
-    expect(toRawGithub('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md'))
-      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/onepage.SKILL.md');
+    expect(toRawGithub('https://github.com/x-cmd/draw/blob/main/skills/onepage/SKILL.md'))
+      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/skills/onepage/SKILL.md');
+    expect(toRawGithub('https://github.com/x-cmd/draw/raw/main/skills/onepage/SKILL.md'))
+      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/skills/onepage/SKILL.md');
+    expect(toRawGithub('https://raw.githubusercontent.com/x-cmd/draw/main/skills/onepage/SKILL.md'))
+      .toBe('https://raw.githubusercontent.com/x-cmd/draw/main/skills/onepage/SKILL.md');
     expect(toRawGithub('https://example.com/doc.md')).toBe('https://example.com/doc.md');
     expect(() => toRawGithub('ftp://x.md')).toThrowError(/http/);
   });

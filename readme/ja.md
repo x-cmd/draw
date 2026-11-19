@@ -27,7 +27,7 @@ X-CMD Draw は、オープンソースの SVG チャート生成ツールです�
 以下の Prompt を Web ページを読める Agent に送信してください。draw のホステッドサービスは、アカウント登録や API Key の申請なしで利用できます。
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. やりたいことを伝える
@@ -38,7 +38,7 @@ Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From
 README にアーキテクチャ図を追加し、CLI から API、データベースへのリクエストの呼び出し経路を描いてください。
 ```text
 
-頻繁に使う場合は、[`SKILL.md`](../SKILL.md) をローカル skills をサポートする Agent にインストールできます。Claude Code の場合、`~/.claude/skills/draw/SKILL.md` として保存すれば、一度の設定で以後は要件を直接伝えるだけで済みます。
+頻繁に使う場合は、[`SKILL.md`](../skills/x-cmd-draw/SKILL.md) をローカル skills をサポートする Agent にインストールできます。Claude Code の場合、`~/.claude/skills/draw/SKILL.md` として保存すれば、一度の設定で以後は要件を直接伝えるだけで済みます。
 
 ## 機能
 
@@ -105,7 +105,7 @@ bash scripts/setup.sh   # 自分の Cloudflare アカウントへワンクリッ
 | 短縮リンクの作成やストレージ設定 | [セルフホストと短縮リンク設定](../docs/1-overview/05-self-hosting/ja.md) |
 | アーキテクチャ図、シーケンス図、ERD などの構造図を描く | [構造図の URL 構文](../docs/1-overview/06-diagram-urls/en.md) |
 | ローカル実行や Cloudflare へのデプロイ | [セルフホストガイド](../docs/1-overview/05-self-hosting/ja.md) |
-| Agent に図を自動生成させる | [Agent Skill](../SKILL.md) |
+| Agent に図を自動生成させる | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## 開発
 

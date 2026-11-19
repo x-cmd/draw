@@ -27,7 +27,7 @@ De l’analyse de performances à la conception d’architectures, des cartes au
 Envoyez le prompt suivant à un agent capable de lire des pages web. Le service hébergé de draw ne nécessite ni inscription ni clé API :
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Décrivez votre besoin
@@ -38,7 +38,7 @@ Indiquez à l’agent quelles données utiliser, quelles relations exprimer et o
 Ajoutez au README un diagramme d’architecture montrant le chemin d’une requête de la CLI vers l’API, puis la base de données.
 ```text
 
-Si vous l’utilisez souvent, vous pouvez installer [`SKILL.md`](../SKILL.md) dans un agent prenant en charge les skills locales. Pour Claude Code, par exemple, enregistrez-le sous `~/.claude/skills/draw/SKILL.md` ; après cette configuration unique, vous pourrez décrire directement vos besoins.
+Si vous l’utilisez souvent, vous pouvez installer [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) dans un agent prenant en charge les skills locales. Pour Claude Code, par exemple, enregistrez-le sous `~/.claude/skills/draw/SKILL.md` ; après cette configuration unique, vous pourrez décrire directement vos besoins.
 
 ## Fonctionnalités
 
@@ -105,7 +105,7 @@ Tous les types de graphiques, paramètres et exemples sont organisés par thème
 | Créer des liens courts ou configurer leur stockage | [Auto-hébergement et configuration des liens courts](../docs/1-overview/05-self-hosting/fr.md) |
 | Créer des diagrammes d’architecture, de séquence, des ERD et d’autres diagrammes structurels | [Syntaxe d’URL des diagrammes structurels](../docs/1-overview/06-diagram-urls/en.md) |
 | Exécuter localement ou déployer sur Cloudflare | [Guide d’auto-hébergement](../docs/1-overview/05-self-hosting/fr.md) |
-| Générer automatiquement des graphiques avec un agent | [Skill pour agent](../SKILL.md) |
+| Générer automatiquement des graphiques avec un agent | [Skill pour agent](../skills/x-cmd-draw/SKILL.md) |
 
 ## Développement
 

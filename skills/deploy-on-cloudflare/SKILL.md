@@ -1,3 +1,8 @@
+---
+name: deploy-on-cloudflare
+description: 将 x-cmd/draw 部署到 Cloudflare Workers，适用于使用 Wrangler 或 cf CLI 配置部署、路由、短链和自定义域名并进行冒烟验证。
+---
+
 # Skill: 部署 draw 到 Cloudflare Workers
 
 把 x-cmd/draw 部署成用户自己的 Cloudflare Worker:GET 渲染立即可用(11 种核心图 + `/draw/echarts` 覆盖层),短链(POST)按需开启。agent 的职责:前置检查 → 选路径与工具 → 执行 → 冒烟验收 → 按需开短链/自定义域名。

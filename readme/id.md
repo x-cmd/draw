@@ -27,7 +27,7 @@ Dari analisis performa hingga desain arsitektur, dari peta hingga jadwal, defini
 Kirim prompt berikut kepada Agent yang dapat membaca halaman web. Layanan hosted draw tidak memerlukan pendaftaran akun atau API Key:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Jelaskan kebutuhan Anda
@@ -38,7 +38,7 @@ Beritahu Agent data yang harus digunakan, hubungan yang perlu ditampilkan, dan t
 Tambahkan diagram arsitektur ke README yang menunjukkan alur permintaan dari CLI melalui API ke database.
 ```text
 
-Jika sering digunakan, Anda dapat memasang [`SKILL.md`](../SKILL.md) pada Agent yang mendukung skills lokal. Sebagai contoh, di Claude Code simpan sebagai `~/.claude/skills/draw/SKILL.md`; setelah satu kali konfigurasi, Anda dapat langsung menjelaskan kebutuhan Anda.
+Jika sering digunakan, Anda dapat memasang [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) pada Agent yang mendukung skills lokal. Sebagai contoh, di Claude Code simpan sebagai `~/.claude/skills/draw/SKILL.md`; setelah satu kali konfigurasi, Anda dapat langsung menjelaskan kebutuhan Anda.
 
 ## Fitur
 
@@ -105,7 +105,7 @@ Jenis diagram, parameter, dan contoh lengkap dikelola berdasarkan topik dalam do
 | Membuat tautan pendek atau mengonfigurasi penyimpanannya | [Self-hosting dan konfigurasi tautan pendek](../docs/1-overview/05-self-hosting/id.md) |
 | Menggambar diagram arsitektur, diagram urutan, ERD, dan diagram struktural lainnya | [Sintaks URL diagram struktural](../docs/1-overview/06-diagram-urls/en.md) |
 | Menjalankan secara lokal atau melakukan deployment ke Cloudflare | [Panduan self-hosting](../docs/1-overview/05-self-hosting/id.md) |
-| Membuat diagram secara otomatis dengan Agent | [Agent Skill](../SKILL.md) |
+| Membuat diagram secara otomatis dengan Agent | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Pengembangan
 

@@ -407,7 +407,7 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     }
     const target = url.searchParams.get('url');
     if (target === null || target === '') {
-      return textResponse(400, '"url" is required: url=' + encodeURIComponent('https://github.com/x-cmd/draw/blob/main/onepage.SKILL.md') + ' (github blob links are converted to raw automatically)');
+      return textResponse(400, '"url" is required: url=' + encodeURIComponent('https://github.com/x-cmd/draw/blob/main/skills/onepage/SKILL.md') + ' (github blob links are converted to raw automatically)');
     }
     const raw = toRawGithub(target);
     const host = new URL(raw).hostname;

@@ -27,7 +27,7 @@ X-CMD Draw 是一个开源的 SVG 图表生成工具：把数据和样式写进 
 将下面的 Prompt 发给能够读取网页的 Agent。draw 的托管服务无需注册账号或申请 API Key：
 
 ```text
-读取并遵循 https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md ，以后写 README、issue、pull request、博文或者聊天消息时，需要图表就用 x-cmd Draw 生成链接，并用图片语法嵌入，不要贴图片文件。
+读取并遵循 https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md ，以后写 README、issue、pull request、博文或者聊天消息时，需要图表就用 x-cmd Draw 生成链接，并用图片语法嵌入，不要贴图片文件。
 ```
 
 ### 2. 说出你的需求
@@ -38,7 +38,7 @@ X-CMD Draw 是一个开源的 SVG 图表生成工具：把数据和样式写进 
 在 README 里补一张架构图，画出请求从 CLI 到 API、数据库的调用链路。
 ```text
 
-如果经常使用，可以将 [`SKILL.md`](../SKILL.md) 安装到支持本地 skills 的 Agent 中。以 Claude Code 为例，保存为 `~/.claude/skills/draw/SKILL.md`，完成一次配置后即可直接描述需求。
+如果经常使用，可以将 [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) 安装到支持本地 skills 的 Agent 中。以 Claude Code 为例，保存为 `~/.claude/skills/draw/SKILL.md`，完成一次配置后即可直接描述需求。
 
 ## 功能特点
 
@@ -105,7 +105,7 @@ bash scripts/setup.sh   # 一键部署到自己的 Cloudflare 账号
 | 创建短链或配置短链存储 | [自托管与短链配置](../docs/1-overview/05-self-hosting/cn.md) |
 | 绘制架构图、时序图、ERD 等结构图 | [结构图 URL 语法](../docs/1-overview/06-diagram-urls/cn.md) |
 | 本地运行或部署到 Cloudflare | [自托管指南](../docs/1-overview/05-self-hosting/cn.md) |
-| 让 Agent 自动生成图表 | [Agent Skill](../SKILL.md) |
+| 让 Agent 自动生成图表 | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## 开发
 

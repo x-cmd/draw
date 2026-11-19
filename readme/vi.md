@@ -27,7 +27,7 @@ Từ phân tích hiệu năng đến thiết kế kiến trúc, từ bản đồ
 Gửi Prompt dưới đây cho Agent có khả năng đọc trang web. Dịch vụ draw trực tuyến không yêu cầu đăng ký tài khoản hoặc xin API Key.
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Nói rõ nhu cầu của bạn
@@ -38,7 +38,7 @@ Cho Agent biết cần dùng dữ liệu nào, thể hiện mối quan hệ nào
 Thêm sơ đồ kiến trúc vào README, thể hiện đường đi của yêu cầu từ CLI qua API đến cơ sở dữ liệu.
 ```text
 
-Nếu thường xuyên sử dụng, bạn có thể cài [`SKILL.md`](../SKILL.md) vào Agent hỗ trợ skills cục bộ. Với Claude Code, hãy lưu tại `~/.claude/skills/draw/SKILL.md`; sau khi cấu hình một lần, bạn chỉ cần mô tả trực tiếp nhu cầu.
+Nếu thường xuyên sử dụng, bạn có thể cài [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) vào Agent hỗ trợ skills cục bộ. Với Claude Code, hãy lưu tại `~/.claude/skills/draw/SKILL.md`; sau khi cấu hình một lần, bạn chỉ cần mô tả trực tiếp nhu cầu.
 
 ## Tính năng
 
@@ -105,7 +105,7 @@ Bạn có thể bật liên kết ngắn vĩnh viễn bằng cách cấu hình `
 | Tạo liên kết ngắn hoặc cấu hình nơi lưu liên kết | [Tự lưu trữ và cấu hình liên kết ngắn](../docs/1-overview/05-self-hosting/vi.md) |
 | Vẽ sơ đồ kiến trúc, sơ đồ tuần tự, ERD và các sơ đồ cấu trúc khác | [Cú pháp URL cho sơ đồ cấu trúc](../docs/1-overview/06-diagram-urls/en.md) |
 | Chạy cục bộ hoặc triển khai lên Cloudflare | [Hướng dẫn tự lưu trữ](../docs/1-overview/05-self-hosting/vi.md) |
-| Để Agent tự động tạo biểu đồ | [Agent Skill](../SKILL.md) |
+| Để Agent tự động tạo biểu đồ | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Phát triển
 
