@@ -140,17 +140,25 @@ export const DEFAULT_RULES: Rules = {
   num: 'all',
 };
 
-/** 基础中性色(规范页页面底色体系:#F8F9FB/#FFFFFF · #0A0A0A/#0E0F11) */
+/**
+ * 基础中性色。
+ *
+ * 底色带**蓝/紫的色相**(#131):以前的纯白/近黑与宿主页面几乎同色,
+ * 图贴在白底/黑屏上都「浮不上来」✗。统一成一个淡 indigo 家族 ——
+ * 亮色是极浅的 periwinkle,暗色是深蓝紫;两边都带一点色相,
+ * 图是图、页是页 ✓(先把色相统一,后面再细调 ✓)。
+ * 文字/网格仍是无彩的 —— 底色有相,内容无相,数据不与底色抢 ✓。
+ */
 export const NEUTRALS: Neutrals = {
   ink: duo('#09090B', '#FAFAFA'),
   text: duo('#3F3F46', '#D4D4D8'),
   muted: duo('#71717A', '#A1A1AA'),
   faint: duo('#A1A1AA', '#71717A'),
-  grid: duo('#ECECEF', '#29292E'),
+  grid: duo('#ECECF2', '#2A2B36'),
   baseline: duo('#D4D4D8', '#3F3F46'),
-  border: duo('#E4E4E7', '#27272A'),
-  card: duo('#FFFFFF', '#0E0F11'),
-  halo: duo('#FFFFFF', '#1A1B1D'),
+  border: duo('#DFE2EF', '#2B2D3D'),
+  card: duo('#F5F6FC', '#12131F'),
+  halo: duo('#F5F6FC', '#1A1C2A'),
 };
 
 /** 变体输入(宽松):rules/neutrals 只给差异,makeVariant 补全默认 */
