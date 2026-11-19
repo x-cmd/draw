@@ -41,12 +41,15 @@ function tierGroups(tiers: (string | undefined)[]): { tier?: string; from: numbe
 
 /** 档位名列:组名竖排在组中间(组太矮就排在组首行上) */
 
+/** tooltip 的属性(文字 ⇒ 属性 ✓ —— 别把整串属性再塞进属性里 ✗) */
+const tipAttr = (text: string | undefined): string => (text ? ` data-tip="${esc(text)}"` : '');
+
 /** 一根柱 */
 function bar(
   x0: number, y: number, len: number, h: number, color: string, tip: string | undefined, row = -1,
 ): string[] {
   return [
-    `<rect${row >= 0 ? ` data-row="${row}"` : ''} x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tip ? ` data-tip="${esc(tip)}"` : ''}/>`,
+    `<rect${row >= 0 ? ` data-row="${row}"` : ''} x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tipAttr(tip)}/>`,
   ];
 }
 
@@ -55,8 +58,8 @@ function bar(
  * (垫色,不要描边 ✓ —— 描边会像选中框 ✗)
  * 它同时是这一行的「悬停热区」✓ —— 悬在行里的空白处也能亮 ✓。
  */
-function rowBand(x: number, y: number, w: number, h: number, row: number, tip: string): string {
-  return `<rect class="row-band" data-row="${row}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" fill="var(--d-ink)" fill-opacity="0"${tip ? ` ${tip}` : ''}/>`;
+function rowBand(x: number, y: number, w: number, h: number, row: number, tip: string | undefined): string {
+  return `<rect class="row-band" data-row="${row}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" fill="var(--d-ink)" fill-opacity="0"${tipAttr(tip)}/>`;
 }
 
 /**
@@ -70,7 +73,7 @@ function rowBand(x: number, y: number, w: number, h: number, row: number, tip: s
  * (NVIDIA 绿 / AMD 红 / Intel 蓝 ✓ —— 「各自的主题色」✓)
  */
 const BRAND_COLOR: [RegExp, string][] = [
-  [/nvidia|geforce|\brtx\b/i, '#76B900'],
+  [/nvidia|geforce|\brtx\b|quadro|titan|tesla/i, '#76B900'],
   [/amd|radeon|ryzen|epyc/i, '#ED1C24'],
   [/intel|\barc\b|\bcore\b|xeon/i, '#0071C5'],
 ];
@@ -81,6 +84,25 @@ function brandOf(name: string): string | undefined {
   return undefined;
 }
 
+/** 颜色 ⇒ 牌子名(给图例用 ✓) */
+const BRAND_NAME: Record<string, string> = { '#76B900': 'NVIDIA', '#ED1C24': 'AMD', '#0071C5': 'Intel' };
+
+/**
+ * 图例:**图里真用到的那些颜色** ✓
+ * (不是「这一侧叫什么」✓ —— 一侧里混着 AMD 和 Intel 时,一个色块说不清 ✓;
+ *  牌子认得出来的就用牌子名 ✓,认不出来的才用这一侧的名字 ✓)
+ */
+function legendOf(groups: { items: LadderItem[]; side?: LadderSide; fallback: string }[]): { name: string; color: string }[] {
+  const seen = new Map<string, string>();
+  for (const g of groups) {
+    for (const it of g.items) {
+      const c = itemColor(it, g.side, g.fallback);
+      if (!seen.has(c)) seen.set(c, BRAND_NAME[c] ?? g.side?.name ?? '');
+    }
+  }
+  return [...seen].filter(([, n]) => n !== '').map(([color, name]) => ({ name, color }));
+}
+
 /** 这一侧用什么颜色:显式给的 ✓ → 名字里的品牌 ✓ → 缺省的序列色 ✓ */
 function sideColor(side: LadderSide | undefined, fallback: string): string {
   if (!side) return fallback;
@@ -89,7 +111,7 @@ function sideColor(side: LadderSide | undefined, fallback: string): string {
 }
 
 /** 名字前面的牌子:要去就去掉 ✓(「GeForce RTX 5090」→「RTX 5090」✓) */
-const BRAND_WORDS = /^(nvidia|geforce|amd|radeon|ryzen|epyc|intel|core|xeon|arc)\s+/i;
+const BRAND_WORDS = /^(nvidia|geforce|quadro|amd|radeon|ryzen|epyc|intel|core|xeon|arc)\s+/i;
 function stripped(label: string | undefined, spec: LadderSpec): string {
   const s = label ?? '';
   return spec.stripbrand ? s.replace(BRAND_WORDS, '') : s;
@@ -114,7 +136,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
     : '';
   const titleH = spec.title ? 38 : 0;
-  const legendItems = side?.name ? [{ name: side.name, color: sideColor(side, 'var(--d-s1)') }] : [];
+  const legendItems = legendOf([{ items, side, fallback: 'var(--d-s1)' }]);
   const contentTop = PAD + titleH + (legendItems.length ? LEGEND_H : 0);
 
   // 行多的时候画布自动拉高 —— 行距压到 16 以下,行标签就叠在一起了
@@ -163,16 +185,17 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     const len = x(it.value) - left;
     const color = itemColor(it, side, sVar(0));   // 每张卡按自己的牌子 ✓
     const tip = o.interactive
-      ? ` data-tip="${esc(`${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
-      : '';
+      ? `${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`
+      : undefined;
+    const tipA = tipAttr(tip);
     const row = ` data-row="${i}"`;
     // 行底色(悬停整行亮 ✓)—— 画在柱与字之前,垫在最下面 ✓
     parts.push(rowBand(PAD, contentTop + i * pitch, right - PAD, pitch, i, tip));
     parts.push(...bar(left, y, len, barH, color, tip, i));
     if (it.label) {
-      parts.push(`<text${row}${tip} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
+      parts.push(`<text${row}${tipA} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
     }
-    parts.push(`<text${row} x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(it.value)}</text>`);
+    parts.push(`<text${row} x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tipA}>${fmtFull(it.value)}</text>`);
   });
 
   const legend = legendItems.length
@@ -204,10 +227,10 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   if (!n) {
     return svgDoc(width, o.height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin, '');
   }
-  const legendItems = [
-    spec.left?.name ? { name: spec.left.name, color: sideColor(spec.left, 'var(--d-s1)') } : null,
-    spec.right?.name ? { name: spec.right.name, color: sideColor(spec.right, 'var(--d-s2)') } : null,
-  ].filter(Boolean) as { name: string; color: string }[];
+  const legendItems = legendOf([
+    { items: leftItems, side: spec.left, fallback: 'var(--d-s1)' },
+    { items: rightItems, side: spec.right, fallback: 'var(--d-s2)' },
+  ]);
 
   const titleSvg = spec.title
     ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
@@ -270,33 +293,35 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
     const row = ` data-row="${i}"`;
     // 行底色(悬停整行亮 ✓)—— 一行两翼一起亮 ✓
     const bandTip = o.interactive
-      ? ` data-tip="${esc(`${l?.label ?? ''}${r?.label ? `  ·  ${r.label}` : ''}`)}"`
-      : '';
+      ? `${l?.label ?? ''}${r?.label ? `  ·  ${r.label}` : ''}`
+      : undefined;
     parts.push(rowBand(PAD, contentTop + i * pitch, width - PAD * 2, pitch, i, bandTip));
     if (l) {
       const len = (l.value / (leftMax || 1)) * half;
       const tip = o.interactive
-        ? ` data-tip="${esc(`${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
-        : '';
+        ? `${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`
+        : undefined;
+      const tipA = tipAttr(tip);
       parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip, i));
       if (l.label) {
-        parts.push(`<text${row}${tip} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
+        parts.push(`<text${row}${tipA} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
       }
       // 数值:**一律画在 bar 外面** ✓(两边一致 ✓ —— 「左边的数据在 bar 里、右边在外面」看着别扭 ✓)
       // 左边的柱往左长 ⇒ 数值在尾端的左边 ✓(紧挨着名字列 ✓)
-      parts.push(`<text${row} x="${r2(centre - len - 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(l.value)}</text>`);
+      parts.push(`<text${row} x="${r2(centre - len - 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12" font-weight="600" fill="var(--d-text)"${tipA}>${fmtFull(l.value)}</text>`);
     }
     if (r) {
       const len = (r.value / (rightMax || 1)) * half;
       const tip = o.interactive
-        ? ` data-tip="${esc(`${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
-        : '';
+        ? `${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`
+        : undefined;
+      const tipA = tipAttr(tip);
       parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip, i));
       if (r.label) {
-        parts.push(`<text${row}${tip} x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
+        parts.push(`<text${row}${tipA} x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
       }
       // 右边同样:**一律画在 bar 外面** ✓
-      parts.push(`<text${row} x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(r.value)}</text>`);
+      parts.push(`<text${row} x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tipA}>${fmtFull(r.value)}</text>`);
     }
   });
 
