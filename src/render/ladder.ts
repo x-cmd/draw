@@ -111,11 +111,9 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const bg = card(width, height);
   const parts: string[] = [];
 
+  // 刻度:只留数字(背景网格线不要 ✓ —— 用户:「不需要背景网格线」✓)
   for (const t of ticks) {
     const gx = r2(x(t));
-    if (t > 0) {
-      parts.push(`<line x1="${gx}" y1="${r2(contentTop)}" x2="${gx}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)" stroke-width="1"/>`);
-    }
     parts.push(`<text x="${gx}" y="${r2(height - PAD - 26 + 16)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
 
@@ -210,20 +208,6 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   const bg = card(width, height);
   const parts: string[] = [];
 
-  // 刻度:两侧同一套(共用一把标尺)
-  const grid = (max: number, dir: -1 | 1): void => {
-    if (max <= 0) return;
-    const ticks = niceTicks(max, 4);
-    const tickMax = ticks[ticks.length - 1] || max;
-    for (const t of ticks) {
-      if (t === 0) continue;
-      const dx = (t / tickMax) * half;
-      const x = dir < 0 ? centre - dx : centre + dx;
-      parts.push(`<line x1="${r2(x)}" y1="${r2(contentTop)}" x2="${r2(x)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)"/>`);
-    }
-  };
-  grid(leftMax, -1);
-  grid(rightMax, 1);
   parts.push(`<line x1="${r2(centre)}" y1="${r2(contentTop)}" x2="${r2(centre)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-border)"/>`);
 
   const yOf = (i: number): number => contentTop + i * pitch + (pitch - barH) / 2;

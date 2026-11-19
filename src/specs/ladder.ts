@@ -246,45 +246,36 @@ export function matchLadderRows(
     all.sort((a, b) => b.item.value - a.item.value);
     return all.map((x) => (x.side === 0 ? [x.item, undefined] : [undefined, x.item]));
   }
-  // 匹配排序:**右边每一张卡去找左边数值最接近的那张**,待到那一行去。
+  // 匹配排序:**右边的卡自动抬升**,落到左边数值对得上的那一行 ✓
   //
-  // 「左边在后面三行,右边那张也得找最相近的」—— 哪怕中间空出几行,
-  // 被拉走的那张原来的位置就**空着**(缺位)。缺位不是 bug,是信号:
-  // 这一档真的没有能对上的卡。
+  // 规则(定死的 ✓):对右边的一张卡 r,找**最后一个**满足 `left[n].value >= r.value`
+  // 的行 n ✓ —— 于是 `left[n] >= r > left[n+1]` ✓,右边的卡刚好夹在左右两行之间 ✓
+  // (比左边最强的还强 ⇒ 顶行 ✓)。
   //
-  // 为什么这么设计:左右两边都是**按强弱排好**的,所以「找最接近的那个」
-  // 的结果是**单调**的 —— 两张右边的卡不会抢同一行,总距离也是最小的。
-  // (换成「每行去抢最接近的那张」就不单调了,谁先谁抢,顺序一换结果就变。)
-  const taken = new Set<number>();       // 已被占用的左边行
-  const placeAt = new Map<number, number>();  // 左边第 i 行 → 右边第 j 张
-  for (let j = 0; j < right.length; j++) {
-    const r = right[j];
-    if (!r) continue;
-    let best = -1;
-    let bestGap = Infinity;
+  // 右边自己**按强弱排** ✓ ⇒ 抬升之后**顺序不变** ✓(这是要保证的 ✓)。
+  // 抢到同一行 ⇒ 后一张往下顺延 ✓。
+  //
+  // 两边都会空出几行 ✓ —— 那些行是真的没有能对上的卡 ✓(缺位是信号 ✓)。
+  const rightSorted = [...right].filter((x): x is LadderItem => !!x).sort((a, b) => b.value - a.value);
+  const place = new Map<number, LadderItem>();   // 行号 → 右边那张卡 ✓
+  const taken = new Set<number>();
+  for (const r of rightSorted) {
+    let target = -1;
     for (let i = 0; i < left.length; i++) {
       const l = left[i];
-      if (!l || taken.has(i)) continue;
-      const gap = Math.abs(Math.log(r.value) - Math.log(l.value));
-      if (gap < bestGap) {
-        bestGap = gap;
-        best = i;
-      }
+      if (!l) continue;
+      if (l.value >= r.value) target = i;
+      else break;                    // 左边是降序 ✓ 后面的只会更弱 ✓
     }
-    if (best >= 0) {
-      taken.add(best);
-      placeAt.set(best, j);
-    }
+    if (target < 0) target = 0;      // 比左边最强的还强 ⇒ 顶行 ✓
+    let row = target;
+    while (taken.has(row)) row++;    // 抢同一行 ⇒ 往下顺延 ✓
+    taken.add(row);
+    place.set(row, r);
   }
-  // 没配上左边的右边卡,留在自己原来的行
-  const n = Math.max(left.length, right.length);
+  const last = place.size ? Math.max(...place.keys()) + 1 : 0;
+  const n = Math.max(left.length, last);
   const rows: [LadderItem | undefined, LadderItem | undefined][] = [];
-  for (let i = 0; i < n; i++) {
-    const j = placeAt.get(i);
-    let r: LadderItem | undefined;
-    if (j !== undefined) r = right[j];
-    else if (i < right.length && !taken.has(i) && ![...placeAt.values()].includes(i)) r = right[i];
-    rows.push([left[i], r]);
-  }
+  for (let i = 0; i < n; i++) rows.push([left[i], place.get(i)]);
   return rows;
 }
