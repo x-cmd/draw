@@ -249,9 +249,10 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       if (l.label) {
         parts.push(`<text x="${r2(plotL - VALUE_W - 10)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(l.label, cap))}</text>`);
       }
-      // 数值:柱够长就画在柱里 —— 左边的柱尾紧挨着名字列,画在外面会撞上。
+      // 数值:柱够长**而且够粗**就画在柱里 —— 左边的柱尾紧挨着名字列,
+      // 画在外面会撞上;柱太薄的话字会糊在柱边上。
       // 左边的柱往左长,「柱里」是尾端的**右边**,所以文字从尾端往右排(start)。
-      const inBar = len > 56;
+      const inBar = len > 56 && barH >= 11;
       parts.push(`<text x="${r2(centre - len + (inBar ? 8 : -8))}" y="${r2(y + barH / 2 + 4)}" text-anchor="${inBar ? 'start' : 'end'}" font-size="12" font-weight="600" fill="${inBar ? '#fff' : 'var(--d-text)'}">${fmtNum(l.value)}</text>`);
     }
     if (r) {
