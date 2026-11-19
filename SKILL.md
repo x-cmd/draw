@@ -43,8 +43,8 @@ README 嵌入推荐形态 = 图预览 + 点击进 explore(悬停看数、调参�
 
 1. **理解需求**:用户给了数据 → 忠实原始数值,不擅自修改;只有文字描述 → 提取实体、关系、分类、时间顺序。
 2. **收集与准备数据**:优先从真实来源取数——文件、命令输出(tokei/cloc/git log)、CSV/JSON、API。可以做统计、聚合、计算,但必须保留口径:单位、时间范围、聚合规则写清楚;不把估算伪装成实测;不混用不同单位、不同口径的数据。例:统计项目语言占比,先跑真实统计命令,别凭 README 描述估。
-3. **选择可视化**:见第 4 节目录。原则:图服务信息表达,不为用某种图改变数据含义;已有专用 endpoint 的图优先用专用 endpoint,ECharts 只补专用 endpoint 没覆盖的图;不拿 ECharts 重复实现原生图种;复杂图先找 demo 里的同类案例参考。
-4. **生成 URL**:简单数据用扁平参数(AI 可读、免转义);含特殊字符或结构复杂用 `?d=` + **整体编码后的 JSON**(见 §6.2)。用运行环境提供的 URL 编码函数处理数据值,不手写百分号。
+3. **选择可视化**:见第 4 节目录。原则:图服务信息表达,不为用某种图改变数据含义;已有专用 endpoint 的图优先用专用 endpoint,ECharts 只补专用 endpoint 没覆盖的图;不拿 ECharts 重复实现原生图种;复杂图先找 demo 里的同类案例参考。**先探路再全量拼**:不确定端点或参数形态时,先用最小参数探一次(`?type=pie&labels=A&values=1`,或目标图种的最简形态),看 200/错误提示再往上加;不要一次拼七八个节点、十多条边再等报错,更不要猜 §4 / §9.0 之外的路径(如 `/draw/flow`、`/draw/state`——不存在)。
+4. **生成 URL**:简单数据用扁平参数(AI 可读、免转义);含特殊字符或结构复杂用 `?d=` + **整体编码后的 JSON**(见 §6.2)。**硬规则:凡 `?d=`(尤其 ECharts JSON),先在工具里 `JSON.stringify` + URL 编码生成完整 URL,再整段复制使用——不在对话里逐段手写 `%XX`**;用运行环境提供的编码函数(`encodeURIComponent`、`URLSearchParams`、curl `--data-urlencode`)。
 5. **验证**:见第 7 节。能访问渲染结果就实际取回 SVG 检查,不只凭 URL 推断;不能访问就如实说明未做视觉验证。
 6. **交付**:见第 5 节,按场景给输出形态。
 
@@ -67,9 +67,11 @@ README 嵌入推荐形态 = 图预览 + 点击进 explore(悬停看数、调参�
 | 优先级 / 决策矩阵 | `quadrant` | `type=quadrant&quadrants=快赢,战略,填坑,放弃` |
 | 四向模型 | `compass` | `type=compass&center=成长&up=自己&right=他人&down=组织&left=环境` |
 | 两个系列背靠背 | `butterfly` | `type=butterfly&labels=A,B&left=Opened:7,8&right=Closed:5,6` |
+| 天梯排行(榜单/档位) | `ladder` | `type=ladder&labels=RTX 5090,RTX 5080,RX 7900&values=3264,2863,2095&tiers=S,S,A` |
+| 双榜对照(天梯双翼) | `butterfly-ladder` | `type=butterfly-ladder&left=NVIDIA:3264,2863&right=AMD:2095,1800&match=tier` |
 | 日历 / 课程表 / 排期 | `calendar` | `type=calendar&layout=month&start=2026-11-02&ev=2026-11-03;meeting;需求评审;14:00` |
-| 二维码 | `qr` | `type=qr&d=https://x-cmd.com` |
 | 表格 / 清单 | `table` | `type=table&cols=Service,Errors&rows=api:12;worker:9` |
+| 二维码 | `qr` | `type=qr&d=https://x-cmd.com` |
 
 ### 4.2 结构图:统一节点与连线语法
 
@@ -109,6 +111,7 @@ https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Clo
 - **erd**:字段表写在 `sub` 里,`%0A` 分行;每行 `名字:类型 (pk|fk|uk)` 标键,例 `id:int (pk)`;边标签写 `1:N` 自动画鱼尾记号(一/多)。
 - **class**:成员行 `+ name: Type`(`+` 公有 / `-` 私有 / `#` 保护),方法 `greet(): void`;边标签写 `extends` / `implements` 画 UML 空心三角。
 - **dataflow**:`store` 画圆柱、`source`/`sink` 画圆角;按「谁读谁写」的方向连边。
+- **皮肤**:结构图族共用 sankey 的皮肤表,有效 `t=` 只有 `base`(默认)/`fund`/`pipeline`;传其他已注册家族(如 `shadcn`)不报错但**静默回退默认**,等于没传。
 
 其余细节以各图种的 explore 编辑页与文档站为准,不在此堆砌。
 
@@ -124,7 +127,7 @@ https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Clo
 
 ### 4.5 Mermaid 流图:/draw/mermaid
 
-`m=<flowchart 源码>`,线上有 Flow / Mono 两种形态(demo 可见)。v1 子集:`graph`/`flowchart` 的节点形状、边样式/标签、subgraph(→ 分组);首行是 `gantt` 时分派到甘特渲染。
+`m=<flowchart 源码>`,线上有 Flow / Mono 两种形态(demo 可见)。v1 子集:`graph`/`flowchart` 的节点形状、边样式/标签、subgraph(→ 分组);首行是 `gantt` 时分派到甘特渲染。**这是常规流程图的首选入口**(没有原生 `/draw/flow`)。
 
 ### 4.6 思维导图:/draw/mindmap
 
@@ -142,6 +145,18 @@ https://x-cmd.com/draw/echarts?d=%7B%22xAxis%22%3A%7B%22type%22%3A%22category%22
 - 风格自动注入(系列色板/轴中性色/Inter 字体/明暗 auto),option 里显式写的样式恒优先;`?d=` ≤16000 字符
 - 输出同嵌 `<metadata>`(option 原文,可解析还原)
 - 地图:随包带 US 各州 GeoJSON(50 州 + DC,Albers 投影),`"type":"map","map":"USA"` 即得 choropleth;`data[].name` 用州全名(California / New York / …),配 `visualMap` 上色;州上写数字:`series.label.show` + `series.labelLayout.hideOverlap`(浅底深字、深底白字)
+
+### 4.8 选型速查:架构 / 流程 / 状态三图
+
+「技术方案」类需求常要三张图配套,入口照下表选,不要猜路径、不要拿不相关的图种硬凑:
+
+| 要画什么 | 入口 | 备注 |
+|---|---|---|
+| 系统架构 | `/draw/arch2`(海报版 `/draw/cloud`) | §4.2 语法,`fe`/`be`/`db`… |
+| 业务流程 | `/draw/mermaid`(`m=` flowchart 源码) | 分支/循环写 flowchart 语法;复杂关系图也可用 `/draw/echarts` 的 `series.type:"graph"` |
+| 状态机 | `/draw/lifecycle` | `state`/`decision`/`terminal`,迁移条件写在边 label;无 UML 初始伪状态专用类型,用 `terminal` 表达终态 |
+
+三张图共用一套 id 命名与配色,阅读顺序:架构 → 流程 → 状态。
 
 ## 5. 输出形态与组合
 
@@ -208,6 +223,8 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 - `type=qr`:`d=` 是二维码承载的**纯文本**(≤1000 字符)——别包成 JSON;颜色用独立参数 `fg`/`bg`。
 - 其他支持 JSON 的图种:`d=` 是 **URL 编码后的 JSON**——先构造合法 JSON,再整体编码。
 
+**没有编码工具/执行环境时的兜底**:改用 POST——body 是原始 JSON,完全不需要 URL 编码(`curl --data @spec.json`);ECharts 大 option 走本地 CLI(从文件/stdin 读,见 §9.6)。这两条路都比在对话里逐段手拼 `%XX` 稳。
+
 ### 6.3 交互入口(explore)
 
 优先找对应图种的 explore 编辑页:数据图表 `/draw/explore?<同参数>`(右边参数表改一格立即重画,复制按钮给改完的 URL);ECharts `/draw/explore/echarts?d=<option>`;专用图形各有编辑页(以 demo / 站点导航为准)。SVG 本身只管静态展示——悬停看数、调参、改数据都发生在 explore webapp。
@@ -248,9 +265,9 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 
 | 能力 | 范围 |
 |---|---|
-| GET 扁平参数 | 15 种数据图表(`?type=…`)+ 结构图(`n=`/`e=`/`b=`)+ mindmap(`n=`)+ gantt/gantt2(`m=`)+ mermaid(`m=`)+ tokei(`d=`)+ echarts(`d=`) |
-| GET `?d=` JSON | 15 种数据图表的 JSON schema(见 9.4;**qr 除外**——qr 的 `d=` 是纯文本,见 §6.2) |
-| POST | `POST /draw?type=<15 种之一>`,body 收 JSON 或 CSV;`POST /draw/tokei` 收 tokei JSON body |
+| GET 扁平参数 | 数据图表 18 种(`?type=…`)+ 结构图(`/draw/arch2` `/archmap` `/seq` `/uc` `/dataflow` `/lifecycle` `/erd` `/class` `/cloud`,`n=`/`e=`/`b=`)+ `/draw/mindmap`(`n=`)+ `/draw/gantt` `/gantt2`(`m=`)+ `/draw/mermaid`(`m=`)+ `/draw/tokei`(`d=`)+ `/draw/echarts`(`d=option`) |
+| GET `?d=` JSON | 数据图表 18 种的 JSON schema(见 9.4;**qr 除外**——qr 的 `d=` 是纯文本,见 §6.2) |
+| POST | `POST /draw?type=<18 种数据图种之一>`,body 收 JSON 或 CSV;`POST /draw/tokei` 收 tokei JSON body |
 
 按公开实现(仓库源码)核对;线上以实际响应为准。GET 的 JSON 支持范围 ≠ POST 的必然支持范围——两者各自以上表为准。
 
@@ -273,18 +290,20 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 - **gauge**:单值 `value=&max=`;多环 `labels=&values=`(值为百分比,≤8 环)
 - **scatter**:≤200 点/系列,支持负值;重复 `x=`/`y=` 参数各成一系列
 - **combo**:柱用 `series=`(单系列可 `values=`)、线用 `line=`;量级差 >5× 自动双 y 轴;支持 `stack=1`
-- **sankey**:≤24 节点/60 链接,`links=A>B:30` 分号分隔,禁止环
+- **sankey**:≤24 节点/60 链接,`links=A>B:30` 分号分隔,禁止环(JSON 形态字段名是 `from`/`to`/`value`,见 9.4)
 - **qr**:`d=` 是二维码**纯文本** ≤1000 字符(见 §6.2,无 JSON 形态);`fg`/`bg` 六位 hex(`#` 写成 `%23`);`title`/`unit` 为码下标注
 - **butterfly**:`labels=` + `left=`/`right=`(可 `名:值`,分号分段自中轴往外堆叠);可叠 `line=`(独立标尺);`dir=tb` 上下翻转
+- **ladder**(天梯图):`labels=&values=` 一行一卡,可 `tiers=` 标档位(同档连排);标签字数上限用 `labelmax=` 调(默认 22)
+- **butterfly-ladder**(双翼天梯):`left=名:值,值` + `right=名:值,值`;行名 `llabels=`/`rlabels=`、档位 `ltiers=`/`rtiers=` 按位置对应(空位留空);`match=rank|value|tier`(默认 rank=两翼错位排行;tier=按档分块)
 - **calendar**:`layout=month|week|year|bimonth|quarter|course|plan`;`ev=日期;类别;标签;时间` / `day=日期;性质;标签` / `note=日期;文字` 均可重复;事件 ≤60 条
 - **quadrant**:`quadrants=` 逗号四格名(左上,右上,左下,右下);`quaddescs=` 分号四格说明;`items=名称@x,y` 落点散点(x/y 为 0..1);`frame=cross` 只要十字轴
 - **compass**:`up=`/`right=`/`down=`/`left=` 各方向标签(可 `标签:副说明`),`center=` 中心字
-- **table**:`cols=` 逗号分隔的列名;`rows=` 分号分隔的行,**行内冒号分隔单元格**(`api:12;worker:9`);也接受 `?d=` 的 JSON 形态 `{"cols":[…],"rows":[[…]]}`。单元格含 `:` `;` `,` 时改用 `?d=`。规格解析在 x-cmd/table(多维表格仓)那边,这边只转发
+- **table**:`cols=` 逗号分隔的列名;`rows=` 分号分隔的行,**行内冒号分隔单元格**(`api:12;worker:9`);也接受 `?d=` 的 JSON 形态(见 9.4)。单元格含 `:` `;` `,` 时改用 `?d=`。规格解析在 x-cmd/table(多维表格仓)那边,这边只转发
 - **结构图**(arch2/archmap/seq/uc/dataflow/lifecycle/erd/class):语法见 §4.2;类型词汇错了会 400 并列出有效值
 
 ### 9.3 风格家族(可选 `t=`)
 
-默认 = 各家族表第一个(标 ⭐);`t=` 拼错报 400 并列出有效家族,家族存在但该图种未做则静默回退默认。
+默认 = 各家族表第一个(标 ⭐)。`t=` 有两种结局:① **家族未注册**(拼错,如 `soft`)→ 400 并列出全部有效家族;② **家族已注册但该图种未做** → 静默回退默认。
 
 | 图种 | 可选家族 |
 |---|---|
@@ -298,11 +317,12 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 | sankey | ⭐`base` `fund` `pipeline` |
 | combo | ⭐`base` `evil` |
 | butterfly | ⭐`base` `track` `grid` `scale` |
+| ladder / butterfly-ladder | ⭐`base` `track` `scale` |
 | calendar | ⭐`base` `mono`(墨水风) |
 | table | ⭐`base`(仅此) |
 | scatter / qr / quadrant / compass | ⭐`base`(仅此) |
 
-### 9.4 JSON 形态(`?d=`,URL 编码;15 种数据图表)
+### 9.4 JSON 形态(`?d=`,URL 编码;数据图表)
 
 | 适用 | 结构 |
 |---|---|
@@ -312,8 +332,11 @@ CLI 只有 npm 版:`npm i -g @x-cmd/draw` 后直接用 `draw`,或免安装 `npx 
 | gauge 多环 | `{"max":100,"data":[{"label":"A","value":86}]}` |
 | scatter | `{"points":[[1,4]]}` 或 `{"series":[{"name":"","points":[[1,4]]}]}` |
 | combo | `{"labels":[],"series":[{"name":"","values":[]},{"name":"","values":[],"type":"line"}]}` |
-| sankey | `{"labels":[],"links":[{"from":"A","to":"B","value":30}]}` |
+| sankey | `{"labels":[],"links":[{"from":"A","to":"B","value":30}]}`(URL 扁平形态是 `links=A>B:30`,见 9.2) |
 | butterfly | `{"labels":["A"],"left":{"name":"","values":[7]},"right":{"name":"","values":[5]}}` |
+| ladder | `{"side":{"items":[{"label":"A","value":1,"tier":"S"}]}}` |
+| butterfly-ladder | `{"left":{"name":"NVIDIA","items":[{"label":"A","value":3264,"tier":"S"}]},"right":{"name":"AMD","items":[{"label":"B","value":2095}]},"match":"rank"}` |
+| table | `{"cols":["Service","Errors"],"rows":[["api",12],["worker",9]]}` |
 | quadrant | `{"groups":[{"name":"A"},{"name":"B"},{"name":"C"},{"name":"D"}]}` 或 `{"items":[{"name":"A","x":0.2,"y":0.8}]}` |
 | compass | `{"up":"自己","right":"他人","down":"组织","left":"环境"}` |
 
