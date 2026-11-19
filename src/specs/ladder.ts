@@ -27,12 +27,16 @@ import { ApiError } from './index.js';
 export interface LadderItem {
   label?: string;
   value: number;
+  /** 这一张的颜色(缺省:按名字认品牌 ✓ —— NVIDIA 绿 / AMD 红 / Intel 蓝 ✓) */
+  color?: string;
   /** 档位(S / A / B / C / D…)。同一档的行会连在一起,档与档之间有分隔。 */
   tier?: string;
 }
 
 export interface LadderSide {
   name?: string;
+  /** 这一侧的颜色(缺省:按名字认品牌色 ✓ —— NVIDIA 绿 / AMD 红 / Intel 蓝 ✓) */
+  color?: string;
   items: LadderItem[];
 }
 

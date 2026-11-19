@@ -13,7 +13,7 @@
 //      档与档之间有分隔,档名标在左边那一列。
 //   2. **一侧行数少时,多出来的行留空,不挪位** —— 挪位会让
 //      「第 k 行对第 k 行」这个含义失效。
-import type { LadderItem, LadderSpec } from '../specs/ladder.js';
+import type { LadderItem, LadderSide, LadderSpec } from '../specs/ladder.js';
 import { matchLadderRows } from '../specs/ladder.js';
 import { TAB, card } from '../theme.js';
 import {
@@ -74,6 +74,35 @@ function bar(
  * 行从上到下按值排(调用方排好,这里只画);同一档的行连在一起,
  * 档与档之间一条分隔线,档名在左边那一列。
  */
+/**
+ * 品牌色:名字里认得出来就用它的 ✓
+ * (NVIDIA 绿 / AMD 红 / Intel 蓝 ✓ —— 「各自的主题色」✓)
+ */
+const BRAND_COLOR: [RegExp, string][] = [
+  [/nvidia|geforce|\brtx\b/i, '#76B900'],
+  [/amd|radeon|ryzen|epyc/i, '#ED1C24'],
+  [/intel|\barc\b|\bcore\b|xeon/i, '#0071C5'],
+];
+
+/** 名字里认得出是哪个牌子 ✓ */
+function brandOf(name: string): string | undefined {
+  for (const [re, c] of BRAND_COLOR) if (re.test(name)) return c;
+  return undefined;
+}
+
+/** 这一侧用什么颜色:显式给的 ✓ → 名字里的品牌 ✓ → 缺省的序列色 ✓ */
+function sideColor(side: LadderSide | undefined, fallback: string): string {
+  if (!side) return fallback;
+  if (side.color) return side.color;
+  return brandOf(side.name ?? '') ?? fallback;
+}
+
+/** 这一张卡用什么颜色:卡自己给的 ✓ → 卡名字里的品牌 ✓ → 那一侧的颜色 ✓ */
+function itemColor(item: LadderItem, side: LadderSide | undefined, fallback: string): string {
+  if (item.color) return item.color;
+  return brandOf(item.label ?? '') ?? sideColor(side, fallback);
+}
+
 export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const { width, version, skin } = o;
   const cap = spec.labelmax ?? 22;
@@ -131,7 +160,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   items.forEach((it, i) => {
     const y = yOf(i);
     const len = x(it.value) - left;
-    const color = sVar(0);
+    const color = itemColor(it, side, sVar(0));   // 每张卡按自己的牌子 ✓
     const tip = o.interactive
       ? ` data-tip="${esc(`${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
       : '';
@@ -181,8 +210,8 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   }
 
   const legendItems = [
-    spec.left?.name ? { name: spec.left.name, color: 'var(--d-s1)' } : null,
-    spec.right?.name ? { name: spec.right.name, color: 'var(--d-s2)' } : null,
+    spec.left?.name ? { name: spec.left.name, color: sideColor(spec.left, 'var(--d-s1)') } : null,
+    spec.right?.name ? { name: spec.right.name, color: sideColor(spec.right, 'var(--d-s2)') } : null,
   ].filter(Boolean) as { name: string; color: string }[];
 
   const contentTop = PAD + (spec.title ? 32 : 0) + 8 + (legendItems.length ? LEGEND_H : 0);
@@ -229,7 +258,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       const tip = o.interactive
         ? ` data-tip="${esc(`${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
         : '';
-      parts.push(...bar(centre - len, y, len, barH, sVar(0), tip));
+      parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip));
       if (l.label) {
         parts.push(`<text x="${r2(plotL - VALUE_W - 10)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(l.label, cap))}</text>`);
       }
@@ -244,7 +273,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       const tip = o.interactive
         ? ` data-tip="${esc(`${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
         : '';
-      parts.push(...bar(centre, y, len, barH, sVar(1), tip));
+      parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip));
       if (r.label) {
         parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(r.label, cap))}</text>`);
       }
