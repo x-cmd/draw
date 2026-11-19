@@ -17,7 +17,7 @@ import type { LadderItem, LadderSide, LadderSpec } from '../specs/ladder.js';
 import { matchLadderRows } from '../specs/ladder.js';
 import { TAB, card } from '../theme.js';
 import {
-  esc, fmtFull, fmtNum, niceTicks, r2, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts,
+  esc, fmtFull, fmtNum, niceTicks, r2, roundEdgeRect, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts,
 } from './svg.js';
 
 const PAD = 24;
@@ -44,12 +44,14 @@ function tierGroups(tiers: (string | undefined)[]): { tier?: string; from: numbe
 /** tooltip 的属性(文字 ⇒ 属性 ✓ —— 别把整串属性再塞进属性里 ✗) */
 const tipAttr = (text: string | undefined): string => (text ? ` data-tip="${esc(text)}"` : '');
 
-/** 一根柱 */
+/** 一根柱:圆角只给**值那一端** ✓(#130 —— 起点贴着基线/中轴,圆了像悬空 ✗) */
 function bar(
-  x0: number, y: number, len: number, h: number, color: string, tip: string | undefined, row = -1,
+  x0: number, y: number, len: number, h: number, color: string,
+  tip: string | undefined, row = -1, edge: 'left' | 'right' = 'right',
 ): string[] {
+  const w = Math.max(len, 1);
   return [
-    `<rect${row >= 0 ? ` data-row="${row}"` : ''} x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tipAttr(tip)}/>`,
+    `<path${row >= 0 ? ` data-row="${row}"` : ''} d="${roundEdgeRect(x0, y, w, h, 4, edge)}" fill="${color}"${tipAttr(tip)}/>`,
   ];
 }
 
@@ -191,7 +193,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     const row = ` data-row="${i}"`;
     // 行底色(悬停整行亮 ✓)—— 画在柱与字之前,垫在最下面 ✓
     parts.push(rowBand(PAD, contentTop + i * pitch, right - PAD, pitch, i, tip));
-    parts.push(...bar(left, y, len, barH, color, tip, i));
+    parts.push(...bar(left, y, len, barH, color, tip, i, 'right'));
     if (it.label) {
       parts.push(`<text${row}${tipA} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
     }
@@ -302,7 +304,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
         ? `${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`
         : undefined;
       const tipA = tipAttr(tip);
-      parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip, i));
+      parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip, i, 'left'));
       if (l.label) {
         parts.push(`<text${row}${tipA} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
       }
@@ -316,7 +318,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
         ? `${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`
         : undefined;
       const tipA = tipAttr(tip);
-      parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip, i));
+      parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip, i, 'right'));
       if (r.label) {
         parts.push(`<text${row}${tipA} x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
       }

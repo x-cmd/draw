@@ -21,11 +21,13 @@ describe('天梯图(ladder)', () => {
     expect(t).toContain('30');
   });
 
-  it('档位:同档的行连在一起,档名标出来', () => {
+  it('档位:同档的行连在一起(档名不标 —— 2026-11 决定:不要分类标签)', () => {
     const { svg } = renderFromUrl(url('type=ladder&labels=A,B,C,D&values=40,30,20,10&tiers=S,S,A,A'));
     const t = texts(svg);
-    expect(t).toContain('S');
     expect(t).toContain('A');
+    expect(t).toContain('C');
+    // 档名(S)不是图上的字 ✓ —— 分隔线已经说了
+    expect(t).not.toContain('S');
   });
 
   it('档位分隔线在组与组之间', () => {
