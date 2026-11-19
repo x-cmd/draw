@@ -26,6 +26,7 @@ export { renderSankey } from './render/sankey.js';
 export { renderQuadrant } from './render/quadrant.js';
 export { renderCompass } from './render/compass.js';
 export { renderButterfly } from './render/butterfly.js';
+export { renderLadder, renderButterflyLadder } from './render/ladder.js';
 export { renderCalendar } from './render/calendar.js';
 export { renderTable, tableToGrid, type TableGrid } from './render/table.js';
 export { parseTableSpec, tableSpecFromParams } from './specs/table.js';

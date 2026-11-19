@@ -88,6 +88,19 @@ describe('双翼天梯图(butterfly-ladder)', () => {
     expect(rows[1][1]?.label).toBe('D');
   });
 
+  it('匹配排序:右边那张被拉上来时,原来的位置空着(缺位)', () => {
+    // 右边的 Y(62)跟左边的 C(60)最接近 → Y 待到 C 那一行,
+    // 它原来那行(第 2 行)就空出来了
+    const rows = matchLadderRows(
+      [{ value: 100, label: 'A' }, { value: 90, label: 'B' }, { value: 60, label: 'C' }],
+      [{ value: 98, label: 'X' }, { value: 62, label: 'Y' }],
+      'value',
+    );
+    expect(rows[0][1]?.label).toBe('X');     // X(98)配 A(100)
+    expect(rows[1][1]).toBeUndefined();     // 缺位:Y 被拉到第 3 行
+    expect(rows[2][1]?.label).toBe('Y');
+  });
+
   it('match= 只认 rank / value', () => {
     expect(() => renderFromUrl(url('type=butterfly-ladder&left=A:1&match=other'))).toThrow();
   });
