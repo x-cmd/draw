@@ -107,9 +107,13 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     if (height < need) height = Math.min(need, 4000);
   }
 
-  const titleH = spec.title ? titleBlock(spec.title).length / 40 : 0;  // 粗略,下面重算
-  const legendItems = side?.name ? [{ name: side.name, color: 'var(--d-s1)' }] : [];
-  const contentTop = PAD + (spec.title ? 32 : 0) + 8 + (legendItems.length ? LEGEND_H : 0);
+  // 标题/图例/图 三者的位置比例 ✓ —— 天梯图往往很高,标题要压得住 ✓
+  const titleSvg = spec.title
+    ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
+    : '';
+  const titleH = spec.title ? 38 : 0;
+  const legendItems = side?.name ? [{ name: side.name, color: sideColor(side, 'var(--d-s1)') }] : [];
+  const contentTop = PAD + titleH + (legendItems.length ? LEGEND_H : 0);
   const avail = height - contentTop - PAD - 26;
   const pitch = Math.max(12, Math.min(26, avail / Math.max(n, 1)));
   const barH = Math.min(BAR_H, Math.max(6, pitch * 0.62));
@@ -160,12 +164,12 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   });
 
   const legend = legendItems.length
-    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 110)}" y="${r2(contentTop - LEGEND_H + 4)}" width="14" height="14" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 110 + 20)}" y="${r2(contentTop - LEGEND_H + 15)}" font-size="11.5" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
+    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 130)}" y="${r2(contentTop - LEGEND_H + 5)}" width="15" height="15" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 130 + 22)}" y="${r2(contentTop - LEGEND_H + 17)}" font-size="12" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
     : '';
 
   return svgDoc(
     width, height, 'ladder', version, 'ladder', spec, skin,
-    bg + titleBlock(spec.title) + legend + parts.join(''),
+    bg + titleSvg + legend + parts.join(''),
   );
 }
 
@@ -202,7 +206,10 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
     spec.right?.name ? { name: spec.right.name, color: sideColor(spec.right, 'var(--d-s2)') } : null,
   ].filter(Boolean) as { name: string; color: string }[];
 
-  const contentTop = PAD + (spec.title ? 32 : 0) + 8 + (legendItems.length ? LEGEND_H : 0);
+  const titleSvg = spec.title
+    ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
+    : '';
+  const contentTop = PAD + (spec.title ? 38 : 0) + (legendItems.length ? LEGEND_H : 0);
   const avail = height - contentTop - PAD - 26;
   const pitch = Math.max(12, Math.min(26, avail / Math.max(n, 1)));
   const barH = Math.min(BAR_H, Math.max(6, pitch * 0.62));
@@ -279,12 +286,12 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   });
 
   const legend = legendItems.length
-    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 130)}" y="${r2(contentTop - LEGEND_H + 4)}" width="14" height="14" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 130 + 20)}" y="${r2(contentTop - LEGEND_H + 15)}" font-size="11.5" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
+    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 140)}" y="${r2(contentTop - LEGEND_H + 5)}" width="15" height="15" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 140 + 22)}" y="${r2(contentTop - LEGEND_H + 17)}" font-size="12" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
     : '';
 
   return svgDoc(
     width, height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin,
-    bg + titleBlock(spec.title) + legend + parts.join(''),
+    bg + titleSvg + legend + parts.join(''),
   );
 }
 
