@@ -22,7 +22,7 @@ import {
 
 const PAD = 24;
 const LEGEND_H = 26;
-const VALUE_W = 54;    // 外端数值那一列的宽
+const VALUE_W = 62;    // 外端数值那一列的宽(具体数字要放得下 ✓)
 const BAR_H = 18;
 
 /** 连续同档的行算一组 */
@@ -156,7 +156,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     if (it.label) {
       parts.push(`<text x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
     }
-    parts.push(`<text x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtNum(it.value)}</text>`);
+    parts.push(`<text x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(it.value)}</text>`);
   });
 
   const legend = legendItems.length
@@ -260,11 +260,9 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       if (l.label) {
         parts.push(`<text x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
       }
-      // 数值:柱够长**而且够粗**就画在柱里 —— 左边的柱尾紧挨着名字列,
-      // 画在外面会撞上;柱太薄的话字会糊在柱边上。
-      // 左边的柱往左长,「柱里」是尾端的**右边**,所以文字从尾端往右排(start)。
-      const inBar = len > 56 && barH >= 11;
-      parts.push(`<text x="${r2(centre - len + (inBar ? 8 : -8))}" y="${r2(y + barH / 2 + 4)}" text-anchor="${inBar ? 'start' : 'end'}" font-size="12" font-weight="600" fill="${inBar ? '#fff' : 'var(--d-text)'}">${fmtNum(l.value)}</text>`);
+      // 数值:**一律画在 bar 外面** ✓(两边一致 ✓ —— 「左边的数据在 bar 里、右边在外面」看着别扭 ✓)
+      // 左边的柱往左长 ⇒ 数值在尾端的左边 ✓(紧挨着名字列 ✓)
+      parts.push(`<text x="${r2(centre - len - 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12" font-weight="600" fill="var(--d-text)">${fmtFull(l.value)}</text>`);
     }
     if (r) {
       const len = (r.value / (rightMax || 1)) * half;
@@ -275,9 +273,8 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
       if (r.label) {
         parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
       }
-      // 右边跟左边一致:柱够长**而且够粗**就画在柱里 ✓(不然一律画在外面 ✓)
-      const rInBar = len > 56 && barH >= 11;
-      parts.push(`<text x="${r2(rInBar ? centre + len - 8 : centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="${rInBar ? 'end' : 'start'}" font-size="12" font-weight="600" fill="${rInBar ? '#fff' : 'var(--d-text)'}">${fmtNum(r.value)}</text>`);
+      // 右边同样:**一律画在 bar 外面** ✓
+      parts.push(`<text x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12" font-weight="600" fill="var(--d-text)">${fmtFull(r.value)}</text>`);
     }
   });
 
