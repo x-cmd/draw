@@ -99,13 +99,6 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const items = side?.items ?? [];
   const n = items.length;
   if (!n) return svgDoc(width, o.height, 'ladder', version, 'ladder', spec, skin, '');
-  // 行多的时候自动拉高 —— 行距压到 16 以下,行标签就叠在一起了
-  let height = o.height;
-  if (o.autoHeight) {
-    const head = PAD + (spec.title ? 32 : 0) + 8 + (side?.name ? LEGEND_H : 0);
-    const need = head + PAD + 26 + n * 16;
-    if (height < need) height = Math.min(need, 4000);
-  }
 
   // 标题/图例/图 三者的位置比例 ✓ —— 天梯图往往很高,标题要压得住 ✓
   const titleSvg = spec.title
@@ -114,6 +107,13 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const titleH = spec.title ? 38 : 0;
   const legendItems = side?.name ? [{ name: side.name, color: sideColor(side, 'var(--d-s1)') }] : [];
   const contentTop = PAD + titleH + (legendItems.length ? LEGEND_H : 0);
+
+  // 行多的时候画布自动拉高 —— 行距压到 16 以下,行标签就叠在一起了
+  // (h= 只是「最少这么高」✓:100 行的天梯图硬压进 480px ⇒ 后半截掉出画布 ✗)
+  let height = o.height;
+  const need = contentTop + 8 + PAD + 26 + n * 16;
+  if (height < need) height = Math.min(need, 4000);
+
   const avail = height - contentTop - PAD - 26;
   const pitch = Math.max(12, Math.min(26, avail / Math.max(n, 1)));
   const barH = Math.min(BAR_H, Math.max(6, pitch * 0.62));
@@ -192,15 +192,6 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   if (!n) {
     return svgDoc(width, o.height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin, '');
   }
-  // 行多的时候自动拉高(同上)
-  let height = o.height;
-  if (o.autoHeight) {
-    const legend = (spec.left?.name ? 1 : 0) + (spec.right?.name ? 1 : 0);
-    const head = PAD + (spec.title ? 32 : 0) + 8 + (legend ? LEGEND_H : 0);
-    const need = head + PAD + 26 + n * 16;
-    if (height < need) height = Math.min(need, 4000);
-  }
-
   const legendItems = [
     spec.left?.name ? { name: spec.left.name, color: sideColor(spec.left, 'var(--d-s1)') } : null,
     spec.right?.name ? { name: spec.right.name, color: sideColor(spec.right, 'var(--d-s2)') } : null,
@@ -210,6 +201,12 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
     ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
     : '';
   const contentTop = PAD + (spec.title ? 38 : 0) + (legendItems.length ? LEGEND_H : 0);
+
+  // 行多的时候画布自动拉高(同上:h= 只是「最少这么高」✓)
+  let height = o.height;
+  const need = contentTop + 8 + PAD + 26 + n * 16;
+  if (height < need) height = Math.min(need, 4000);
+
   const avail = height - contentTop - PAD - 26;
   const pitch = Math.max(12, Math.min(26, avail / Math.max(n, 1)));
   const barH = Math.min(BAR_H, Math.max(6, pitch * 0.62));
