@@ -71,6 +71,10 @@ two separate rankings:
 | `value` | **matched**: each card on the right is **lifted** to the row whose left card is just stronger (`left[n] >= right > left[n+1]`); the right stays in order | "these two are about equal — which is faster?" |
 | `tier` | **by tier**: everything is sorted overall first, then the right wing is lifted **block by block**, so cards of the same tier share a row; a block takes as many rows as its longer side, so **either wing can leave gaps** | "same tier, side by side — and where one wing has nothing, the row stays empty" |
 
+| `ticks=` | Which scale lines to draw (`1000,2000,3000`); without it they are picked for you | where the numbers stand |
+| `stripbrand=1` | Drop the brand from the names (`GeForce RTX 5090` → `RTX 5090`) — the colour already says NVIDIA | shorter names |
+| `color=` | A side's (or a single card's) colour; by default the name decides it: **NVIDIA green, AMD red, Intel blue** | brand colours |
+
 In `rank` mode the two wings **share one scale**, so their lengths are comparable
 across them.
 

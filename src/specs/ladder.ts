@@ -45,6 +45,10 @@ export interface LadderSpec {
   unit?: string;
   /** 标签最多显示几个字(缺省 22)。名字长的数据用 labelmax= 调大。 */
   labelmax?: number;
+  /** 标度线:要画哪些刻度(如 [1000, 2000, 3000] ✓);不给就自动挑 ✓ */
+  ticks?: number[];
+  /** 把名字前面的牌子去掉(「GeForce RTX 5090」→「RTX 5090」✓ —— 颜色已经说明了 ✓) */
+  stripbrand?: boolean;
   /** 单边(天梯图) */
   side?: LadderSide;
   /** 双翼(双翼天梯图) */
@@ -111,6 +115,11 @@ export function parseLadderSpec(raw: string): LadderSpec {
     if (!Number.isFinite(n) || n < 1) throw new ApiError(400, `"labelmax" must be a positive number.`);
     spec.labelmax = n;
   }
+  if (obj.ticks !== undefined) {
+    if (!Array.isArray(obj.ticks)) throw new ApiError(400, `"ticks" must be an array of numbers.`);
+    spec.ticks = obj.ticks.map((t) => Number(t)).filter((t) => Number.isFinite(t));
+  }
+  if (obj.stripbrand !== undefined) spec.stripbrand = obj.stripbrand === true;
   const side = parseSide(obj.side, 'side');
   if (side) spec.side = side;
   const left = parseSide(obj.left, 'left');
@@ -148,6 +157,9 @@ export function ladderSpecFromParams(params: URLSearchParams): string | null {
   if (unit) spec.unit = unit;
   const labelmax = params.get('labelmax');
   if (labelmax) spec.labelmax = labelmax;
+  const tickRaw = params.get('ticks');
+  if (tickRaw) spec.ticks = splitNumbers(tickRaw.split(',')).filter((n) => Number.isFinite(n));
+  if (params.get('stripbrand') === '1' || params.get('stripbrand') === 'true') spec.stripbrand = true;
 
   if (leftRaw.length || rightRaw.length) {
     // 双翼

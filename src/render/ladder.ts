@@ -23,7 +23,6 @@ import {
 const PAD = 24;
 const LEGEND_H = 26;
 const VALUE_W = 54;    // 外端数值那一列的宽
-const TIER_W = 34;     // 档位名列的宽
 const BAR_H = 18;
 
 /** 连续同档的行算一组 */
@@ -41,23 +40,6 @@ function tierGroups(tiers: (string | undefined)[]): { tier?: string; from: numbe
 }
 
 /** 档位名列:组名竖排在组中间(组太矮就排在组首行上) */
-function tierLabels(
-  groups: { tier?: string; from: number; to: number }[],
-  yOf: (i: number) => number,
-  pitch: number,
-): string[] {
-  const parts: string[] = [];
-  for (const g of groups) {
-    if (!g.tier) continue;
-    const y = yOf(g.from);
-    const h = (g.to - g.from) * pitch;
-    const yy = h > 26 ? y + h / 2 : y + pitch / 2;
-    parts.push(
-      `<text x="${r2(PAD + TIER_W / 2)}" y="${r2(yy + 4)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--d-muted)">${esc(g.tier)}</text>`,
-    );
-  }
-  return parts;
-}
 
 /** 一根柱 */
 function bar(
@@ -97,6 +79,13 @@ function sideColor(side: LadderSide | undefined, fallback: string): string {
   return brandOf(side.name ?? '') ?? fallback;
 }
 
+/** 名字前面的牌子:要去就去掉 ✓(「GeForce RTX 5090」→「RTX 5090」✓) */
+const BRAND_WORDS = /^(nvidia|geforce|amd|radeon|ryzen|epyc|intel|core|xeon|arc)\s+/i;
+function stripped(label: string | undefined, spec: LadderSpec): string {
+  const s = label ?? '';
+  return spec.stripbrand ? s.replace(BRAND_WORDS, '') : s;
+}
+
 /** 这一张卡用什么颜色:卡自己给的 ✓ → 卡名字里的品牌 ✓ → 那一侧的颜色 ✓ */
 function itemColor(item: LadderItem, side: LadderSide | undefined, fallback: string): string {
   if (item.color) return item.color;
@@ -129,7 +118,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     190 + Math.max(0, cap - 22) * 7,
     Math.max(...items.map((it) => textW(trunc(it.label ?? '', cap), 12.5))) + 6,
   );
-  const left = PAD + TIER_W + labelW + 14;
+  const left = PAD + labelW + 14;
   const right = width - PAD - VALUE_W;
 
   const max = Math.max(...items.map((it) => it.value));
@@ -155,7 +144,6 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     const y = contentTop + g.from * pitch;
     parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(right)}" y2="${r2(y)}" stroke="var(--d-border)" stroke-width="1"/>`);
   }
-  parts.push(...tierLabels(groups, yOf, pitch));
 
   items.forEach((it, i) => {
     const y = yOf(i);
@@ -166,7 +154,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
       : '';
     parts.push(...bar(left, y, len, barH, color, tip));
     if (it.label) {
-      parts.push(`<text x="${r2(PAD + TIER_W + labelW)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(it.label, cap))}</text>`);
+      parts.push(`<text x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
     }
     parts.push(`<text x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtNum(it.value)}</text>`);
   });
@@ -223,7 +211,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   const rLabels = rightItems.map((it) => it.label ?? '');
   const lW = Math.max(0, ...lLabels.map((l) => textW(trunc(l, cap), 12.5)));
   const rW = Math.max(0, ...rLabels.map((l) => textW(trunc(l, cap), 12.5)));
-  const plotL = PAD + TIER_W + lW + 10 + VALUE_W;
+  const plotL = PAD + lW + 10 + VALUE_W;
   const plotR = width - PAD - rW - 10 - VALUE_W;
   const centre = (plotL + plotR) / 2;
   const half = (plotR - plotL) / 2;
@@ -239,6 +227,17 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
 
   parts.push(`<line x1="${r2(centre)}" y1="${r2(contentTop)}" x2="${r2(centre)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-border)"/>`);
 
+  // 标度:两翼共用一把(缺省自动挑 ✓;可以用 ticks= 指定 ✓ 如 1000,2000,3000 ✓)
+  const tickVals = (spec.ticks?.length ? [...spec.ticks].sort((a, b) => a - b) : niceTicks(leftMax, 4))
+    .filter((t) => t > 0);
+  const tickMax = tickVals[tickVals.length - 1] || leftMax;
+  const tickY = height - PAD - 26 + 16;
+  for (const t of tickVals) {
+    const dx = (t / tickMax) * half;
+    parts.push(`<text x="${r2(centre - dx)}" y="${r2(tickY)}" text-anchor="middle" font-size="11" fill="var(--d-muted)">${fmtNum(t)}</text>`);
+    parts.push(`<text x="${r2(centre + dx)}" y="${r2(tickY)}" text-anchor="middle" font-size="11" fill="var(--d-muted)">${fmtNum(t)}</text>`);
+  }
+
   const yOf = (i: number): number => contentTop + i * pitch + (pitch - barH) / 2;
 
   // 档位:两侧的行是配对的,档以左边为准
@@ -249,7 +248,6 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
     const y = contentTop + g.from * pitch;
     parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(width - PAD)}" y2="${r2(y)}" stroke="var(--d-border)" stroke-width="1"/>`);
   }
-  parts.push(...tierLabels(groups, yOf, pitch));
 
   rows.forEach(([l, r], i) => {
     const y = yOf(i);
@@ -260,7 +258,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
         : '';
       parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip));
       if (l.label) {
-        parts.push(`<text x="${r2(plotL - VALUE_W - 10)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(l.label, cap))}</text>`);
+        parts.push(`<text x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
       }
       // 数值:柱够长**而且够粗**就画在柱里 —— 左边的柱尾紧挨着名字列,
       // 画在外面会撞上;柱太薄的话字会糊在柱边上。
@@ -275,9 +273,11 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
         : '';
       parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip));
       if (r.label) {
-        parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(r.label, cap))}</text>`);
+        parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
       }
-      parts.push(`<text x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)">${fmtNum(r.value)}</text>`);
+      // 右边跟左边一致:柱够长**而且够粗**就画在柱里 ✓(不然一律画在外面 ✓)
+      const rInBar = len > 56 && barH >= 11;
+      parts.push(`<text x="${r2(rInBar ? centre + len - 8 : centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="${rInBar ? 'end' : 'start'}" font-size="12" font-weight="600" fill="${rInBar ? '#fff' : 'var(--d-text)'}">${fmtNum(r.value)}</text>`);
     }
   });
 
