@@ -88,11 +88,10 @@ describe('双翼天梯图(butterfly-ladder)', () => {
     expect(rows[1][1]?.label).toBe('D');
   });
 
-  it('匹配排序:右边的卡自动抬升 —— 落到最后一个 left[n] >= 右 的行', () => {
-    // 规则:对右边一张卡 r,找**最后一个** left[n].value >= r.value 的行 n ✓
-    //   ⇒ left[n] >= r > left[n+1] ✓(右边的卡夹在左右两行之间 ✓)
-    // X(98):left=[100,90,60] ⇒ 最后一个 >= 98 的是 A(100) ⇒ 第 0 行 ✓
-    // Y(62):最后一个 >= 62 的是 B(90) ⇒ 第 1 行 ✓ ⇒ C 那一行(第 2 行)空着 ✓
+  it('匹配排序:value —— 右边的卡抬到最后一个 left[n] >= 右 的行', () => {
+    // 全排序(两边合起来按强弱)⇒ 档的次序:先是 A 档(B/C 两张),再是 S 档 ✓
+    // S 档里左边一张(S 100)、右边一张(S 98)⇒ 同一行 ✓
+    // B 档里右边有两条(B 80/B 70)、左边只有一条(B 75)⇒ **左边空一格** ✓
     const rows = matchLadderRows(
       [{ value: 100, label: 'A' }, { value: 90, label: 'B' }, { value: 60, label: 'C' }],
       [{ value: 98, label: 'X' }, { value: 62, label: 'Y' }],
@@ -113,7 +112,28 @@ describe('双翼天梯图(butterfly-ladder)', () => {
     expect(rightLabels).toEqual(['X', 'Y', 'Z']);   // 顺序没乱 ✓
   });
 
-  it('match= 只认 rank / value', () => {
+  it('match= 只认 rank / value / tier', () => {
     expect(() => renderFromUrl(url('type=butterfly-ladder&left=A:1&match=other'))).toThrow();
+  });
+
+  it('匹配排序:tier 档 —— 同一档的行连在一起,两边都可能空档', () => {
+    const rows = matchLadderRows(
+      [
+        { value: 100, label: 'L-S', tier: 'S' },
+        { value: 75, label: 'L-B', tier: 'B' },
+      ],
+      [
+        { value: 98, label: 'R-S', tier: 'S' },
+        { value: 80, label: 'R-B1', tier: 'B' },
+        { value: 70, label: 'R-B2', tier: 'B' },
+      ],
+      'tier',
+    );
+    expect(rows[0][0]?.label).toBe('L-S');
+    expect(rows[0][1]?.label).toBe('R-S');      // 同档 ⇒ 同一行 ✓
+    expect(rows[1][0]?.label).toBe('L-B');
+    expect(rows[1][1]?.label).toBe('R-B1');
+    expect(rows[2][0]).toBeUndefined();          // 左边空了一格 ✓(右边的 B 有两张 ✓)
+    expect(rows[2][1]?.label).toBe('R-B2');
   });
 });

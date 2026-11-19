@@ -52,7 +52,7 @@ export interface LadderSpec {
    *                 每一行只有一张卡,在它自己那一侧
    *   value      —— **匹配排序**:值相近的排在同一行,两翼都有
    */
-  match?: 'rank' | 'value';
+  match?: 'rank' | 'value' | 'tier';
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> =>
@@ -115,8 +115,8 @@ export function parseLadderSpec(raw: string): LadderSpec {
   if (right) spec.right = right;
   if (obj.match !== undefined) {
     const m = String(obj.match).toLowerCase();
-    if (m !== 'rank' && m !== 'value') {
-      throw new ApiError(400, `"match" must be "rank" or "value". Got: ${JSON.stringify(obj.match)}`);
+    if (m !== 'rank' && m !== 'value' && m !== 'tier') {
+      throw new ApiError(400, `"match" must be "rank", "value" or "tier". Got: ${JSON.stringify(obj.match)}`);
     }
     spec.match = m;
   }
@@ -156,8 +156,8 @@ export function ladderSpecFromParams(params: URLSearchParams): string | null {
     if (left) spec.left = left;
     if (right) spec.right = right;
     const match = (params.get('match') ?? 'rank').toLowerCase();
-    if (match !== 'rank' && match !== 'value') {
-      throw new ApiError(400, `"match" must be "rank" or "value". Got: ${JSON.stringify(match)}`);
+    if (match !== 'rank' && match !== 'value' && match !== 'tier') {
+      throw new ApiError(400, `"match" must be "rank", "value" or "tier". Got: ${JSON.stringify(match)}`);
     }
     spec.match = match;
   } else {
@@ -236,9 +236,9 @@ function splitNumbers(raws: string[]): number[] {
 export function matchLadderRows(
   left: LadderItem[],
   right: LadderItem[],
-  match: 'rank' | 'value' = 'rank',
+  match: 'rank' | 'value' | 'tier' = 'rank',
 ): [LadderItem | undefined, LadderItem | undefined][] {
-  if (match !== 'value') {
+  if (match === 'rank') {
     const all: { item: LadderItem; side: 0 | 1 }[] = [
       ...left.map((item) => ({ item, side: 0 as const })),
       ...right.map((item) => ({ item, side: 1 as const })),
@@ -246,7 +246,41 @@ export function matchLadderRows(
     all.sort((a, b) => b.item.value - a.item.value);
     return all.map((x) => (x.side === 0 ? [x.item, undefined] : [undefined, x.item]));
   }
-  // 匹配排序:**右边的卡自动抬升**,落到左边数值对得上的那一行 ✓
+  if (match === 'tier') {
+    // **按档分块**:同一档的行连在一起 ✓
+    //
+    // 本质是「原始双翼算法(全排序 ✓)+ 一个抬升处理 ✓」:
+    //   1. **先全排序**:两边合起来按强弱排 ⇒ 档的次序、档内的次序都定了 ✓
+    //   2. **按档分块**;每块的行数 = max(左边的张数, 右边的张数) ✓
+    //      ⇒ **两边都可能空档** ✓(哪边少,哪边空 ✓ —— 缺位是信号 ✓)
+    //   3. 块内:左边第 k 张对右边第 k 张 ✓
+    //      ⇒ 右边的卡是「抬」到对得上的那一行的 ✓(它比左边的下一张强 ✓)
+    //
+    // 右边自己**按强弱排** ✓ ⇒ 抬升之后**顺序不变** ✓。
+    const all: { item: LadderItem; side: 0 | 1 }[] = [
+      ...left.filter((x): x is LadderItem => !!x).map((item) => ({ item, side: 0 as const })),
+      ...right.filter((x): x is LadderItem => !!x).map((item) => ({ item, side: 1 as const })),
+    ];
+    all.sort((a, b) => b.item.value - a.item.value);
+    // 档的次序 = 全排序里第一次出现的次序 ✓;没写档的算一档 ✓
+    const blocks: { tier: string; l: LadderItem[]; r: LadderItem[] }[] = [];
+    for (const { item, side } of all) {
+      const tier = item.tier ?? '';
+      let blk = blocks.find((b) => b.tier === tier);
+      if (!blk) {
+        blk = { tier, l: [], r: [] };
+        blocks.push(blk);
+      }
+      (side === 0 ? blk.l : blk.r).push(item);
+    }
+    const rows: [LadderItem | undefined, LadderItem | undefined][] = [];
+    for (const blk of blocks) {
+      const n = Math.max(blk.l.length, blk.r.length);   // 两边都可能空档 ✓
+      for (let i = 0; i < n; i++) rows.push([blk.l[i], blk.r[i]]);
+    }
+    return rows;
+  }
+  // 匹配排序(value):**右边的每张卡抬升**,落到左边数值对得上的那一行 ✓
   //
   // 规则(定死的 ✓):对右边的一张卡 r,找**最后一个**满足 `left[n].value >= r.value`
   // 的行 n ✓ —— 于是 `left[n] >= r > left[n+1]` ✓,右边的卡刚好夹在左右两行之间 ✓
