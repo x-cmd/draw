@@ -21,6 +21,8 @@ export { renderScatter } from './render/scatter.js';
 export { renderCombo } from './render/combo.js';
 export { renderQR } from './render/qr.js';
 export { parseAnnos, injectAnnos, annoLayer, type Anno } from './render/anno.js';
+export { parseLadderSpec, ladderSpecFromParams, type LadderSpec, type LadderItem, type LadderSide } from './specs/ladder.js';
+export { resolveSrcSpec } from './render/src-spec.js';
 export { footerUnit, headerMeta, tipUnit, tipHeight, type FooterItem, type TipRow } from './render/units.js';
 export { renderSankey } from './render/sankey.js';
 export { renderQuadrant } from './render/quadrant.js';
