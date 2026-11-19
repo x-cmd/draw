@@ -35,13 +35,19 @@ export async function resolveSrcSpec(url: URL): Promise<URL> {
   if (text.length > 1024 * 1024) {
     throw new ApiError(413, `upstream spec is ${text.length}B (max 1048576)`);
   }
+  let spec: unknown;
   try {
-    JSON.parse(text);
+    spec = JSON.parse(text);
   } catch {
     throw new ApiError(400, `upstream spec is not valid JSON: ${raw}`);
   }
   const next = new URL(url);
   next.searchParams.delete('src');
   next.searchParams.set('d', text);
+  // 规格文件自己知道是什么图(JSON 里的 type ✓)—— URL 没带 type 就补上 ✓
+  // (只给一个文件链接就能画 ✓ —— 这就是 ?src= 的用法 ✓)
+  if (!next.searchParams.get('type') && spec && typeof spec === 'object' && typeof (spec as { type?: unknown }).type === 'string') {
+    next.searchParams.set('type', (spec as { type: string }).type);
+  }
   return next;
 }
