@@ -43,11 +43,20 @@ function tierGroups(tiers: (string | undefined)[]): { tier?: string; from: numbe
 
 /** 一根柱 */
 function bar(
-  x0: number, y: number, len: number, h: number, color: string, tip: string | undefined,
+  x0: number, y: number, len: number, h: number, color: string, tip: string | undefined, row = -1,
 ): string[] {
   return [
-    `<rect x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tip ? ` data-tip="${esc(tip)}"` : ''}/>`,
+    `<rect${row >= 0 ? ` data-row="${row}"` : ''} x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tip ? ` data-tip="${esc(tip)}"` : ''}/>`,
   ];
+}
+
+/**
+ * 行底色:鼠标悬停时**整行**亮一下 ✓
+ * (垫色,不要描边 ✓ —— 描边会像选中框 ✗)
+ * 它同时是这一行的「悬停热区」✓ —— 悬在行里的空白处也能亮 ✓。
+ */
+function rowBand(x: number, y: number, w: number, h: number, row: number, tip: string): string {
+  return `<rect class="row-band" data-row="${row}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" fill="var(--d-ink)" fill-opacity="0"${tip ? ` ${tip}` : ''}/>`;
 }
 
 /**
@@ -156,11 +165,14 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     const tip = o.interactive
       ? ` data-tip="${esc(`${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
       : '';
-    parts.push(...bar(left, y, len, barH, color, tip));
+    const row = ` data-row="${i}"`;
+    // 行底色(悬停整行亮 ✓)—— 画在柱与字之前,垫在最下面 ✓
+    parts.push(rowBand(PAD, contentTop + i * pitch, right - PAD, pitch, i, tip));
+    parts.push(...bar(left, y, len, barH, color, tip, i));
     if (it.label) {
-      parts.push(`<text x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
+      parts.push(`<text${row}${tip} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
     }
-    parts.push(`<text x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(it.value)}</text>`);
+    parts.push(`<text${row} x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(it.value)}</text>`);
   });
 
   const legend = legendItems.length
@@ -255,30 +267,36 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
 
   rows.forEach(([l, r], i) => {
     const y = yOf(i);
+    const row = ` data-row="${i}"`;
+    // 行底色(悬停整行亮 ✓)—— 一行两翼一起亮 ✓
+    const bandTip = o.interactive
+      ? ` data-tip="${esc(`${l?.label ?? ''}${r?.label ? `  ·  ${r.label}` : ''}`)}"`
+      : '';
+    parts.push(rowBand(PAD, contentTop + i * pitch, width - PAD * 2, pitch, i, bandTip));
     if (l) {
       const len = (l.value / (leftMax || 1)) * half;
       const tip = o.interactive
         ? ` data-tip="${esc(`${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
         : '';
-      parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip));
+      parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip, i));
       if (l.label) {
-        parts.push(`<text x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
+        parts.push(`<text${row}${tip} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
       }
       // 数值:**一律画在 bar 外面** ✓(两边一致 ✓ —— 「左边的数据在 bar 里、右边在外面」看着别扭 ✓)
       // 左边的柱往左长 ⇒ 数值在尾端的左边 ✓(紧挨着名字列 ✓)
-      parts.push(`<text x="${r2(centre - len - 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12" font-weight="600" fill="var(--d-text)">${fmtFull(l.value)}</text>`);
+      parts.push(`<text${row} x="${r2(centre - len - 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(l.value)}</text>`);
     }
     if (r) {
       const len = (r.value / (rightMax || 1)) * half;
       const tip = o.interactive
         ? ` data-tip="${esc(`${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
         : '';
-      parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip));
+      parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip, i));
       if (r.label) {
-        parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
+        parts.push(`<text${row}${tip} x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
       }
       // 右边同样:**一律画在 bar 外面** ✓
-      parts.push(`<text x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12" font-weight="600" fill="var(--d-text)">${fmtFull(r.value)}</text>`);
+      parts.push(`<text${row} x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtFull(r.value)}</text>`);
     }
   });
 
