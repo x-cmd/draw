@@ -138,6 +138,16 @@ function chartRender(
   const input = parseInput(request.searchParams, kind);
   const v = resolveVersion(request.searchParams.get('v'));
   const skin = resolveSkin(kind, request.searchParams.get('t'), schemeParam(request.searchParams));
+  // 语义槽位前置校验:用了角色名(colors=danger)而该家族没配角色表 → 400 教正确写法,
+  // 不做静默回退(静默 = 用户以为生效了,配色却完全是另一回事 —— 惊喜边界)
+  const used = colorInputs(input);
+  const roleUsed = used.filter((c) => ROLE_NAME_RE.test(c));
+  if (roleUsed.length > 0 && !skin.roles) {
+    throw new ApiError(400, `t=${skin.rules ? '' : ''}"${request.searchParams.get('t') ?? kind}" has no semantic roles; slot names (${roleUsed.join(', ')}) need one of the skin families (macaron, wabi-sabi, primer, morandi, nordic, salmon, neon). Use hex colors instead, or pick a skin family`);
+  }
+  const highlightRaw = request.searchParams.get('highlight');
+  const highlight = highlightRaw === null || highlightRaw === '' ? undefined
+    : new Set(highlightRaw.split(',').map((s) => s.trim()).filter(Boolean));
   const [sw, sh] = skin.size ?? [defW, defH]; // 设计变体默认 = 规范画布
   const width = clampInt(request.searchParams, 'w', sw, 200, 1600);
   const height = clampInt(request.searchParams, 'h', sh, 140, 1200);
@@ -145,7 +155,19 @@ function chartRender(
   const donut = kind === 'pie' ? (boolParam(request.searchParams, 'donut') ?? true) : undefined;
   const autoHeight = request.searchParams.get('h') === null;
   const autoWidth = request.searchParams.get('w') === null;
-  return svgResult(render(input, { width, height, version: v.version, skin, autoHeight, autoWidth, ...(valueLabels !== undefined ? { valueLabels } : {}), ...(donut !== undefined ? { donut } : {}), ...(extra ? extra(request.searchParams) : {}) }), v);
+  return svgResult(render(input, { width, height, version: v.version, skin, autoHeight, autoWidth, highlight, ...(valueLabels !== undefined ? { valueLabels } : {}), ...(donut !== undefined ? { donut } : {}), ...(extra ? extra(request.searchParams) : {}) }), v);
+}
+
+// input(单系列/多系列)里的全部取色串 —— 槽位校验用
+const ROLE_NAME_RE = /^(?:primary|success|warning|danger|info|accent)$/;
+function colorInputs(input: ChartInput): string[] {
+  const out: string[] = [];
+  if (input.multi) {
+    for (const s of input.spec.series) if (s.color) out.push(s.color);
+  } else {
+    for (const d of input.spec.data) if ('color' in d && d.color) out.push(d.color as string);
+  }
+  return out;
 }
 
 // 参考线参数(hbar opendata):?ref=<数值> ?reflabel=<文案>

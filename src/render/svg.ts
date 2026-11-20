@@ -3,7 +3,7 @@ import { FONT, TAB } from '../theme.js';
 import { ticks as d3Ticks, tickStep } from 'd3-array';
 import { ApiError, type Mark } from '../specs/base.js';
 import { INTER_FACE_CSS, INTER_WIDTHS } from '../styles/inter.js';
-import type { Skin, Duo } from '../styles/types.js';
+import { isSlot, type Skin, type Duo } from '../styles/types.js';
 
 export function esc(s: string): string {
   return s
@@ -170,6 +170,20 @@ export function marksLayer(pts: readonly { x: number; y: number; text: string }[
 }
 export const sVar = (i: number): string => `var(--d-s${i + 1})`;
 export const onVar = (i: number): string => `var(--d-on-s${i + 1})`;
+
+// ── 槽位取色(colors= 的语义层)──────────────────────────────────────
+// colors= 的每一项三种写法:槽位名(danger/s3)、hex 原样、无效静默忽略(既有契约)。
+// 槽位解析成 CSS 变量引用 —— 明暗由 skinStyle 的两套变量自动翻,渲染器零感知。
+// 槽位语法定义在 styles/types.ts(单处真相,specs 层也用它做收纳校验)
+/** 数据项的取色:槽位 → CSS 变量;hex → 原样;其余(含 undefined)→ 位置缺省色 */
+export function colorRef(color: string | undefined, fallback: string): string {
+  if (!color) return fallback;
+  if (/^#[0-9a-f]{6}$/i.test(color)) return color;
+  if (isSlot(color)) return `var(--d-${color})`;
+  return fallback;
+}
+// highlight= 的压灰阶梯:非点名项落家族自己的灰(neutral 三档循环),不是全局灰
+export const grayVar = (i: number): string => ['var(--d-muted)', 'var(--d-faint)', 'var(--d-border)'][i % 3];
 // 标注层用色(强调红,明暗各一):圈+文字同色,固定色不参与皮肤轮换
 const MARK_COLOR: Duo = { light: '#D92D20', dark: '#FF7A6B' };
 // 链接色(Edit @X-CMD 角标等可点元素,明暗各一):blue-600/blue-400
@@ -217,6 +231,12 @@ export function skinStyle(skin: Skin): string {
       `--d-mark:${MARK_COLOR[side]}`,
       `--d-link:${LINK_COLOR[side]}`,
     );
+    // 语义角色(--d-danger 等):colors=danger 经 colorRef 引到这里;两套变量自动明暗
+    if (skin.roles) {
+      for (const [role, d] of Object.entries(skin.roles)) {
+        if (d) items.push(`--d-${role}:${d[side]}`);
+      }
+    }
     return `:root{color-scheme:${side};${items.join(';')}}`;
   };
   if (skin.scheme === 'auto') {
@@ -391,6 +411,8 @@ export interface RenderOpts {
   interactive?: boolean;
   /** 标注层(?mark=锚;值;文字,可重复);undefined=无标注;[] 也不会画任何东西 */
   marks?: Mark[];
+  /** ?highlight=点名的标签/系列:被点名的保色,其余落家族灰阶(单点信号) */
+  highlight?: Set<string>;
 }
 
 // 文字宽度:与内嵌 Inter 子集同源的 advance 表,宽度 = fs × Σ(advance/em)。

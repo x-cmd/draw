@@ -1,7 +1,7 @@
 // 水平柱状图:标签左侧、条向右延伸、数值在条尾、竖向网格。排行/长标签场景。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
+import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 
 export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const { width, version, skin } = o;
@@ -57,7 +57,11 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
       `M${r2(x0)} ${r2(y)}H${r2(x1 - m)}Q${r2(x1)} ${r2(y)} ${r2(x1)} ${r2(y + m)}` +
       `V${r2(y + barH - m)}Q${r2(x1)} ${r2(y + barH)} ${r2(x1 - m)} ${r2(y + barH)}H${r2(x0)}Z`;
     const tip = o.interactive ? ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"` : '';
-    parts.push(`<path d="${path}" fill="url(#dg-bar)"${tip}/>`);
+    // 每条的取色:highlight 未点名 → 家族灰;显式色(槽位/hex)→ colorRef;缺省 → 家族渐变
+    const fill = o.highlight && !o.highlight.has(d.label)
+      ? grayVar(i)
+      : colorRef(d.color, 'url(#dg-bar)');
+    parts.push(`<path d="${path}" fill="${fill}"${tip}/>`);
     parts.push(`<text x="${r2(pad + labelW)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(d.label, cap))}</text>`);
     if (d.value > 0 && (num === 'all' || (num === 'peak' && isPeak))) { // 零值不标(标注克制)
       parts.push(`<text x="${r2(x1 + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="${isPeak ? 13 : 11}" ${isPeak ? 'font-weight="600" fill="' + 'var(--d-ink)' + '"' : 'fill="' + 'var(--d-text)' + '"'} style="${TAB}">${fmtNum(d.value)}</text>`);

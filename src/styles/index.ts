@@ -121,9 +121,11 @@ export function resolveSkin(type: ChartTemplate, family: string | null, scheme: 
   const [a, b = a] = variant.series;
   return {
     scheme, series: padSeries(variant.series, variant.overflow), ramp: variant.ramp ?? [a, b],
-    rules: variant.rules, neutrals: variant.neutrals, ...(variant.size ? { size: variant.size } : {}),
+    rules: variant.rules, neutrals: variant.neutrals,
+    ...(variant.roles ? { roles: variant.roles } : {}),
+    ...(variant.size ? { size: variant.size } : {}),
   };
 }
 
 
-export { type Skin, type Scheme, type Variant } from './types.js';
+export { type Skin, type Scheme, type Variant, type Role, ROLES, isSlot } from './types.js';

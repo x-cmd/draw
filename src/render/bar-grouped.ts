@@ -1,7 +1,7 @@
 // 分组并排柱(多系列):≤6 系列主题色板循环,顶部图例,数值入柱;evil 变体 = 规范 bar-1 几何。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands, markPoints, marksLayer } from './svg.js';
+import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands, markPoints, marksLayer } from './svg.js';
 import { yTickInset, type GeoMeasure } from './measure.js';
 
 // 规范 bar-1 实测几何(960×520):left 76、右留 50、顶 94(0.181h)、底 448(0.862h)、X 标签 480
@@ -24,7 +24,10 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   const { version, skin } = o;
   const rules = skin.rules;
   const k = spec.series.length;
-  const colors = spec.series.map((_, i) => sVar(i % skin.series.length));
+  // 每列取色:highlight 未点名 → 家族灰;显式色(槽位/hex)→ colorRef;缺省 → 位置色
+  const colors = spec.series.map((s, i) =>
+    o.highlight && !o.highlight.has(s.name) ? grayVar(i) : colorRef(s.color, sVar(i % skin.series.length)),
+  );
   const n = spec.labels.length;
   const gMax = Math.max(...spec.series.flatMap((s) => s.values));
   const [peakS, peakP] = findPeak(spec.series);
