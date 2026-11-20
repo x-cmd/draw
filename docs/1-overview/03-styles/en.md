@@ -26,16 +26,16 @@ Each chart has its own default style and available `t=` list. See dedicated arti
 
 | chart | default `t=` | other available | dedicated article |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [pie](../../2-data-charts/01-pie/en.md) |
-| `bar` | `evil` | — | [bar](../../2-data-charts/02-bar/en.md) |
-| `hbar` | `evil` | — | [hbar](../../2-data-charts/03-hbar/en.md) |
-| `line` | `evil` | — | [line](../../2-data-charts/04-line/en.md) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` `macaron` `wabi-sabi` `primer` | [pie](../../2-data-charts/01-pie/en.md) |
+| `bar` | `evil` | `macaron` `wabi-sabi` `primer` | [bar](../../2-data-charts/02-bar/en.md) |
+| `hbar` | `evil` | `macaron` `wabi-sabi` `primer` | [hbar](../../2-data-charts/03-hbar/en.md) |
+| `line` | `evil` | `macaron` `wabi-sabi` `primer` | [line](../../2-data-charts/04-line/en.md) |
 | `area` | `evil` | — | [area](../../2-data-charts/05-area/en.md) |
 | `radar` | `evil` | — | [radar](../../2-data-charts/06-radar/en.md) |
 | `gauge` | default has color change | — | [gauge](../../2-data-charts/07-gauge/en.md) |
 | `scatter` | `evil` | — | [scatter](../../2-data-charts/08-scatter/en.md) |
 | `combo` | `evil` | — | [combo](../../2-data-charts/09-combo/en.md) |
-| `sankey` | `evil` | — | [sankey](../../3-relations/01-sankey/en.md) |
+| `sankey` | `evil` | `macaron` `wabi-sabi` `primer` | [sankey](../../3-relations/01-sankey/en.md) |
 | `butterfly` | `base` (clean: no track, no vertical lines) | `track` (adds the track) `grid` (adds the tick lines) `scale` (both) | [butterfly](../../2-data-charts/11-butterfly/en.md) |
 | `calendar` | `base` (Apple-like: white card, hairline rules, today in a red disc) | `mono` (greyscale, for print) | [calendar](../../2-data-charts/12-calendar/en.md) |
 | `qr` | default black-on-white | `invert=1` flips | [qr](../../7-infographics/01-qr/en.md) |
@@ -52,6 +52,11 @@ Each chart has its own default style and available `t=` list. See dedicated arti
 | `market-mono` | grayscale by share depth | business reports, formal |
 | `progress` | dotted progress ring, center percentage | surveys, polls |
 | `revenue` | diagonal gradient, right legend | revenue analysis, colorful |
+| `macaron` | pastel candy colors, warm cream card, big rounded corners, no gridlines | consumer apps, food & drink, kids, onboarding |
+| `wabi-sabi` | earth tones — moss/bark/clay/sand, lime-plaster card, near-square corners | craft, interiors, slow living, food brands |
+| `primer` | GitHub Primer functional accents, transparent canvas, hairline solid grid | READMEs, issues, PRs — anything embedded in github.com |
+
+> `macaron` / `wabi-sabi` / `primer` are **cross-chart skins**: one family name shares palette and neutrals (ink/card/grid) across pie/bar/hbar/line, with a matching dark set; architecture diagrams (`/draw/arch2`, `/draw/cloud`) take the same `t=` too. Palette source: [x-cmd/color](https://www.x-cmd.com/color/). A chart without that family silently falls back to its default (no error).
 
 ---
 

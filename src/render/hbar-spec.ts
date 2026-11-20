@@ -3,7 +3,7 @@
 import { ApiError } from '../specs/index.js';
 import type { ChartSpec, MultiSpec, ChartInput } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, sVar, textW, trunc, type RenderOpts, svgDoc } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, onVar, r2, sVar, textW, trunc, type RenderOpts, svgDoc } from './svg.js';
 import { fitCut } from './measure.js';
 import { renderHBar } from './hbar.js';
 
@@ -96,11 +96,12 @@ export function renderHbarOpendata(spec: ChartSpec, o: RenderOpts): string {
     const y = top + i * pitch;
     const w = (plotW * d.value) / yMax;
     parts.push(`<text x="${r2(labelEnd)}" y="${r2(y + pitch * 0.36)}" text-anchor="end" font-size="14" fill="var(--d-muted)">${esc(trunc(d.label, lblCut))}</text>`);
-    parts.push(`<rect x="${x}" y="${r2(y)}" width="${r2(w)}" height="${r2(barH)}" rx="3" fill="${sVar(i % skin.series.length)}"${tipOf(o, `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}/>`);
-    // 数值内标白字;放不下则外置墨色
+    parts.push(`<rect x="${x}" y="${r2(y)}" width="${r2(w)}" height="${r2(barH)}" rx="${skin.rules.barCorner || 3}" fill="${sVar(i % skin.series.length)}"${tipOf(o, `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}/>`);
+    // 数值内标:字色按系列色亮度取(on-s)—— 深色系上是白字(与原行为一致),
+    // macaron 粉彩上是墨字(白字 1.4:1 读不了);放不下则外置墨色
     const text = fmtFull(d.value);
     if (textW(text, 11) + 14 <= w) {
-      parts.push(`<text x="${r2(x + w - 8)}" y="${r2(y + barH * 0.68)}" text-anchor="end" font-size="11" font-weight="700" fill="#FFFFFF" style="${TAB}">${text}</text>`);
+      parts.push(`<text x="${r2(x + w - 8)}" y="${r2(y + barH * 0.68)}" text-anchor="end" font-size="11" font-weight="700" fill="${onVar(i % skin.series.length)}" style="${TAB}">${text}</text>`);
     } else {
       parts.push(`<text x="${r2(x + w + 8)}" y="${r2(y + barH * 0.68)}" font-size="11" font-weight="700" fill="var(--d-ink)" style="${TAB}">${text}</text>`);
     }

@@ -26,16 +26,16 @@ x-json-ld:
 
 | 图表 | 默认 `t=` | 其他可选 | 专门文章 |
 | --- | --- | --- | --- |
-| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` | [pie](../../2-data-charts/01-pie/cn.md) |
-| `bar` | `evil` | — | [bar](../../2-data-charts/02-bar/cn.md) |
-| `hbar` | `evil` | — | [hbar](../../2-data-charts/03-hbar/cn.md) |
-| `line` | `evil` | — | [line](../../2-data-charts/04-line/cn.md) |
+| `pie` | `opendata` | `evil` `evil-mono` `market-mono` `progress` `revenue` `macaron` `wabi-sabi` `primer` | [pie](../../2-data-charts/01-pie/cn.md) |
+| `bar` | `evil` | `macaron` `wabi-sabi` `primer` | [bar](../../2-data-charts/02-bar/cn.md) |
+| `hbar` | `evil` | `macaron` `wabi-sabi` `primer` | [hbar](../../2-data-charts/03-hbar/cn.md) |
+| `line` | `evil` | `macaron` `wabi-sabi` `primer` | [line](../../2-data-charts/04-line/cn.md) |
 | `area` | `evil` | — | [area](../../2-data-charts/05-area/cn.md) |
 | `radar` | `evil` | — | [radar](../../2-data-charts/06-radar/cn.md) |
 | `gauge` | 默认带颜色变化 | — | [gauge](../../2-data-charts/07-gauge/cn.md) |
 | `scatter` | `evil` | — | [scatter](../../2-data-charts/08-scatter/cn.md) |
 | `combo` | `evil` | — | [combo](../../2-data-charts/09-combo/cn.md) |
-| `sankey` | `evil` | — | [sankey](../../3-relations/01-sankey/cn.md) |
+| `sankey` | `evil` | `macaron` `wabi-sabi` `primer` | [sankey](../../3-relations/01-sankey/cn.md) |
 | `butterfly` | `base`(干净:无底纹、无竖线) | `track`(加底纹)`grid`(加竖线刻度)`scale`(两个都加) | [butterfly](../../2-data-charts/11-butterfly/cn.md) |
 | `calendar` | `base`(苹果风:白底、细线、今天是红底白字) | `mono`(墨水风,适合印) | [calendar](../../2-data-charts/12-calendar/cn.md) |
 | `qr` | 默认黑底白图案 | `invert=1` 反色 | [qr](../../7-infographics/01-qr/cn.md) |
@@ -52,6 +52,11 @@ x-json-ld:
 | `market-mono` | 灰阶按份额深浅 | 商业报告、正式场合 |
 | `progress` | 点状进度环、环心百分比 | 调研、调查、投票 |
 | `revenue` | 对角渐变、右图例 | 营收分析、多色场景 |
+| `macaron` | 粉彩糖果色、暖白奶油卡、大圆角、无网格 | 消费级应用、餐饮、童品、引导页 |
+| `wabi-sabi` | 苔/树皮/陶土/沙的土色、石灰墙卡、近直角 | 手作、室内、慢生活、食品品牌 |
+| `primer` | GitHub Primer 功能八色、透明底、细实线网格 | README、issue、PR —— 嵌在 github.com 里的一切 |
+
+> `macaron` / `wabi-sabi` / `primer` 是**跨图表皮肤**：同一个家族名在 pie/bar/hbar/line 上共享色板与中性色（墨/卡底/网格），暗色自动翻转对应的一套；架构图（`/draw/arch2`、`/draw/cloud`）也吃这三个 `t=`。色板数据源：[x-cmd/color](https://www.x-cmd.com/color/)。图表未做该家族时静默回退默认（不报错）。
 
 ---
 

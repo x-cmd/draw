@@ -1,6 +1,7 @@
 // 折线图风格变体(规范:折线图 1-5)。默认 = shadcn(规范第 1 个)。
-import { duo, makeVariant, type Variant } from './types.js';
+import { duo, makeVariant, type Rules, type Variant } from './types.js';
 import { C_shadcn, C_evil, C_evilGlow, C_evilMono, C_openLine } from './common.js';
+import { MACARON, WABI_SABI, PRIMER, type FamilySkin } from './skins.js';
 
 // Evil 系策略:亮色用深色、暗色用亮色(规范 line-2 实测)
 const evilSeries = [
@@ -96,4 +97,13 @@ export const LINE_VARIANTS: Variant[] = [
       num: 'none',
     },
   }),
+  // 跨图种皮肤(#133)。折线上的家族差异:
+  //   wabi 端标系列名(编辑感,替代图例);primer 无点细线(引 GitHub insights 的味)
+  ...([
+    [MACARON, {}],
+    [WABI_SABI, { endLabels: true, legend: 'none' }],
+    [PRIMER, { lineWidth: 2, points: 'none', legend: 'top-left' }],
+  ] as [FamilySkin, Partial<Rules>][]).map(
+    ([s, rules]) => makeVariant({ ...s, rules: { ...s.rules, ...rules } }),
+  ),
 ];

@@ -1,6 +1,7 @@
 // 水平柱(base 待设计补充;规范款:hbar-1 opendata、hbar-2/3 xcmd、hbar-4 rank)。
 import { duo, makeVariant, type Variant } from './types.js';
 import { C_shadcn, C_openHbar, C_xcmd, C_scoreHbar } from './common.js';
+import { MACARON, WABI_SABI, PRIMER } from './skins.js';
 
 export const HBAR_VARIANTS: Variant[] = [
   makeVariant({
@@ -64,4 +65,6 @@ export const HBAR_VARIANTS: Variant[] = [
       num: 'none',
     },
   }),
+  // 跨图种皮肤(#133):plain 模式(缺省)—— macaron 粉彩上放内标白字读不了,数值一律外标
+  ...([MACARON, WABI_SABI, PRIMER] as const).map((s) => makeVariant(s)),
 ];

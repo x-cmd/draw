@@ -18,6 +18,7 @@ import {
 import { gridLayout, labelGaps, type LayoutEngine } from './layout.js';
 import { routeEdges, type RoutingCtx, type RoutingEngine } from './route.js';
 import { resolveSkin } from '../styles/index.js';
+import { card } from '../theme.js';
 import { clampInt, dirParam, schemeParam, type DrawResult } from './query.js';
 import { esc, r2, roundedPath, svgDoc, textW, trunc} from './svg.js';
 import { iconOf } from './icons.js';
@@ -1079,9 +1080,12 @@ export function renderArchCore(o: ArchOpts): DrawResult {
     ? `<text x="${PAD}" y="${PAD + 16}" font-size="19" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(o.title)}</text>`
     : '';
   const bColors = boundaryColors(o.boundaries, types);
-  const paperSvg = o.paper
+  // 皮肤带卡(macaron 暖白/侘寂石灰墙)→ 画卡底;primer 等透明皮肤(prime 语义是
+  // 融入宿主页)不画 —— 架构图从此也吃 ?t= 的 canvas 规则(#133 架构图多风格探索)
+  const cardSvg = o.skin.rules.canvas === 'card' ? card(width, height) : '';
+  const paperSvg = cardSvg + (o.paper
     ? `<rect x="0" y="0" width="${r2(width)}" height="${r2(height)}" fill="url(#am-paper)"/>`
-    : '';
+    : '');
   const body = iStyle + DEFS
     + drawBoundariesV2(o.boundaries, bboxes, o.interactive, bColors, o.boundaryStyle)
     + drawRoutesV2(routed, o.interactive, types)

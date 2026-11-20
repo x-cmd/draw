@@ -394,7 +394,9 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
           x = pad;
           y += 24;
         }
-        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(it.row)}"/>`);
+        parts.push(rules.legendShape === 'circle'
+          ? `<circle cx="${r2(x + 4.5)}" cy="${r2(y - 3.5)}" r="4.5" fill="${fillOf(it.row)}"/>`
+          : `<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(it.row)}"/>`);
         parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(it.name)}</text>`);
         x += it.w;
       }
@@ -407,7 +409,10 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     const firstY = legendTop + (legendAvail - rowStep * (rows.length - 1)) / 2;
     rows.forEach((row, i) => {
       const y = firstY + i * rowStep;
-      parts.push(`<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${fillOf(row)}"/>`);
+      // 图例形状跟皮肤(macaron 的圆点);缺省方块与原行为一致
+      parts.push(rules.legendShape === 'circle'
+        ? `<circle cx="${r2(lx + 5)}" cy="${r2(y - 3)}" r="5" fill="${fillOf(row)}"/>`
+        : `<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${fillOf(row)}"/>`);
       parts.push(`<text x="${r2(lx + 16)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(trunc(row.label, 14))}</text>`);
       if (rules.legendValue) {
         parts.push(`<text x="${r2(width - pad)}" y="${r2(y)}" text-anchor="end" font-size="12" font-weight="500" fill="var(--d-ink)" style="${TAB}">${fmtFull(row.value)}</text>`);

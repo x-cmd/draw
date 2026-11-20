@@ -1,6 +1,7 @@
 // 柱状图(base 待设计补充;规范款:bar-1 evil 分组柱、bar-2 grid 单元格柱)。
 import { duo, makeVariant, type Variant } from './types.js';
 import { C_shadcn, C_barEvil, C_gridMono, C_sankey } from './common.js';
+import { MACARON, WABI_SABI, PRIMER } from './skins.js';
 
 export const BAR_VARIANTS: Variant[] = [
   makeVariant({
@@ -51,4 +52,6 @@ export const BAR_VARIANTS: Variant[] = [
       legend: 'none', num: 'none',
     },
   }),
+  // 跨图种皮肤(#133);primer 的单色 ramp(不做渐变)在 skins.ts 里钉死
+  ...([MACARON, WABI_SABI, PRIMER] as const).map((s) => makeVariant(s)),
 ];

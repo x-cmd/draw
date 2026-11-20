@@ -3,6 +3,7 @@
 // pipeline=规范 sankey-3 Revenue Pipeline(双渐变流带+中央总额面板)。
 import { duo, makeVariant, type Variant } from './types.js';
 import { C_sankey, C_sankeyGradient, C_sankeyPipeline } from './common.js';
+import { MACARON, WABI_SABI, PRIMER } from './skins.js';
 
 const S = (keys: string[]) => keys.map((c) => duo(c));
 
@@ -28,4 +29,9 @@ export const SANKEY_VARIANTS: Variant[] = [
     size: [760, 400],
     rules: { canvas: 'plain', sankeyMode: 'pipeline', num: 'none' },
   }),
+  // 跨图种皮肤(#133)。桑基渲染恒透明(canvas 规则对它无效),这三条主要喂给
+  // arch2/cloud —— 它们 resolveSkin('sankey') 取皮肤,架构图由此换肤
+  ...([MACARON, WABI_SABI, PRIMER] as const).map((s) =>
+    makeVariant({ ...s, rules: { ...s.rules, sankeyMode: 'basic', num: 'none' } }),
+  ),
 ];

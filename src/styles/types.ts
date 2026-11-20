@@ -170,6 +170,9 @@ export interface VariantInput {
   neutrals?: Partial<Neutrals>;
   /** 单系列主渐变(柱/面积),默认由 series[0]/series[1] 推导 */
   ramp?: [Duo, Duo];
+  /** 家族溢出档:系列数超出色板时的补位色(全局 Tailwind 表会击穿粉彩/土色家族);
+   *  缺省回落全局表(macaron=同色系加深掺灰、wabi=沙→深陶、primer=灰阶明度步进) */
+  overflow?: Duo[];
   /** 默认画布(设计变体 = 规范 SVG 的 viewBox;不填用模板默认) */
   size?: [number, number];
 }
@@ -182,6 +185,7 @@ export interface Variant {
   rules: Rules;
   neutrals: Neutrals;
   ramp: [Duo, Duo];
+  overflow?: Duo[];
   size?: [number, number];
 }
 
@@ -190,7 +194,10 @@ export function makeVariant(v: VariantInput): Variant {
   const neutrals = { ...NEUTRALS, ...v.neutrals };
   const [a, b = a] = v.series;
   const ramp = v.ramp ?? [a, b];
-  return { family: v.family, label: v.label, series: v.series, rules, neutrals, ramp, ...(v.size ? { size: v.size } : {}) };
+  return {
+    family: v.family, label: v.label, series: v.series, rules, neutrals, ramp,
+    ...(v.overflow ? { overflow: v.overflow } : {}), ...(v.size ? { size: v.size } : {}),
+  };
 }
 
 /** 渲染期皮肤:变体 + 明暗模式 → 渲染器直接消费 */

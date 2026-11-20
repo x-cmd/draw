@@ -2,6 +2,7 @@
 // reliability(饼图 6)语义上是仪表盘 → 放 src/styles/gauge.ts。
 import { duo, makeVariant, type Variant } from './types.js';
 import { C_openPie, C_evilPie, C_marketMono, C_progress, C_revenue } from './common.js';
+import { MACARON, WABI_SABI, PRIMER } from './skins.js';
 
 export const PIE_VARIANTS: Variant[] = [
   // 饼图 1 · OpenData:全部标签圈外(白描边),编辑式大标题,细白缝,无图例
@@ -161,4 +162,9 @@ export const PIE_VARIANTS: Variant[] = [
       num: 'none',
     },
   }),
+  // 跨图种皮肤(#133)。三家都走「图例外标」—— 粉彩/土色上放内标白字读不了;
+  // 右侧图例带数值,信息量补回
+  ...([MACARON, WABI_SABI, PRIMER] as const).map((s) =>
+    makeVariant({ ...s, rules: { ...s.rules, legend: 'right', legendValue: true } }),
+  ),
 ];

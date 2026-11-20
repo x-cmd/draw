@@ -75,13 +75,16 @@ const isGray = (hex: string): boolean => {
   const n = parseInt(m[1], 16);
   return (n >> 16) === ((n >> 8) & 0xff) && ((n >> 8) & 0xff) === (n & 0xff);
 };
-function padSeries(series: Duo[]): Duo[] {
+function padSeries(series: Duo[], overflow?: Duo[]): Duo[] {
   const MIN = 10; // 饼图按扇区着色:9 类 + Other = 10 色,末扇与首扇相邻不得同色
   if (series.length >= MIN) return series;
   const have = new Set(series.map((d) => d.light));
   const mono = series.every((d) => isGray(d.light) && isGray(d.dark));
+  // 家族溢出档优先:全局表是亮 Tailwind 色,粉彩(macaron)/土色(wabi-sabi)家族
+  // 被它击穿 —— 第 6 个扇区突然鲜橙,气质全坏(#133)。家族没配再回落全局表
+  const pool = overflow ?? (mono ? MONO_OVERFLOW : OVERFLOW_SERIES);
   const out = [...series];
-  for (const d of mono ? MONO_OVERFLOW : OVERFLOW_SERIES) {
+  for (const d of pool) {
     if (out.length >= MIN) break;
     if (!have.has(d.light)) {
       out.push(d);
@@ -109,11 +112,17 @@ export function resolveSkin(type: ChartTemplate, family: string | null, scheme: 
     } else if (FAMILIES.includes(family)) {
       // 家族存在但该图种未做 → 静默回退默认(约定)
     } else {
-      throw new ApiError(400, `"t" must be one of: ${FAMILIES.join(', ')}. Got: ${JSON.stringify(family)}`);
+      // 400 清单只列本图种的家族:全图种并集会把 pie 能用的 fund 混进 hbar 的提示里,
+      // 用户照着清单试还是踩静默回退(#133)。本图种清单 = 拼错即报错的有效集合
+      const list = [...new Set(variants.map((v) => v.family))];
+      throw new ApiError(400, `"t" must be one of: ${list.join(', ')}. Got: ${JSON.stringify(family)}`);
     }
   }
   const [a, b = a] = variant.series;
-  return { scheme, series: padSeries(variant.series), ramp: variant.ramp ?? [a, b], rules: variant.rules, neutrals: variant.neutrals, ...(variant.size ? { size: variant.size } : {}) };
+  return {
+    scheme, series: padSeries(variant.series, variant.overflow), ramp: variant.ramp ?? [a, b],
+    rules: variant.rules, neutrals: variant.neutrals, ...(variant.size ? { size: variant.size } : {}),
+  };
 }
 
 

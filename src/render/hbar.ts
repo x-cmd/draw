@@ -29,14 +29,15 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const xMax = ticks[ticks.length - 1];
   const x = (v: number): number => left + (v / xMax) * (right - left);
 
-  // 卡片垫底(标题在卡片之上 —— 顺序反了,标题会被卡片盖住)
-  const bg = card(width, height);
+  // 卡片垫底(标题在卡片之上 —— 顺序反了,标题会被卡片盖住);
+  // canvas=plain(primer 要透明融入 README 页面)不画卡
+  const bg = card(width, height, skin.rules.canvas === 'plain');
   const parts: string[] = [];
 
-  // 竖向网格 + 底部刻度
+  // 竖向网格 + 底部刻度(macaron/wabi 的 grid:'none' 在此生效 —— 软就是信息,不要线)
   for (const t of ticks) {
     const gx = r2(x(t));
-    if (t > 0) parts.push(`<line x1="${gx}" y1="${contentTop}" x2="${gx}" y2="${bottom}" stroke="var(--d-grid)" stroke-width="1"/>`);
+    if (t > 0 && skin.rules.grid !== 'none') parts.push(`<line x1="${gx}" y1="${contentTop}" x2="${gx}" y2="${bottom}" stroke="var(--d-grid)" stroke-width="1"/>`);
     parts.push(`<text x="${gx}" y="${r2(bottom + 16)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   parts.push(`<line x1="${r2(left)}" y1="${contentTop}" x2="${r2(left)}" y2="${bottom}" stroke="var(--d-baseline)" stroke-width="1"/>`);
@@ -48,7 +49,8 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
     const y = contentTop + step * i + (step - barH) / 2;
     const x0 = left;
     const x1 = x(d.value);
-    const m = Math.min(4, barH / 2, x1 - x0);
+    // 圆角半径跟皮肤(barCorner):macaron 8 的大圆角,缺省 4 与原行为一致
+    const m = Math.min(skin.rules.barCorner || 4, barH / 2, x1 - x0);
     const isPeak = i === peakIdx;
     // 仅右端(leading端)圆角
     const path =
