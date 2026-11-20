@@ -1,0 +1,59 @@
+id: x-draw-9-showcases-15-frontier-harness
+
+data:
+  - name:
+      en: FrontierHarness agent benchmark
+      cn: FrontierHarness Agent 实测
+    qa:
+      - id: tied
+        question:
+          en: "Which AI coding agent wins the benchmark?"
+          cn: "这场实测里哪个 AI 编程 Agent 赢了?"
+        answer:
+          en: >
+            ZCode has the highest pooled pass rate at 61.94%, but the mainstream agents are
+            statistically tied — the top four sit within 1.94 percentage points and each agent's
+            95% confidence interval is about ±2.7 points. Exo is last at 50.65%.
+          cn: >
+            ZCode 以 61.94% 的池化通过率排第一,但主流 Agent 在统计意义上几乎打平 —— 前四名差距
+            不到 1.94 个百分点,而每个 Agent 的 95% 置信区间约为 ±2.7 个百分点。Exo 以 50.65%
+            垫底。
+        confidence: 9
+        reference:
+          - docs/9-showcases/15-frontier-harness/en.md
+          - docs/9-showcases/15-frontier-harness/cn.md
+      - id: cost
+        question:
+          en: "Should I spend on a better agent or a better model?"
+          cn: "钱该花在更好的 Agent 上,还是更好的模型上?"
+        answer:
+          en: >
+            The model sets the cost tier. A two-factor variance decomposition on log cost
+            attributes 93% of cost variance to the model and only 2% to the agent: average cost
+            differs 6.3x between models versus 1.65x between agents. On a fixed model, though, the
+            agent can still move per-task cost by 1.8–4.6x.
+          cn: >
+            模型决定成本档位。对对数口径的单任务成本做两因素方差分解,模型解释约 93% 的成本波动,
+            Agent 只占 2%:模型之间平均成本相差 6.3 倍,Agent 之间只有 1.65 倍。但固定模型后,
+            换 Agent 仍能让单任务成本相差 1.8～4.6 倍。
+        confidence: 9
+        reference:
+          - docs/9-showcases/15-frontier-harness/en.md
+          - docs/9-showcases/15-frontier-harness/cn.md
+      - id: default-pick
+        question:
+          en: "Which agent is the safest default pick?"
+          cn: "最省心的默认 Agent 是哪个?"
+        answer:
+          en: >
+            Codex CLI. It ranks 3rd or 4th on every one of the five models, has the lowest pooled
+            timeout rate (7.18%) and the lowest cost per pass overall ($0.935). Claude Code is a
+            specialist instead — its rank swings from 2nd to 17th depending on the model.
+          cn: >
+            Codex CLI。它在五个模型上的排名始终在第 3、4 名之间,池化超时率 7.18% 全场最低,
+            每通过成本 0.935 美元也是全场最低。Claude Code 则是特长型选手 —— 排名随模型从
+            第 2 名漂到第 17 名。
+        confidence: 9
+        reference:
+          - docs/9-showcases/15-frontier-harness/en.md
+          - docs/9-showcases/15-frontier-harness/cn.md
