@@ -1,0 +1,822 @@
+{
+ "_about": "双翼天梯图:NVIDIA 前 100 vs AMD/Intel 前 100(PassMark GPU 榜,2026-11-18)。指数 = 分数 × 0.0836(GTX 1080 Ti = 1000)。",
+ "type": "butterfly-ladder",
+ "title": "NVIDIA vs AMD/Intel · 显卡指数(GTX 1080 Ti = 1000)",
+ "match": "rank",
+ "stripbrand": true,
+ "ticks": [
+  1000,
+  2000,
+  3000
+ ],
+ "left": {
+  "name": "NVIDIA",
+  "items": [
+   {
+    "label": "GeForce RTX 5090 D",
+    "value": 3542
+   },
+   {
+    "label": "GeForce RTX 5090",
+    "value": 3263
+   },
+   {
+    "label": "GeForce RTX 4090",
+    "value": 3178
+   },
+   {
+    "label": "RTX PRO 6000 Blackwell Workstation Edition",
+    "value": 3142
+   },
+   {
+    "label": "GeForce RTX 5080",
+    "value": 2981
+   },
+   {
+    "label": "GeForce RTX 5090 D v2",
+    "value": 2972
+   },
+   {
+    "label": "GeForce RTX 4080",
+    "value": 2880
+   },
+   {
+    "label": "GeForce RTX 4080 SUPER",
+    "value": 2860
+   },
+   {
+    "label": "RTX PRO 4500 Blackwell",
+    "value": 2800
+   },
+   {
+    "label": "RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+    "value": 2713
+   },
+   {
+    "label": "RTX PRO 5000 Blackwell",
+    "value": 2709
+   },
+   {
+    "label": "GeForce RTX 5070 Ti",
+    "value": 2703
+   },
+   {
+    "label": "GeForce RTX 4070 Ti SUPER",
+    "value": 2663
+   },
+   {
+    "label": "GeForce RTX 4070 Ti",
+    "value": 2634
+   },
+   {
+    "label": "RTX 5000 Ada Generation",
+    "value": 2603
+   },
+   {
+    "label": "GeForce RTX 4090 D",
+    "value": 2579
+   },
+   {
+    "label": "GeForce RTX 4070 SUPER",
+    "value": 2503
+   },
+   {
+    "label": "GeForce RTX 3090 Ti",
+    "value": 2440
+   },
+   {
+    "label": "GeForce RTX 5070",
+    "value": 2398
+   },
+   {
+    "label": "GeForce RTX 5090 Laptop GPU",
+    "value": 2378
+   },
+   {
+    "label": "RTX 6000 Ada Generation",
+    "value": 2378
+   },
+   {
+    "label": "RTX PRO 5000 72GB Blackwell",
+    "value": 2360
+   },
+   {
+    "label": "RTX 4500 Ada Generation",
+    "value": 2334
+   },
+   {
+    "label": "RTX PRO 4000 Blackwell",
+    "value": 2285
+   },
+   {
+    "label": "GeForce RTX 4090 Laptop GPU",
+    "value": 2259
+   },
+   {
+    "label": "GeForce RTX 4070",
+    "value": 2245
+   },
+   {
+    "label": "GeForce RTX 3080 Ti",
+    "value": 2234
+   },
+   {
+    "label": "GeForce RTX 3080 12GB",
+    "value": 2220
+   },
+   {
+    "label": "GeForce RTX 3090",
+    "value": 2212
+   },
+   {
+    "label": "GeForce RTX 5080 Laptop GPU",
+    "value": 2204
+   },
+   {
+    "label": "RTX PRO 6000 Blackwell Server Edition",
+    "value": 2139
+   },
+   {
+    "label": "RTX 5880 Ada Generation",
+    "value": 2098
+   },
+   {
+    "label": "GeForce RTX 3080",
+    "value": 2087
+   },
+   {
+    "label": "GeForce RTX 4080 Laptop GPU",
+    "value": 2069
+   },
+   {
+    "label": "RTX PRO 5000 Blackwell Generation Laptop GPU",
+    "value": 2030
+   },
+   {
+    "label": "RTX PRO 4000 Blackwell SFF Edition",
+    "value": 1983
+   },
+   {
+    "label": "RTX 4000 Ada Generation",
+    "value": 1976
+   },
+   {
+    "label": "GeForce RTX 3070 Ti",
+    "value": 1936
+   },
+   {
+    "label": "RTX 5000 Ada Generation Laptop GPU",
+    "value": 1934
+   },
+   {
+    "label": "RTX 3500 Ada Generation Embedded GPU",
+    "value": 1927
+   },
+   {
+    "label": "RTX 5000 Ada Generation Embedded GPU",
+    "value": 1924
+   },
+   {
+    "label": "RTX A5000",
+    "value": 1908
+   },
+   {
+    "label": "RTX PRO 4000 Blackwell Generation Laptop GPU",
+    "value": 1905
+   },
+   {
+    "label": "RTX A6000",
+    "value": 1894
+   },
+   {
+    "label": "GeForce RTX 5060 Ti 16GB",
+    "value": 1892
+   },
+   {
+    "label": "GeForce RTX 4060 Ti",
+    "value": 1889
+   },
+   {
+    "label": "GeForce RTX 5070 Ti Laptop GPU",
+    "value": 1886
+   },
+   {
+    "label": "GeForce RTX 4060 Ti 16GB",
+    "value": 1883
+   },
+   {
+    "label": "GeForce RTX 3070",
+    "value": 1844
+   },
+   {
+    "label": "RTX 4000 Ada Generation Laptop GPU",
+    "value": 1820
+   },
+   {
+    "label": "GeForce RTX 5060 Ti 8GB",
+    "value": 1820
+   },
+   {
+    "label": "GeForce RTX 2080 Ti",
+    "value": 1789
+   },
+   {
+    "label": "RTX A5500",
+    "value": 1774
+   },
+   {
+    "label": "RTX PRO 3000 Blackwell Generation Laptop GPU",
+    "value": 1748
+   },
+   {
+    "label": "RTX A4500",
+    "value": 1724
+   },
+   {
+    "label": "RTX 4000 SFF Ada Generation",
+    "value": 1724
+   },
+   {
+    "label": "GeForce RTX 5060",
+    "value": 1720
+   },
+   {
+    "label": "RTX PRO 2000 Blackwell",
+    "value": 1703
+   },
+   {
+    "label": "GeForce RTX 3060 Ti",
+    "value": 1689
+   },
+   {
+    "label": "TITAN RTX",
+    "value": 1657
+   },
+   {
+    "label": "RTX 3500 Ada Generation Laptop GPU",
+    "value": 1640
+   },
+   {
+    "label": "Quadro RTX 8000",
+    "value": 1634
+   },
+   {
+    "label": "GeForce RTX 4060",
+    "value": 1628
+   },
+   {
+    "label": "GeForce RTX 4070 Laptop GPU",
+    "value": 1627
+   },
+   {
+    "label": "GeForce RTX 2080 SUPER",
+    "value": 1621
+   },
+   {
+    "label": "TITAN V",
+    "value": 1613
+   },
+   {
+    "label": "RTX A4000",
+    "value": 1612
+   },
+   {
+    "label": "GeForce RTX 5070 Laptop GPU",
+    "value": 1603
+   },
+   {
+    "label": "GeForce RTX 3080 Ti Laptop GPU",
+    "value": 1570
+   },
+   {
+    "label": "NVIDIA TITAN Xp",
+    "value": 1568
+   },
+   {
+    "label": "GeForce GTX 1080 Ti",
+    "value": 1555
+   },
+   {
+    "label": "GeForce RTX 2080",
+    "value": 1551
+   },
+   {
+    "label": "Quadro GV100",
+    "value": 1550
+   },
+   {
+    "label": "TITAN Xp COLLECTORS EDITION",
+    "value": 1549
+   },
+   {
+    "label": "GeForce RTX 2070 SUPER",
+    "value": 1515
+   },
+   {
+    "label": "Quadro RTX 6000",
+    "value": 1483
+   },
+   {
+    "label": "NVIDIA A10G",
+    "value": 1476
+   },
+   {
+    "label": "GeForce RTX 4060 Laptop GPU",
+    "value": 1446
+   },
+   {
+    "label": "RTX A5500 Laptop GPU",
+    "value": 1444
+   },
+   {
+    "label": "GeForce RTX 3070 Ti Laptop GPU",
+    "value": 1441
+   },
+   {
+    "label": "RTX 2000 Ada Generation",
+    "value": 1417
+   },
+   {
+    "label": "GeForce RTX 3060",
+    "value": 1410
+   },
+   {
+    "label": "RTX A4500 Laptop GPU",
+    "value": 1405
+   },
+   {
+    "label": "GeForce RTX 5060 Laptop GPU",
+    "value": 1405
+   },
+   {
+    "label": "RTX A4000H",
+    "value": 1402
+   },
+   {
+    "label": "GeForce RTX 5050",
+    "value": 1397
+   },
+   {
+    "label": "GeForce RTX 3060 12GB",
+    "value": 1396
+   },
+   {
+    "label": "GeForce RTX 2060 SUPER",
+    "value": 1375
+   },
+   {
+    "label": "RTX A5000 Laptop GPU",
+    "value": 1374
+   },
+   {
+    "label": "RTX PRO 2000 Blackwell Generation Laptop GPU",
+    "value": 1372
+   },
+   {
+    "label": "RTX Spark N1X",
+    "value": 1354
+   },
+   {
+    "label": "GeForce RTX 2070",
+    "value": 1342
+   },
+   {
+    "label": "RTX 3000 Ada Generation Laptop GPU",
+    "value": 1341
+   },
+   {
+    "label": "GeForce RTX 3080 Laptop GPU",
+    "value": 1338
+   },
+   {
+    "label": "GeForce RTX 2060 12GB",
+    "value": 1330
+   },
+   {
+    "label": "GeForce GTX 1080",
+    "value": 1305
+   },
+   {
+    "label": "RTX 2000E Ada Generation",
+    "value": 1293
+   },
+   {
+    "label": "Quadro P6000",
+    "value": 1288
+   },
+   {
+    "label": "GeForce RTX 3060 8GB",
+    "value": 1273
+   },
+   {
+    "label": "Quadro RTX 5000",
+    "value": 1271
+   }
+  ]
+ },
+ "right": {
+  "name": "AMD/Intel",
+  "items": [
+   {
+    "label": "Radeon RX 7900 XTX",
+    "value": 2631
+   },
+   {
+    "label": "Radeon RX 7900 XT",
+    "value": 2435
+   },
+   {
+    "label": "Radeon RX 6950 XT",
+    "value": 2347
+   },
+   {
+    "label": "Radeon PRO W7900",
+    "value": 2315
+   },
+   {
+    "label": "Radeon AI PRO R9700",
+    "value": 2307
+   },
+   {
+    "label": "Radeon RX 7900 GRE",
+    "value": 2296
+   },
+   {
+    "label": "Radeon PRO W7800",
+    "value": 2264
+   },
+   {
+    "label": "Radeon RX 9070 XT",
+    "value": 2251
+   },
+   {
+    "label": "Radeon RX 6900 XT",
+    "value": 2227
+   },
+   {
+    "label": "Radeon RX 9070",
+    "value": 2121
+   },
+   {
+    "label": "Radeon RX 6800 XT",
+    "value": 2100
+   },
+   {
+    "label": "Radeon RX 7800 XT",
+    "value": 2047
+   },
+   {
+    "label": "Radeon RX 9070 GRE",
+    "value": 1948
+   },
+   {
+    "label": "Radeon PRO W7700",
+    "value": 1908
+   },
+   {
+    "label": "Radeon RX 7700 XT",
+    "value": 1905
+   },
+   {
+    "label": "Radeon RX 7900M",
+    "value": 1859
+   },
+   {
+    "label": "Radeon RX 6800",
+    "value": 1843
+   },
+   {
+    "label": "Radeon RX 6750 XT",
+    "value": 1731
+   },
+   {
+    "label": "Radeon RX 6750 GRE 12GB",
+    "value": 1706
+   },
+   {
+    "label": "Radeon RX 7700",
+    "value": 1697
+   },
+   {
+    "label": "Radeon PRO W6800",
+    "value": 1688
+   },
+   {
+    "label": "Radeon RX 9060 XT 16GB",
+    "value": 1684
+   },
+   {
+    "label": "Radeon 8065S",
+    "value": 1672
+   },
+   {
+    "label": "Radeon RX 9060 XT 8GB",
+    "value": 1648
+   },
+   {
+    "label": "Radeon RX 6700 XT",
+    "value": 1648
+   },
+   {
+    "label": "Radeon RX 9060 XT LP",
+    "value": 1593
+   },
+   {
+    "label": "Radeon RX 6750 GRE 10GB",
+    "value": 1583
+   },
+   {
+    "label": "Radeon RX 6700",
+    "value": 1575
+   },
+   {
+    "label": "Intel Arc Pro B70",
+    "value": 1565
+   },
+   {
+    "label": "Radeon 8060S",
+    "value": 1508
+   },
+   {
+    "label": "Radeon RX 7650 GRE",
+    "value": 1496
+   },
+   {
+    "label": "Radeon RX 9060",
+    "value": 1473
+   },
+   {
+    "label": "Radeon RX 7800M",
+    "value": 1472
+   },
+   {
+    "label": "Radeon RX 6850M XT",
+    "value": 1460
+   },
+   {
+    "label": "Radeon RX 7600 XT",
+    "value": 1452
+   },
+   {
+    "label": "Radeon RX 6650 XT",
+    "value": 1429
+   },
+   {
+    "label": "Radeon RX 5700 XT 50th Anniversary",
+    "value": 1384
+   },
+   {
+    "label": "Radeon 8050S",
+    "value": 1377
+   },
+   {
+    "label": "Radeon PRO W7600",
+    "value": 1377
+   },
+   {
+    "label": "Radeon RX 6600 XT",
+    "value": 1375
+   },
+   {
+    "label": "Radeon RX 7600",
+    "value": 1373
+   },
+   {
+    "label": "Radeon VII",
+    "value": 1352
+   },
+   {
+    "label": "Intel Arc B580",
+    "value": 1346
+   },
+   {
+    "label": "Radeon RX 5700 XT",
+    "value": 1339
+   },
+   {
+    "label": "Radeon RX 7600S",
+    "value": 1307
+   },
+   {
+    "label": "Radeon Pro Vega II",
+    "value": 1306
+   },
+   {
+    "label": "Radeon RX 6800S",
+    "value": 1304
+   },
+   {
+    "label": "Radeon RX 7700S",
+    "value": 1297
+   },
+   {
+    "label": "Radeon RX 6650M",
+    "value": 1274
+   },
+   {
+    "label": "Radeon Pro W5700X",
+    "value": 1269
+   },
+   {
+    "label": "Radeon RX 6600",
+    "value": 1257
+   },
+   {
+    "label": "Radeon PRO W6600",
+    "value": 1252
+   },
+   {
+    "label": "Radeon RX 6700S",
+    "value": 1247
+   },
+   {
+    "label": "Radeon RX 7600M XT",
+    "value": 1242
+   },
+   {
+    "label": "Intel Arc Pro B60",
+    "value": 1219
+   },
+   {
+    "label": "Intel Arc B570",
+    "value": 1189
+   },
+   {
+    "label": "Radeon RX 5700",
+    "value": 1186
+   },
+   {
+    "label": "Radeon Pro W5700",
+    "value": 1181
+   },
+   {
+    "label": "RadeonT RX 6850M XT",
+    "value": 1178
+   },
+   {
+    "label": "Radeon RX 6600 LE",
+    "value": 1162
+   },
+   {
+    "label": "Radeon RX Vega 64",
+    "value": 1156
+   },
+   {
+    "label": "Radeon RX 6600M",
+    "value": 1150
+   },
+   {
+    "label": "Radeon RX 6700M",
+    "value": 1142
+   },
+   {
+    "label": "Radeon Pro VII",
+    "value": 1139
+   },
+   {
+    "label": "Radeon RX 6600S",
+    "value": 1134
+   },
+   {
+    "label": "Intel Arc A770",
+    "value": 1119
+   },
+   {
+    "label": "Radeon RX 5600 XT",
+    "value": 1118
+   },
+   {
+    "label": "Radeon RX 6800M",
+    "value": 1112
+   },
+   {
+    "label": "Radeon PRO W7500",
+    "value": 1105
+   },
+   {
+    "label": "Radeon RX Vega 56",
+    "value": 1079
+   },
+   {
+    "label": "Radeon Pro Vega 64",
+    "value": 1077
+   },
+   {
+    "label": "Intel Arc Pro B50",
+    "value": 1069
+   },
+   {
+    "label": "Radeon Vega Frontier Edition",
+    "value": 1058
+   },
+   {
+    "label": "Intel Arc A750",
+    "value": 1056
+   },
+   {
+    "label": "Radeon Pro WX 8200",
+    "value": 1043
+   },
+   {
+    "label": "Radeon Pro 5700 XT",
+    "value": 1040
+   },
+   {
+    "label": "Radeon RX 5600 OEM",
+    "value": 1029
+   },
+   {
+    "label": "Radeon Pro V520 MxGPU",
+    "value": 1025
+   },
+   {
+    "label": "Intel Arc A580",
+    "value": 1009
+   },
+   {
+    "label": "Radeon Pro Vega 56",
+    "value": 1008
+   },
+   {
+    "label": "Radeon PRO W6600M",
+    "value": 1003
+   },
+   {
+    "label": "Intel Arc A770M",
+    "value": 997
+   },
+   {
+    "label": "Radeon RX 7400",
+    "value": 995
+   },
+   {
+    "label": "Radeon RX 9050",
+    "value": 990
+   },
+   {
+    "label": "Radeon Pro WX 9100",
+    "value": 979
+   },
+   {
+    "label": "Radeon RX 5600",
+    "value": 967
+   },
+   {
+    "label": "Radeon Pro 5700",
+    "value": 958
+   },
+   {
+    "label": "Radeon Pro Vega 48",
+    "value": 929
+   },
+   {
+    "label": "Radeon Pro SSG",
+    "value": 917
+   },
+   {
+    "label": "Radeon RX 7600M",
+    "value": 914
+   },
+   {
+    "label": "Radeon 8040S",
+    "value": 884
+   },
+   {
+    "label": "Intel Arc A730M",
+    "value": 820
+   },
+   {
+    "label": "Intel Arc Pro A60",
+    "value": 819
+   },
+   {
+    "label": "Radeon R9 Fury + Fury X",
+    "value": 814
+   },
+   {
+    "label": "Intel Arc Pro B390 GPU",
+    "value": 809
+   },
+   {
+    "label": "Radeon RX 6550M",
+    "value": 809
+   },
+   {
+    "label": "Radeon RX 6500 XT",
+    "value": 804
+   },
+   {
+    "label": "Radeon R9 Fury",
+    "value": 794
+   },
+   {
+    "label": "Intel Arc GPU",
+    "value": 790
+   },
+   {
+    "label": "Radeon R9 Fury X",
+    "value": 783
+   }
+  ]
+ }
+}

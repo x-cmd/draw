@@ -15,7 +15,7 @@ import type { ButterflySpec, BflySegment } from '../specs/butterfly.js';
 import { sideSegments, sideTotals } from '../specs/butterfly.js';
 import { TAB, card } from '../theme.js';
 import {
-  esc, fmtFull, niceTicks, r2, sVar, svgDoc, textW, topLegend, trunc, type RenderOpts,
+  esc, fmtFull, niceTicks, r2, roundEdgeRect, sVar, svgDoc, textW, topLegend, trunc, type RenderOpts,
 } from './svg.js';
 
 const PAD = 24;
@@ -174,15 +174,19 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
           parts.push(`<rect x="${r2(dir < 0 ? centre - half : centre)}" y="${r2(y)}" width="${r2(half)}" height="${r2(barH)}" rx="4" fill="${TRACK}" fill-opacity="0.35"/>`);
         }
         let acc = 0;
-        for (const seg of segs) {
-          const len = (seg.values[i] ?? 0) / sideMax * half;
-          if (len <= 0) { continue; }
-          const x = dir < 0 ? centre - acc - len : centre + acc;
-          parts.push(
-            `<rect x="${r2(x)}" y="${r2(y)}" width="${r2(len)}" height="${r2(barH)}" rx="4" fill="${seg.color}"/>`,
-          );
-          acc += len;
-        }
+        // 段:自中轴往外堆叠 —— **只有最外端那一圈是圆角** ✓(#130)
+        // 起点贴着中轴、堆叠的中段接缝:直角 ✓(圆了像悬空/像断开 ✗)
+        const posSegs = segs
+          .map((seg) => ({ seg, len: (seg.values[i] ?? 0) / sideMax * half }))
+          .filter((p) => p.len > 0);
+        posSegs.forEach((p, k) => {
+          const x = dir < 0 ? centre - acc - p.len : centre + acc;
+          const d = k === posSegs.length - 1
+            ? roundEdgeRect(x, y, p.len, barH, 4, dir < 0 ? 'left' : 'right')
+            : `M${r2(x)} ${r2(y)}h${r2(p.len)}v${r2(barH)}h${r2(-p.len)}Z`;
+          parts.push(`<path d="${d}" fill="${p.seg.color}"/>`);
+          acc += p.len;
+        });
         // 外端的数值:折线在柱之上,数值得等折线画完再画(否则被线盖住)
         const v = totals[i];
         // 零长度的柱不写数字:那一格什么都没有,写个 "0" 只会把读者的眼睛拉到空处
@@ -313,13 +317,18 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
           parts.push(`<rect x="${r2(x)}" y="${r2(dir < 0 ? centreY - half : centreY)}" width="${r2(barW)}" height="${r2(half)}" rx="4" fill="${TRACK}" fill-opacity="0.35"/>`);
         }
         let acc = 0;
-        for (const seg of segs) {
-          const len = (seg.values[i] ?? 0) / sideMax * half;
-          if (len <= 0) continue;
-          const y = dir < 0 ? centreY - acc - len : centreY + acc;
-          parts.push(`<rect x="${r2(x)}" y="${r2(y)}" width="${r2(barW)}" height="${r2(len)}" rx="4" fill="${seg.color}"/>`);
-          acc += len;
-        }
+        // 同上(#130):只有最外端圆角,起点与中段直角 —— 上下版是竖着长
+        const posSegs = segs
+          .map((seg) => ({ seg, len: (seg.values[i] ?? 0) / sideMax * half }))
+          .filter((p) => p.len > 0);
+        posSegs.forEach((p, k) => {
+          const sy = dir < 0 ? centreY - acc - p.len : centreY + acc;
+          const d = k === posSegs.length - 1
+            ? roundEdgeRect(x, sy, barW, p.len, 4, dir < 0 ? 'top' : 'bottom')
+            : `M${r2(x)} ${r2(sy)}h${r2(barW)}v${r2(p.len)}h${r2(-barW)}Z`;
+          parts.push(`<path d="${d}" fill="${p.seg.color}"/>`);
+          acc += p.len;
+        });
         const v = totals[i];
         // 零长度的柱不写数字(同上)
         if (!(v > 0)) return;

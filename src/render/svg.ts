@@ -458,6 +458,34 @@ export function roundedPath(pts: readonly [number, number][], r = 8): string {
   return d;
 }
 
+/**
+ * 圆角只落在**指定的那一边**的矩形路径(x-cmd-hub/draw#130)。
+ *
+ * 条形图的规矩:**只有条的结束端才圆角** ✓ —— 起点贴着轴,圆了像悬空 ✗;
+ * 堆叠的中段接缝圆了像断成两截 ✗。`<rect rx>` 四角一起圆,说不清这个话,
+ * 所以按边给圆角,其余角是直角。
+ *
+ * @param edge 条往哪个方向长(圆角给那一头):'right' = 往右长,'left' = 往左长 …
+ */
+export function roundEdgeRect(
+  x: number, y: number, w: number, h: number, r: number, edge: 'left' | 'right' | 'top' | 'bottom',
+): string {
+  const rr = Math.max(0, Math.min(r, w / 2, h / 2));
+  const tl = edge === 'left' || edge === 'top' ? rr : 0;
+  const tr = edge === 'right' || edge === 'top' ? rr : 0;
+  const br = edge === 'right' || edge === 'bottom' ? rr : 0;
+  const bl = edge === 'left' || edge === 'bottom' ? rr : 0;
+  // 半径为 0 的角不画弧(相邻的直线本来就在角点上相遇 ✓ —— 零半径的弧是废笔画)
+  const arc = (rad: number, px: number, py: number): string =>
+    rad > 0.01 ? `A${r2(rad)} ${r2(rad)} 0 0 1 ${r2(px)} ${r2(py)}` : '';
+  return `M${r2(x + tl)} ${r2(y)}` +
+    `L${r2(x + w - tr)} ${r2(y)}` + arc(tr, x + w, y + tr) +
+    `L${r2(x + w)} ${r2(y + h - br)}` + arc(br, x + w - br, y + h) +
+    `L${r2(x + bl)} ${r2(y + h)}` + arc(bl, x, y + h - bl) +
+    `L${r2(x)} ${r2(y + tl)}` + arc(tl, x + tl, y) +
+    'Z';
+}
+
 // 按底色亮度选字色:亮底→墨色,深底→白色
 export function onColor(hex: string): string {
   const h = hex.replace('#', '');

@@ -27,12 +27,16 @@ import { ApiError } from './index.js';
 export interface LadderItem {
   label?: string;
   value: number;
+  /** 这一张的颜色(缺省:按名字认品牌 ✓ —— NVIDIA 绿 / AMD 红 / Intel 蓝 ✓) */
+  color?: string;
   /** 档位(S / A / B / C / D…)。同一档的行会连在一起,档与档之间有分隔。 */
   tier?: string;
 }
 
 export interface LadderSide {
   name?: string;
+  /** 这一侧的颜色(缺省:按名字认品牌色 ✓ —— NVIDIA 绿 / AMD 红 / Intel 蓝 ✓) */
+  color?: string;
   items: LadderItem[];
 }
 
@@ -41,6 +45,10 @@ export interface LadderSpec {
   unit?: string;
   /** 标签最多显示几个字(缺省 22)。名字长的数据用 labelmax= 调大。 */
   labelmax?: number;
+  /** 标度线:要画哪些刻度(如 [1000, 2000, 3000] ✓);不给就自动挑 ✓ */
+  ticks?: number[];
+  /** 把名字前面的牌子去掉(「GeForce RTX 5090」→「RTX 5090」✓ —— 颜色已经说明了 ✓) */
+  stripbrand?: boolean;
   /** 单边(天梯图) */
   side?: LadderSide;
   /** 双翼(双翼天梯图) */
@@ -52,7 +60,7 @@ export interface LadderSpec {
    *                 每一行只有一张卡,在它自己那一侧
    *   value      —— **匹配排序**:值相近的排在同一行,两翼都有
    */
-  match?: 'rank' | 'value';
+  match?: 'rank' | 'value' | 'tier';
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> =>
@@ -107,6 +115,11 @@ export function parseLadderSpec(raw: string): LadderSpec {
     if (!Number.isFinite(n) || n < 1) throw new ApiError(400, `"labelmax" must be a positive number.`);
     spec.labelmax = n;
   }
+  if (obj.ticks !== undefined) {
+    if (!Array.isArray(obj.ticks)) throw new ApiError(400, `"ticks" must be an array of numbers.`);
+    spec.ticks = obj.ticks.map((t) => Number(t)).filter((t) => Number.isFinite(t));
+  }
+  if (obj.stripbrand !== undefined) spec.stripbrand = obj.stripbrand === true;
   const side = parseSide(obj.side, 'side');
   if (side) spec.side = side;
   const left = parseSide(obj.left, 'left');
@@ -115,8 +128,8 @@ export function parseLadderSpec(raw: string): LadderSpec {
   if (right) spec.right = right;
   if (obj.match !== undefined) {
     const m = String(obj.match).toLowerCase();
-    if (m !== 'rank' && m !== 'value') {
-      throw new ApiError(400, `"match" must be "rank" or "value". Got: ${JSON.stringify(obj.match)}`);
+    if (m !== 'rank' && m !== 'value' && m !== 'tier') {
+      throw new ApiError(400, `"match" must be "rank", "value" or "tier". Got: ${JSON.stringify(obj.match)}`);
     }
     spec.match = m;
   }
@@ -144,6 +157,9 @@ export function ladderSpecFromParams(params: URLSearchParams): string | null {
   if (unit) spec.unit = unit;
   const labelmax = params.get('labelmax');
   if (labelmax) spec.labelmax = labelmax;
+  const tickRaw = params.get('ticks');
+  if (tickRaw) spec.ticks = splitNumbers(tickRaw.split(',')).filter((n) => Number.isFinite(n));
+  if (params.get('stripbrand') === '1' || params.get('stripbrand') === 'true') spec.stripbrand = true;
 
   if (leftRaw.length || rightRaw.length) {
     // 双翼
@@ -156,8 +172,8 @@ export function ladderSpecFromParams(params: URLSearchParams): string | null {
     if (left) spec.left = left;
     if (right) spec.right = right;
     const match = (params.get('match') ?? 'rank').toLowerCase();
-    if (match !== 'rank' && match !== 'value') {
-      throw new ApiError(400, `"match" must be "rank" or "value". Got: ${JSON.stringify(match)}`);
+    if (match !== 'rank' && match !== 'value' && match !== 'tier') {
+      throw new ApiError(400, `"match" must be "rank", "value" or "tier". Got: ${JSON.stringify(match)}`);
     }
     spec.match = match;
   } else {
@@ -236,9 +252,9 @@ function splitNumbers(raws: string[]): number[] {
 export function matchLadderRows(
   left: LadderItem[],
   right: LadderItem[],
-  match: 'rank' | 'value' = 'rank',
+  match: 'rank' | 'value' | 'tier' = 'rank',
 ): [LadderItem | undefined, LadderItem | undefined][] {
-  if (match !== 'value') {
+  if (match === 'rank') {
     const all: { item: LadderItem; side: 0 | 1 }[] = [
       ...left.map((item) => ({ item, side: 0 as const })),
       ...right.map((item) => ({ item, side: 1 as const })),
@@ -246,45 +262,70 @@ export function matchLadderRows(
     all.sort((a, b) => b.item.value - a.item.value);
     return all.map((x) => (x.side === 0 ? [x.item, undefined] : [undefined, x.item]));
   }
-  // 匹配排序:**右边每一张卡去找左边数值最接近的那张**,待到那一行去。
+  if (match === 'tier') {
+    // **按档分块**:同一档的行连在一起 ✓
+    //
+    // 本质是「原始双翼算法(全排序 ✓)+ 一个抬升处理 ✓」:
+    //   1. **先全排序**:两边合起来按强弱排 ⇒ 档的次序、档内的次序都定了 ✓
+    //   2. **按档分块**;每块的行数 = max(左边的张数, 右边的张数) ✓
+    //      ⇒ **两边都可能空档** ✓(哪边少,哪边空 ✓ —— 缺位是信号 ✓)
+    //   3. 块内:左边第 k 张对右边第 k 张 ✓
+    //      ⇒ 右边的卡是「抬」到对得上的那一行的 ✓(它比左边的下一张强 ✓)
+    //
+    // 右边自己**按强弱排** ✓ ⇒ 抬升之后**顺序不变** ✓。
+    const all: { item: LadderItem; side: 0 | 1 }[] = [
+      ...left.filter((x): x is LadderItem => !!x).map((item) => ({ item, side: 0 as const })),
+      ...right.filter((x): x is LadderItem => !!x).map((item) => ({ item, side: 1 as const })),
+    ];
+    all.sort((a, b) => b.item.value - a.item.value);
+    // 档的次序 = 全排序里第一次出现的次序 ✓;没写档的算一档 ✓
+    const blocks: { tier: string; l: LadderItem[]; r: LadderItem[] }[] = [];
+    for (const { item, side } of all) {
+      const tier = item.tier ?? '';
+      let blk = blocks.find((b) => b.tier === tier);
+      if (!blk) {
+        blk = { tier, l: [], r: [] };
+        blocks.push(blk);
+      }
+      (side === 0 ? blk.l : blk.r).push(item);
+    }
+    const rows: [LadderItem | undefined, LadderItem | undefined][] = [];
+    for (const blk of blocks) {
+      const n = Math.max(blk.l.length, blk.r.length);   // 两边都可能空档 ✓
+      for (let i = 0; i < n; i++) rows.push([blk.l[i], blk.r[i]]);
+    }
+    return rows;
+  }
+  // 匹配排序(value):**右边的每张卡抬升**,落到左边数值对得上的那一行 ✓
   //
-  // 「左边在后面三行,右边那张也得找最相近的」—— 哪怕中间空出几行,
-  // 被拉走的那张原来的位置就**空着**(缺位)。缺位不是 bug,是信号:
-  // 这一档真的没有能对上的卡。
+  // 规则(定死的 ✓):对右边的一张卡 r,找**最后一个**满足 `left[n].value >= r.value`
+  // 的行 n ✓ —— 于是 `left[n] >= r > left[n+1]` ✓,右边的卡刚好夹在左右两行之间 ✓
+  // (比左边最强的还强 ⇒ 顶行 ✓)。
   //
-  // 为什么这么设计:左右两边都是**按强弱排好**的,所以「找最接近的那个」
-  // 的结果是**单调**的 —— 两张右边的卡不会抢同一行,总距离也是最小的。
-  // (换成「每行去抢最接近的那张」就不单调了,谁先谁抢,顺序一换结果就变。)
-  const taken = new Set<number>();       // 已被占用的左边行
-  const placeAt = new Map<number, number>();  // 左边第 i 行 → 右边第 j 张
-  for (let j = 0; j < right.length; j++) {
-    const r = right[j];
-    if (!r) continue;
-    let best = -1;
-    let bestGap = Infinity;
+  // 右边自己**按强弱排** ✓ ⇒ 抬升之后**顺序不变** ✓(这是要保证的 ✓)。
+  // 抢到同一行 ⇒ 后一张往下顺延 ✓。
+  //
+  // 两边都会空出几行 ✓ —— 那些行是真的没有能对上的卡 ✓(缺位是信号 ✓)。
+  const rightSorted = [...right].filter((x): x is LadderItem => !!x).sort((a, b) => b.value - a.value);
+  const place = new Map<number, LadderItem>();   // 行号 → 右边那张卡 ✓
+  const taken = new Set<number>();
+  for (const r of rightSorted) {
+    let target = -1;
     for (let i = 0; i < left.length; i++) {
       const l = left[i];
-      if (!l || taken.has(i)) continue;
-      const gap = Math.abs(Math.log(r.value) - Math.log(l.value));
-      if (gap < bestGap) {
-        bestGap = gap;
-        best = i;
-      }
+      if (!l) continue;
+      if (l.value >= r.value) target = i;
+      else break;                    // 左边是降序 ✓ 后面的只会更弱 ✓
     }
-    if (best >= 0) {
-      taken.add(best);
-      placeAt.set(best, j);
-    }
+    if (target < 0) target = 0;      // 比左边最强的还强 ⇒ 顶行 ✓
+    let row = target;
+    while (taken.has(row)) row++;    // 抢同一行 ⇒ 往下顺延 ✓
+    taken.add(row);
+    place.set(row, r);
   }
-  // 没配上左边的右边卡,留在自己原来的行
-  const n = Math.max(left.length, right.length);
+  const last = place.size ? Math.max(...place.keys()) + 1 : 0;
+  const n = Math.max(left.length, last);
   const rows: [LadderItem | undefined, LadderItem | undefined][] = [];
-  for (let i = 0; i < n; i++) {
-    const j = placeAt.get(i);
-    let r: LadderItem | undefined;
-    if (j !== undefined) r = right[j];
-    else if (i < right.length && !taken.has(i) && ![...placeAt.values()].includes(i)) r = right[i];
-    rows.push([left[i], r]);
-  }
+  for (let i = 0; i < n; i++) rows.push([left[i], place.get(i)]);
   return rows;
 }

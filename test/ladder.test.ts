@@ -21,11 +21,13 @@ describe('天梯图(ladder)', () => {
     expect(t).toContain('30');
   });
 
-  it('档位:同档的行连在一起,档名标出来', () => {
+  it('档位:同档的行连在一起(档名不标 —— 2026-11 决定:不要分类标签)', () => {
     const { svg } = renderFromUrl(url('type=ladder&labels=A,B,C,D&values=40,30,20,10&tiers=S,S,A,A'));
     const t = texts(svg);
-    expect(t).toContain('S');
     expect(t).toContain('A');
+    expect(t).toContain('C');
+    // 档名(S)不是图上的字 ✓ —— 分隔线已经说了
+    expect(t).not.toContain('S');
   });
 
   it('档位分隔线在组与组之间', () => {
@@ -88,20 +90,52 @@ describe('双翼天梯图(butterfly-ladder)', () => {
     expect(rows[1][1]?.label).toBe('D');
   });
 
-  it('匹配排序:右边那张被拉上来时,原来的位置空着(缺位)', () => {
-    // 右边的 Y(62)跟左边的 C(60)最接近 → Y 待到 C 那一行,
-    // 它原来那行(第 2 行)就空出来了
+  it('匹配排序:value —— 右边的卡抬到最后一个 left[n] >= 右 的行', () => {
+    // 全排序(两边合起来按强弱)⇒ 档的次序:先是 A 档(B/C 两张),再是 S 档 ✓
+    // S 档里左边一张(S 100)、右边一张(S 98)⇒ 同一行 ✓
+    // B 档里右边有两条(B 80/B 70)、左边只有一条(B 75)⇒ **左边空一格** ✓
     const rows = matchLadderRows(
       [{ value: 100, label: 'A' }, { value: 90, label: 'B' }, { value: 60, label: 'C' }],
       [{ value: 98, label: 'X' }, { value: 62, label: 'Y' }],
       'value',
     );
-    expect(rows[0][1]?.label).toBe('X');     // X(98)配 A(100)
-    expect(rows[1][1]).toBeUndefined();     // 缺位:Y 被拉到第 3 行
-    expect(rows[2][1]?.label).toBe('Y');
+    expect(rows[0][1]?.label).toBe('X');     // X(98)落到 A(100) 那一行
+    expect(rows[1][1]?.label).toBe('Y');     // Y(62)被抬到 B(90) 那一行
+    expect(rows[2][1]).toBeUndefined();     // 缺位:C 那一行右边没有能对上的卡
   });
 
-  it('match= 只认 rank / value', () => {
+  it('匹配排序:右边自己按强弱排 ⇒ 抬升后顺序不变', () => {
+    const rows = matchLadderRows(
+      [{ value: 100, label: 'A' }, { value: 70, label: 'B' }, { value: 40, label: 'C' }],
+      [{ value: 95, label: 'X' }, { value: 65, label: 'Y' }, { value: 35, label: 'Z' }],
+      'value',
+    );
+    const rightLabels = rows.map((r) => r[1]?.label).filter(Boolean);
+    expect(rightLabels).toEqual(['X', 'Y', 'Z']);   // 顺序没乱 ✓
+  });
+
+  it('match= 只认 rank / value / tier', () => {
     expect(() => renderFromUrl(url('type=butterfly-ladder&left=A:1&match=other'))).toThrow();
+  });
+
+  it('匹配排序:tier 档 —— 同一档的行连在一起,两边都可能空档', () => {
+    const rows = matchLadderRows(
+      [
+        { value: 100, label: 'L-S', tier: 'S' },
+        { value: 75, label: 'L-B', tier: 'B' },
+      ],
+      [
+        { value: 98, label: 'R-S', tier: 'S' },
+        { value: 80, label: 'R-B1', tier: 'B' },
+        { value: 70, label: 'R-B2', tier: 'B' },
+      ],
+      'tier',
+    );
+    expect(rows[0][0]?.label).toBe('L-S');
+    expect(rows[0][1]?.label).toBe('R-S');      // 同档 ⇒ 同一行 ✓
+    expect(rows[1][0]?.label).toBe('L-B');
+    expect(rows[1][1]?.label).toBe('R-B1');
+    expect(rows[2][0]).toBeUndefined();          // 左边空了一格 ✓(右边的 B 有两张 ✓)
+    expect(rows[2][1]?.label).toBe('R-B2');
   });
 });

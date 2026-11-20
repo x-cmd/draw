@@ -12,7 +12,7 @@ core_features:
   - Per-side data model: `items[]` of `{label, value, tier}` — names and values no longer live apart
   - **Tiers group consecutive rows**, with a separator between tiers and the tier name in a column on the left
   - The ordering is **global** — both wings form one ladder — but split into two groups
-  - Two ways to sort: `match=rank` (fully offset: one ladder, each row holds a single card on its own side) and `match=value` (close values on the same row, both wings)
+  - Three ways to sort: `match=rank` (fully offset: one ladder, each row holds a single card on its own side), `match=value` (each right-hand card is lifted to the row whose left card is just stronger), and `match=tier` (sorted overall first, then the right wing is lifted block by block — same tier shares a row, either wing may leave gaps)
   - When one side has fewer rows the extra rows stay empty — **nothing shifts**
   - `src=<url>` fetches the spec from a file — a thousand rows fit in a link
   - Short form (`left=NVIDIA:3264,2851&llabels=…`) as well as the JSON form

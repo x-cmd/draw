@@ -13,17 +13,16 @@
 //      档与档之间有分隔,档名标在左边那一列。
 //   2. **一侧行数少时,多出来的行留空,不挪位** —— 挪位会让
 //      「第 k 行对第 k 行」这个含义失效。
-import type { LadderItem, LadderSpec } from '../specs/ladder.js';
+import type { LadderItem, LadderSide, LadderSpec } from '../specs/ladder.js';
 import { matchLadderRows } from '../specs/ladder.js';
 import { TAB, card } from '../theme.js';
 import {
-  esc, fmtFull, fmtNum, niceTicks, r2, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts,
+  esc, fmtFull, fmtNum, niceTicks, r2, roundEdgeRect, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts,
 } from './svg.js';
 
 const PAD = 24;
 const LEGEND_H = 26;
-const VALUE_W = 54;    // 外端数值那一列的宽
-const TIER_W = 34;     // 档位名列的宽
+const VALUE_W = 62;    // 外端数值那一列的宽(具体数字要放得下 ✓)
 const BAR_H = 18;
 
 /** 连续同档的行算一组 */
@@ -41,31 +40,28 @@ function tierGroups(tiers: (string | undefined)[]): { tier?: string; from: numbe
 }
 
 /** 档位名列:组名竖排在组中间(组太矮就排在组首行上) */
-function tierLabels(
-  groups: { tier?: string; from: number; to: number }[],
-  yOf: (i: number) => number,
-  pitch: number,
+
+/** tooltip 的属性(文字 ⇒ 属性 ✓ —— 别把整串属性再塞进属性里 ✗) */
+const tipAttr = (text: string | undefined): string => (text ? ` data-tip="${esc(text)}"` : '');
+
+/** 一根柱:圆角只给**值那一端** ✓(#130 —— 起点贴着基线/中轴,圆了像悬空 ✗) */
+function bar(
+  x0: number, y: number, len: number, h: number, color: string,
+  tip: string | undefined, row = -1, edge: 'left' | 'right' = 'right',
 ): string[] {
-  const parts: string[] = [];
-  for (const g of groups) {
-    if (!g.tier) continue;
-    const y = yOf(g.from);
-    const h = (g.to - g.from) * pitch;
-    const yy = h > 26 ? y + h / 2 : y + pitch / 2;
-    parts.push(
-      `<text x="${r2(PAD + TIER_W / 2)}" y="${r2(yy + 4)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--d-muted)">${esc(g.tier)}</text>`,
-    );
-  }
-  return parts;
+  const w = Math.max(len, 1);
+  return [
+    `<path${row >= 0 ? ` data-row="${row}"` : ''} d="${roundEdgeRect(x0, y, w, h, 4, edge)}" fill="${color}"${tipAttr(tip)}/>`,
+  ];
 }
 
-/** 一根柱 */
-function bar(
-  x0: number, y: number, len: number, h: number, color: string, tip: string | undefined,
-): string[] {
-  return [
-    `<rect x="${r2(x0)}" y="${r2(y)}" width="${r2(Math.max(len, 1))}" height="${r2(h)}" rx="4" fill="${color}"${tip ? ` data-tip="${esc(tip)}"` : ''}/>`,
-  ];
+/**
+ * 行底色:鼠标悬停时**整行**亮一下 ✓
+ * (垫色,不要描边 ✓ —— 描边会像选中框 ✗)
+ * 它同时是这一行的「悬停热区」✓ —— 悬在行里的空白处也能亮 ✓。
+ */
+function rowBand(x: number, y: number, w: number, h: number, row: number, tip: string | undefined): string {
+  return `<rect class="row-band" data-row="${row}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" fill="var(--d-ink)" fill-opacity="0"${tipAttr(tip)}/>`;
 }
 
 /**
@@ -74,6 +70,61 @@ function bar(
  * 行从上到下按值排(调用方排好,这里只画);同一档的行连在一起,
  * 档与档之间一条分隔线,档名在左边那一列。
  */
+/**
+ * 品牌色:名字里认得出来就用它的 ✓
+ * (NVIDIA 绿 / AMD 红 / Intel 蓝 ✓ —— 「各自的主题色」✓)
+ */
+const BRAND_COLOR: [RegExp, string][] = [
+  [/nvidia|geforce|\brtx\b|quadro|titan|tesla/i, '#76B900'],
+  [/amd|radeon|ryzen|epyc/i, '#ED1C24'],
+  [/intel|\barc\b|\bcore\b|xeon/i, '#0071C5'],
+];
+
+/** 名字里认得出是哪个牌子 ✓ */
+function brandOf(name: string): string | undefined {
+  for (const [re, c] of BRAND_COLOR) if (re.test(name)) return c;
+  return undefined;
+}
+
+/** 颜色 ⇒ 牌子名(给图例用 ✓) */
+const BRAND_NAME: Record<string, string> = { '#76B900': 'NVIDIA', '#ED1C24': 'AMD', '#0071C5': 'Intel' };
+
+/**
+ * 图例:**图里真用到的那些颜色** ✓
+ * (不是「这一侧叫什么」✓ —— 一侧里混着 AMD 和 Intel 时,一个色块说不清 ✓;
+ *  牌子认得出来的就用牌子名 ✓,认不出来的才用这一侧的名字 ✓)
+ */
+function legendOf(groups: { items: LadderItem[]; side?: LadderSide; fallback: string }[]): { name: string; color: string }[] {
+  const seen = new Map<string, string>();
+  for (const g of groups) {
+    for (const it of g.items) {
+      const c = itemColor(it, g.side, g.fallback);
+      if (!seen.has(c)) seen.set(c, BRAND_NAME[c] ?? g.side?.name ?? '');
+    }
+  }
+  return [...seen].filter(([, n]) => n !== '').map(([color, name]) => ({ name, color }));
+}
+
+/** 这一侧用什么颜色:显式给的 ✓ → 名字里的品牌 ✓ → 缺省的序列色 ✓ */
+function sideColor(side: LadderSide | undefined, fallback: string): string {
+  if (!side) return fallback;
+  if (side.color) return side.color;
+  return brandOf(side.name ?? '') ?? fallback;
+}
+
+/** 名字前面的牌子:要去就去掉 ✓(「GeForce RTX 5090」→「RTX 5090」✓) */
+const BRAND_WORDS = /^(nvidia|geforce|quadro|amd|radeon|ryzen|epyc|intel|core|xeon|arc)\s+/i;
+function stripped(label: string | undefined, spec: LadderSpec): string {
+  const s = label ?? '';
+  return spec.stripbrand ? s.replace(BRAND_WORDS, '') : s;
+}
+
+/** 这一张卡用什么颜色:卡自己给的 ✓ → 卡名字里的品牌 ✓ → 那一侧的颜色 ✓ */
+function itemColor(item: LadderItem, side: LadderSide | undefined, fallback: string): string {
+  if (item.color) return item.color;
+  return brandOf(item.label ?? '') ?? sideColor(side, fallback);
+}
+
 export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const { width, version, skin } = o;
   const cap = spec.labelmax ?? 22;
@@ -81,17 +132,21 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const items = side?.items ?? [];
   const n = items.length;
   if (!n) return svgDoc(width, o.height, 'ladder', version, 'ladder', spec, skin, '');
-  // 行多的时候自动拉高 —— 行距压到 16 以下,行标签就叠在一起了
-  let height = o.height;
-  if (o.autoHeight) {
-    const head = PAD + (spec.title ? 32 : 0) + 8 + (side?.name ? LEGEND_H : 0);
-    const need = head + PAD + 26 + n * 16;
-    if (height < need) height = Math.min(need, 4000);
-  }
 
-  const titleH = spec.title ? titleBlock(spec.title).length / 40 : 0;  // 粗略,下面重算
-  const legendItems = side?.name ? [{ name: side.name, color: 'var(--d-s1)' }] : [];
-  const contentTop = PAD + (spec.title ? 32 : 0) + 8 + (legendItems.length ? LEGEND_H : 0);
+  // 标题/图例/图 三者的位置比例 ✓ —— 天梯图往往很高,标题要压得住 ✓
+  const titleSvg = spec.title
+    ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
+    : '';
+  const titleH = spec.title ? 38 : 0;
+  const legendItems = legendOf([{ items, side, fallback: 'var(--d-s1)' }]);
+  const contentTop = PAD + titleH + (legendItems.length ? LEGEND_H : 0);
+
+  // 行多的时候画布自动拉高 —— 行距压到 16 以下,行标签就叠在一起了
+  // (h= 只是「最少这么高」✓:100 行的天梯图硬压进 480px ⇒ 后半截掉出画布 ✗)
+  let height = o.height;
+  const need = contentTop + 8 + PAD + 26 + n * 16;
+  if (height < need) height = Math.min(need, 4000);
+
   const avail = height - contentTop - PAD - 26;
   const pitch = Math.max(12, Math.min(26, avail / Math.max(n, 1)));
   const barH = Math.min(BAR_H, Math.max(6, pitch * 0.62));
@@ -100,7 +155,7 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     190 + Math.max(0, cap - 22) * 7,
     Math.max(...items.map((it) => textW(trunc(it.label ?? '', cap), 12.5))) + 6,
   );
-  const left = PAD + TIER_W + labelW + 14;
+  const left = PAD + labelW + 14;
   const right = width - PAD - VALUE_W;
 
   const max = Math.max(...items.map((it) => it.value));
@@ -111,11 +166,9 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
   const bg = card(width, height);
   const parts: string[] = [];
 
+  // 刻度:只留数字(背景网格线不要 ✓ —— 用户:「不需要背景网格线」✓)
   for (const t of ticks) {
     const gx = r2(x(t));
-    if (t > 0) {
-      parts.push(`<line x1="${gx}" y1="${r2(contentTop)}" x2="${gx}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)" stroke-width="1"/>`);
-    }
     parts.push(`<text x="${gx}" y="${r2(height - PAD - 26 + 16)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
 
@@ -128,29 +181,32 @@ export function renderLadder(spec: LadderSpec, o: RenderOpts): string {
     const y = contentTop + g.from * pitch;
     parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(right)}" y2="${r2(y)}" stroke="var(--d-border)" stroke-width="1"/>`);
   }
-  parts.push(...tierLabels(groups, yOf, pitch));
 
   items.forEach((it, i) => {
     const y = yOf(i);
     const len = x(it.value) - left;
-    const color = sVar(0);
+    const color = itemColor(it, side, sVar(0));   // 每张卡按自己的牌子 ✓
     const tip = o.interactive
-      ? ` data-tip="${esc(`${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
-      : '';
-    parts.push(...bar(left, y, len, barH, color, tip));
+      ? `${it.label ?? ''} · ${fmtFull(it.value)}${spec.unit ? ' ' + spec.unit : ''}`
+      : undefined;
+    const tipA = tipAttr(tip);
+    const row = ` data-row="${i}"`;
+    // 行底色(悬停整行亮 ✓)—— 画在柱与字之前,垫在最下面 ✓
+    parts.push(rowBand(PAD, contentTop + i * pitch, right - PAD, pitch, i, tip));
+    parts.push(...bar(left, y, len, barH, color, tip, i, 'right'));
     if (it.label) {
-      parts.push(`<text x="${r2(PAD + TIER_W + labelW)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(it.label, cap))}</text>`);
+      parts.push(`<text${row}${tipA} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(it.label, spec), cap))}</text>`);
     }
-    parts.push(`<text x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tip}>${fmtNum(it.value)}</text>`);
+    parts.push(`<text${row} x="${r2(right + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tipA}>${fmtFull(it.value)}</text>`);
   });
 
   const legend = legendItems.length
-    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 110)}" y="${r2(contentTop - LEGEND_H + 4)}" width="14" height="14" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 110 + 20)}" y="${r2(contentTop - LEGEND_H + 15)}" font-size="11.5" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
+    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 130)}" y="${r2(contentTop - LEGEND_H + 5)}" width="15" height="15" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 130 + 22)}" y="${r2(contentTop - LEGEND_H + 17)}" font-size="12" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
     : '';
 
   return svgDoc(
     width, height, 'ladder', version, 'ladder', spec, skin,
-    bg + titleBlock(spec.title) + legend + parts.join(''),
+    bg + titleSvg + legend + parts.join(''),
   );
 }
 
@@ -173,21 +229,21 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   if (!n) {
     return svgDoc(width, o.height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin, '');
   }
-  // 行多的时候自动拉高(同上)
+  const legendItems = legendOf([
+    { items: leftItems, side: spec.left, fallback: 'var(--d-s1)' },
+    { items: rightItems, side: spec.right, fallback: 'var(--d-s2)' },
+  ]);
+
+  const titleSvg = spec.title
+    ? `<text x="${PAD}" y="${PAD + 17}" font-size="22" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`
+    : '';
+  const contentTop = PAD + (spec.title ? 38 : 0) + (legendItems.length ? LEGEND_H : 0);
+
+  // 行多的时候画布自动拉高(同上:h= 只是「最少这么高」✓)
   let height = o.height;
-  if (o.autoHeight) {
-    const legend = (spec.left?.name ? 1 : 0) + (spec.right?.name ? 1 : 0);
-    const head = PAD + (spec.title ? 32 : 0) + 8 + (legend ? LEGEND_H : 0);
-    const need = head + PAD + 26 + n * 16;
-    if (height < need) height = Math.min(need, 4000);
-  }
+  const need = contentTop + 8 + PAD + 26 + n * 16;
+  if (height < need) height = Math.min(need, 4000);
 
-  const legendItems = [
-    spec.left?.name ? { name: spec.left.name, color: 'var(--d-s1)' } : null,
-    spec.right?.name ? { name: spec.right.name, color: 'var(--d-s2)' } : null,
-  ].filter(Boolean) as { name: string; color: string }[];
-
-  const contentTop = PAD + (spec.title ? 32 : 0) + 8 + (legendItems.length ? LEGEND_H : 0);
   const avail = height - contentTop - PAD - 26;
   const pitch = Math.max(12, Math.min(26, avail / Math.max(n, 1)));
   const barH = Math.min(BAR_H, Math.max(6, pitch * 0.62));
@@ -196,7 +252,7 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   const rLabels = rightItems.map((it) => it.label ?? '');
   const lW = Math.max(0, ...lLabels.map((l) => textW(trunc(l, cap), 12.5)));
   const rW = Math.max(0, ...rLabels.map((l) => textW(trunc(l, cap), 12.5)));
-  const plotL = PAD + TIER_W + lW + 10 + VALUE_W;
+  const plotL = PAD + lW + 10 + VALUE_W;
   const plotR = width - PAD - rW - 10 - VALUE_W;
   const centre = (plotL + plotR) / 2;
   const half = (plotR - plotL) / 2;
@@ -210,21 +266,18 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
   const bg = card(width, height);
   const parts: string[] = [];
 
-  // 刻度:两侧同一套(共用一把标尺)
-  const grid = (max: number, dir: -1 | 1): void => {
-    if (max <= 0) return;
-    const ticks = niceTicks(max, 4);
-    const tickMax = ticks[ticks.length - 1] || max;
-    for (const t of ticks) {
-      if (t === 0) continue;
-      const dx = (t / tickMax) * half;
-      const x = dir < 0 ? centre - dx : centre + dx;
-      parts.push(`<line x1="${r2(x)}" y1="${r2(contentTop)}" x2="${r2(x)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-grid)"/>`);
-    }
-  };
-  grid(leftMax, -1);
-  grid(rightMax, 1);
   parts.push(`<line x1="${r2(centre)}" y1="${r2(contentTop)}" x2="${r2(centre)}" y2="${r2(height - PAD - 26)}" stroke="var(--d-border)"/>`);
+
+  // 标度:两翼共用一把(缺省自动挑 ✓;可以用 ticks= 指定 ✓ 如 1000,2000,3000 ✓)
+  const tickVals = (spec.ticks?.length ? [...spec.ticks].sort((a, b) => a - b) : niceTicks(leftMax, 4))
+    .filter((t) => t > 0);
+  const tickMax = tickVals[tickVals.length - 1] || leftMax;
+  const tickY = height - PAD - 26 + 16;
+  for (const t of tickVals) {
+    const dx = (t / tickMax) * half;
+    parts.push(`<text x="${r2(centre - dx)}" y="${r2(tickY)}" text-anchor="middle" font-size="11" fill="var(--d-muted)">${fmtNum(t)}</text>`);
+    parts.push(`<text x="${r2(centre + dx)}" y="${r2(tickY)}" text-anchor="middle" font-size="11" fill="var(--d-muted)">${fmtNum(t)}</text>`);
+  }
 
   const yOf = (i: number): number => contentTop + i * pitch + (pitch - barH) / 2;
 
@@ -236,45 +289,51 @@ export function renderButterflyLadder(spec: LadderSpec, o: RenderOpts): string {
     const y = contentTop + g.from * pitch;
     parts.push(`<line x1="${r2(PAD)}" y1="${r2(y)}" x2="${r2(width - PAD)}" y2="${r2(y)}" stroke="var(--d-border)" stroke-width="1"/>`);
   }
-  parts.push(...tierLabels(groups, yOf, pitch));
 
   rows.forEach(([l, r], i) => {
     const y = yOf(i);
+    const row = ` data-row="${i}"`;
+    // 行底色(悬停整行亮 ✓)—— 一行两翼一起亮 ✓
+    const bandTip = o.interactive
+      ? `${l?.label ?? ''}${r?.label ? `  ·  ${r.label}` : ''}`
+      : undefined;
+    parts.push(rowBand(PAD, contentTop + i * pitch, width - PAD * 2, pitch, i, bandTip));
     if (l) {
       const len = (l.value / (leftMax || 1)) * half;
       const tip = o.interactive
-        ? ` data-tip="${esc(`${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
-        : '';
-      parts.push(...bar(centre - len, y, len, barH, sVar(0), tip));
+        ? `${l.label ?? ''} · ${fmtFull(l.value)}${spec.unit ? ' ' + spec.unit : ''}`
+        : undefined;
+      const tipA = tipAttr(tip);
+      parts.push(...bar(centre - len, y, len, barH, itemColor(l, spec.left, sVar(0)), tip, i, 'left'));
       if (l.label) {
-        parts.push(`<text x="${r2(plotL - VALUE_W - 10)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12.5" fill="var(--d-text)">${esc(trunc(l.label, cap))}</text>`);
+        parts.push(`<text${row}${tipA} x="${r2(PAD)}" y="${r2(y + barH / 2 + 4)}" text-anchor="start" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(l.label, spec), cap))}</text>`);
       }
-      // 数值:柱够长**而且够粗**就画在柱里 —— 左边的柱尾紧挨着名字列,
-      // 画在外面会撞上;柱太薄的话字会糊在柱边上。
-      // 左边的柱往左长,「柱里」是尾端的**右边**,所以文字从尾端往右排(start)。
-      const inBar = len > 56 && barH >= 11;
-      parts.push(`<text x="${r2(centre - len + (inBar ? 8 : -8))}" y="${r2(y + barH / 2 + 4)}" text-anchor="${inBar ? 'start' : 'end'}" font-size="12" font-weight="600" fill="${inBar ? '#fff' : 'var(--d-text)'}">${fmtNum(l.value)}</text>`);
+      // 数值:**一律画在 bar 外面** ✓(两边一致 ✓ —— 「左边的数据在 bar 里、右边在外面」看着别扭 ✓)
+      // 左边的柱往左长 ⇒ 数值在尾端的左边 ✓(紧挨着名字列 ✓)
+      parts.push(`<text${row} x="${r2(centre - len - 8)}" y="${r2(y + barH / 2 + 4)}" text-anchor="end" font-size="12" font-weight="600" fill="var(--d-text)"${tipA}>${fmtFull(l.value)}</text>`);
     }
     if (r) {
       const len = (r.value / (rightMax || 1)) * half;
       const tip = o.interactive
-        ? ` data-tip="${esc(`${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"`
-        : '';
-      parts.push(...bar(centre, y, len, barH, sVar(1), tip));
+        ? `${r.label ?? ''} · ${fmtFull(r.value)}${spec.unit ? ' ' + spec.unit : ''}`
+        : undefined;
+      const tipA = tipAttr(tip);
+      parts.push(...bar(centre, y, len, barH, itemColor(r, spec.right, sVar(1)), tip, i, 'right'));
       if (r.label) {
-        parts.push(`<text x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(r.label, cap))}</text>`);
+        parts.push(`<text${row}${tipA} x="${r2(plotR + VALUE_W + 10)}" y="${r2(y + barH / 2 + 4)}" font-size="12.5" fill="var(--d-text)">${esc(trunc(stripped(r.label, spec), cap))}</text>`);
       }
-      parts.push(`<text x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)">${fmtNum(r.value)}</text>`);
+      // 右边同样:**一律画在 bar 外面** ✓
+      parts.push(`<text${row} x="${r2(centre + len + 8)}" y="${r2(y + barH / 2 + 4)}" font-size="12" font-weight="600" fill="var(--d-text)"${tipA}>${fmtFull(r.value)}</text>`);
     }
   });
 
   const legend = legendItems.length
-    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 130)}" y="${r2(contentTop - LEGEND_H + 4)}" width="14" height="14" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 130 + 20)}" y="${r2(contentTop - LEGEND_H + 15)}" font-size="11.5" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
+    ? `<g data-legend="types">${legendItems.map((l, i) => `<rect x="${r2(PAD + i * 140)}" y="${r2(contentTop - LEGEND_H + 5)}" width="15" height="15" rx="4" fill="${l.color}" fill-opacity="0.2" stroke="${l.color}" stroke-opacity="0.55"/><text x="${r2(PAD + i * 140 + 22)}" y="${r2(contentTop - LEGEND_H + 17)}" font-size="12" fill="var(--d-muted)">${esc(l.name)}</text>`).join('')}</g>`
     : '';
 
   return svgDoc(
     width, height, 'butterfly-ladder', version, 'butterfly ladder', spec, skin,
-    bg + titleBlock(spec.title) + legend + parts.join(''),
+    bg + titleSvg + legend + parts.join(''),
   );
 }
 

@@ -10,6 +10,9 @@
 import { ApiError } from '../specs/index.js';
 import { toRawGithub } from './onepage.js';
 
+/** 取规格的上限:慢就是慢,不能一直挂着 ✓ */
+const SRC_TIMEOUT_MS = 10_000;
+
 /**
  * 把 `?src=<url>` 取来的规格折进 `d=` —— 返回一个改好的 URL ✓
  * (取来的 JSON 当成 d= 用 ✓;其余参数:标题、尺寸、风格照旧 ✓)。
@@ -24,9 +27,21 @@ export async function resolveSrcSpec(url: URL): Promise<URL> {
   }
   let up: Response;
   try {
-    up = await fetch(raw, { headers: { 'user-agent': 'x-cmd/draw', accept: '*/*' }, redirect: 'follow' });
+    // **超时要设** ✓ —— 上游慢/不回(实测 GitHub raw 偶尔十几秒 ✗),
+    // 不设的话请求一直挂着,页面转圈到天荒地老 ✗
+    up = await fetch(raw, {
+      headers: { 'user-agent': 'x-cmd/draw', accept: '*/*' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(SRC_TIMEOUT_MS),
+    });
   } catch (e) {
-    throw new ApiError(502, `upstream fetch failed: ${e instanceof Error ? e.message : 'network error'}`);
+    const timedOut = e instanceof Error && (e.name === 'TimeoutError' || e.name === 'AbortError');
+    throw new ApiError(
+      timedOut ? 504 : 502,
+      timedOut
+        ? `upstream timed out after ${SRC_TIMEOUT_MS / 1000}s: ${raw}`
+        : `upstream fetch failed: ${e instanceof Error ? e.message : 'network error'}`,
+    );
   }
   if (up.status >= 400) {
     throw new ApiError(up.status >= 500 ? 502 : 404, `upstream ${up.status} for ${raw}`);
