@@ -27,7 +27,7 @@ X-CMD Draw — это инструмент с открытым исходным 
 Отправьте следующий промпт агенту, который умеет читать веб-страницы. Для hosted-сервиса draw не нужны регистрация или API Key:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Опишите задачу
@@ -38,7 +38,7 @@ Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From
 Добавь в README архитектурную схему, показывающую путь запроса от CLI через API к базе данных.
 ```text
 
-Если вы пользуетесь draw часто, установите [`SKILL.md`](../SKILL.md) в Agent с поддержкой локальных skills. Например, в Claude Code сохраните файл как `~/.claude/skills/draw/SKILL.md`; после однократной настройки можно сразу описывать задачу.
+Если вы пользуетесь draw часто, установите [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) в Agent с поддержкой локальных skills. Например, в Claude Code сохраните файл как `~/.claude/skills/draw/SKILL.md`; после однократной настройки можно сразу описывать задачу.
 
 ## Возможности
 
@@ -105,7 +105,7 @@ bash scripts/setup.sh   # развёртывание одной командой
 | Создавать короткие ссылки или настроить их хранилище | [Self-hosting и настройка коротких ссылок](../docs/1-overview/05-self-hosting/ru.md) |
 | Создавать архитектурные и последовательностные диаграммы, ERD и другие структурные схемы | [Синтаксис URL структурных диаграмм](../docs/1-overview/06-diagram-urls/en.md) |
 | Запустить локально или развернуть в Cloudflare | [Руководство по self-hosting](../docs/1-overview/05-self-hosting/ru.md) |
-| Автоматически создавать диаграммы с помощью Agent | [Agent Skill](../SKILL.md) |
+| Автоматически создавать диаграммы с помощью Agent | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Разработка
 

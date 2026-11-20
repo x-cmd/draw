@@ -27,7 +27,7 @@ From performance analysis to architecture design, and from maps to schedules, th
 Give the following prompt to an agent that can read web pages. The hosted draw service requires no account registration or API key:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Describe what you need
@@ -38,7 +38,7 @@ Tell the agent what data to use, what relationship to express, and where the cha
 Add an architecture diagram to the README, showing the request path from the CLI through the API to the database.
 ```
 
-For regular use, install [`SKILL.md`](SKILL.md) in an agent that supports local skills. For Claude Code, save it as `~/.claude/skills/draw/SKILL.md`; after this one-time setup, you can describe your request directly.
+For regular use, install [`SKILL.md`](skills/x-cmd-draw/SKILL.md) in an agent that supports local skills. For Claude Code, save it as `~/.claude/skills/draw/SKILL.md`; after this one-time setup, you can describe your request directly.
 
 ## Features
 
@@ -105,7 +105,7 @@ Complete chart references, parameters, and examples are organized by topic:
 | Create short links or configure their storage | [Self-hosting and short-link configuration](docs/1-overview/05-self-hosting/en.md) |
 | Architecture, sequence, ERD, and other structural diagrams | [Diagram URL grammar](docs/1-overview/06-diagram-urls/en.md) |
 | Run locally or deploy to Cloudflare | [Self-hosting guide](docs/1-overview/05-self-hosting/en.md) |
-| Generate charts with an AI agent | [Agent skill](SKILL.md) |
+| Generate charts with an AI agent | [Agent skill](skills/x-cmd-draw/SKILL.md) |
 
 <details>
 <summary>Inside draw: generated project diagrams</summary>

@@ -27,7 +27,7 @@ Von der Performance-Analyse bis zum Architekturentwurf, von Karten bis zu Zeitpl
 Sende den folgenden Prompt an einen Agenten, der Webseiten lesen kann. Für den gehosteten Draw-Dienst sind weder ein Konto noch ein API-Schlüssel erforderlich:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Beschreibe deinen Bedarf
@@ -38,7 +38,7 @@ Teile dem Agenten mit, welche Daten verwendet, welche Beziehungen dargestellt un
 Füge der README ein Architekturdiagramm hinzu, das den Aufrufpfad einer Anfrage von der CLI über die API bis zur Datenbank zeigt.
 ```text
 
-Wenn du draw häufig verwendest, kannst du [`SKILL.md`](../SKILL.md) in einem Agenten installieren, der lokale Skills unterstützt. Speichere die Datei für Claude Code beispielsweise unter `~/.claude/skills/draw/SKILL.md`; nach dieser einmaligen Einrichtung kannst du deinen Bedarf direkt beschreiben.
+Wenn du draw häufig verwendest, kannst du [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) in einem Agenten installieren, der lokale Skills unterstützt. Speichere die Datei für Claude Code beispielsweise unter `~/.claude/skills/draw/SKILL.md`; nach dieser einmaligen Einrichtung kannst du deinen Bedarf direkt beschreiben.
 
 ## Funktionsmerkmale
 
@@ -105,7 +105,7 @@ Die vollständigen Diagrammtypen, Parameter und Beispiele sind in der Dokumentat
 | Kurzlinks erstellen oder ihren Speicher konfigurieren | [Self-Hosting und Kurzlink-Konfiguration](../docs/1-overview/05-self-hosting/de.md) |
 | Architektur-, Sequenzdiagramme, ERDs und andere Strukturdiagramme erstellen | [URL-Syntax für Strukturdiagramme](../docs/1-overview/06-diagram-urls/en.md) |
 | Lokal ausführen oder auf Cloudflare bereitstellen | [Self-Hosting-Leitfaden](../docs/1-overview/05-self-hosting/de.md) |
-| Diagramme automatisch mit einem Agenten erzeugen | [Skill für Agenten](../SKILL.md) |
+| Diagramme automatisch mit einem Agenten erzeugen | [Skill für Agenten](../skills/x-cmd-draw/SKILL.md) |
 
 ## Entwicklung
 

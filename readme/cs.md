@@ -27,7 +27,7 @@ Od analýzy výkonu po návrh architektury, od map po harmonogramy – definice 
 Pošlete následující prompt agentovi, který umí číst webové stránky. Hostovaná služba draw nevyžaduje registraci ani API klíč:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Popište, co potřebujete
@@ -38,7 +38,7 @@ Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From
 Přidej do README architektonický diagram znázorňující cestu požadavku z CLI přes API do databáze.
 ```text
 
-Při častém použití můžete nainstalovat [`SKILL.md`](../SKILL.md) do agenta s podporou místních skillů. Například v Claude Code jej uložte jako `~/.claude/skills/draw/SKILL.md`; po jednorázovém nastavení stačí přímo popsat, co potřebujete.
+Při častém použití můžete nainstalovat [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) do agenta s podporou místních skillů. Například v Claude Code jej uložte jako `~/.claude/skills/draw/SKILL.md`; po jednorázovém nastavení stačí přímo popsat, co potřebujete.
 
 ## Funkce
 
@@ -105,7 +105,7 @@ Nastavením `DATA_REPO`, `DATA_BRANCH` a `GITHUB_TOKEN` povolíte trvalé krátk
 | Vytvářet krátké odkazy nebo nastavit jejich úložiště | [Self-hosting a krátké odkazy](../docs/1-overview/05-self-hosting/cs.md) |
 | Kreslit diagramy architektury, sekvencí, ERD a další strukturní diagramy | [Syntaxe URL strukturních diagramů](../docs/1-overview/06-diagram-urls/en.md) |
 | Spustit lokálně nebo nasadit na Cloudflare | [Průvodce self-hostingem](../docs/1-overview/05-self-hosting/cs.md) |
-| Nechat agenta automaticky generovat grafy | [Agent Skill](../SKILL.md) |
+| Nechat agenta automaticky generovat grafy | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Vývoj
 

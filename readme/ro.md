@@ -27,7 +27,7 @@ De la analiza performanței la proiectarea arhitecturii, de la hărți la planif
 Trimite promptul de mai jos unui agent care poate citi pagini web. Serviciul găzduit draw nu necesită cont sau cheie API:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Spune ce ai nevoie
@@ -38,7 +38,7 @@ Spune-i agentului ce date să folosească, ce relație să reprezinte și unde v
 Adaugă în README o diagramă de arhitectură care să arate traseul unei cereri de la CLI prin API până la baza de date.
 ```text
 
-Dacă îl folosești frecvent, instalează [`SKILL.md`](../SKILL.md) într-un agent care acceptă skill-uri locale. De exemplu, în Claude Code, salvează-l ca `~/.claude/skills/draw/SKILL.md`; după această configurare unică, poți descrie direct ce ai nevoie.
+Dacă îl folosești frecvent, instalează [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) într-un agent care acceptă skill-uri locale. De exemplu, în Claude Code, salvează-l ca `~/.claude/skills/draw/SKILL.md`; după această configurare unică, poți descrie direct ce ai nevoie.
 
 ## Funcționalități
 
@@ -105,7 +105,7 @@ Lista completă a tipurilor de grafice, parametrilor și exemplelor este organiz
 | Creezi linkuri scurte sau configurezi stocarea lor | [Self-hosting și linkuri scurte](../docs/1-overview/05-self-hosting/ro.md) |
 | Desenezi diagrame de arhitectură, secvență, ERD și alte diagrame structurale | [Sintaxa URL pentru diagrame structurale](../docs/1-overview/06-diagram-urls/en.md) |
 | Rulezi local sau implementezi pe Cloudflare | [Ghid de self-hosting](../docs/1-overview/05-self-hosting/ro.md) |
-| Lași un agent să genereze grafice automat | [Agent Skill](../SKILL.md) |
+| Lași un agent să genereze grafice automat | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Dezvoltare
 

@@ -27,7 +27,7 @@ Od analizy wydajności po projektowanie architektury, od map po harmonogramy —
 Prześlij poniższy prompt agentowi, który potrafi czytać strony internetowe. Hostowana usługa draw nie wymaga rejestracji ani klucza API:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. Opisz, czego potrzebujesz
@@ -38,7 +38,7 @@ Powiedz agentowi, jakich danych użyć, jaką relację przedstawić i gdzie wykr
 Dodaj do README diagram architektury pokazujący ścieżkę żądania od CLI przez API do bazy danych.
 ```text
 
-Jeśli korzystasz często, zainstaluj [`SKILL.md`](../SKILL.md) w agencie obsługującym lokalne skille. Na przykład w Claude Code zapisz go jako `~/.claude/skills/draw/SKILL.md`; po jednorazowej konfiguracji wystarczy bezpośrednio opisać, czego potrzebujesz.
+Jeśli korzystasz często, zainstaluj [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) w agencie obsługującym lokalne skille. Na przykład w Claude Code zapisz go jako `~/.claude/skills/draw/SKILL.md`; po jednorazowej konfiguracji wystarczy bezpośrednio opisać, czego potrzebujesz.
 
 ## Funkcje
 
@@ -105,7 +105,7 @@ Pełna lista typów wykresów, parametrów i przykładów jest uporządkowana te
 | Tworzyć krótkie linki lub konfigurować ich magazyn | [Self-hosting i krótkie linki](../docs/1-overview/05-self-hosting/pl.md) |
 | Rysować diagramy architektury, sekwencji, ERD i inne diagramy strukturalne | [Składnia URL diagramów strukturalnych](../docs/1-overview/06-diagram-urls/en.md) |
 | Uruchamiać lokalnie lub wdrażać na Cloudflare | [Przewodnik self-hostingu](../docs/1-overview/05-self-hosting/pl.md) |
-| Pozwolić agentowi automatycznie generować wykresy | [Agent Skill](../SKILL.md) |
+| Pozwolić agentowi automatycznie generować wykresy | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Rozwój
 

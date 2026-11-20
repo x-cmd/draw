@@ -27,7 +27,7 @@ X-CMD Draw เป็นเครื่องมือโอเพนซอร์
 ส่ง Prompt ด้านล่างให้ Agent ที่สามารถอ่านหน้าเว็บได้ บริการ draw ที่โฮสต์ให้ไม่จำเป็นต้องสมัครบัญชีหรือขอ API Key
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. บอกสิ่งที่คุณต้องการ
@@ -38,7 +38,7 @@ Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From
 เพิ่มแผนภาพสถาปัตยกรรมใน README ที่แสดงเส้นทางของคำขอจาก CLI ผ่าน API ไปยังฐานข้อมูล
 ```text
 
-หากใช้บ่อย คุณสามารถติดตั้ง [`SKILL.md`](../SKILL.md) ให้ Agent ที่รองรับ skills ในเครื่องได้ ตัวอย่างเช่น Claude Code ให้บันทึกเป็น `~/.claude/skills/draw/SKILL.md` หลังตั้งค่าเพียงครั้งเดียวก็สามารถบอกความต้องการได้โดยตรง
+หากใช้บ่อย คุณสามารถติดตั้ง [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) ให้ Agent ที่รองรับ skills ในเครื่องได้ ตัวอย่างเช่น Claude Code ให้บันทึกเป็น `~/.claude/skills/draw/SKILL.md` หลังตั้งค่าเพียงครั้งเดียวก็สามารถบอกความต้องการได้โดยตรง
 
 ## ฟีเจอร์
 
@@ -105,7 +105,7 @@ bash scripts/setup.sh   # ปรับใช้ในบัญชี Cloudflare 
 | สร้างลิงก์สั้นหรือกำหนดค่าที่เก็บลิงก์สั้น | [การโฮสต์เองและการตั้งค่าลิงก์สั้น](../docs/1-overview/05-self-hosting/th.md) |
 | วาดแผนภาพสถาปัตยกรรม แผนภาพลำดับ ERD และแผนภาพโครงสร้างอื่น ๆ | [ไวยากรณ์ URL ของแผนภาพโครงสร้าง](../docs/1-overview/06-diagram-urls/en.md) |
 | เรียกใช้ในเครื่องหรือปรับใช้บน Cloudflare | [คู่มือโฮสต์เอง](../docs/1-overview/05-self-hosting/th.md) |
-| ให้ Agent สร้างกราฟโดยอัตโนมัติ | [Agent Skill](../SKILL.md) |
+| ให้ Agent สร้างกราฟโดยอัตโนมัติ | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## การพัฒนา
 

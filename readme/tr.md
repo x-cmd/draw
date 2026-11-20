@@ -27,7 +27,7 @@ Performans analizinden mimari tasarıma, haritalardan zaman planlamasına kadar 
 Aşağıdaki istemi web sayfalarını okuyabilen bir Agent’a gönderin. draw’ın hosted hizmeti için hesap açmak veya API Key almak gerekmez:
 
 ```text
-Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
+Read and follow https://raw.githubusercontent.com/x-cmd/draw/main/skills/x-cmd-draw/SKILL.md. From now on, whenever you write a README, issue, pull request, blog post, or chat message and need a chart, use x-cmd Draw to generate a link and embed it with image syntax instead of attaching image files.
 ```
 
 ### 2. İhtiyacınızı açıklayın
@@ -38,7 +38,7 @@ Agent’a hangi verileri kullanacağını, hangi ilişkileri göstereceğini ve 
 README’ye, bir isteğin CLI’dan API üzerinden veritabanına uzanan yolunu gösteren bir mimari diyagramı ekle.
 ```text
 
-draw’ı sık kullanıyorsanız [`SKILL.md`](../SKILL.md) dosyasını yerel skills destekleyen bir Agent’a kurabilirsiniz. Örneğin Claude Code’da dosyayı `~/.claude/skills/draw/SKILL.md` olarak kaydedin; bir kez yapılandırdıktan sonra ihtiyacınızı doğrudan açıklayabilirsiniz.
+draw’ı sık kullanıyorsanız [`SKILL.md`](../skills/x-cmd-draw/SKILL.md) dosyasını yerel skills destekleyen bir Agent’a kurabilirsiniz. Örneğin Claude Code’da dosyayı `~/.claude/skills/draw/SKILL.md` olarak kaydedin; bir kez yapılandırdıktan sonra ihtiyacınızı doğrudan açıklayabilirsiniz.
 
 ## Özellikler
 
@@ -105,7 +105,7 @@ Tüm grafik türleri, parametreler ve örnekler belgelerde konulara göre düzen
 | Kısa bağlantılar oluşturma veya depolamalarını yapılandırma | [Self-hosting ve kısa bağlantı yapılandırması](../docs/1-overview/05-self-hosting/tr.md) |
 | Mimari, sıra ve ERD gibi yapısal diyagramlar çizme | [Yapısal diyagram URL sözdizimi](../docs/1-overview/06-diagram-urls/en.md) |
 | Yerel olarak çalıştırma veya Cloudflare’e dağıtma | [Self-hosting kılavuzu](../docs/1-overview/05-self-hosting/tr.md) |
-| Agent ile otomatik grafik oluşturma | [Agent Skill](../SKILL.md) |
+| Agent ile otomatik grafik oluşturma | [Agent Skill](../skills/x-cmd-draw/SKILL.md) |
 
 ## Geliştirme
 

@@ -51,7 +51,7 @@ yfm 头控制页头页脚:title(必填)、subtitle,contact 与 location、websit
 
 ```sh
 https://x-cmd.com/draw/x-cmd/onepage
-  ?src=https://github.com/x-cmd/draw/blob/main/onepage.SKILL.md
+  ?src=https://github.com/x-cmd/draw/blob/main/skills/onepage/SKILL.md
 ```
 
 浏览器地址栏打开是阅读页;当图片嵌或 curl 得 SVG;加 format=png 出位图。错误对照:400 缺 title 或超长;404 源地址取不到。
