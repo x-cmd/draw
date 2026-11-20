@@ -39,7 +39,7 @@ import { renderArchmapFromUrl } from './archmap.js';
 import { parseTableSpec, tableSpecFromParams } from '../specs/table.js';
 import { renderTable, tableToGrid } from './table.js';
 import { renderMindmapFromUrl } from './mindmap.js';
-import { resolveSkin, type Scheme } from '../styles/index.js';
+import { resolveSkin, type Scheme, type Skin } from '../styles/index.js';
 import { CHART_TEMPLATES, type ChartTemplate, type StoredChart } from '../store.js';
 
 // 渲染结果(HTTP 层据此构造响应头;库用户直接拿 svg)
@@ -138,13 +138,8 @@ function chartRender(
   const input = parseInput(request.searchParams, kind);
   const v = resolveVersion(request.searchParams.get('v'));
   const skin = resolveSkin(kind, request.searchParams.get('t'), schemeParam(request.searchParams));
-  // 语义槽位前置校验:用了角色名(colors=danger)而该家族没配角色表 → 400 教正确写法,
-  // 不做静默回退(静默 = 用户以为生效了,配色却完全是另一回事 —— 惊喜边界)
-  const used = colorInputs(input);
-  const roleUsed = used.filter((c) => ROLE_NAME_RE.test(c));
-  if (roleUsed.length > 0 && !skin.roles) {
-    throw new ApiError(400, `t=${skin.rules ? '' : ''}"${request.searchParams.get('t') ?? kind}" has no semantic roles; slot names (${roleUsed.join(', ')}) need one of the skin families (macaron, wabi-sabi, primer, morandi, nordic, salmon, neon). Use hex colors instead, or pick a skin family`);
-  }
+  // 语义槽位前置校验(导出的同一份,hub 的两条直调路也用它)
+  checkSlotColors(input, skin, request.searchParams.get('t'));
   const highlightRaw = request.searchParams.get('highlight');
   const highlight = highlightRaw === null || highlightRaw === '' ? undefined
     : new Set(highlightRaw.split(',').map((s) => s.trim()).filter(Boolean));
@@ -160,14 +155,26 @@ function chartRender(
 
 // input(单系列/多系列)里的全部取色串 —— 槽位校验用
 const ROLE_NAME_RE = /^(?:primary|success|warning|danger|info|accent)$/;
-function colorInputs(input: ChartInput): string[] {
-  const out: string[] = [];
+
+/**
+ * 语义槽位前置校验:用了角色名(colors=danger)而该家族没配角色表 → 400 教正确写法。
+ * 不做静默回退(静默 = 用户以为生效了,色值却根本没解析 —— 惊喜边界)。
+ * hub 的 /draw? 与 /draw/explore/svg 有自己的分发器直调渲染器,绕不开这里 ——
+ * 所以导出给那两条路也调(hub routes/render.ts、explore.ts)。
+ */
+export function checkSlotColors(input: ChartInput, skin: Skin, family: string | null): void {
+  const used: string[] = [];
   if (input.multi) {
-    for (const s of input.spec.series) if (s.color) out.push(s.color);
+    for (const s of input.spec.series) if (s.color && ROLE_NAME_RE.test(s.color)) used.push(s.color);
   } else {
-    for (const d of input.spec.data) if ('color' in d && d.color) out.push(d.color as string);
+    for (const d of input.spec.data) if ('color' in d && d.color && ROLE_NAME_RE.test(d.color as string)) used.push(d.color as string);
   }
-  return out;
+  if (used.length > 0 && !skin.roles) {
+    throw new ApiError(
+      400,
+      `t=${JSON.stringify(family ?? '')} has no semantic roles; slot names (${used.join(', ')}) need one of the skin families (macaron, wabi-sabi, primer, morandi, nordic, salmon, neon). Use hex colors instead, or pick a skin family`,
+    );
+  }
 }
 
 // 参考线参数(hbar opendata):?ref=<数值> ?reflabel=<文案>
