@@ -1,0 +1,68 @@
+id: x-draw-9-showcases-16-riemann-hypothesis
+
+data:
+  - name:
+      en: Claude and the Riemann Hypothesis
+      cn: Claude 与黎曼猜想
+    qa:
+      - id: what
+        question:
+          en: "What is the Riemann Hypothesis?"
+          cn: "黎曼猜想到底在猜什么？"
+        answer:
+          en: >
+            In 1859 Riemann converted the question of how big the error is when approximating
+            the prime count into a question about the zeros of a special function (the Zeta
+            function). His conjecture: all of its non-trivial zeros lie on one special line,
+            the critical line. If true, the distribution of primes can be described much more
+            precisely. It is one of the seven Clay Millennium Prize Problems, with a $1 million
+            reward, and had been open for 167 years.
+          cn: >
+            1859 年，黎曼把「素数计数的近似误差到底有多大」转化为一个特殊函数（Zeta 函数）的
+            零点问题，并大胆猜想：它的非平凡零点应该全部落在一条特殊的直线（临界线）上。猜想
+            若成立，数学家就能更精确地描述素数分布。它是克雷数学研究所七大千禧年难题之一，悬赏
+            100 万美元，至今已困扰数学界 167 年。
+        confidence: 9
+        reference:
+          - docs/9-showcases/16-riemann-hypothesis/en.md
+          - docs/9-showcases/16-riemann-hypothesis/cn.md
+      - id: lower-bound
+        question:
+          en: "What did Claude actually achieve in August 2026?"
+          cn: "Claude 在 2026 年 8 月到底做成了什么？"
+        answer:
+          en: >
+            It did not prove the hypothesis. It proved that at least 67.2% of non-trivial zeros
+            lie on the critical line and are simple zeros, up from the previous mathematicians'
+            record of about 41.6% — raising the known lower bound by roughly 25 percentage points
+            in one step. In September, Lamzouri published a conceptually simpler proof of the same
+            result on arXiv.
+          cn: >
+            它并没有直接证明猜想，而是证明了至少有 67.2% 的非平凡零点位于临界线上，而且都是简单
+            零点；此前数学家掌握的纪录只有约 41.6%，相当于一步把已知下限提高了约 25 个百分点。
+            9 月，Lamzouri 又在 arXiv 上给出了同一结果的、概念上更简洁的证明。
+        confidence: 9
+        reference:
+          - docs/9-showcases/16-riemann-hypothesis/en.md
+          - docs/9-showcases/16-riemann-hypothesis/cn.md
+      - id: proven
+        question:
+          en: "Has the Riemann Hypothesis actually been proven?"
+          cn: "黎曼猜想真的被证明了吗？"
+        answer:
+          en: >
+            Not yet in the eyes of the mathematics community. On November 20, 2026 Alpöge claimed
+            a complete proof (extending to the Generalized Riemann Hypothesis), but released it as
+            14 Lean formalized-proof archives instead of a readable paper — a human-readable version
+            could exceed 250,000 pages. Fields Medalist Terence Tao stresses the work still needs
+            verification and digestion; no independent peer review or readable formal paper exists,
+            so the accurate framing is a claim under verification.
+          cn: >
+            按数学界目前的标准，还没有。2026 年 11 月 20 日，Alpöge 宣称找到了完整证明，还能推广到
+            广义黎曼猜想，但发布物是 14 个 Lean 形式化证明压缩包，而不是可读论文——人类可读版本
+            可能超过 25 万页。菲尔兹奖得主陶哲轩强调，这份证明仍需进一步验证和整理；目前既没有
+            完成独立审查，也没有可读的正式论文，准确说法是「宣称已找到证明，正在验证中」。
+        confidence: 9
+        reference:
+          - docs/9-showcases/16-riemann-hypothesis/en.md
+          - docs/9-showcases/16-riemann-hypothesis/cn.md
