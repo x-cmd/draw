@@ -2,7 +2,7 @@
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
 import type { MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, smoothPath, roundedPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar, markPoints, marksLayer } from './svg.js';
+import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, smoothPath, roundedPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar, markPoints, marksLayer } from './svg.js';
 import { lineLayout } from './line.js';
 
 /**
@@ -13,7 +13,10 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   const allSegs: LineSeg[] = [];
   const rules = skin.rules;
   const k = spec.series.length;
-  const colors = spec.series.map((_, i) => sVar(i % skin.series.length));
+  // 每列取色:highlight 未点名 → 家族灰;显式色(槽位/hex)→ colorRef;缺省 → 位置色
+  const colors = spec.series.map((s, i) =>
+    o.highlight && !o.highlight.has(s.name) ? grayVar(i) : colorRef(s.color, sVar(i % skin.series.length)),
+  );
   const n = spec.labels.length;
   const gMax = Math.max(...spec.series.flatMap((s) => s.values));
   const [peakS, peakP] = findPeak(spec.series);

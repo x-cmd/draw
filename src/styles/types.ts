@@ -8,6 +8,20 @@ export interface Duo {
 
 export const duo = (light: string, dark: string = light): Duo => ({ light, dark });
 
+/**
+ * 语义角色(colors= 的槽位名)。角色按当前 t= 解析成具体色:
+ * 换皮不改义 —— danger 在 primer 是 GitHub 红,在 macaron 是深珊瑚。
+ * 灰调家族(wabi/morandi)没有警报红,按家族气质就近取:
+ * 语义(可区分)保留,紧迫感柔化 —— 选了这家就是这个味。
+ */
+export const ROLES = ['primary', 'success', 'warning', 'danger', 'info', 'accent'] as const;
+export type Role = (typeof ROLES)[number];
+
+/** colors= 项的合法槽位写法:角色名或 s1..sN(s 槽 = 家族色板第 N 色,含溢出档)。
+ *  muted 是第七个槽:直接映射 neutral 的 --d-muted(压灰语义,不进角色表 —— 所有家族恒可用) */
+export const SLOT_RE = /^(?:s([1-9]\d*)|primary|success|warning|danger|info|accent|muted)$/;
+export const isSlot = (v: string): boolean => SLOT_RE.test(v);
+
 /** 中性色令牌(网格/文字/卡片等),全部支持明暗 */
 export interface Neutrals {
   ink: Duo;      // 标题/主文字
@@ -173,6 +187,8 @@ export interface VariantInput {
   /** 家族溢出档:系列数超出色板时的补位色(全局 Tailwind 表会击穿粉彩/土色家族);
    *  缺省回落全局表(macaron=同色系加深掺灰、wabi=沙→深陶、primer=灰阶明度步进) */
   overflow?: Duo[];
+  /** 语义角色表:colors=danger 按当前家族解析;未配的家族用槽位名报 400 */
+  roles?: Partial<Record<Role, Duo>>;
   /** 默认画布(设计变体 = 规范 SVG 的 viewBox;不填用模板默认) */
   size?: [number, number];
 }
@@ -186,6 +202,7 @@ export interface Variant {
   neutrals: Neutrals;
   ramp: [Duo, Duo];
   overflow?: Duo[];
+  roles?: Partial<Record<Role, Duo>>;
   size?: [number, number];
 }
 
@@ -196,7 +213,9 @@ export function makeVariant(v: VariantInput): Variant {
   const ramp = v.ramp ?? [a, b];
   return {
     family: v.family, label: v.label, series: v.series, rules, neutrals, ramp,
-    ...(v.overflow ? { overflow: v.overflow } : {}), ...(v.size ? { size: v.size } : {}),
+    ...(v.overflow ? { overflow: v.overflow } : {}),
+    ...(v.roles ? { roles: v.roles } : {}),
+    ...(v.size ? { size: v.size } : {}),
   };
 }
 
@@ -212,6 +231,7 @@ export interface Skin {
   ramp: [Duo, Duo];
   rules: Rules;
   neutrals: Neutrals;
+  roles?: Partial<Record<Role, Duo>>;
   /** 设计变体 = 规范画布,作为该风格的默认 w/h(?w/?h 仍可覆盖) */
   size?: [number, number];
 }

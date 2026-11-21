@@ -1,5 +1,6 @@
-// 多系列(bar 分组/堆叠、line 多曲线):labels + series[{name, values}]。
+// 多系列(bar 分组/堆叠、line 多曲线):labels + series[{name, values, color?}]。
 import { ApiError, LIMITS, MAX_BY_KIND, clip, flatList } from './base.js';
+import { isSlot } from '../styles/types.js';
 
 // ===== 多系列(bar/line):labels + series[{name, values}] =====
 
@@ -9,6 +10,8 @@ import { ApiError, LIMITS, MAX_BY_KIND, clip, flatList } from './base.js';
 export interface SeriesEntry {
   name: string;
   values: number[];
+  /** 每列的取色:语义槽位(danger/s3)或 hex —— colors= 对多系列图按系列平行 */
+  color?: string;
 }
 
 /**
@@ -84,7 +87,14 @@ export function parseSeriesSpec(raw: string | null, kind: 'bar' | 'line'): Multi
       return v;
     });
     total += values.reduce((a, b) => a + b, 0);
-    return { name: clip(s.name, LIMITS.seriesName), values };
+    let color: string | undefined;
+    if (s.color !== undefined) {
+      if (typeof s.color !== 'string' || !(/^#[0-9a-f]{6}$/i.test(s.color) || isSlot(s.color))) {
+        throw new ApiError(400, `series[${i}].color must be a hex color or a slot name (danger, s1), got ${JSON.stringify(s.color)}`);
+      }
+      color = s.color.toLowerCase();
+    }
+    return color ? { name: clip(s.name, LIMITS.seriesName), values, color } : { name: clip(s.name, LIMITS.seriesName), values };
   });
   if (!(total > 0)) throw new ApiError(400, `all values are 0; series must sum to more than 0`);
 
@@ -135,6 +145,14 @@ export function seriesSpecFromParams(params: URLSearchParams): string | null {
   if (title) obj.title = title;
   const unit = params.get('unit');
   if (unit) obj.unit = unit;
+  // colors= 对多系列图 = 每列一色(与 series= 平行);空项占位保对齐
+  const colors = flatList(params, 'colors');
+  if (colors.length > 0) {
+    series.forEach((s, i) => {
+      const c = colors[i];
+      if (c && (/^#[0-9a-f]{6}$/i.test(c) || isSlot(c))) (s as SeriesEntry).color = c.toLowerCase();
+    });
+  }
   return JSON.stringify(obj);
 }
 

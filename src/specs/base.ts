@@ -1,5 +1,6 @@
 // 公共解析基础:ApiError、LIMITS、单系列 ChartSpec(扁平参数/JSON)、统一入口 parseInput。
 // 各图表专属解析器在本目录独立文件;新增图表 = 新增 specs/xxx.ts + render/xxx.ts。
+import { isSlot } from '../styles/types.js';
 
 /**
  * API error with an HTTP status. Parsers and renderers throw these;
@@ -181,8 +182,9 @@ export function parseChartSpec(raw: string | null, kind: 'pie' | 'bar' | 'hbar' 
     }
     let color: string | undefined;
     if (d.color !== undefined) {
-      if (typeof d.color !== 'string' || !/^#[0-9a-f]{6}$/i.test(d.color)) {
-        throw new ApiError(400, `data[${i}].color must be a hex color like "#6366f1", got ${JSON.stringify(d.color)}`);
+      // 槽位名(danger/s3)与 hex 同收 —— 语义色走 JSON 体与走 colors= 一个待遇
+      if (typeof d.color !== 'string' || !(/^#[0-9a-f]{6}$/i.test(d.color) || isSlot(d.color))) {
+        throw new ApiError(400, `data[${i}].color must be a hex color like "#6366f1" or a slot name (danger, s1), got ${JSON.stringify(d.color)}`);
       }
       color = d.color.toLowerCase();
     }
@@ -220,12 +222,15 @@ export function specFromParams(params: URLSearchParams, kind: 'pie' | 'bar' | 'h
     if (!Number.isFinite(n)) throw new ApiError(400, `values[${i}] is not a number: ${JSON.stringify(v)}`);
     return n;
   });
-  // ?colors=%23aa00ff,...:parallel to labels, per-datum explicit colors (pie etc.)
+  // ?colors=danger,s2,%23aa00ff:parallel to labels, per-datum colors (pie/hbar)。
+  // 每项三种:语义槽位(danger/s3,按当前 t= 解析)、hex 原样、无效静默忽略(既有契约);
+  // 空项占位(colors=danger,,s2)保住位置对齐
   const colors = flatList(params, 'colors');
   const obj: Record<string, unknown> = {
     data: labels.map((label, i) => {
       const c = colors[i];
-      return c && /^#[0-9a-f]{6}$/i.test(c) ? { label, value: nums[i], color: c.toLowerCase() } : { label, value: nums[i] };
+      const color = c && (/^#[0-9a-f]{6}$/i.test(c) || isSlot(c)) ? c.toLowerCase() : undefined;
+      return color ? { label, value: nums[i], color } : { label, value: nums[i] };
     }),
   };
   const title = params.get('title');

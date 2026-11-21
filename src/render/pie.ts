@@ -3,7 +3,7 @@ import type { ChartSpec, Datum } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
 import {
   esc, fmtFull, fmtNum, r2, textW, trunc,
-  type RenderOpts, svgDoc, editorialTitle, titleBlock, sVar, LabelPlacer,
+  type RenderOpts, svgDoc, editorialTitle, titleBlock, sVar, colorRef, grayVar, LabelPlacer,
 } from './svg.js';
 import { radialFit } from './measure.js';
 
@@ -38,7 +38,9 @@ function buildRows(data: Datum[], seriesCount: number): Row[] {
 }
 
 const rowColor = (i: number): string => (i === -1 ? 'var(--d-faint)' : sVar(i));
-const fillOf = (row: Row): string => row.color ?? rowColor(row.colorIdx);
+// 取色三层:?highlight 未点名 → 家族灰阶;显式色(槽位/hex)→ colorRef;缺省 → 位置色
+const fillOf = (row: Row, i: number, hl?: Set<string>): string =>
+  hl && !hl.has(row.label) ? grayVar(i) : colorRef(row.color, rowColor(row.colorIdx));
 
 // ECharts 极坐标(0=3 点钟,正角逆时针);圆角扇区恒 a0→a1 逆时针,
 // 外弧两端切线 fillet(Evil 系签名),角半径受跨距/环宽约束。
@@ -182,7 +184,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     }).join('');
     parts.push(`<defs>${defs}</defs>`);
   }
-  const sliceFill = (i: number): string => (rules.pieGradient && !rows[i].color ? `url(#dgs-${i})` : fillOf(rows[i]));
+  const sliceFill = (i: number): string => (rules.pieGradient && !rows[i].color ? `url(#dgs-${i})` : fillOf(rows[i], i, o.highlight));
   // Interactive embedders: preformatted tooltip text (value + share) on each slice
   const tipAttr = (row: Row): string =>
     o.interactive
@@ -217,7 +219,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
       cum += frac;
       const d = segPath(cx, cy, R, r, lo, hi, rules.pieCorner);
       if (d) {
-        const fill = rules.pieGradient && !row.color ? `url(#dgs-${rows.indexOf(row)})` : fillOf(row);
+        const fill = rules.pieGradient && !row.color ? `url(#dgs-${rows.indexOf(row)})` : fillOf(row, rows.indexOf(row), o.highlight);
         const stroke = gap > 0 ? ` stroke="var(--d-halo)" stroke-width="${gap}" stroke-linejoin="round" stroke-linecap="round"` : '';
         parts.push(`<path d="${d}" fill="${fill}"${stroke}${tipAttr(row)}/>`);
       }
@@ -370,7 +372,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
         const x = pad + (i % cols) * colW;
         const y = legendTop + Math.floor(i / cols) * 26;
         const pct = Math.round((row.value / total) * 100);
-        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(row)}"/>`);
+        parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(row, i, o.highlight)}"/>`);
         parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-ink)">${esc(trunc(row.label, 14))}</text>`);
         if (rules.legendValue) {
           parts.push(
@@ -382,9 +384,9 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
       });
     } else {
       // 单行横排(evil):居中,放不下换到第二行
-      const items = rows.map((row) => {
+      const items = rows.map((row, i) => {
         const name = trunc(row.label, 14);
-        return { row, name, w: 15 + textW(name, 12) + 24 };
+        return { row, name, w: 15 + textW(name, 12) + 24, idx: i };
       });
       const total = items.reduce((s, it) => s + it.w, 0);
       let x = pad + Math.max(0, (width - pad * 2 - total) / 2);
@@ -395,8 +397,8 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
           y += 24;
         }
         parts.push(rules.legendShape === 'circle'
-          ? `<circle cx="${r2(x + 4.5)}" cy="${r2(y - 3.5)}" r="4.5" fill="${fillOf(it.row)}"/>`
-          : `<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(it.row)}"/>`);
+          ? `<circle cx="${r2(x + 4.5)}" cy="${r2(y - 3.5)}" r="4.5" fill="${fillOf(it.row, it.idx, o.highlight)}"/>`
+          : `<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(it.row, it.idx, o.highlight)}"/>`);
         parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(it.name)}</text>`);
         x += it.w;
       }
@@ -411,8 +413,8 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
       const y = firstY + i * rowStep;
       // 图例形状跟皮肤(macaron 的圆点);缺省方块与原行为一致
       parts.push(rules.legendShape === 'circle'
-        ? `<circle cx="${r2(lx + 5)}" cy="${r2(y - 3)}" r="5" fill="${fillOf(row)}"/>`
-        : `<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${fillOf(row)}"/>`);
+        ? `<circle cx="${r2(lx + 5)}" cy="${r2(y - 3)}" r="5" fill="${fillOf(row, i, o.highlight)}"/>`
+        : `<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${fillOf(row, i, o.highlight)}"/>`);
       parts.push(`<text x="${r2(lx + 16)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(trunc(row.label, 14))}</text>`);
       if (rules.legendValue) {
         parts.push(`<text x="${r2(width - pad)}" y="${r2(y)}" text-anchor="end" font-size="12" font-weight="500" fill="var(--d-ink)" style="${TAB}">${fmtFull(row.value)}</text>`);
