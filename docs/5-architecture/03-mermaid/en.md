@@ -58,9 +58,28 @@ The `subgraph` block became the `EDGE` box around the two nodes.
 | `w=` / `h=` | minimum width / height | natural size |
 | `v=` | freeze the response at a version | latest |
 
-## 2. What the syntax supports
+## 2. Which diagrams are supported
 
-This is a diagram renderer, not a full Mermaid runtime. The subset:
+One entry, dispatched by the source's first keyword — each family is
+translated into the params of the matching draw kind and rendered by that
+engine (styles, interactivity, PNG and caching are all the same):
+
+| first keyword | drawn as |
+|---|---|
+| `graph` / `flowchart` | flowchart (node shapes, edges, subgraph boundaries) |
+| `gantt` | [Gantt chart](../../6-schedule/01-gantt) |
+| `sequenceDiagram` | sequence diagram (participants, messages, alt/else/loop/opt/par/break boxes) |
+| `stateDiagram` / `stateDiagram-v2` | state diagram (states, transitions, `[*]` start/end, composite states) |
+| `erDiagram` | ER diagram (field tables, PK/FK, 1:N crow's feet) |
+| `classDiagram` | class diagram (member tables, visibility, hollow triangles for extends/implements) |
+| `mindmap` | mind map (indented tree) |
+| `pie` | pie chart |
+| `sankey-beta` | sankey diagram |
+| `quadrantChart` | quadrant chart |
+| `xychart-beta` | bar / line chart |
+| `radar-beta` | radar chart |
+
+For flowcharts the subset is:
 
 - `graph LR` / `graph TD` / `flowchart LR` / `flowchart TD` — the direction.
   `LR` runs left to right, `TD` top down. `RL` and `BT` work too.
@@ -71,15 +90,23 @@ This is a diagram renderer, not a full Mermaid runtime. The subset:
 - **Subgraphs** — `subgraph Name … end` becomes a boundary group around the
   nodes inside it.
 
-A `gantt` source is also accepted here and is rendered by the
-[Gantt chart](../../6-schedule/01-gantt) page's engine.
+For sequence diagrams: `participant` / `actor` declare the parties, `->>` and
+`-->>` draw messages (a dashed one is a reply), and `alt` / `else` / `loop` /
+`opt` / `par` / `break` become branch boxes. `note`, `autonumber` and
+`activate` are ignored for now.
+
+Not supported yet (mermaid v12 has them, draw does not): `timeline`,
+`journey`, `gitGraph`, `requirementDiagram`, `block-beta`, `packet-beta`,
+`kanban` and the C4 family — they fail with a 400 rather than drawing
+something wrong.
 
 ## 3. Pitfalls
 
 - **The source goes in `m=` URL-encoded** — `>` becomes `%3E`, a space `%20`,
   a newline `%0A`. A raw `&` inside the source splits the parameter.
-- **Only `graph` / `flowchart` / `gantt` are accepted** — a `sequenceDiagram`
-  or a `pieChart` is a 400, not a silent no-op.
+- **The first keyword picks the diagram** — whatever the first line says is
+  what gets drawn; an unknown family is a 400 with the supported list
+  attached.
 - **A `subgraph` block is one group** — the nodes inside it are boxed
   together, edges and all; an edge that leaves the block still counts as
   belonging to it.

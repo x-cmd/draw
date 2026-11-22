@@ -207,8 +207,10 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
 
   // 分支框(alt / else / opt / loop / par / break):
   // 一个 alt 后面连续的 else 归成一组,共用一个外框,中间一条虚线分开两支。
-  const fragSvg = (): string => {
-    if (!o.frags.length) return '';
+  // 框和分隔线压在消息底下,标签(alt [ok])压在最上面 ——
+  // 激活条是竖着的白杠,落点正好在框的左边沿,标签先画会被它盖掉半个字。
+  const fragSvg = (): { boxes: string; labels: string } => {
+    if (!o.frags.length) return { boxes: '', labels: '' };
     const groups: { frags: Frag[] }[] = [];
     for (const f of o.frags) {
       const last = groups[groups.length - 1];
@@ -216,7 +218,8 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
       if (join) last.frags.push(f);
       else groups.push({ frags: [f] });
     }
-    const out: string[] = [];
+    const boxes: string[] = [];
+    const labels: string[] = [];
     for (const g of groups) {
       const first = g.frags[0];
       const lastF = g.frags[g.frags.length - 1];
@@ -227,7 +230,7 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
       const x1 = Math.max(...xs) + 18;
       const y0 = rowY(first.start) - 50;
       const y1 = rowY(lastF.end) + 24;
-      out.push(
+      boxes.push(
         `<rect x="${r2(x0)}" y="${r2(y0)}" width="${r2(x1 - x0)}" height="${r2(y1 - y0)}" rx="8" fill="var(--d-muted)" fill-opacity="0.06" stroke="var(--d-border)" stroke-width="1.2"/>`,
       );
       // 标签:alt [ok] / else [fail] / loop [each]
@@ -239,17 +242,17 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
         const ly = i === 0 ? y0 + 14 : rowY(f.start) - 34 + 4;
         if (i > 0) {
           const dy = rowY(f.start) - 34;
-          out.push(
+          boxes.push(
             `<line x1="${r2(x0)}" y1="${r2(dy)}" x2="${r2(x1)}" y2="${r2(dy)}" stroke="var(--d-border)" stroke-width="1.2" stroke-dasharray="5 4"/>`,
           );
         }
-        out.push(
+        labels.push(
           `<rect x="${r2(lx - 6)}" y="${r2(ly - 11)}" width="${r2(w)}" height="17" rx="5" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
           `<text x="${r2(lx)}" y="${r2(ly + 1)}" font-size="10.5" font-weight="600" letter-spacing="0.4" fill="var(--d-muted)">${esc(text)}</text>`,
         );
       });
     }
-    return out.join('');
+    return { boxes: boxes.join(''), labels: labels.join('') };
   };
 
   const titleSvg = o.title
@@ -257,11 +260,12 @@ export function renderSeqCore(o: SeqOpts): DrawResult {
     : '';
   const headSvg = placed.map((p) => headerBox(p.box.x, p.box.y, p.box.w, p.label, p.sub, p.color, o.interactive, p.id)).join('');
   const spec = { type: 'seq', title: o.title, participants: o.nodes, messages: o.msgs };
+  const frags = fragSvg();
   const svg = svgDoc(
     width, height, 'seq', o.version,
     o.title ?? `sequence diagram, ${o.msgs.length} messages`,
     spec, o.skin,
-    titleSvg + headSvg + fragSvg() + parts.join(''),
+    titleSvg + headSvg + frags.boxes + parts.join('') + frags.labels,
     o.tagQuery, 'seq',
   );
   return { svg, version: o.version, cacheControl: o.cacheControl };

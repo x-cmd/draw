@@ -95,9 +95,22 @@ AI 分析代码库时的首选入口：先跑真实统计，再成图。tokei �
 
 同一份 Mermaid 甘特源码（`m=`，首行 `gantt` 关键字可省），两张脸：`/draw/gantt` 是甘特本命脸；`/draw/gantt2` 换成架构图 v2 风格。
 
-## 4. Mermaid 流图：`/draw/mermaid`
+## 4. Mermaid 源码：`/draw/mermaid`
 
-`m=<flowchart 源码>`，线上有 Flow / Mono 两种形态（demo 可见）。v1 子集：`graph` / `flowchart` 的节点形状、边样式/标签、subgraph（转分组）；首行是 `gantt` 时分派到甘特渲染。
+`m=<mermaid 源码>`，按源码首关键字分派到对应图种（样式/交互/PNG 与那些图种完全一致）：
+
+| 首关键字 | 画成 |
+|---|---|
+| `graph` / `flowchart` | 流程图（节点形状、边样式/标签、subgraph 转分组；线上有 Flow / Mono 两种形态） |
+| `gantt` | 甘特图 |
+| `sequenceDiagram` | 时序图（参与方、消息、alt/else/loop/opt/par/break 分支框） |
+| `stateDiagram` / `stateDiagram-v2` | 状态图（状态、迁移、`[*]` 起止、复合状态） |
+| `erDiagram` | 实体关系图（字段表、主外键、1:N 鱼尾） |
+| `classDiagram` | 类图（成员表、可见性、extends/implements 空心三角） |
+| `mindmap` | 导图（缩进树） |
+| `pie` / `sankey-beta` / `quadrantChart` / `xychart-beta` / `radar-beta` | 对应的图表 |
+
+还不支持的（`timeline` / `journey` / `gitGraph` / `requirementDiagram` / `block-beta` / `packet-beta` / `kanban` / C4）会 400 并列出支持的清单。
 
 ## 5. 思维导图：`/draw/mindmap`
 

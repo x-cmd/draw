@@ -46,26 +46,50 @@ https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5B%E4%B8%8B%E5%8D%95%5
 | `w=` / `h=` | 最小宽 / 高 | 自然尺寸 |
 | `v=` | 固定输出版本 | 最新 |
 
-## 二、语法支持到哪
+## 二、支持哪些图种
 
-这是图形渲染器,不是完整的 Mermaid 运行时。支持的子集:
+一个入口,按源码首关键字分派 —— 每种图翻成 draw 对应图种的参数,再交给那个引擎画
+(样式、交互、PNG、缓存全是同一套):
+
+| 源码首关键字 | 画成什么 |
+|---|---|
+| `graph` / `flowchart` | 流程图(节点形状、连线、subgraph 边界) |
+| `gantt` | [甘特图](../../6-schedule/01-gantt) |
+| `sequenceDiagram` | 时序图(参与方、消息、alt/else/loop/opt/par/break 分支框) |
+| `stateDiagram` / `stateDiagram-v2` | 状态图(状态、迁移、`[*]` 起止、复合状态) |
+| `erDiagram` | 实体关系图(字段表、主外键、1:N 鱼尾) |
+| `classDiagram` | 类图(成员表、可见性、extends/implements 空心三角) |
+| `mindmap` | 导图(缩进树) |
+| `pie` | 饼图 |
+| `sankey-beta` | 桑基图 |
+| `quadrantChart` | 四象限 |
+| `xychart-beta` | 柱状/折线图 |
+| `radar-beta` | 雷达图 |
+
+流程图那一支支持的子集:
 
 - `graph LR` / `graph TD` / `flowchart LR` / `flowchart TD` —— 方向。
   `LR` 从左到右,`TD` 从上到下;`RL`、`BT` 也行。
 - **节点形状** —— `[方框]`、`{菱形}`、`([圆角])`、`[(圆柱)]`、
   `([胶囊])`、`[[子流程]]`。
 - **连线** —— `-->` 带箭头,`---` 直线,`-.->` 虚线,`==>` 粗线;
-  `-->|文字|` 在线��写字。
+  `-->|文字|` 在线上写字。
 - **subgraph** —— `subgraph 名字 … end` 变成包住里面节点的边界框。
 
-这里也接受 `gantt` 源码,走的是[甘特图](../../6-schedule/01-gantt)那套引擎。
+时序图那一支:`participant`/`actor` 声明参与方,`->>`/`-->>` 画消息
+(虚线是回信),`alt`/`else`/`loop`/`opt`/`par`/`break` 变成分支框;
+`note`、`autonumber`、`activate` 这些暂时忽略。
+
+还不支持的(mermaid v12 里有、这儿没有):`timeline`、`journey`、`gitGraph`、
+`requirementDiagram`、`block-beta`、`packet-beta`、`kanban`、C4 那几档 ——
+它们会 400,不会静默画错。
 
 ## 三、踩坑
 
 - **源码要 URL 编码后放进 `m=`** —— `>` 变 `%3E`,空格 `%20`,换行 `%0A`;
   源码里没编码的 `&` 会把参数截断。
-- **只认 `graph` / `flowchart` / `gantt`** —— `sequenceDiagram`、`pieChart`
-  这些会 400,不会静默忽略。
+- **图种由源码首关键字决定** —— 第一行写什么就画什么;不认识的图种会 400,
+  并把支持的清单列出来。
 - **`subgraph` 块就是一个组** —— 块里的节点(连同块内的连线)会被框在一起;
   出块的连线也算这个组的。
 - **形状写法很挑** —— 菱形是 `{…}`,圆柱是 `[(…)]`;括号错一个就换形状或解析失败。

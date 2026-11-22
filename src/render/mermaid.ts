@@ -1,7 +1,11 @@
-// mermaid 语法糖 → archmap(#20 方案 A′):只吃 flowchart(graph/flowchart)子集。
-// 解析 = vendored jison 产物(官方 flow.jison 编译);布局 = dagre(纯 JS);
+// mermaid 语法糖 → draw 的各种图种。
+//
+// 一个入口,按源码首关键字分派:graph/flowchart、gantt、sequenceDiagram、stateDiagram、
+// erDiagram、classDiagram、mindmap、pie、sankey-beta、quadrantChart、xychart-beta、radar-beta。
+// 每种图有自己的语法,各自翻成 draw 对应图种的参数(mermaid/*.ts),再交给那个引擎画 ——
+// 于是样式/交互/PNG/缓存全是同一套,不必再养第二套渲染器。
+// 流程图那支是老的:解析 = vendored jison 产物(官方 flow.jison 编译);布局 = dagre(纯 JS);
 // 渲染 = renderArchmapCore(三风格/交互/PNG/缓存全继承)。
-// 时序图/甘特等其余图型不在 v1 范围,给出明确 400。
 import type { Dagre } from '../types/dagre.js';
 // dagre 无官方类型:类型用本仓自绘的最小面(普通模块,非 ambient 声明 ——
 // ambient 属全局类型改动,JSR 不许发布)
@@ -11,13 +15,102 @@ const dagre = dagreRaw as unknown as Dagre;
 import { ApiError } from '../specs/index.js';
 import { resolveVersion } from '../version.js';
 import { resolveSkin, type Skin } from '../styles/index.js';
-import { clampInt, schemeParam, type DrawResult } from './query.js';
+import { clampInt, schemeParam, renderFromUrl, type DrawResult } from './query.js';
 import { mermaidFlowParser } from './vendor/mermaid-flow-parser.js';
 import { renderGanttFromUrl } from './gantt.js';
+import { renderSeqFromUrl } from './seq.js';
+import { renderMindmapFromUrl } from './mindmap.js';
+import { renderKindFromUrl } from './kinds.js';
+import { CHART_TEMPLATES, type ChartTemplate } from '../store.js';
 import { renderArchmapCore, naturalSize, type ArchNode, type ArchEdge, type ArchBoundary, type ArchmapCoreOpts, type ArchStyle } from './archmap.js';
+import { headOf, type MermaidPlan } from './mermaid/common.js';
+import { translateSequence } from './mermaid/seq.js';
+import { translateState } from './mermaid/state.js';
+import { translateErd } from './mermaid/erd.js';
+import { translateClass } from './mermaid/class.js';
+import { translateMindmap } from './mermaid/mindmap.js';
+import { translatePie } from './mermaid/pie.js';
+import { translateSankey } from './mermaid/sankey.js';
+import { translateQuadrant } from './mermaid/quadrant.js';
+import { translateXychart } from './mermaid/xychart.js';
+import { translateRadar } from './mermaid/radar.js';
 
 const M_MAX = 6000;
 const N_EXAMPLE = 'm=' + encodeURIComponent('graph LR\n  A[Browser] --> B{Gateway}\n  B --> C[API]');
+
+/** mermaid 首关键字 → 翻译器(翻成 draw 对应图种的参数) */
+const TRANSLATORS: Record<string, (src: string) => MermaidPlan> = {
+  sequencediagram: translateSequence,
+  statediagram: translateState,
+  'statediagram-v2': translateState,
+  erdiagram: translateErd,
+  classdiagram: translateClass,
+  mindmap: translateMindmap,
+  pie: translatePie,
+  'sankey-beta': translateSankey,
+  quadrantchart: translateQuadrant,
+  'xychart-beta': translateXychart,
+  'radar-beta': translateRadar,
+};
+
+/** 认识的图种(报错时列给人看) */
+const SUPPORTED = [
+  'graph/flowchart', 'gantt', 'sequenceDiagram', 'stateDiagram', 'erDiagram',
+  'classDiagram', 'mindmap', 'pie', 'sankey-beta', 'quadrantChart', 'xychart-beta', 'radar-beta',
+];
+
+/** mermaid 首关键字 → 换肤注册表:图表族各有自己的一套,结构图族统一走 sankey 那套 */
+const SKIN_KIND: Record<string, ChartTemplate> = {
+  sequencediagram: 'sankey',
+  statediagram: 'sankey',
+  'statediagram-v2': 'sankey',
+  erdiagram: 'sankey',
+  classdiagram: 'sankey',
+  mindmap: 'sankey',
+  pie: 'pie',
+  'sankey-beta': 'sankey',
+  quadrantchart: 'quadrant',
+  'xychart-beta': 'bar',
+  'radar-beta': 'radar',
+};
+
+/**
+ * The mermaid diagram family of a source — the first keyword, normalised
+ * (`sequenceDiagram` → `sequencediagram`). Null when the family is unknown.
+ * The editor uses it to name the diagram and to pick the skin registry.
+ */
+export function mermaidFamilyOf(src: string): string | null {
+  const head = headOf(src);
+  if (!head) return null;
+  return TRANSLATORS[head] || head === 'graph' || head === 'flowchart' || head === 'gantt' ? head : null;
+}
+
+/**
+ * Which skin registry a mermaid source resolves against — the chart families
+ * each have their own (`t=` families), the topology family shares one.
+ * The editor uses it to offer the right skin list for the diagram at hand.
+ */
+export function mermaidSkinKind(src: string): ChartTemplate | null {
+  const head = mermaidFamilyOf(src);
+  if (head === null) return null;
+  if (head === 'graph' || head === 'flowchart' || head === 'gantt') return 'sankey';
+  return SKIN_KIND[head] ?? null;
+}
+
+/** 从 mermaid 的 URL 透传到目标图种的参数(渲染控制类的,语义由目标图种自己解释) */
+const PASSTHROUGH = ['title', 'subtitle', 'source', 'unit', 'w', 'h', 't', 'scheme', 'v', 'num', 'donut', 'stack', 'labelmax', 'dir', 'grid', 'legend', 'paper', 'scale'];
+
+/** 翻译产物 + 透传参数 → 目标图种的 URL */
+function targetUrl(plan: MermaidPlan, url: URL): URL {
+  const u = new URL('https://x-cmd.com/draw');
+  if ((CHART_TEMPLATES as readonly string[]).includes(plan.kind)) u.searchParams.set('type', plan.kind);
+  for (const [k, v] of plan.params) u.searchParams.append(k, v);
+  for (const k of PASSTHROUGH) {
+    const v = url.searchParams.get(k);
+    if (v !== null && v !== '') u.searchParams.set(k, v); // URL 里的盖过源码里带来的(图题之类)
+  }
+  return u;
+}
 
 interface FlowDoc {
   direction: string;
@@ -221,20 +314,34 @@ function layout(doc: FlowDoc, sizes: Map<string, { w: number; h: number }>): { b
 }
 
 /**
- * Render a mermaid flowchart from URL params (`/draw/mermaid?m=<code>`).
- * v1 subset: graph/flowchart with node shapes, edge styles/labels and
- * subgraphs (→ boundary groups). Everything renders through the archmap
- * engine — styles, interactivity, PNG and caching all inherited.
+ * Render a mermaid diagram from URL params (`/draw/mermaid?m=<code>`).
+ *
+ * The source's first keyword picks the diagram family: graph/flowchart and
+ * gantt have their own engines; every other supported family is translated
+ * into the params of an existing draw kind (sequenceDiagram → seq,
+ * stateDiagram → lifecycle, erDiagram → erd, classDiagram → class,
+ * mindmap → mindmap, pie/sankey-beta/quadrantChart/xychart-beta/radar-beta →
+ * the matching chart kind) and rendered by that engine — so styles,
+ * interactivity, PNG and caching are all inherited.
  */
 export function renderMermaidFromUrl(url: URL, interactive = false): DrawResult {
   const params = url.searchParams;
   const m = params.get('m');
   if (m === null || m.trim() === '') throw new ApiError(400, `"m" (mermaid source) is required. Example: /draw/mermaid?${N_EXAMPLE}`);
   if (m.length > M_MAX) throw new ApiError(400, `"m" too long: ${m.length} > ${M_MAX}`);
-  const head = m.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
+  const head = headOf(m);
   if (head === 'gantt') return renderGanttFromUrl(url, interactive);
   if (head !== 'graph' && head !== 'flowchart') {
-    throw new ApiError(400, `only "graph/flowchart" and "gantt" are supported, got "${head || '(empty)'}"`);
+    const translate = TRANSLATORS[head];
+    if (!translate) {
+      throw new ApiError(400, `unsupported mermaid diagram "${head || '(empty)'}". Supported: ${SUPPORTED.join(', ')}. Example: /draw/mermaid?${N_EXAMPLE}`);
+    }
+    const plan = translate(m);
+    const u = targetUrl(plan, url);
+    if ((CHART_TEMPLATES as readonly string[]).includes(plan.kind)) return renderFromUrl(u); // 图表族:type=pie/…
+    if (plan.kind === 'seq') return renderSeqFromUrl(u, interactive);
+    if (plan.kind === 'mindmap') return renderMindmapFromUrl(u, interactive);
+    return renderKindFromUrl(plan.kind, u, interactive); // lifecycle / erd / class / dataflow
   }
 
   const doc = parseFlow(m);

@@ -78,8 +78,8 @@ export {
   type RoutingWeights,
   type Drawn,
 } from './render/route.js';
-// mermaid 语法糖 → archmap 渲染(/draw/mermaid?m=<flowchart 源码>)
-export { renderMermaidFromUrl, parseFlow } from './render/mermaid.js';
+// mermaid 语法糖 → draw 的各种图种(/draw/mermaid?m=<mermaid 源码>)
+export { renderMermaidFromUrl, parseFlow, mermaidSkinKind, mermaidFamilyOf } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';
 export { parseTokei, renderTokeiFromUrl } from './render/tokei.js';
 export { renderGantt2FromUrl, renderGantt2Core } from './render/gantt2.js';
