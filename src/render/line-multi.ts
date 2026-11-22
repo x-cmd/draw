@@ -2,7 +2,7 @@
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
 import type { MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { axisTitleY, colorRef, editorialTitle, esc, findPeak, fmtFull, fmtNum, grayVar, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, reserveBands, roundedPath, smoothPath, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, toSegments, trunc, type LineSeg, type RenderOpts, yAxisGrid } from './svg.js';
+import { axisTitleY, colorRef, editorialTitle, esc, findPeak, fmtFull, fmtNum, grayVar, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, refLabelReserve, refLineLayer, refLinesOf, reserveBands, roundedPath, scaleMeta, smoothPath, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, toSegments, trunc, type LineSeg, type RenderOpts, yAxisGrid } from './svg.js';
 import { lineLayout } from './line.js';
 
 /**
@@ -32,7 +32,8 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   const ticks = niceTicks(gMax, 4);
   // 端标签(OpenData):右侧预留系列名宽度,防止贴边/裁切
   const endMax = rules.endLabels ? Math.max(...spec.series.map((s) => textW(trunc(s.name, 14), 11))) + 14 : 0;
-  const right = Math.min(right0, width - pad - endMax);
+  // 参考线文案在绘图区右边 —— 先给它腾出位置(否则只能翻到左边跟刻度叠字)
+  const right = Math.min(right0, width - pad - endMax) - refLabelReserve(refLinesOf(o));
   const yMax = ticks[ticks.length - 1];
   const y = (v: number): number => bottom - (v / yMax) * (bottom - contentTop);
   const xs = (i: number): number => (n === 1 ? (left + right) / 2 : left + ((right - left) * i) / (n - 1));
@@ -46,6 +47,19 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
 
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, spec.labels.map((_, i) => xs(i)));
   if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
+
+  // 参考线画在数据之下:它是参照,不是数据
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: y,
+      plot: { start: bottom, end: contentTop },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
+  }
 
   const num = o.valueLabels ?? rules.num;
   const placer = new LabelPlacer();
@@ -104,5 +118,10 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, xs, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + parts.join(''));
+  // 交互模式:像素↔值的映射 + 全部系列的数据值(编辑器吸附用)
+  const dscale = o.interactive
+    ? scaleMeta(0, bottom, yMax, contentTop, spec.series.flatMap((s) => s.values))
+    : '';
+
+  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + dscale + parts.join(''));
 }

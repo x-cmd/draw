@@ -10,7 +10,7 @@
 |---|---|
 | pie | ⭐`opendata` `evil` `evil-mono` `market-mono` `progress` `revenue` |
 | bar | ⭐`evil` `base` `grid` |
-| hbar | ⭐`base` `opendata`（支持 `ref=` / `reflabel=`） `xcmd`（像素条，值为 %） `xcmd-issue`（双系列蝴蝶） `rank`（双系列实底+斜纹） |
+| hbar | ⭐`base` `opendata`（支持老写法 `ref=` / `reflabel=`） `xcmd`（像素条，值为 %） `xcmd-issue`（双系列蝴蝶） `rank`（双系列实底+斜纹） |
 | line | ⭐`shadcn` `evil` `evil-glow`（发光） `evil-mono` `opendata`（线端标签） |
 | area | ⭐`evil` `star`（手绘） `pixel` `polka` `opendata`（支持 `subtitle=` `source=`） |
 | radar | ⭐`base` `evil`（支持多系列） `xcmd` |

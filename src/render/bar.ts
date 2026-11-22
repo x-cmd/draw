@@ -1,7 +1,7 @@
 // 柱状图(单系列):卡片容器、主题渐变柱体、顶角 4px 圆角、数值入柱。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { axisTitleY, colorRef, esc, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushBarLabelsAllOrNothing, r2, reserveBands, subtitleBlock, svgDoc, textW, titleBlock, trunc, type RenderOpts, yAxisGrid } from './svg.js';
+import { axisTitleY, colorRef, esc, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushBarLabelsAllOrNothing, r2, refLabelReserve, refLineLayer, refLinesOf, reserveBands, scaleMeta, subtitleBlock, svgDoc, textW, titleBlock, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { yTickInset } from './measure.js';
 
 /**
@@ -35,7 +35,9 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
     const need = left + nBars * 93.6 + pad;
     if (need < width) width = Math.round(Math.max(320, need));
   }
-  const right = width - pad;
+  // 参考线文案在绘图区右边 —— 先给它腾出位置(否则只能翻到左边跟刻度叠字)
+  const refReserve = refLabelReserve(refLinesOf(o));
+  const right = width - pad - refReserve;
   const bottom = height - pad - 30;
 
   const yMax = ticks[ticks.length - 1];
@@ -53,6 +55,19 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   yAxisGrid(parts, ticks, y, left, right, bottom, skin.rules.grid, skin.rules.gridDash);
   // 单位:显式给了 unit= 就画出来(柱图早就给它留了空位 ✓)
   if (spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - 26));
+
+  // 参考线画在柱之下:它是参照,不是数据
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: y,
+      plot: { start: bottom, end: contentTop },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
+  }
 
   // 柱体:墨色、仅顶角圆角 4px
   const n = spec.data.length;
@@ -90,5 +105,8 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.data.map((d) => d.label), (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
+  // 交互模式:像素↔值的映射(编辑器把参考线吸附到数据值上)
+  const dscale = o.interactive ? scaleMeta(0, bottom, yMax, contentTop, values) : '';
+
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + dscale + parts.join(''));
 }

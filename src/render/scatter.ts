@@ -2,7 +2,7 @@
 // 单系列(x=/y=)无图例;多系列(重复 x=/y= 或 JSON series)右上圆点图例。默认不标数值(轴已可读)。
 import type { ScatterSpec, ScatterSeries } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, LabelPlacer, marksLayer, niceStep, pushLineLabelsAllOrNothing, r2, reserveBands, reserveEdges, snap, subtitleBlock, sVar, svgDoc, TAG_RESERVE, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
+import { esc, fmtNum, LabelPlacer, marksLayer, niceStep, pushLineLabelsAllOrNothing, r2, refLabelReserve, refLineLayer, refLinesOf, reserveBands, reserveEdges, scaleMeta, snap, subtitleBlock, sVar, svgDoc, TAG_RESERVE, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 import { tickColW } from './measure.js';
 
 // 取整量程刻度:数据向下/向上取整到步长(规范 -18..19 → -20..20),刻度线铺满整域
@@ -61,7 +61,8 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     width * 0.1,
     tickColW(yTicks, 12, 16) + (showTitles ? width * 0.024 + 14 : 6),
   ));
-  const right = left + Math.round(width * 0.826);
+  // 参考线文案在绘图区右边 —— 先给它腾出位置(否则只能翻到左边跟刻度叠字)
+  const right = left + Math.round(width * 0.826) - refLabelReserve(refLinesOf(o));
   const bottom = Math.round(height * 0.857);
   const top = Math.round(height * 0.184);
   const tickY = Math.round(height * 0.906);
@@ -92,6 +93,20 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     parts.push(`<text x="${r2(gx)}" y="${r2(tickY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   parts.push(`<line x1="${left}" y1="${r2(bottom)}" x2="${right}" y2="${r2(bottom)}" stroke="var(--d-baseline)" stroke-width="1"/>`);
+
+  // 参考线画在点之下:它是参照,不是数据(散点图的参考线按 y 值画横线)
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: py,
+      plot: { start: bottom, end: top },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
+  }
+
   // 轴标题:画布太小则省(会与刻度挤在一起)
   if (showTitles) {
     parts.push(`<text x="${r2((left + right) / 2)}" y="${r2(height * 0.959)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(spec.xname ?? spec.unit ?? 'X value')}</text>`);
@@ -183,5 +198,8 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     parts.push(marksLayer(mpts, width));
   }
 
-  return svgDoc(width, height, 'scatter', version, spec.title ?? 'scatter chart', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
+  // 交互模式:像素↔值的映射(散点图的纵轴不从 0 起 —— 用真实的 minY)
+  const dscale = o.interactive ? scaleMeta(minY, bottom, maxY, top, ys) : '';
+
+  return svgDoc(width, height, 'scatter', version, spec.title ?? 'scatter chart', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + dscale + parts.join(''));
 }

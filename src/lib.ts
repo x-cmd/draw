@@ -42,9 +42,11 @@ export {
 } from './render/maps.js';
 export { parseColor, requireQRText, QR_DEFAULTS } from './render/qr.js';
 export { assertDims } from './render/radar.js';
-export type { RenderOpts } from './render/svg.js';
+export type { RenderOpts, RefLine } from './render/svg.js';
+// 参考线图层:hub 的编辑器与各图种共用同一份画法
+export { refLinesOf, refLineLayer, type RefLineLayer } from './render/svg.js';
 import { renderFromUrl, type DrawResult } from './render/query.js';
-export { renderFromUrl, renderStoredFromUrl, checkSlotColors } from './render/query.js';
+export { renderFromUrl, renderStoredFromUrl, checkSlotColors, refParams as refLinesParam } from './render/query.js';
 // echarts 覆盖层:异步(SSR 引擎按需加载),与 GET /draw/echarts 同参同输出
 export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_RULES } from './render/echarts-ssr.js';
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)

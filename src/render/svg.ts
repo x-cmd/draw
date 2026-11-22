@@ -83,6 +83,22 @@ export function metaTag(template: string, version: number, spec: unknown): strin
   return `<metadata>${esc(json)}</metadata>`;
 }
 
+/**
+ * 交互用的比例尺元数据:像素 ↔ 值的线性映射 + 数据值列表。
+ *
+ * 编辑器要把拖动的参考线吸附到最近的数据值,得先把像素换算回值 ——
+ * 这块信息只能由渲染器给(它是唯一知道坐标映射的)。跟 gantt 的 gtasks 岛同款做法。
+ *
+ * @param v0/p0 值 v0 对应的像素;v1/p1 值 v1 对应的像素(两点之间线性)
+ * @param values 图上画出来的数据值(编辑器拿它做吸附候选)
+ */
+export function scaleMeta(
+  v0: number, p0: number, v1: number, p1: number, values: number[],
+): string {
+  const json = JSON.stringify({ y: { v0, p0, v1, p1 }, values });
+  return `<metadata id="dscale">${esc(json)}</metadata>`;
+}
+
 // 顶部图例:anchor='left' 从左往右(shadcn 圆点) | 'right' 从右往左(Evil 方块)
 // item.index is only passed by interactive embedders: the legend item gets a
 // data-legend attribute plus an invisible hit rect (for click-to-toggle series).
@@ -375,6 +391,90 @@ export function yAxisGrid(
 }
 
 
+// ---- 参考线图层(?ref= 可重复)----
+// 参考线画在数据之下:它是"参照",不是"数据"。文案落在绘图区之外,绝不压住数据。
+// 越界的值(不在值域内)直接跳过 —— 参照线画到画布外没有意义。
+/** 参考线图层:所有图种共用一份画法 */
+export interface RefLineLayer {
+  /** 参考线列表 */
+  refs: RefLine[];
+  /** 值 → 值轴像素(纵轴图= y,横轴图= x) */
+  toPixel: (value: number) => number;
+  /** 值轴像素区间(用于判定参考线是否越界) */
+  plot: { start: number; end: number };
+  /** 参考线横跨的像素区间(与值轴垂直):横线=绘图区左右缘,竖线=上下缘 */
+  span: { from: number; to: number };
+  /** 参考线方向:'h'=横线(值在纵轴上),'v'=竖线(值在横轴上) */
+  orient: 'h' | 'v';
+  /** 画布宽(判断文案在右侧放不放得下) */
+  width: number;
+  /** 画布高(判断文案在下侧放不放得下) */
+  height: number;
+}
+
+/**
+ * 画参考线:线 + 文案。画在数据之前(调用方负责顺序)。
+ *
+ * 文案落在绘图区之外 —— 右侧没位子就翻到左侧,绝不盖住数据。
+ * 两条参考线挨得太近(12px 内)时,文案上下错开,线本身仍在真实值上。
+ */
+export function refLineLayer(parts: string[], o: RefLineLayer): void {
+  const { refs, toPixel, plot, span, orient } = o;
+  if (!refs.length) return;
+  const lo = Math.min(plot.start, plot.end);
+  const hi = Math.max(plot.start, plot.end);
+  const items: { r: RefLine; p: number }[] = [];
+  for (const r of refs) {
+    const p = toPixel(r.value);
+    if (!Number.isFinite(p)) continue;
+    // 越界(值不在值域内)→ 不画这条,但不能因此炸掉整张图
+    if (p < lo - 0.5 || p > hi + 0.5) continue;
+    items.push({ r, p });
+  }
+  if (!items.length) return;
+  // 文案:没写文案时线自己报出它的值
+  const texts = items.map((it) => trunc(it.r.label ?? fmtNum(it.r.value), 24));
+  // 文案统一放一侧:右缘放得下就都放右边,否则都翻到左边 —— 半边一半看着不像一套
+  const widest = Math.max(...texts.map((t) => textW(t, 11)));
+  const atEnd = orient === 'h'
+    ? span.to + 6 + widest <= o.width - 4
+    : span.to + 16 <= o.height;
+  // 同侧文案挤在一起 → 沿值轴错开(线本身不动)
+  const order = items.map((it, i) => ({ i, p: it.p })).sort((a, b) => a.p - b.p);
+  const shift = new Map<number, number>();
+  let prev = -Infinity;
+  for (const o2 of order) {
+    const p = o2.p < prev + 12 ? prev + 12 : o2.p;
+    shift.set(o2.i, p);
+    prev = p;
+  }
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    const stroke = it.r.color
+      ? (isSlot(it.r.color) ? `var(--d-${it.r.color})` : it.r.color)
+      : 'var(--d-faint)';
+    const dash = ' stroke-dasharray="5 4"';
+    if (orient === 'h') {
+      parts.push(`<line x1="${r2(span.from)}" y1="${r2(it.p)}" x2="${r2(span.to)}" y2="${r2(it.p)}" stroke="${stroke}" stroke-width="1"${dash}/>`);
+    } else {
+      parts.push(`<line x1="${r2(it.p)}" y1="${r2(span.from)}" x2="${r2(it.p)}" y2="${r2(span.to)}" stroke="${stroke}" stroke-width="1"${dash}/>`);
+    }
+    const t = texts[i];
+    const pos = shift.get(i)!;
+    if (orient === 'h') {
+      // 横线:文案在绘图区右缘之外;右边放不下就翻到左缘之外(永远不压数据)。
+      // 翻到左边时抬高一格 —— 那一侧是纵轴刻度列,平齐会跟刻度数字叠字。
+      const x = atEnd ? span.to + 6 : span.from - 6;
+      const ty = atEnd ? pos + 4 : pos - 8;
+      parts.push(`<text x="${r2(x)}" y="${r2(ty)}" text-anchor="${atEnd ? 'start' : 'end'}" font-size="11" fill="${stroke}">${esc(t)}</text>`);
+    } else {
+      // 竖线:文案在绘图区下缘之外;下缘放不下就翻到上缘之外
+      const y = atEnd ? span.to + 14 : span.from - 8;
+      parts.push(`<text x="${r2(it.p)}" y="${r2(y)}" text-anchor="middle" font-size="11" fill="${stroke}">${esc(t)}</text>`);
+    }
+  }
+}
+
 // 旋转 Y 轴标题(取 unit;OpenData 风)
 export function axisTitleY(unit: string | undefined, midY: number, x = 32): string {
   if (!unit) return '';
@@ -391,6 +491,37 @@ export function findPeak(series: readonly { values: readonly number[] }[]): [num
     }),
   );
   return [ps, pp];
+}
+
+/**
+ * 一条参考线:值 + 可选文案 + 可选颜色。
+ * `?ref=<值>[;<文案>][,#色]` —— 语义槽位名与 #rrggbb 皆可。
+ */
+export interface RefLine {
+  value: number;
+  label?: string;
+  color?: string;
+}
+
+/**
+ * 取本次要画的参考线:新语法(?ref= 可重复)在 refLines 里;
+ * 旧写法(单条 ?ref= 数值 + ?reflabel=)走 refLine/refLabel —— 合成一条。
+ */
+export function refLinesOf(o: RenderOpts): RefLine[] {
+  if (o.refLines?.length) return o.refLines;
+  if (o.refLine !== undefined) return [{ value: o.refLine, ...(o.refLabel ? { label: o.refLabel } : {}) }];
+  return [];
+}
+
+/**
+ * 参考线文案要的右侧留白:文案画在绘图区之外,得先给它腾出位置。
+ * 不腾的话文案只能翻到左边 —— 那一侧是纵轴刻度列,叠字。
+ */
+export function refLabelReserve(refs: RefLine[]): number {
+  if (!refs.length) return 0;
+  let w = 0;
+  for (const r of refs) w = Math.max(w, textW(trunc(r.label ?? fmtNum(r.value), 24), 11));
+  return w + 10;
 }
 
 // 渲染公共选项(所有渲染器共用)
@@ -414,6 +545,8 @@ export interface RenderOpts {
   refLine?: number;
   /** 参考线文案(?reflabel=WCAG AA) */
   refLabel?: string;
+  /** 参考线(?ref= 可重复:值;文案,#色)—— 全部图种共用 */
+  refLines?: RefLine[];
   /** Interactive embedders (/explore): emit data-tip on data shapes for client tooltips */
   interactive?: boolean;
   /** 标注层(?mark=锚;值;文字,可重复);undefined=无标注;[] 也不会画任何东西 */

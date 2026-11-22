@@ -3,7 +3,7 @@
 import { ApiError } from '../specs/index.js';
 import type { ChartSpec, MultiSpec, ChartInput } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, onVar, r2, sVar, textW, trunc, type RenderOpts, svgDoc } from './svg.js';
+import { esc, fmtFull, fmtNum, niceTicks, onVar, r2, refLineLayer, sVar, textW, trunc, type RenderOpts, svgDoc } from './svg.js';
 import { fitCut } from './measure.js';
 import { renderHBar } from './hbar.js';
 
@@ -84,8 +84,19 @@ export function renderHbarOpendata(spec: ChartSpec, o: RenderOpts): string {
       parts.push(`<text x="${r2(gx)}" y="${r2(tickY)}" text-anchor="middle" font-size="11" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
     }
   });
-  // 参考线(?ref= 数值 + ?reflabel= 文案)
-  if (o.refLine !== undefined && o.refLine <= yMax) {
+  // 参考线:新语法(?ref= 可重复:值;文案,#色)走共用图层;旧写法(?ref=数值 + ?reflabel=)走原路径,
+  // 一像素不变 —— 老的 hbar 图不能因为多了个新语法就变形。
+  if (o.refLines?.length) {
+    refLineLayer(parts, {
+      refs: o.refLines,
+      toPixel: (v) => x + (plotW * v) / yMax,
+      plot: { start: x, end: x + plotW },
+      span: { from: gridTop, to: gridBottom },
+      orient: 'v',
+      width,
+      height,
+    });
+  } else if (o.refLine !== undefined && o.refLine <= yMax) {
     const rx = x + (plotW * o.refLine) / yMax;
     parts.push(`<line x1="${r2(rx)}" y1="${r2(shrunk ? 36 : height * 0.075)}" x2="${r2(rx)}" y2="${r2(gridBottom)}" stroke="var(--d-faint)" stroke-width="1.5" stroke-dasharray="5 4"/>`);
     if (o.refLabel) {

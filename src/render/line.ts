@@ -2,7 +2,7 @@
 // 面积填充/数值标注/平滑/点形态/线宽/虚线/发光全部跟随变体规则。
 import type { ChartSpec, MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { axisTitleY, colorRef, editorialTitle, esc, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, reserveBands, roundedPath, smoothPath, subtitleBlock, svgDoc, titleBlock, toSegments, trunc, type RenderOpts, yAxisGrid } from './svg.js';
+import { axisTitleY, colorRef, editorialTitle, esc, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, refLabelReserve, refLineLayer, refLinesOf, reserveBands, roundedPath, scaleMeta, smoothPath, subtitleBlock, svgDoc, titleBlock, toSegments, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { plainGeo, type GeoMeasure } from './measure.js';
 
 /**
@@ -39,7 +39,8 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   const geo = plain ? plainGeo(width, height, !!spec.title, measure) : null;
   const contentTop = geo ? Math.max(geo.top, pad + headH + 14) : pad + headH + 20;
   const left = geo ? geo.left : pad + (rules.axisInline ? 42 : 48);
-  const right = geo ? geo.right : width - pad;
+  // 参考线文案在绘图区右边 —— 先给它腾出位置(否则只能翻到左边跟刻度叠字)
+  const right = (geo ? geo.right : width - pad) - refLabelReserve(refLinesOf(o));
   const bottom = geo ? geo.bottom : height - pad - 30;
   const xLabelY = geo ? geo.xLabelY : bottom + (rules.baseline === 'dots' ? 34 : 20);
 
@@ -61,6 +62,19 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   }
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, pts.map((p) => p[0]));
   if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
+
+  // 参考线画在数据之下:它是参照,不是数据
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: y,
+      plot: { start: bottom, end: contentTop },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
+  }
 
   if (rules.glow) {
     // Glow 风:模糊底层 + 渐变描边(规范 line-3:宽14/透明.32/模糊7)
@@ -100,7 +114,10 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.data.map((d) => d.label), xs, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + parts.join(''));
+  // 交互模式:告诉编辑器像素↔值的映射(它要把参考线吸附到数据值上)
+  const dscale = o.interactive ? scaleMeta(0, bottom, yMax, contentTop, values) : '';
+
+  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + dscale + parts.join(''));
 }
 
 // 多系列共享的头部布局计算(line-multi 使用)

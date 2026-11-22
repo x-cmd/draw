@@ -2,7 +2,7 @@
 // 量级差过大(某组的最大段都放不下标签)时自动拉高画布(封顶 3×,用户显式 ?h= 时不介入)。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, findPeak, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, onVar, pushBarLabelsAllOrNothing, r2, reserveBands, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, trunc, type RenderOpts, yAxisGrid } from './svg.js';
+import { esc, findPeak, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, onVar, pushBarLabelsAllOrNothing, r2, refLabelReserve, refLineLayer, refLinesOf, reserveBands, scaleMeta, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -50,7 +50,8 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     const need = left + n * 93.6 + pad;
     if (need < width) width = Math.round(Math.max(320, need));
   }
-  const right = width - pad;
+  // 参考线文案在绘图区右边 —— 先给它腾出位置(否则只能翻到左边跟刻度叠字)
+  const right = width - pad - refLabelReserve(refLinesOf(o));
   const bottom = height - pad - 30;
 
   const yMax = pctMode ? 100 : tickVals[tickVals.length - 1];
@@ -96,6 +97,20 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     parts.push(`<line x1="${left}" y1="${r2(bottom)}" x2="${right}" y2="${r2(bottom)}" stroke="var(--d-baseline)" stroke-width="1"/>`);
   } else {
     yAxisGrid(parts, tickVals, y, left, right, bottom, skin.rules.grid, skin.rules.gridDash);
+  }
+
+  // 参考线画在柱之下:它是参照,不是数据。
+  // 百分比模式下纵轴是 0..100,参考线的值也按百分比读 —— 与坐标轴同一把尺子。
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: y,
+      plot: { start: bottom, end: contentTop },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
   }
 
   const step = (right - left) / n;
@@ -152,5 +167,8 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
+  // 交互模式:像素↔值的映射(堆叠柱的纵轴读的是各组总量,那才是用户看到的数)
+  const dscale = o.interactive ? scaleMeta(0, bottom, yMax, contentTop, totals) : '';
+
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + dscale + parts.join(''));
 }

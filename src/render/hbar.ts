@@ -1,7 +1,7 @@
 // 水平柱状图:标签左侧、条向右延伸、数值在条尾、竖向网格。排行/长标签场景。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, subtitleBlock, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
+import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, refLineLayer, subtitleBlock, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 
 export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const { width, version, skin } = o;
@@ -41,6 +41,20 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<text x="${gx}" y="${r2(bottom + 16)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   parts.push(`<line x1="${r2(left)}" y1="${contentTop}" x2="${r2(left)}" y2="${bottom}" stroke="var(--d-baseline)" stroke-width="1"/>`);
+
+  // 参考线:横值轴 → 竖线,画在条之下(参照,不是数据)。
+  // 只认新语法(refLines):base 皮肤以前不吃 ?ref= —— 老 URL 不能因为多了个新语法就多出根线。
+  if (o.refLines?.length) {
+    refLineLayer(parts, {
+      refs: o.refLines,
+      toPixel: x,
+      plot: { start: left, end: right },
+      span: { from: contentTop, to: bottom },
+      orient: 'v',
+      width,
+      height,
+    });
+  }
 
   const step = (bottom - contentTop) / n;
   const barH = Math.min(22, Math.max(5, step * 0.55));

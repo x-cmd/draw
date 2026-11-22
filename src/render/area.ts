@@ -1,7 +1,7 @@
 // 面积图:行为由皮肤规则驱动(规范 面积图 1-3)。
 import { ApiError, type ChartSpec, type MultiSpec } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
-import { axisTitleY, editorialTitle, esc, findPeak, fmtFull, fmtNum, LabelPlacer, markPoints, marksLayer, niceStep, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, reserveBands, roundedPath, smoothPath, snap, subtitleBlock, sVar, svgDoc, titleBlock, topLegend, toSegments, trunc, type RenderOpts, yAxisGrid } from './svg.js';
+import { axisTitleY, editorialTitle, esc, findPeak, fmtFull, fmtNum, LabelPlacer, markPoints, marksLayer, niceStep, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, refLabelReserve, refLineLayer, refLinesOf, reserveBands, roundedPath, scaleMeta, smoothPath, snap, subtitleBlock, sVar, svgDoc, titleBlock, topLegend, toSegments, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { xOverhang, yTickInset, type GeoMeasure } from './measure.js';
 import { HANDEE_WOFF2 } from '../styles/handlee.js';
 
@@ -61,7 +61,8 @@ function areaLayout(spec: { title?: string; unit?: string; subtitle?: string }, 
     headSvg,
     contentTop: geo ? Math.max(geo.top, pad + headH + (hasLegendRow ? 26 : 14)) : pad + headH + (hasLegendRow ? 36 : 20),
     left,
-    right: geo ? geo.right : width - pad,
+    // 参考线文案在绘图区右边 —— 先给它腾出位置(否则只能翻到左边跟刻度叠字)
+    right: (geo ? geo.right : width - pad) - refLabelReserve(refLinesOf(o)),
     bottom: geo ? geo.bottom : height - pad - 30,
     xLabelY: geo ? geo.xLabelY : height - pad - 30 + (rules.baseline === 'dots' ? 34 : 20),
     legendY: pad + 14, // 图例坐标题基线,与 Edit 角标同排(#27)
@@ -125,6 +126,19 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, pts.map((p) => p[0]), rules.tickFont);
   if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
 
+  // 参考线画在面积之下:它是参照,不是数据
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: y,
+      plot: { start: bottom, end: contentTop },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
+  }
+
   parts.push(`<path d="${path}L${r2(pts[n - 1][0])} ${r2(bottom)}L${r2(pts[0][0])} ${r2(bottom)}Z" fill="url(#dg-area)"/>`);
   const dash = rules.lineDash ? ` stroke-dasharray="${rules.lineDash}"` : '';
   parts.push(`<path d="${path}" fill="none" stroke="var(--d-s1)" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`);
@@ -173,7 +187,10 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.data.map((d) => d.label), xs, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, bg + headSvg + parts.join(''));
+  // 交互模式:像素↔值的映射(面积图的纵轴不一定从 0 起 —— 用真实的 yMin)
+  const dscale = o.interactive ? scaleMeta(yMin, bottom, yMax, contentTop, values) : '';
+
+  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, bg + headSvg + dscale + parts.join(''));
 }
 
 // 多系列面积(area-1):三遍绘制(面积 → 虚线描边 → 点)
@@ -215,6 +232,19 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, spec.labels.map((_, i) => xs(i)), rules.tickFont);
   if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
 
+  // 参考线画在面积之下:它是参照,不是数据
+  if (refLinesOf(o).length) {
+    refLineLayer(parts, {
+      refs: refLinesOf(o),
+      toPixel: y,
+      plot: { start: bottom, end: contentTop },
+      span: { from: left, to: right },
+      orient: 'h',
+      width,
+      height,
+    });
+  }
+
   allPts.forEach((pts, i) => {
     parts.push(`<path d="${pathOf(pts)}L${r2(pts[n - 1][0])} ${r2(bottom)}L${r2(pts[0][0])} ${r2(bottom)}Z" fill="url(#dg-area-${i})"/>`);
   });
@@ -250,7 +280,12 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, xs, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, bg + headSvg + parts.join(''));
+  // 交互模式:像素↔值的映射 + 全部系列的数据值(编辑器吸附用)
+  const dscale = o.interactive
+    ? scaleMeta(0, bottom, yMax, contentTop, spec.series.flatMap((s) => s.values))
+    : '';
+
+  return svgDoc(width, height, 'area', version, spec.title ?? 'area chart', spec, skin, bg + headSvg + dscale + parts.join(''));
 }
 
 // 手绘风面积图(area-2):xkcd 滤镜 + Handlee 手写字体 + 端点标注

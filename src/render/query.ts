@@ -14,6 +14,7 @@ import { resolveVersion, CURRENT_VERSION, type VersionInfo } from '../version.js
 import { parseAnnos, injectAnnos } from './anno.js';
 import { renderPie } from './pie.js';
 import type { RenderOpts } from './svg.js';
+import type { RefLine } from './svg.js';
 import { renderBar } from './bar.js';
 import { renderBarGrid } from './bar-grid.js';
 import { renderBarMulti } from './bar-grouped.js';
@@ -40,6 +41,7 @@ import { parseTableSpec, tableSpecFromParams } from '../specs/table.js';
 import { renderTable, tableToGrid } from './table.js';
 import { renderMindmapFromUrl } from './mindmap.js';
 import { resolveSkin, type Scheme, type Skin } from '../styles/index.js';
+import { isSlot } from '../styles/types.js';
 import { CHART_TEMPLATES, type ChartTemplate, type StoredChart } from '../store.js';
 
 // 渲染结果(HTTP 层据此构造响应头;库用户直接拿 svg)
@@ -177,16 +179,62 @@ export function checkSlotColors(input: ChartInput, skin: Skin, family: string | 
   }
 }
 
-// 参考线参数(hbar opendata):?ref=<数值> ?reflabel=<文案>
-function refParams(params: URLSearchParams): Partial<RenderOpts> {
-  const raw = params.get('ref');
-  if (raw === null || raw === '') return {};
-  const n = Number(raw);
-  if (!Number.isFinite(n) || n < 0) {
-    throw new ApiError(400, `"ref" must be a non-negative number (reference-line value), got ${JSON.stringify(raw)}`);
+// 参考线参数:?ref=<数值>[;<文案>][,#色] 可重复;?reflabel=<文案> 兼容旧写法(作用于第一条)。
+// 分隔符:先 ';' 分文案、再 ',' 分颜色;文案里可以带 ';' 之前的任意字符,但 ';' 之后不再解析文案。
+// 颜色要么 #rrggbb,要么 colors= 那套槽位名(s1..s10 / primary|success|warning|danger|info|accent|muted)。
+const REF_SLOT_NAMES = 's1..s10, primary, success, warning, danger, info, accent, muted';
+
+/** 一条 ref= 的解析结果 */
+function parseRef(raw: string): RefLine {
+  // 第一段是数值;';' 后是文案;文案后的第一个 ',' 后是颜色
+  const semi = raw.indexOf(';');
+  const numPart = semi < 0 ? raw : raw.slice(0, semi);
+  const n = Number(numPart);
+  if (!Number.isFinite(n)) {
+    throw new ApiError(400, `"ref" must be a number (reference-line value), got ${JSON.stringify(raw)}. Example: ?ref=100 or ?ref=100;target`);
   }
-  const label = params.get('reflabel');
-  return { refLine: n, ...(label ? { refLabel: label } : {}) };
+  if (semi < 0) return { value: n };
+  const rest = raw.slice(semi + 1);
+  const comma = rest.indexOf(',');
+  const label = comma < 0 ? rest : rest.slice(0, comma);
+  // 文案里不能再有 ';' —— 分隔符只有这一层,再出现就是写错了
+  if (label.includes(';')) {
+    throw new ApiError(400, `"ref" label must not contain ";". Example: ?ref=100;target or ?ref=100;target,#60a5fa`);
+  }
+  if (comma < 0) return { value: n, ...(label ? { label } : {}) };
+  const color = rest.slice(comma + 1).trim();
+  if (!/^#[0-9a-fA-F]{6}$/.test(color) && !isSlot(color)) {
+    throw new ApiError(400, `"ref" colour must be #rrggbb or a slot name (${REF_SLOT_NAMES}), got ${JSON.stringify(color)}. Example: ?ref=100;target,#60a5fa`);
+  }
+  return { value: n, ...(label ? { label } : {}), color };
+}
+
+// 参考线参数(?ref= 可重复;?reflabel= 旧写法作用于第一条)
+//
+// 旧写法(单条裸数值 + ?reflabel=)时**不填** refLines —— hbar 的旧竖线必须一像素不变,
+// 由 o.refLine/o.refLabel 继续走老路径。新语法(带 ;文案/逗号色,或多条)才填 refLines。
+export function refParams(params: URLSearchParams): Partial<RenderOpts> {
+  const raws = params.getAll('ref').filter((r) => r !== '');
+  if (!raws.length) return {};
+  const refs = raws.map(parseRef);
+  const first = refs[0];
+  // 旧写法 ?reflabel= 只在没有内联文案时补上第一条(内联优先)
+  const legacyLabel = params.get('reflabel');
+  const withLabel = first.label ? first : (legacyLabel ? { ...first, label: legacyLabel } : first);
+  // 是不是新语法:多条,或任一条带了 ';' / ','
+  const isNew = refs.length > 1 || raws.some((r) => r.includes(';') || r.includes(','));
+  if (!isNew) {
+    // 旧写法:只给 refLine/refLabel,hbar 走原路径(老规矩:非负 —— 条形图没有负值)
+    if (first.value < 0) {
+      throw new ApiError(400, `"ref" must be a non-negative number (reference-line value), got ${JSON.stringify(raws[0])}`);
+    }
+    return { refLine: first.value, ...(withLabel.label ? { refLabel: withLabel.label } : {}) };
+  }
+  return {
+    refLines: [withLabel, ...refs.slice(1)],
+    refLine: first.value,
+    ...(withLabel.label ? { refLabel: withLabel.label } : {}),
+  };
 }
 
 function qrRender(request: URL): DrawResult {
@@ -312,7 +360,7 @@ function renderFromUrlInner(url: URL): DrawResult {
     const width = clampInt(url.searchParams, 'w', dw, 200, 1600);
     const height = clampInt(url.searchParams, 'h', dh, 140, 1200);
     const vl = valueLabelsParam(url.searchParams);
-    return svgResult(renderScatter(spec, { width, height, version: v.version, skin, ...(vl !== undefined ? { valueLabels: vl } : {}) }), v);
+    return svgResult(renderScatter(spec, { width, height, version: v.version, skin, ...(vl !== undefined ? { valueLabels: vl } : {}), ...refParams(url.searchParams) }), v);
   }
   if (kind === 'combo') {
     const spec = parseComboSpec(comboSpecFromParams(url.searchParams));
@@ -341,10 +389,10 @@ function renderFromUrlInner(url: URL): DrawResult {
     return chartRender(url, 'pie', (i, o) => {
       if (i.multi) throw new ApiError(400, 'multi-series is not supported for type=pie');
       return renderPie(i.spec, o);
-    }, SIZE.pie[0], SIZE.pie[1]);
+    }, SIZE.pie[0], SIZE.pie[1], refParams);
   }
   if (kind === 'radar') {
-    return chartRender(url, 'radar', (i, o) => renderRadarByMode(i, o), SIZE.radar[0], SIZE.radar[1]);
+    return chartRender(url, 'radar', (i, o) => renderRadarByMode(i, o), SIZE.radar[0], SIZE.radar[1], refParams);
   }
   if (kind === 'bar') {
     const stack = stackParam(url.searchParams);
@@ -355,12 +403,12 @@ function renderFromUrlInner(url: URL): DrawResult {
       }
       if (!i.multi) return renderBar(i.spec, o);
       return stack ? renderBarStacked(i.spec, o) : renderBarMulti(i.spec, o);
-    }, SIZE.bar[0], SIZE.bar[1]);
+    }, SIZE.bar[0], SIZE.bar[1], refParams);
   }
   if (kind === 'area') {
-    return chartRender(url, 'area', (i, o) => renderAreaByMode(i, o), SIZE.area[0], SIZE.area[1]);
+    return chartRender(url, 'area', (i, o) => renderAreaByMode(i, o), SIZE.area[0], SIZE.area[1], refParams);
   }
-  return chartRender(url, 'line', (i, o) => (i.multi ? renderLineMulti(i.spec, o) : renderLine(i.spec, o)), SIZE.line[0], SIZE.line[1]);
+  return chartRender(url, 'line', (i, o) => (i.multi ? renderLineMulti(i.spec, o) : renderLine(i.spec, o)), SIZE.line[0], SIZE.line[1], refParams);
 }
 
 // 短链渲染段:?w/?h/?num/?scheme 应用到存档 doc(immutable,版本恒为当前)
