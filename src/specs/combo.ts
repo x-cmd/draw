@@ -17,6 +17,7 @@ export interface ComboSeries {
  */
 export interface ComboSpec {
   title?: string;
+  subtitle?: string;
   unit?: string;
   labels: string[];
   series: ComboSeries[];
@@ -92,13 +93,18 @@ export function parseComboSpec(raw: string | null): ComboSpec {
     if (typeof o.title !== 'string') throw new ApiError(400, `"title" must be a string`);
     title = clip(o.title, LIMITS.title);
   }
+  let subtitle: string | undefined;
+  if (o.subtitle !== undefined) {
+    if (typeof o.subtitle !== 'string') throw new ApiError(400, `"subtitle" must be a string`);
+    subtitle = clip(o.subtitle, LIMITS.subtitle);
+  }
   let unit: string | undefined;
   if (o.unit !== undefined) {
     if (typeof o.unit !== 'string') throw new ApiError(400, `"unit" must be a string`);
     unit = clip(o.unit, LIMITS.unit);
   }
   const stack = o.stack === true;
-  return { title, unit, labels, series, ...(stack ? { stack: true } : {}) };
+  return { title, subtitle, unit, labels, series, ...(stack ? { stack: true } : {}) };
 }
 
 /**
@@ -152,6 +158,7 @@ export function comboSpecFromParams(params: URLSearchParams): string | null {
     series,
     ...(stack ? { stack: true } : {}),
     ...(params.get('title') ? { title: params.get('title') } : {}),
+    ...(params.get('subtitle') ? { subtitle: params.get('subtitle') } : {}),
     ...(params.get('unit') ? { unit: params.get('unit') } : {}),
   });
 }

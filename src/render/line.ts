@@ -2,7 +2,7 @@
 // 面积填充/数值标注/平滑/点形态/线宽/虚线/发光全部跟随变体规则。
 import type { ChartSpec, MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, toSegments, reserveBands, smoothPath, roundedPath, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, markPoints, marksLayer } from './svg.js';
+import { axisTitleY, colorRef, editorialTitle, esc, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, reserveBands, roundedPath, smoothPath, subtitleBlock, svgDoc, titleBlock, toSegments, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { plainGeo, type GeoMeasure } from './measure.js';
 
 /**
@@ -23,11 +23,13 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   if (rules.title === 'editorial' && spec.title) {
     const t = editorialTitle(spec.title, width, pad);
     headSvg = t.svg;
-    headH = t.height + 6;
+    headH = t.height + 6 + (spec.subtitle ? 16 : 0);
   } else {
-    headSvg = titleBlock(spec.title, pad);
-    if (spec.title) headH = 24;
+    headSvg = titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title);
+    if (spec.title || spec.subtitle) headH = 24 + (spec.subtitle ? 16 : 0);
   }
+  // 逐点色:colors= 指定了某个类目的颜色 ⇒ 那条线用自己的颜色(整条线一个色 ✓)
+  const line = colorRef(spec.data.find((d) => d.color)?.color, 'var(--d-s1)');
   const ticks = niceTicks(max, 4);
   // 测量驱动留白:inline 轴刻度画在绘图区内,不占左列
   const measure: GeoMeasure = {
@@ -58,7 +60,7 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
     );
   }
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, pts.map((p) => p[0]));
-  if (rules.axisTitle) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
+  if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
 
   if (rules.glow) {
     // Glow 风:模糊底层 + 渐变描边(规范 line-3:宽14/透明.32/模糊7)
@@ -67,17 +69,17 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
       `<linearGradient id="dg-glow-0" x1="0" y1="0" x2="1" y2="0">` +
       `<stop stop-color="var(--d-s1)"/><stop offset="1" stop-color="var(--d-s2)"/></linearGradient></defs>`,
     );
-    parts.push(`<path d="${path}" fill="none" stroke="var(--d-s1)" stroke-width="14" stroke-opacity="0.32" stroke-linecap="round" filter="url(#d-glow)"/>`);
+    parts.push(`<path d="${path}" fill="none" stroke="${line}" stroke-width="14" stroke-opacity="0.32" stroke-linecap="round" filter="url(#d-glow)"/>`);
     parts.push(`<path d="${path}" fill="none" stroke="url(#dg-glow-0)" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"/>`);
   } else {
     if (rules.areaGradient) {
       parts.push(`<path d="${path}L${r2(pts[n - 1][0])} ${r2(bottom)}L${r2(pts[0][0])} ${r2(bottom)}Z" fill="url(#dg-area)"/>`);
     }
     const dash = rules.lineDash ? ` stroke-dasharray="${rules.lineDash}"` : '';
-    parts.push(`<path d="${path}" fill="none" stroke="var(--d-s1)" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`);
+    parts.push(`<path d="${path}" fill="none" stroke="${line}" stroke-width="${rules.lineWidth}" stroke-linecap="round" stroke-linejoin="round"${dash}/>`);
   }
 
-  pushPoints(parts, pts, 'var(--d-s1)', rules, o.interactive ? spec.data.map((d) => `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, 0);
+  pushPoints(parts, pts, line, rules, o.interactive ? spec.data.map((d) => `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, 0);
   const xStride = labelStride(spec.data.map((d) => d.label), (right - left) / Math.max(n - 1, 1));
   spec.data.forEach((d, i) => {
     if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 12))}</text>`);
@@ -109,7 +111,7 @@ export function lineLayout(spec: MultiSpec, o: RenderOpts): {
   const pad = 24;
   let headH = 0;
   if (rules.title === 'editorial' && spec.title) {
-    headH = editorialTitle(spec.title, o.width, pad).height + 6;
+    headH = editorialTitle(spec.title, o.width, pad).height + 6 + (spec.subtitle ? 16 : 0);
   } else if (spec.title) {
     headH = 24;
   }

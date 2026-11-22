@@ -2,7 +2,7 @@
 // 虚线对比系列(evil-mono)、发光(evil-glow)、数值标注默认。
 import type { MultiSpec } from '../specs/index.js';
 import { card } from '../theme.js';
-import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, smoothPath, roundedPath, textW, topLegend, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, labelStride, reserveBands, toSegments, type LineSeg, type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, findPeak, sVar, markPoints, marksLayer } from './svg.js';
+import { axisTitleY, colorRef, editorialTitle, esc, findPeak, fmtFull, fmtNum, grayVar, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, reserveBands, roundedPath, smoothPath, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, toSegments, trunc, type LineSeg, type RenderOpts, yAxisGrid } from './svg.js';
 import { lineLayout } from './line.js';
 
 /**
@@ -26,7 +26,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   if (rules.title === 'editorial' && spec.title) {
     headSvg = editorialTitle(spec.title, width, pad).svg;
   } else {
-    headSvg = titleBlock(spec.title, pad);
+    headSvg = titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title);
   }
   const { left, right: right0, bottom, contentTop, xLabelY, legendY } = lineLayout(spec, o);
   const ticks = niceTicks(gMax, 4);
@@ -45,7 +45,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   }
 
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, spec.labels.map((_, i) => xs(i)));
-  if (rules.axisTitle) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
+  if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
 
   const num = o.valueLabels ?? rules.num;
   const placer = new LabelPlacer();

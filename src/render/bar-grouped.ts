@@ -1,7 +1,7 @@
 // 分组并排柱(多系列):≤6 系列主题色板循环,顶部图例,数值入柱;evil 变体 = 规范 bar-1 几何。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands, markPoints, marksLayer } from './svg.js';
+import { colorRef, esc, findPeak, fmtFull, fmtNum, grayVar, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, onVar, pushBarLabelsAllOrNothing, r2, reserveBands, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { yTickInset, type GeoMeasure } from './measure.js';
 
 // 规范 bar-1 实测几何(960×520):left 76、右留 50、顶 94(0.181h)、底 448(0.862h)、X 标签 480
@@ -69,8 +69,8 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   }
   const geo = plain ? barGeo(width, height, !!spec.title, { ticks }) : null;
   const contentTop = geo
-    ? Math.max(geo.top, pad + (spec.title ? 32 : 0) + (spec.unit ? 18 : 0) + 24)
-    : pad + (spec.title ? 32 : 0) + (spec.unit ? 18 : 0) + 24;
+    ? Math.max(geo.top, pad + (spec.title || spec.subtitle ? 32 : 0) + (spec.unit ? 18 : 0) + 24)
+    : pad + (spec.title || spec.subtitle ? 32 : 0) + (spec.unit ? 18 : 0) + 24;
   const left = geo ? geo.left : Math.max(pad + 44, yTickInset({ ticks }));
   const right = geo ? geo.right : width - pad;
   const bottom = geo ? geo.bottom : height - pad - 30;
@@ -142,5 +142,5 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }

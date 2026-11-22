@@ -1,7 +1,7 @@
 // 柱状图(单系列):卡片容器、主题渐变柱体、顶角 4px 圆角、数值入柱。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, trunc, svgDoc, titleBlock, yAxisGrid, pushBarLabelsAllOrNothing, labelStride, textW, LabelPlacer, reserveBands, markPoints, marksLayer, type RenderOpts } from './svg.js';
+import { axisTitleY, colorRef, esc, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, pushBarLabelsAllOrNothing, r2, reserveBands, subtitleBlock, svgDoc, textW, titleBlock, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { yTickInset } from './measure.js';
 
 /**
@@ -15,7 +15,7 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const peakIdx = values.indexOf(max);
 
   const pad = 24;
-  const contentTop = pad + (spec.title ? 32 : 0) + (spec.unit ? 18 : 0) + 20;
+  const contentTop = pad + (spec.title || spec.subtitle ? 32 : 0) + (spec.unit ? 18 : 0) + 20;
   // 柱宽不足以容纳数值标签时自动加宽画布(封顶 2.5×),让数字留在柱内
   const nBars = spec.data.length;
   // 按缩字号下限(7px)估标签宽:只有"扩了真能装进柱"才扩宽(封顶 1.5×),
@@ -51,6 +51,8 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
 
   // 网格线 + 刻度 + 基线
   yAxisGrid(parts, ticks, y, left, right, bottom, skin.rules.grid, skin.rules.gridDash);
+  // 单位:显式给了 unit= 就画出来(柱图早就给它留了空位 ✓)
+  if (spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - 26));
 
   // 柱体:墨色、仅顶角圆角 4px
   const n = spec.data.length;
@@ -68,7 +70,9 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
       `M${r2(x)} ${r2(bottom)}V${r2(yt + m)}Q${r2(x)} ${r2(yt)} ${r2(x + m)} ${r2(yt)}` +
       `H${r2(x + barW - m)}Q${r2(x + barW)} ${r2(yt)} ${r2(x + barW)} ${r2(yt + m)}V${r2(bottom)}Z`;
     const tip = o.interactive ? ` data-tip="${esc(`${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`)}"` : '';
-    parts.push(`<path d="${path}" fill="url(#dg-bar)"${tip}/>`);
+    // 逐点色(colors= 指定了某个类目的颜色):那个类目用自己的颜色,其余仍是主题渐变
+    const fill = colorRef(d.color, 'url(#dg-bar)');
+    parts.push(`<path d="${path}" fill="${fill}"${tip}/>`);
     const isPeak = i === peakIdx;
     // 零值不标:没有柱子的"0"是噪音(标注克制原则)
     if (d.value > 0 && (num === 'all' || (num === 'peak' && isPeak))) {
@@ -86,5 +90,5 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.data.map((d) => d.label), (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }

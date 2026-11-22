@@ -20,6 +20,7 @@ export interface SeriesEntry {
  */
 export interface MultiSpec {
   title?: string;
+  subtitle?: string;
   unit?: string;
   labels: string[];
   series: SeriesEntry[];
@@ -103,12 +104,17 @@ export function parseSeriesSpec(raw: string | null, kind: 'bar' | 'line'): Multi
     if (typeof o.title !== 'string') throw new ApiError(400, `"title" must be a string`);
     title = clip(o.title, LIMITS.title);
   }
+  let subtitle: string | undefined;
+  if (o.subtitle !== undefined) {
+    if (typeof o.subtitle !== 'string') throw new ApiError(400, `"subtitle" must be a string`);
+    subtitle = clip(o.subtitle, LIMITS.subtitle);
+  }
   let unit: string | undefined;
   if (o.unit !== undefined) {
     if (typeof o.unit !== 'string') throw new ApiError(400, `"unit" must be a string`);
     unit = clip(o.unit, LIMITS.unit);
   }
-  return { title, unit, labels, series };
+  return { title, subtitle, unit, labels, series };
 }
 
 // 扁平参数 → 多系列 JSON:series=名字:1,2,3 重复参数
@@ -143,6 +149,8 @@ export function seriesSpecFromParams(params: URLSearchParams): string | null {
   const obj: Record<string, unknown> = { labels, series };
   const title = params.get('title');
   if (title) obj.title = title;
+  const subtitle = params.get('subtitle');
+  if (subtitle) obj.subtitle = subtitle;
   const unit = params.get('unit');
   if (unit) obj.unit = unit;
   // colors= 对多系列图 = 每列一色(与 series= 平行);空项占位保对齐

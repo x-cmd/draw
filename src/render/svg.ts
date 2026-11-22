@@ -329,6 +329,13 @@ export function titleBlock(title: string | undefined, pad = 24): string {
   return `<text x="${pad}" y="${pad + 14}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(title)}</text>`;
 }
 
+/** 副标题:标题下面那一行(小字、弱色)—— 跟标题共用左侧基线 ✓ */
+export function subtitleBlock(subtitle: string | undefined, pad = 24, hasTitle = true): string {
+  if (!subtitle) return '';
+  const y = pad + (hasTitle ? 30 : 14);
+  return `<text x="${pad}" y="${y}" font-size="13" fill="var(--d-muted)">${esc(subtitle)}</text>`;
+}
+
 // Y 轴三件套:网格线 + 刻度文字 + 基线;inline = 刻度悬在网格线上方(OpenData 风)
 export function yAxisGrid(
   parts: string[],

@@ -1,10 +1,7 @@
 // 面积图:行为由皮肤规则驱动(规范 面积图 1-3)。
 import { ApiError, type ChartSpec, type MultiSpec } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
-import {
-  esc, fmtFull, fmtNum, niceStep, niceTicks, r2, reserveBands, snap, smoothPath, roundedPath, trunc, LabelPlacer, pushLineLabelsAllOrNothing, pushPoints, toSegments,
-  type RenderOpts, svgDoc, titleBlock, editorialTitle, yAxisGrid, axisTitleY, topLegend, findPeak, sVar, markPoints, marksLayer,
-} from './svg.js';
+import { axisTitleY, editorialTitle, esc, findPeak, fmtFull, fmtNum, LabelPlacer, markPoints, marksLayer, niceStep, niceTicks, pushLineLabelsAllOrNothing, pushPoints, r2, reserveBands, roundedPath, smoothPath, snap, subtitleBlock, sVar, svgDoc, titleBlock, topLegend, toSegments, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { xOverhang, yTickInset, type GeoMeasure } from './measure.js';
 import { HANDEE_WOFF2 } from '../styles/handlee.js';
 
@@ -51,8 +48,8 @@ function areaLayout(spec: { title?: string; unit?: string; subtitle?: string }, 
       : '');
     headH = t.height + 6 + (spec.subtitle ? 26 : 0);
   } else {
-    headSvg = titleBlock(spec.title, pad);
-    if (spec.title) headH = 24;
+    headSvg = titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title);
+    if (spec.title || spec.subtitle) headH = 24 + (spec.subtitle ? 16 : 0);
   }
   const hasLegendRow = rules.legend.startsWith('top');
   // plain 画布用规范几何,card 变体用内边距布局
@@ -126,7 +123,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
     `<stop offset="1" stop-color="var(--d-s1)" stop-opacity="${rules.areaBottom}"/></linearGradient></defs>`,
   );
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, pts.map((p) => p[0]), rules.tickFont);
-  if (rules.axisTitle) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
+  if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
 
   parts.push(`<path d="${path}L${r2(pts[n - 1][0])} ${r2(bottom)}L${r2(pts[0][0])} ${r2(bottom)}Z" fill="url(#dg-area)"/>`);
   const dash = rules.lineDash ? ` stroke-dasharray="${rules.lineDash}"` : '';
@@ -216,7 +213,7 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
     parts.push(topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i] })), right, legendY, 'right', rules.legendShape));
   }
   yAxisGrid(parts, ticks, y, left, right, bottom, rules.grid, rules.gridDash, rules.axisInline, rules.baseline, spec.labels.map((_, i) => xs(i)), rules.tickFont);
-  if (rules.axisTitle) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
+  if (rules.axisTitle || spec.unit) parts.push(axisTitleY(spec.unit, (contentTop + bottom) / 2, left - (rules.axisInline ? 17 : 26)));
 
   allPts.forEach((pts, i) => {
     parts.push(`<path d="${pathOf(pts)}L${r2(pts[n - 1][0])} ${r2(bottom)}L${r2(pts[0][0])} ${r2(bottom)}Z" fill="url(#dg-area-${i})"/>`);

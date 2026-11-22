@@ -3,7 +3,7 @@
 import type { ChartSpec, ChartInput, MultiSpec } from '../specs/index.js';
 import { ApiError } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
-import { esc, fmtFull, fmtNum, r2, textW, trunc, sVar, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { esc, fmtFull, fmtNum, r2, subtitleBlock, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 import { radialFit } from './measure.js';
 
 const HAND_FONT = "Handlee,'Comic Sans MS','Chalkboard SE','Comic Neue','Segoe Print',cursive";
@@ -41,7 +41,7 @@ export function renderRadar(spec: ChartSpec, o: RenderOpts): string {
   const n = values.length;
 
   const pad = 24;
-  const contentTop = pad + (spec.title ? 32 : 0);
+  const contentTop = pad + (spec.title || spec.subtitle ? 32 : 0);
   const cx = width / 2;
   const cy = contentTop + (height - contentTop - pad) / 2;
   // 维度标签在 R+18 处:长标签/窄画布下 R 收敛(0.75×标签宽:侧锚全宽、中锚半宽的折中)
@@ -89,7 +89,7 @@ export function renderRadar(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<text x="${r2(lx)}" y="${r2(ly + dy)}" text-anchor="${anchor}" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 10))}</text>`);
   });
 
-  return svgDoc(width, height, 'radar', version, spec.title ?? 'radar chart', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'radar', version, spec.title ?? 'radar chart', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
 
 // 雷达图 1 · Evil 双系列(规范 radar-1,900×540):

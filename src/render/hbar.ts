@@ -1,14 +1,14 @@
 // 水平柱状图:标签左侧、条向右延伸、数值在条尾、竖向网格。排行/长标签场景。
 import type { ChartSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
+import { colorRef, esc, fmtFull, fmtNum, grayVar, niceTicks, r2, subtitleBlock, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 
 export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const { width, version, skin } = o;
   let height = o.height;
   // 行距过密时行标签会重叠 → 自动拉高(封顶 2.5×)
   if (o.autoHeight && spec.data.length > 0) {
-    const step0 = (height - 24 - 28 - (24 + (spec.title ? 32 : 0) + 8)) / spec.data.length;
+    const step0 = (height - 24 - 28 - (24 + (spec.title || spec.subtitle ? 32 : 0) + 8)) / spec.data.length;
     if (step0 > 0 && step0 < 20) height = Math.round(height * Math.min(2.5, 20 / step0));
   }
   const values = spec.data.map((d) => d.value);
@@ -17,7 +17,7 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const n = spec.data.length;
 
   const pad = 24;
-  const contentTop = pad + (spec.title ? 32 : 0) + 8;
+  const contentTop = pad + (spec.title || spec.subtitle ? 32 : 0) + 8;
   // 标签上限可调(labelmax=):名字长的数据,名字本身就是信息,截了等于没说
   const cap = spec.labelmax ?? 16;
   const labelW = Math.min(160 + Math.max(0, cap - 16) * 7, Math.max(...spec.data.map((d) => textW(trunc(d.label, cap), 12.5))) + 4);
@@ -71,5 +71,5 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   const defs =
     `<defs><linearGradient id="dg-bar" x1="0" y1="0" x2="1" y2="0">` +
     `<stop offset="0" stop-color="var(--d-ramp-b)"/><stop offset="1" stop-color="var(--d-ramp-a)"/></linearGradient></defs>`;
-  return svgDoc(width, height, 'hbar', version, spec.title ?? 'horizontal bar chart', spec, skin, bg + titleBlock(spec.title) + defs + parts.join(''));
+  return svgDoc(width, height, 'hbar', version, spec.title ?? 'horizontal bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + defs + parts.join(''));
 }

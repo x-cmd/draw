@@ -1,7 +1,7 @@
 // 混合图:柱系列(分组并排)+ 线系列共用 y 轴与类别轴(量级差大时线走右轴)。
 import type { ComboSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, topLegend, trunc, textW, TAG_RESERVE, LabelPlacer, pushLineLabel, pushBarLabelsAllOrNothing, smoothPath, type RenderOpts, svgDoc, titleBlock, findPeak, onVar, sVar, labelStride, reserveBands, reserveEdges, toSegments, markPoints, marksLayer, type LineSeg } from './svg.js';
+import { esc, findPeak, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, onVar, pushBarLabelsAllOrNothing, pushLineLabel, r2, reserveBands, reserveEdges, smoothPath, subtitleBlock, sVar, svgDoc, TAG_RESERVE, textW, titleBlock, topLegend, toSegments, trunc, type LineSeg, type RenderOpts } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -26,7 +26,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   const lineMax = lines.length ? Math.max(...lines.flatMap((s) => s.values)) : 0;
   const dual = bars.length > 0 && lines.length > 0 && (lineMax * 5 < barMax || barMax * 5 < lineMax);
   // 双轴时绘图区下移,避免图例压顶部刻度
-  const contentTop = pad + (spec.title ? 32 : 0) + (spec.unit ? 18 : 0) + 24 + (dual ? 16 : 0);
+  const contentTop = pad + (spec.title || spec.subtitle ? 32 : 0) + (spec.unit ? 18 : 0) + 24 + (dual ? 16 : 0);
   const ticks = niceTicks(dual ? barMax : gMax, stacked ? 5 : 4); // 双轴时左轴只管柱;堆叠用 5 档收紧上限
   const lineTicks = dual ? niceTicks(lineMax, 4) : ticks;
   // 组数少(<5)时宽度贴内容收缩(下限 320)
@@ -207,7 +207,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'combo', version, spec.title ?? 'combo chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'combo', version, spec.title ?? 'combo chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
 
 // 混合图 1 · Evil 柱线组合(规范 combo-1,960×500):

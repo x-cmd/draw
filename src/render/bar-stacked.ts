@@ -2,7 +2,7 @@
 // 量级差过大(某组的最大段都放不下标签)时自动拉高画布(封顶 3×,用户显式 ?h= 时不介入)。
 import type { MultiSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, niceTicks, r2, textW, topLegend, trunc, type RenderOpts, svgDoc, titleBlock, yAxisGrid, findPeak, onVar, sVar, pushBarLabelsAllOrNothing, labelStride, LabelPlacer, reserveBands, markPoints, marksLayer } from './svg.js';
+import { esc, findPeak, fmtFull, fmtNum, LabelPlacer, labelStride, markPoints, marksLayer, niceTicks, onVar, pushBarLabelsAllOrNothing, r2, reserveBands, subtitleBlock, sVar, svgDoc, textW, titleBlock, topLegend, trunc, type RenderOpts, yAxisGrid } from './svg.js';
 import { yTickInset, tickColW } from './measure.js';
 
 /**
@@ -21,7 +21,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   const [peakS, peakP] = findPeak(spec.series);
 
   const pad = 24;
-  const fixedTop = pad + (spec.title ? 32 : 0) + (spec.unit ? 18 : 0) + 24;
+  const fixedTop = pad + (spec.title || spec.subtitle ? 32 : 0) + (spec.unit ? 18 : 0) + 24;
   // 刻度上限:5 档刻度更贴近数据(41842 → 50000,而非 4 档的 60000),减少顶部浪费
   const ticks0 = niceTicks(gMax, 5);
   const yMax0 = ticks0[ticks0.length - 1];
@@ -152,5 +152,5 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);
   if (mpts.length > 0) parts.push(marksLayer(mpts, width));
 
-  return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'bar', version, spec.title ?? 'stacked bar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }

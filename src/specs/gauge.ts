@@ -14,6 +14,7 @@ export interface GaugeDatum {
  */
 export interface GaugeSpec {
   title?: string;
+  subtitle?: string;
   unit?: string;
   /** 多环模式:每行一环(规范 gauge-1/2);与 value/max 二选一 */
   data?: GaugeDatum[];
@@ -41,6 +42,8 @@ export function gaugeSpecFromParams(params: URLSearchParams): string | null {
     const obj: Record<string, unknown> = { max: 100, data: labels.map((label, i) => ({ label, value: Number(values[i]) })) };
     const title = params.get('title');
     if (title) obj.title = title;
+    const subtitle = params.get('subtitle');
+    if (subtitle) obj.subtitle = subtitle;
     return JSON.stringify(obj);
   }
   const valueRaw = params.get('value');
@@ -60,6 +63,8 @@ export function gaugeSpecFromParams(params: URLSearchParams): string | null {
   }
   const title = params.get('title');
   if (title) obj.title = title;
+  const subtitle = params.get('subtitle');
+  if (subtitle) obj.subtitle = subtitle;
   const unit = params.get('unit');
   if (unit) obj.unit = unit;
   return JSON.stringify(obj);
@@ -85,9 +90,14 @@ export function parseGaugeSpec(raw: string | null): GaugeSpec {
   }
   const o = obj as Record<string, unknown>;
   let title: string | undefined;
+  let subtitle: string | undefined;
   if (o.title !== undefined) {
     if (typeof o.title !== 'string') throw new ApiError(400, `"title" must be a string`);
     title = clip(o.title, LIMITS.title);
+  }
+  if (o.subtitle !== undefined) {
+    if (typeof o.subtitle !== 'string') throw new ApiError(400, `"subtitle" must be a string`);
+    subtitle = clip(o.subtitle, LIMITS.subtitle);
   }
   let unit: string | undefined;
   if (o.unit !== undefined) {
@@ -110,7 +120,7 @@ export function parseGaugeSpec(raw: string | null): GaugeSpec {
       if (d.value < 0) throw new ApiError(400, `data[${i}].value must be >= 0 (ring percentage), got ${d.value}`);
       return { label: clip(d.label, LIMITS.label), value: d.value };
     });
-    return { title, unit, max: 100, data };
+    return { title, subtitle, unit, max: 100, data };
   }
   if (typeof o.value !== 'number' || !Number.isFinite(o.value) || o.value < 0) {
     throw new ApiError(400, `"value" must be a number >= 0 (or use "data" for multi-ring), got ${JSON.stringify(o.value)}`);
@@ -125,6 +135,6 @@ export function parseGaugeSpec(raw: string | null): GaugeSpec {
   if (o.value > max) {
     throw new ApiError(400, `"value" (${o.value}) must not exceed "max" (${max})`);
   }
-  return { title, unit, value: o.value, max };
+  return { title, subtitle, unit, value: o.value, max };
 }
 

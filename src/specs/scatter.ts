@@ -27,6 +27,7 @@ export interface ScatterSeries {
  */
 export interface ScatterSpec {
   title?: string;
+  subtitle?: string;
   unit?: string;   // 单位(也当作 X 轴标题的缺省)
   xname?: string;  // X 轴标题
   yname?: string;  // Y 轴标题
@@ -87,6 +88,8 @@ export function scatterSpecFromParams(params: URLSearchParams): string | null {
 function extras(params: URLSearchParams): Record<string, unknown> {
   return {
     ...(params.get('title') ? { title: params.get('title') } : {}),
+    ...(params.get('subtitle') ? { subtitle: params.get('subtitle') } : {}),
+    ...(params.get('subtitle') ? { subtitle: params.get('subtitle') } : {}),
     ...(params.get('unit') ? { unit: params.get('unit') } : {}),
     ...(params.get('xname') ? { xname: params.get('xname') } : {}),
     ...(params.get('yname') ? { yname: params.get('yname') } : {}),
@@ -173,6 +176,10 @@ export function parseScatterSpec(raw: string | null): ScatterSpec {
   if (o.title !== undefined) {
     if (typeof o.title !== 'string') throw new ApiError(400, `"title" must be a string`);
     spec.title = clip(o.title, LIMITS.title);
+  }
+  if (o.subtitle !== undefined) {
+    if (typeof o.subtitle !== 'string') throw new ApiError(400, `"subtitle" must be a string`);
+    spec.subtitle = clip(o.subtitle, LIMITS.subtitle);
   }
   if (o.unit !== undefined) {
     if (typeof o.unit !== 'string') throw new ApiError(400, `"unit" must be a string`);

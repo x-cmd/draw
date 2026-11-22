@@ -1,10 +1,7 @@
 // 饼图/环形图:行为由皮肤规则驱动(规范 饼图 1-5、7,六种变体)。
 import type { ChartSpec, Datum } from '../specs/index.js';
 import { card, TAB } from '../theme.js';
-import {
-  esc, fmtFull, fmtNum, r2, textW, trunc,
-  type RenderOpts, svgDoc, editorialTitle, titleBlock, sVar, colorRef, grayVar, LabelPlacer,
-} from './svg.js';
+import { colorRef, editorialTitle, esc, fmtFull, fmtNum, grayVar, LabelPlacer, r2, subtitleBlock, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 import { radialFit } from './measure.js';
 
 const MAX_SLICES = 9; // 8 个分类 + "Other"
@@ -139,7 +136,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     headSvg = t.svg;
     headH = t.height + 8;
   } else if (spec.title) {
-    headSvg = titleBlock(spec.title, pad);
+    headSvg = titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title);
     headH = 26;
   }
 
@@ -440,7 +437,7 @@ function renderDots(spec: ChartSpec, o: RenderOpts, rows: Row[], total: number, 
       parts.push(`<text x="${width - pad}" y="${pad + 10}" text-anchor="end" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtFull(total)} ${esc(spec.unit)}</text>`);
       headH = 48;
     } else {
-      parts.push(titleBlock(spec.title, pad));
+      parts.push(titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title));
       headH = 30;
     }
   }

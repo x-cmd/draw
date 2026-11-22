@@ -35,7 +35,7 @@ function pushLegendRow<T extends { name: string }>(
 // 仪表盘:规范 gauge-1 半圆多环(默认)/ gauge-2 渐变整圆多环 / reliability 分区环。
 import { ApiError, type GaugeSpec } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtFull, fmtNum, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg.js';
+import { esc, fmtFull, fmtNum, r2, subtitleBlock, sVar, svgDoc, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 import { segPath, pol } from './pie.js';
 import { C_gaugeGradient } from '../styles/common.js';
 
@@ -106,7 +106,7 @@ function renderGaugeSemi(spec: GaugeSpec, o: RenderOpts): string {
       });
   }
 
-  return svgDoc(width, height, 'gauge', version, spec.title ?? 'gauge', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'gauge', version, spec.title ?? 'gauge', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
 
 // 仪表盘 2 · 渐变多环(规范 gauge-2,860×480):
@@ -173,7 +173,7 @@ function renderGaugeRings(spec: GaugeSpec, o: RenderOpts): string {
       });
   }
 
-  return svgDoc(width, height, 'gauge', version, spec.title ?? 'gauge', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'gauge', version, spec.title ?? 'gauge', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
 
 // 分区仪表盘(reliability,规范 饼图 6):四分区圆环 + 中心分值 + 底部区刻度条
@@ -196,7 +196,7 @@ function renderZoneGauge(spec: GaugeSpec, o: RenderOpts): string {
   let headSvg = '';
   let headH = 0;
   if (spec.title) {
-    headSvg = titleBlock(spec.title, pad);
+    headSvg = titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title);
     headH = 26;
   }
   const barH = 44;

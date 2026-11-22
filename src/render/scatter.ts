@@ -2,7 +2,7 @@
 // 单系列(x=/y=)无图例;多系列(重复 x=/y= 或 JSON series)右上圆点图例。默认不标数值(轴已可读)。
 import type { ScatterSpec, ScatterSeries } from '../specs/index.js';
 import { TAB, card } from '../theme.js';
-import { esc, fmtNum, niceStep, r2, snap, textW, trunc, TAG_RESERVE, LabelPlacer, pushLineLabelsAllOrNothing, reserveBands, reserveEdges, sVar, marksLayer, type RenderOpts, svgDoc, titleBlock } from './svg.js';
+import { esc, fmtNum, LabelPlacer, marksLayer, niceStep, pushLineLabelsAllOrNothing, r2, reserveBands, reserveEdges, snap, subtitleBlock, sVar, svgDoc, TAG_RESERVE, textW, titleBlock, trunc, type RenderOpts } from './svg.js';
 import { tickColW } from './measure.js';
 
 // 取整量程刻度:数据向下/向上取整到步长(规范 -18..19 → -20..20),刻度线铺满整域
@@ -183,5 +183,5 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     parts.push(marksLayer(mpts, width));
   }
 
-  return svgDoc(width, height, 'scatter', version, spec.title ?? 'scatter chart', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'scatter', version, spec.title ?? 'scatter chart', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
