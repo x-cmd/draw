@@ -1,0 +1,449 @@
+{
+ "_about": "双翼天梯图:NVIDIA 71 vs AMD/Intel 34 —— 我们规格库覆盖的全部桌面显卡。指数 = x-cmd/hw 的 AI 推理指数(加速卡模型 ai-small 目标,GPT-J 级小模型,锚点 GeForce GTX 1080 Ti = 1000)。模型标定在 MLPerf v5.0 数据中心卡上(留一 ±18%),消费卡**没有实测可标定** —— 全部是规格外推;其中 37 张卡的规格低于标定下限,外推风险更大。这不是测量值,别当跑分榜用。",
+ "_source": {
+  "index": "x-cmd/hw AI 推理指数(ai-small,GPT-J 级;锚点 GeForce GTX 1080 Ti = 1000)",
+  "specs": "x-cmd/hw data/spec/2026-11-18/spec.tsv(逐行出处见该文件的 source 列:厂商官网 / gpuspecs.com)",
+  "model": "x-cmd/hw analysis/model-accel.json @ 381329f + 工作区未提交改动",
+  "calibrated_on": "x-cmd/hw 内部实测语料(私有,按仓库边界永不发布:光栅标定于跑分站语料,AI 标定于 MLPerf v5.0)",
+  "generated": "2026-11-23,hw tools/mkladder.py"
+ },
+ "type": "butterfly-ladder",
+ "title": "NVIDIA vs AMD/Intel · AI 推理指数(小模型,GTX 1080 Ti = 1000)",
+ "match": "rank",
+ "stripbrand": true,
+ "ticks": [
+  1000,
+  2000,
+  3000
+ ],
+ "left": {
+  "name": "NVIDIA",
+  "items": [
+   {
+    "label": "GeForce RTX 5090",
+    "value": 2279
+   },
+   {
+    "label": "GeForce RTX 3090 Ti",
+    "value": 1587
+   },
+   {
+    "label": "GeForce RTX 4090",
+    "value": 1587
+   },
+   {
+    "label": "GeForce RTX 5080",
+    "value": 1539
+   },
+   {
+    "label": "GeForce RTX 3090",
+    "value": 1515
+   },
+   {
+    "label": "GeForce RTX 3080 Ti",
+    "value": 1490
+   },
+   {
+    "label": "GeForce RTX 5070 Ti",
+    "value": 1473
+   },
+   {
+    "label": "GeForce RTX 3080",
+    "value": 1329
+   },
+   {
+    "label": "GeForce RTX 3080 12GB",
+    "value": 1329
+   },
+   {
+    "label": "GeForce RTX 4080 SUPER",
+    "value": 1302
+   },
+   {
+    "label": "GeForce RTX 4080",
+    "value": 1280
+   },
+   {
+    "label": "GeForce RTX 4070 Ti SUPER",
+    "value": 1229
+   },
+   {
+    "label": "GeForce RTX 5070",
+    "value": 1229
+   },
+   {
+    "label": "GeForce RTX 2080 Ti",
+    "value": 1164
+   },
+   {
+    "label": "GeForce RTX 3070 Ti",
+    "value": 1155
+   },
+   {
+    "label": "NVIDIA TITAN X",
+    "value": 1081
+   },
+   {
+    "label": "GeForce RTX 4070",
+    "value": 1026
+   },
+   {
+    "label": "GeForce RTX 4070 SUPER",
+    "value": 1026
+   },
+   {
+    "label": "GeForce RTX 4070 Ti",
+    "value": 1026
+   },
+   {
+    "label": "GeForce RTX 2080 SUPER",
+    "value": 1016
+   },
+   {
+    "label": "GeForce RTX 2080 Super with Max-Q Design",
+    "value": 1016
+   },
+   {
+    "label": "GeForce GTX 1080 Ti",
+    "value": 1000
+   },
+   {
+    "label": "GeForce RTX 2060 SUPER",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 2070",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 2070 SUPER",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 2070 with Max-Q Design",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 2080",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 2080 with Max-Q Design",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 3060 Ti",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 3070",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 5060",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 5060 Ti 16GB",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 5060 Ti 8GB",
+    "value": 953
+   },
+   {
+    "label": "GeForce RTX 3060",
+    "value": 830
+   },
+   {
+    "label": "GeForce RTX 3060 12GB",
+    "value": 830
+   },
+   {
+    "label": "GeForce RTX 3060 8GB",
+    "value": 830
+   },
+   {
+    "label": "GeForce GTX 980 Ti",
+    "value": 796
+   },
+   {
+    "label": "GeForce GTX 1660 SUPER",
+    "value": 795
+   },
+   {
+    "label": "GeForce GTX 780",
+    "value": 795
+   },
+   {
+    "label": "GeForce GTX 780 Ti",
+    "value": 795
+   },
+   {
+    "label": "GeForce RTX 2060",
+    "value": 795
+   },
+   {
+    "label": "GeForce RTX 2060 12GB",
+    "value": 795
+   },
+   {
+    "label": "GeForce RTX 2060 with Max-Q Design",
+    "value": 795
+   },
+   {
+    "label": "GeForce GTX 1080",
+    "value": 771
+   },
+   {
+    "label": "GeForce RTX 5050",
+    "value": 771
+   },
+   {
+    "label": "GeForce GTX 1660 Ti",
+    "value": 721
+   },
+   {
+    "label": "GeForce GTX 1660 Ti with Max-Q Design",
+    "value": 721
+   },
+   {
+    "label": "GeForce RTX 4060 Ti",
+    "value": 721
+   },
+   {
+    "label": "GeForce RTX 4060 Ti 16GB",
+    "value": 721
+   },
+   {
+    "label": "GeForce RTX 4060",
+    "value": 696
+   },
+   {
+    "label": "GeForce GTX 1070",
+    "value": 670
+   },
+   {
+    "label": "GeForce GTX 1070 Ti",
+    "value": 670
+   },
+   {
+    "label": "GeForce GTX 1070 with Max-Q Design",
+    "value": 670
+   },
+   {
+    "label": "GeForce GTX 970",
+    "value": 616
+   },
+   {
+    "label": "GeForce GTX 980",
+    "value": 616
+   },
+   {
+    "label": "GeForce RTX 3050 6GB",
+    "value": 616
+   },
+   {
+    "label": "GeForce RTX 3050 8GB",
+    "value": 616
+   },
+   {
+    "label": "GeForce RTX 3050 OEM",
+    "value": 616
+   },
+   {
+    "label": "GeForce GTX 1060",
+    "value": 559
+   },
+   {
+    "label": "GeForce GTX 1060 3GB",
+    "value": 559
+   },
+   {
+    "label": "GeForce GTX 1060 with Max-Q Design",
+    "value": 559
+   },
+   {
+    "label": "GeForce GTX 1650 SUPER",
+    "value": 559
+   },
+   {
+    "label": "GeForce GTX 1660",
+    "value": 559
+   },
+   {
+    "label": "GeForce GTX 1650",
+    "value": 433
+   },
+   {
+    "label": "GeForce GTX 1650 with Max-Q Design",
+    "value": 433
+   },
+   {
+    "label": "GeForce GTX 1050",
+    "value": 398
+   },
+   {
+    "label": "GeForce GTX 1050 Ti",
+    "value": 398
+   },
+   {
+    "label": "GeForce GTX 1050 Ti with Max-Q Design",
+    "value": 398
+   },
+   {
+    "label": "GeForce GTX 960",
+    "value": 398
+   },
+   {
+    "label": "GeForce GTX 950",
+    "value": 384
+   },
+   {
+    "label": "GeForce GT 1030",
+    "value": 234
+   }
+  ]
+ },
+ "right": {
+  "name": "AMD/Intel",
+  "items": [
+   {
+    "label": "Radeon RX 7900 XTX",
+    "value": 1539
+   },
+   {
+    "label": "Radeon RX 7900 XT",
+    "value": 1372
+   },
+   {
+    "label": "Radeon RX 9070",
+    "value": 1192
+   },
+   {
+    "label": "Radeon RX 9070 XT",
+    "value": 1192
+   },
+   {
+    "label": "Radeon RX 7800 XT",
+    "value": 1173
+   },
+   {
+    "label": "Radeon RX 6950 XT",
+    "value": 1116
+   },
+   {
+    "label": "Radeon RX 7900 GRE",
+    "value": 1116
+   },
+   {
+    "label": "Intel Arc A770",
+    "value": 1096
+   },
+   {
+    "label": "Radeon RX 6800",
+    "value": 1036
+   },
+   {
+    "label": "Radeon RX 6800 XT",
+    "value": 1036
+   },
+   {
+    "label": "Radeon RX 6900 XT",
+    "value": 1036
+   },
+   {
+    "label": "Intel Arc A750",
+    "value": 1036
+   },
+   {
+    "label": "Intel Arc B580",
+    "value": 963
+   },
+   {
+    "label": "Radeon RX 5700",
+    "value": 953
+   },
+   {
+    "label": "Radeon RX 5700 XT",
+    "value": 953
+   },
+   {
+    "label": "Radeon RX 6750 XT",
+    "value": 931
+   },
+   {
+    "label": "Radeon RX 7700 XT",
+    "value": 931
+   },
+   {
+    "label": "Radeon RX 6700 XT",
+    "value": 864
+   },
+   {
+    "label": "Intel Arc B570",
+    "value": 859
+   },
+   {
+    "label": "Radeon RX 5600 XT",
+    "value": 795
+   },
+   {
+    "label": "Radeon RX 6700",
+    "value": 771
+   },
+   {
+    "label": "Radeon RX 9060 XT 16GB",
+    "value": 771
+   },
+   {
+    "label": "Radeon RX 9060 XT 8GB",
+    "value": 771
+   },
+   {
+    "label": "Radeon RX 6650 XT",
+    "value": 709
+   },
+   {
+    "label": "Radeon RX 580",
+    "value": 670
+   },
+   {
+    "label": "Radeon RX 590",
+    "value": 670
+   },
+   {
+    "label": "Radeon RX 6600 XT",
+    "value": 670
+   },
+   {
+    "label": "Radeon RX 5500 XT",
+    "value": 616
+   },
+   {
+    "label": "Radeon RX 6600",
+    "value": 616
+   },
+   {
+    "label": "Intel Arc A380",
+    "value": 548
+   },
+   {
+    "label": "Radeon RX 6500 XT",
+    "value": 466
+   },
+   {
+    "label": "Radeon RX 6400",
+    "value": 433
+   },
+   {
+    "label": "Radeon RX 550",
+    "value": 398
+   },
+   {
+    "label": "Radeon RX 560",
+    "value": 398
+   }
+  ]
+ }
+}

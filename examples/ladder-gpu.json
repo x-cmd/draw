@@ -1,109 +1,103 @@
 {
- "_about": "双翼天梯图的数据文件:一行两个型号,左边 NVIDIA、右边 AMD/Intel。",
+ "_about": "双翼天梯图:NVIDIA 20 vs AMD/Intel 20 —— 各翼前 20。指数 = x-cmd/hw 的 DirectX 12 规格指数(锚点 GeForce GTX 1080 Ti = 1000,由现行模型算得),不是任何跑分榜的换算。",
+ "_source": {
+  "index": "x-cmd/hw DirectX 12 规格指数(锚点 GeForce GTX 1080 Ti = 1000)",
+  "specs": "x-cmd/hw data/spec/2026-11-18/spec.tsv(逐行出处见该文件的 source 列:厂商官网 / gpuspecs.com)",
+  "model": "x-cmd/hw analysis/model.json @ 381329f + 工作区未提交改动",
+  "calibrated_on": "x-cmd/hw 内部实测语料(私有,按仓库边界永不发布:光栅标定于跑分站语料,AI 标定于 MLPerf v5.0)",
+  "generated": "2026-11-23,hw tools/mkladder.py"
+ },
  "type": "butterfly-ladder",
- "title": "NVIDIA vs AMD/Intel · 显卡指数(GTX 1080 Ti = 1000)",
+ "title": "NVIDIA vs AMD/Intel · 游戏指数(DirectX 12,GTX 1080 Ti = 1000)",
+ "match": "rank",
+ "stripbrand": true,
+ "ticks": [
+  1000,
+  2000,
+  3000
+ ],
  "left": {
   "name": "NVIDIA",
   "items": [
    {
     "label": "GeForce RTX 5090",
-    "value": 3264,
-    "tier": "S"
+    "value": 2391
    },
    {
     "label": "GeForce RTX 4090",
-    "value": 2851,
-    "tier": "S"
-   },
-   {
-    "label": "GeForce RTX 4080 SUPER",
-    "value": 2203,
-    "tier": "A"
+    "value": 2236
    },
    {
     "label": "GeForce RTX 5080",
-    "value": 2195,
-    "tier": "A"
+    "value": 1889
+   },
+   {
+    "label": "GeForce RTX 4080 SUPER",
+    "value": 1860
    },
    {
     "label": "GeForce RTX 4080",
-    "value": 2143,
-    "tier": "A"
-   },
-   {
-    "label": "GeForce RTX 3090 Ti",
-    "value": 2093,
-    "tier": "A"
+    "value": 1809
    },
    {
     "label": "GeForce RTX 4070 Ti SUPER",
-    "value": 2043,
-    "tier": "A"
+    "value": 1731
    },
    {
     "label": "GeForce RTX 5070 Ti",
-    "value": 1986,
-    "tier": "A"
+    "value": 1713
    },
    {
-    "label": "GeForce RTX 3090",
-    "value": 1977,
-    "tier": "A"
+    "label": "GeForce RTX 3090 Ti",
+    "value": 1690
    },
    {
     "label": "GeForce RTX 4070 Ti",
-    "value": 1831,
-    "tier": "B"
+    "value": 1625
+   },
+   {
+    "label": "GeForce RTX 3090",
+    "value": 1606
    },
    {
     "label": "GeForce RTX 3080 Ti",
-    "value": 1803,
-    "tier": "B"
+    "value": 1577
    },
    {
     "label": "GeForce RTX 4070 SUPER",
-    "value": 1747,
-    "tier": "B"
+    "value": 1548
    },
    {
     "label": "GeForce RTX 3080",
-    "value": 1700,
-    "tier": "B"
+    "value": 1473
+   },
+   {
+    "label": "GeForce RTX 3080 12GB",
+    "value": 1473
+   },
+   {
+    "label": "GeForce RTX 5070",
+    "value": 1457
    },
    {
     "label": "GeForce RTX 4070",
-    "value": 1650,
-    "tier": "B"
+    "value": 1427
    },
    {
-    "label": "GeForce RTX 5060 Ti",
-    "value": 1600,
-    "tier": "B"
+    "label": "GeForce RTX 3070 Ti",
+    "value": 1265
    },
    {
-    "label": "GeForce RTX 4060 Ti",
-    "value": 1520,
-    "tier": "C"
+    "label": "GeForce RTX 5060 Ti 16GB",
+    "value": 1254
    },
    {
-    "label": "GeForce RTX 4060",
-    "value": 1430,
-    "tier": "C"
+    "label": "GeForce RTX 5060 Ti 8GB",
+    "value": 1254
    },
    {
-    "label": "GeForce RTX 3060 Ti",
-    "value": 1380,
-    "tier": "C"
-   },
-   {
-    "label": "GeForce RTX 4060",
-    "value": 1320,
-    "tier": "C"
-   },
-   {
-    "label": "GeForce RTX 3060",
-    "value": 1250,
-    "tier": "C"
+    "label": "GeForce RTX 2080 Ti",
+    "value": 1231
    }
   ]
  },
@@ -112,105 +106,84 @@
   "items": [
    {
     "label": "Radeon RX 7900 XTX",
-    "value": 2095,
-    "tier": "S"
+    "value": 1619
    },
    {
     "label": "Radeon RX 7900 XT",
-    "value": 1875,
-    "tier": "S"
+    "value": 1501
    },
    {
     "label": "Radeon RX 7900 GRE",
-    "value": 1663,
-    "tier": "A"
+    "value": 1401
    },
    {
     "label": "Radeon RX 6950 XT",
-    "value": 1608,
-    "tier": "A"
-   },
-   {
-    "label": "Radeon RX 7800 XT",
-    "value": 1568,
-    "tier": "A"
+    "value": 1398
    },
    {
     "label": "Radeon RX 6900 XT",
-    "value": 1560,
-    "tier": "A"
+    "value": 1367
    },
    {
     "label": "Radeon RX 6800 XT",
-    "value": 1504,
-    "tier": "A"
+    "value": 1305
+   },
+   {
+    "label": "Radeon RX 7800 XT",
+    "value": 1298
    },
    {
     "label": "Radeon RX 7700 XT",
-    "value": 1403,
-    "tier": "A"
+    "value": 1224
    },
    {
     "label": "Radeon RX 6800",
-    "value": 1376,
-    "tier": "A"
+    "value": 1166
    },
    {
     "label": "Radeon RX 9070 XT",
-    "value": 1309,
-    "tier": "B"
+    "value": 1099
    },
    {
     "label": "Intel Arc A770",
-    "value": 1234,
-    "tier": "B"
+    "value": 1063
    },
    {
     "label": "Radeon RX 6750 XT",
-    "value": 1215,
-    "tier": "B"
+    "value": 1045
    },
    {
     "label": "Radeon RX 6700 XT",
-    "value": 1150,
-    "tier": "B"
+    "value": 1027
    },
    {
-    "label": "Radeon RX 6600 XT",
-    "value": 1090,
-    "tier": "B"
+    "label": "Intel Arc A750",
+    "value": 980
    },
    {
-    "label": "Radeon RX 7600",
-    "value": 1050,
-    "tier": "B"
+    "label": "Radeon RX 9070",
+    "value": 977
+   },
+   {
+    "label": "Intel Arc B580",
+    "value": 931
+   },
+   {
+    "label": "Radeon RX 6700",
+    "value": 930
    },
    {
     "label": "Radeon RX 6650 XT",
-    "value": 1000,
-    "tier": "C"
+    "value": 893
    },
    {
-    "label": "Radeon RX 5600 XT",
-    "value": 950,
-    "tier": "C"
+    "label": "Radeon RX 6600 XT",
+    "value": 874
    },
    {
-    "label": "Radeon RX 6500 XT",
-    "value": 900,
-    "tier": "C"
-   },
-   {
-    "label": "Radeon RX 5500 XT",
-    "value": 850,
-    "tier": "C"
-   },
-   {
-    "label": "Radeon RX 5500",
-    "value": 800,
-    "tier": "C"
+    "label": "Radeon RX 5700 XT",
+    "value": 842
    }
   ]
- },
- "match": "rank"
+ }
 }
