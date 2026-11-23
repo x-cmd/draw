@@ -137,7 +137,12 @@ AI 分析代码库时的首选入口：先跑真实统计，再成图。tokei �
 | `mindmap` | 导图（缩进树） |
 | `pie` / `sankey-beta` / `quadrantChart` / `xychart-beta` / `radar-beta` | 对应的图表 |
 
-还不支持的（`timeline` / `journey` / `gitGraph` / `requirementDiagram` / `block-beta` / `packet-beta` / `kanban` / C4）会 400 并列出支持的清单。
+| `timeline` / `journey` / `gitGraph` / `kanban` | 时间轴 / 用户旅程 / 分支图 / 看板 |
+| `block-beta` / `packet-beta` / `requirementDiagram` | 块图 / 包字段图 / 需求图 |
+| `C4Context` 等五档 | C4 上下文 / 容器 / 组件 / 动态 / 部署 |
+
+mermaid v12 的图种到这儿齐了（只剩 `treemap` / `zenuml` / `info` 三个冷门的，
+它们会 400 并列出支持的清单）。
 
 ## 5. 思维导图：`/draw/mindmap`
 
