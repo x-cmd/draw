@@ -34,6 +34,21 @@ import { translateSankey } from './mermaid/sankey.js';
 import { translateQuadrant } from './mermaid/quadrant.js';
 import { translateXychart } from './mermaid/xychart.js';
 import { translateRadar } from './mermaid/radar.js';
+import { translateTimeline } from './mermaid/timeline.js';
+import { translateJourney } from './mermaid/journey.js';
+import { translateGitGraph } from './mermaid/gitgraph.js';
+import { translateKanban } from './mermaid/kanban.js';
+import { translateBlock } from './mermaid/block.js';
+import { translatePacket } from './mermaid/packet.js';
+import { translateRequirement } from './mermaid/requirement.js';
+import { translateC4 } from './mermaid/c4.js';
+import { renderTimelineFromUrl } from './timeline.js';
+import { renderJourneyFromUrl } from './journey.js';
+import { renderGitGraphFromUrl } from './gitgraph.js';
+import { renderKanbanFromUrl } from './kanban.js';
+import { renderBlockFromUrl } from './block.js';
+import { renderPacketFromUrl } from './packet.js';
+import { renderRequirementFromUrl } from './requirement.js';
 
 const M_MAX = 6000;
 const N_EXAMPLE = 'm=' + encodeURIComponent('graph LR\n  A[Browser] --> B{Gateway}\n  B --> C[API]');
@@ -51,12 +66,47 @@ const TRANSLATORS: Record<string, (src: string) => MermaidPlan> = {
   quadrantchart: translateQuadrant,
   'xychart-beta': translateXychart,
   'radar-beta': translateRadar,
+  timeline: translateTimeline,
+  journey: translateJourney,
+  gitgraph: translateGitGraph,
+  kanban: translateKanban,
+  'block-beta': translateBlock,
+  'packet-beta': translatePacket,
+  requirementdiagram: translateRequirement,
+  c4context: translateC4,
+  c4container: translateC4,
+  c4component: translateC4,
+  c4dynamic: translateC4,
+  c4deployment: translateC4,
+};
+
+/**
+ * 结构图族的引擎:kind → 画它的那台。
+ * 新图种接进来只要在这里加一行 —— 分派的事都在这一张表里 ✓
+ */
+const ARCH_RENDERERS: Record<string, (u: URL, interactive: boolean) => DrawResult> = {
+  seq: renderSeqFromUrl,
+  mindmap: renderMindmapFromUrl,
+  lifecycle: (u, i) => renderKindFromUrl('lifecycle', u, i),
+  erd: (u, i) => renderKindFromUrl('erd', u, i),
+  class: (u, i) => renderKindFromUrl('class', u, i),
+  dataflow: (u, i) => renderKindFromUrl('dataflow', u, i),
+  c4: (u, i) => renderKindFromUrl('c4', u, i),
+  timeline: renderTimelineFromUrl,
+  journey: renderJourneyFromUrl,
+  gitgraph: renderGitGraphFromUrl,
+  kanban: renderKanbanFromUrl,
+  block: renderBlockFromUrl,
+  packet: renderPacketFromUrl,
+  requirement: renderRequirementFromUrl,
 };
 
 /** 认识的图种(报错时列给人看) */
 const SUPPORTED = [
   'graph/flowchart', 'gantt', 'sequenceDiagram', 'stateDiagram', 'erDiagram',
   'classDiagram', 'mindmap', 'pie', 'sankey-beta', 'quadrantChart', 'xychart-beta', 'radar-beta',
+  'timeline', 'journey', 'gitGraph', 'kanban', 'block-beta', 'packet-beta', 'requirementDiagram',
+  'C4Context/C4Container/C4Component/C4Dynamic/C4Deployment',
 ];
 
 /** mermaid 首关键字 → 换肤注册表:图表族各有自己的一套,结构图族统一走 sankey 那套 */
@@ -72,6 +122,18 @@ const SKIN_KIND: Record<string, ChartTemplate> = {
   quadrantchart: 'quadrant',
   'xychart-beta': 'bar',
   'radar-beta': 'radar',
+  timeline: 'sankey',
+  journey: 'sankey',
+  gitgraph: 'sankey',
+  kanban: 'sankey',
+  'block-beta': 'sankey',
+  'packet-beta': 'sankey',
+  requirementdiagram: 'sankey',
+  c4context: 'sankey',
+  c4container: 'sankey',
+  c4component: 'sankey',
+  c4dynamic: 'sankey',
+  c4deployment: 'sankey',
 };
 
 /**
@@ -339,9 +401,11 @@ export function renderMermaidFromUrl(url: URL, interactive = false): DrawResult 
     const plan = translate(m);
     const u = targetUrl(plan, url);
     if ((CHART_TEMPLATES as readonly string[]).includes(plan.kind)) return renderFromUrl(u); // 图表族:type=pie/…
-    if (plan.kind === 'seq') return renderSeqFromUrl(u, interactive);
-    if (plan.kind === 'mindmap') return renderMindmapFromUrl(u, interactive);
-    return renderKindFromUrl(plan.kind, u, interactive); // lifecycle / erd / class / dataflow
+    const render = ARCH_RENDERERS[plan.kind];
+    if (!render) {
+      throw new ApiError(400, `mermaid diagram "${head}" has no renderer (kind "${plan.kind}"). Example: /draw/mermaid?${N_EXAMPLE}`);
+    }
+    return render(u, interactive);
   }
 
   const doc = parseFlow(m);

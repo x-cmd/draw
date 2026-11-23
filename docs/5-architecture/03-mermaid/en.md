@@ -78,6 +78,14 @@ engine (styles, interactivity, PNG and caching are all the same):
 | `quadrantChart` | quadrant chart |
 | `xychart-beta` | bar / line chart |
 | `radar-beta` | radar chart |
+| `timeline` | timeline (sections + events) |
+| `journey` | user journey (sections + tasks + satisfaction) |
+| `gitGraph` | git graph (commits, branches, merges, tags) |
+| `kanban` | kanban board (columns + cards) |
+| `block-beta` | block diagram (grid, groups, arrows) |
+| `packet-beta` | packet diagram (bit-field grid) |
+| `requirementDiagram` | requirement diagram (boxes + satisfies/verifies) |
+| `C4Context` and friends | C4 context/container/component/dynamic/deployment |
 
 For flowcharts the subset is:
 
@@ -95,10 +103,9 @@ For sequence diagrams: `participant` / `actor` declare the parties, `->>` and
 `opt` / `par` / `break` become branch boxes. `note`, `autonumber` and
 `activate` are ignored for now.
 
-Not supported yet (mermaid v12 has them, draw does not): `timeline`,
-`journey`, `gitGraph`, `requirementDiagram`, `block-beta`, `packet-beta`,
-`kanban` and the C4 family — they fail with a 400 rather than drawing
-something wrong.
+That covers mermaid v12's diagram families (only the rare `treemap`, `zenuml`
+and `info` are still missing — they fail with a 400 rather than drawing
+something wrong).
 
 ## 3. Pitfalls
 

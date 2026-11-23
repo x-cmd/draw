@@ -80,6 +80,15 @@ export {
   type RoutingWeights,
   type Drawn,
 } from './render/route.js';
+// 新图族(timeline/journey/gitgraph/kanban/block/packet/requirement):
+// mermaid 的对应图型也走这几台引擎,这里是给调用方(站上/库用户)的入口。
+export { renderTimeline, renderTimelineFromUrl } from './render/timeline.js';
+export { renderJourney, renderJourneyFromUrl } from './render/journey.js';
+export { renderGitGraph, renderGitGraphFromUrl } from './render/gitgraph.js';
+export { renderKanban, renderKanbanFromUrl } from './render/kanban.js';
+export { renderBlock, renderBlockFromUrl } from './render/block.js';
+export { renderPacket, renderPacketFromUrl } from './render/packet.js';
+export { renderRequirement, renderRequirementFromUrl } from './render/requirement.js';
 // mermaid 语法糖 → draw 的各种图种(/draw/mermaid?m=<mermaid 源码>)
 export { renderMermaidFromUrl, parseFlow, mermaidSkinKind, mermaidFamilyOf } from './render/mermaid.js';
 export { parseGantt, renderGantt, renderGanttFromUrl } from './render/gantt.js';

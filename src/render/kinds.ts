@@ -99,6 +99,20 @@ function parseKindNodes(raw: string[], allowed: string[]): ArchNode[] {
   });
 }
 
+// C4(上下文/容器/组件/部署):人、系统、容器、组件、外部系统 ——
+// 边界 = System_Boundary/Container_Boundary,关系 = Rel(带技术标注)。
+const C4: HouseTypes = {
+  meta: {
+    person: { name: 'Person', badge: 'P', color: 1 },
+    system: { name: 'System', badge: 'S', color: 2 },
+    container: { name: 'Container', badge: 'C', color: 3 },
+    component: { name: 'Component', badge: 'K', color: 4 },
+    external: { name: 'External', badge: 'X', color: -1 },
+  },
+  order: ['person', 'system', 'container', 'component', 'external'],
+  shape: { person: 'round', system: 'rect', container: 'rect', component: 'rect', external: 'rect' },
+};
+
 /* ---------------------------------------------------------------- 公共入口 */
 interface KindSpec {
   name: string;
@@ -127,6 +141,12 @@ const KINDS: Record<string, KindSpec> = {
     types: ERD,
     allowed: ['table', 'view'],
     example: 'n=users;table;users;id:int (pk)%0Aname:text%0Acreated_at:timestamp;r0c0&n=orders;table;orders;id:int (pk)%0Auser_id:int (fk)%0Atotal:int;r1c0&e=users;orders;1:N',
+  },
+  c4: {
+    name: 'C4',
+    types: C4,
+    allowed: ['person', 'system', 'container', 'component', 'external'],
+    example: 'n=cust;person;Banking Customer;;;&n=sys;system;Internet Banking;;;;&e=cust;sys;Uses&b=Bank;sys',
   },
   class: {
     name: 'Class',

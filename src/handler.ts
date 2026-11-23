@@ -28,6 +28,13 @@ import { renderGanttFromUrl } from './render/gantt.js';
 import { renderTokeiFromUrl } from './render/tokei.js';
 import { renderGantt2FromUrl } from './render/gantt2.js';
 import { renderKindFromUrl, KIND_NAMES } from './render/kinds.js';
+import { renderTimelineFromUrl } from './render/timeline.js';
+import { renderJourneyFromUrl } from './render/journey.js';
+import { renderGitGraphFromUrl } from './render/gitgraph.js';
+import { renderKanbanFromUrl } from './render/kanban.js';
+import { renderBlockFromUrl } from './render/block.js';
+import { renderPacketFromUrl } from './render/packet.js';
+import { renderRequirementFromUrl } from './render/requirement.js';
 import { renderReleaseBannerFromUrl } from './render/banner.js';
 import { renderOnepageFromUrl, renderOnepageFromMarkdown, renderOnepageFromSrc, toRawGithub, fetchSrcDoc } from './render/onepage.js';
 import { resolveSrcSpec } from './render/src-spec.js';
@@ -347,6 +354,14 @@ async function route(request: Request, env: DrawEnv, platform: Platform): Promis
     }
     return chartResponse(url, renderKindFromUrl(sub.slice(1), url, interactiveOf(url)));
   }
+  // /draw/timeline /draw/journey /draw/gitgraph /draw/kanban /draw/block
+  // /draw/packet /draw/requirement —— 新图族,各自一套参数(见各自文件头的说明)
+  if (DIAGRAM_KINDS[sub.slice(1)]) {
+    if (method !== 'GET') {
+      return textResponse(405, `method ${request.method} not allowed; use GET with the kind's own params`, { allow: 'GET' });
+    }
+    return chartResponse(url, DIAGRAM_KINDS[sub.slice(1)](url, interactiveOf(url)));
+  }
   // /draw/mindmap 树形导图(x-cmd-hub/draw#17/#20):n=<根/枝/叶 路径>,树→自动布局
   if (sub === '/mindmap') {
     if (method !== 'GET') {
@@ -491,6 +506,17 @@ function errorStatus(e: unknown): number | null {
 
 // 统一入口:Worker 的 fetch handler 与 Node 适配器都调这里。
 // ApiError → 对应状态码文本;其余异常 → 500 + rid(日志带 stack)。
+/** 新图族:kind → 画它的那台(mermaid 的对应图型也走这里) */
+const DIAGRAM_KINDS: Record<string, (url: URL, interactive: boolean) => DrawResult> = {
+  timeline: renderTimelineFromUrl,
+  journey: renderJourneyFromUrl,
+  gitgraph: renderGitGraphFromUrl,
+  kanban: renderKanbanFromUrl,
+  block: renderBlockFromUrl,
+  packet: renderPacketFromUrl,
+  requirement: renderRequirementFromUrl,
+};
+
 export async function handleRequest(request: Request, env: DrawEnv, platform: Platform): Promise<Response> {
   try {
     return await route(request, env, platform);

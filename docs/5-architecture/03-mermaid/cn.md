@@ -65,6 +65,14 @@ https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5B%E4%B8%8B%E5%8D%95%5
 | `quadrantChart` | 四象限 |
 | `xychart-beta` | 柱状/折线图 |
 | `radar-beta` | 雷达图 |
+| `timeline` | 时间轴(分段 + 事件) |
+| `journey` | 用户旅程(分段 + 任务 + 满意度) |
+| `gitGraph` | 分支图(提交/分支/合并/标签) |
+| `kanban` | 看板(列 + 卡片) |
+| `block-beta` | 块图(栅格 + 组块 + 箭头) |
+| `packet-beta` | 包字段图(位段栅格) |
+| `requirementDiagram` | 需求图(需求框 + 满足/验证关系) |
+| `C4Context` 等五档 | C4 上下文/容器/组件/动态/部署 |
 
 流程图那一支支持的子集:
 
@@ -80,9 +88,8 @@ https://x-cmd.com/draw/mermaid?m=graph%20LR%0A%20%20Order%5B%E4%B8%8B%E5%8D%95%5
 (虚线是回信),`alt`/`else`/`loop`/`opt`/`par`/`break` 变成分支框;
 `note`、`autonumber`、`activate` 这些暂时忽略。
 
-还不支持的(mermaid v12 里有、这儿没有):`timeline`、`journey`、`gitGraph`、
-`requirementDiagram`、`block-beta`、`packet-beta`、`kanban`、C4 那几档 ——
-它们会 400,不会静默画错。
+mermaid v12 的图种到这儿就齐了(还没接的是 `treemap`、`zenuml`、`info` 那几个冷门
+的 —— 它们会 400,不会静默画错)。
 
 ## 三、踩坑
 
