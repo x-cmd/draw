@@ -83,6 +83,33 @@ https://x-cmd.com/draw/arch2?n=web;fe;Web app;your browser;r0c0&n=api;be;API;Clo
 
 其余细节以各图种的 explore 编辑页与文档站为准。
 
+### 新图族(各有自己的参数,跟上面的 n=/e=/b= 不是一套)
+
+| 图种 | 参数 |
+|---|---|
+| `/draw/timeline` | `section=`(分段)、`event=段\|事件\|时间`(可重复) |
+| `/draw/journey` | `section=`、`task=段\|任务\|满意度1-5\|角色` |
+| `/draw/gitgraph` | `branch=`(泳道)、`commit=id\|泳道\|说明\|父1\|父2` |
+| `/draw/kanban` | `column=`(列)、`task=列\|标题\|备注` |
+| `/draw/block` | `cols=`(列数)、`item=id\|列\|标题`、`block=id\|列…\|标题`、`edge=起\|止` |
+| `/draw/packet` | `field=起\|止\|字段名`(位区间,按位宽成比例) |
+| `/draw/requirement` | `req=名\|id\|说明\|风险\|验证方式`、`el=名\|类型`、`rel=起\|止\|关系` |
+| `/draw/c4` | 跟架构图同一套 `n=` / `e=` / `b=`,词汇是 person/system/container/component/external |
+
+mermaid 的同名图型走这几台引擎:`/draw/mermaid?m=timeline…`(源码进,图出)。
+
+### ECharts 覆盖层:`/draw/echarts?d=<option json>`
+
+option 是**纯 JSON**(无回调、无函数)⇒ 能 SSR 出静态 SVG。核心渲染器没有的图型走这里:
+treemap / 旭日 / 主题河 / 关系图 / 矩形树等。`d=` 里塞现成的 option 即可,例:
+
+```
+/draw/echarts?d={"series":[{"type":"treemap","data":[{"name":"A","value":10}]}]}
+```
+
+⚠️ 覆盖层的图**不吃我们的皮肤**(`t=` 无效):配色是 option 里自己写的;color 走 `#rrggbb`。
+自己画的图型(饼/柱/线/桑基/雷达…)优先用 draw 原生的,样式统一还能换皮。
+
 派生形态：`/draw/cloud` 使用同一套 `n=` / `e=` 模型，节点画成大图标（diagrams.net 风格的云架构海报）。
 
 ## 2. 项目统计：`/draw/tokei`
