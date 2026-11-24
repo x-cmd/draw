@@ -436,6 +436,13 @@ function clsTag(text: string, x: number, y: number, color: string, k: number, da
 export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: number; h: number }, k = 1): string {
   if (!annos.length) return '';
   const parts: string[] = [];
+  // 一把**统一**的尺:√(宽 × 高)—— 与长宽比无关 ✓
+  //
+  // 位置用画布的宽、高各算各的(位置要跟着数据区走 ✓);
+  // **尺寸**用它:画布的长宽比一变(改窗口、改侧栏宽度),宽按宽缩、高按高缩
+  // ⇒ 一个圆就变成了椭圆 ✗。统一尺 ⇒ 圆得一直是圆 ✓
+  // (站上那层实时画板用同一把尺 ⇒ 编辑器里与导出的图一模一样 ✓)
+  const u = Math.sqrt(Math.max(1, frame.w * frame.h));
   // of():连**序号**一起给 ✓ —— 画出来的每一笔都带 data-i ✓
   // (客户端靠它知道「点中的是第几条」✓ —— 悬停、拖动、双击编辑都靠它 ✓)
   const of = (kind: Anno['kind']): { a: Anno; i: number }[] =>
@@ -446,8 +453,8 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const color = a.color ?? HL_COLOR;
     const x = frame.x + (a.x / 100) * frame.w;
     const y = frame.y + (a.y / 100) * frame.h;
-    const w = ((a.w ?? 0) / 100) * frame.w;
-    const h = ((a.h ?? 0) / 100) * frame.h;
+    const w = ((a.w ?? 0) / 100) * u;
+    const h = ((a.h ?? 0) / 100) * u;
     parts.push(
       `<rect data-i="${i}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(10 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
     );
@@ -459,8 +466,8 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const color = a.color ?? DEFAULT_COLOR;
     const cx = frame.x + (a.x / 100) * frame.w;
     const cy = frame.y + (a.y / 100) * frame.h;
-    const rx = ((a.rx ?? 0) / 100) * frame.w;
-    const ry = ((a.ry ?? 0) / 100) * frame.h;
+    const rx = ((a.rx ?? 0) / 100) * u;
+    const ry = ((a.ry ?? 0) / 100) * u;
     parts.push(
       `<ellipse data-i="${i}" cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="${r2(2.5 * k)}" stroke-opacity="0.95"/>`,
     );
@@ -472,8 +479,12 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const color = a.color ?? DEFAULT_COLOR;
     const pts = a.pts ?? [];
     if (pts.length < 2) continue;
+    // 第一个点是**锚**(位置照旧 ✓);其余点存的是**统一尺上的偏移** ⇒ 笔迹形状不随长宽比变 ✓
+    const [ax0, ay0] = pts[0];
     const d = pts
-      .map(([px, py], i) => `${i ? 'L' : 'M'}${r2(frame.x + (px / 100) * frame.w)},${r2(frame.y + (py / 100) * frame.h)}`)
+      .map(([px, py], i) => (i
+        ? `L${r2(frame.x + (ax0 / 100) * frame.w + (px / 100) * u)},${r2(frame.y + (ay0 / 100) * frame.h + (py / 100) * u)}`
+        : `M${r2(frame.x + (ax0 / 100) * frame.w)},${r2(frame.y + (ay0 / 100) * frame.h)}`))
       .join(' ');
     parts.push(
       `<path data-i="${i}" d="${d}" fill="none" stroke="${color}" stroke-width="${r2(2.2 * k)}" stroke-opacity="0.95" stroke-linecap="round" stroke-linejoin="round"/>`,
@@ -490,8 +501,9 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
     const color = a.color ?? ARROW_COLOR;
     const x1 = frame.x + (a.x / 100) * frame.w;
     const y1 = frame.y + (a.y / 100) * frame.h;
-    const x2 = frame.x + ((a.x2 ?? a.x) / 100) * frame.w;
-    const y2 = frame.y + ((a.y2 ?? a.y) / 100) * frame.h;
+    // 终点存的是**统一尺上的偏移**(起点是锚 ✓)⇒ 箭头的角度不随长宽比变 ✓
+    const x2 = x1 + ((a.x2 ?? 0) / 100) * u;
+    const y2 = y1 + ((a.y2 ?? 0) / 100) * u;
     const dx = x2 - x1;
     const dy = y2 - y1;
     const len = Math.hypot(dx, dy);
