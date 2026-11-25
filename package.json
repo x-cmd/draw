@@ -55,6 +55,7 @@
   "dependencies": {
     "@resvg/resvg-wasm": "^2.6.2",
     "d3-array": "^3.2.4",
+    "d3-geo": "^3.1.2",
     "d3-sankey": "^0.12.3",
     "d3-scale": "^4.0.2",
     "dagre": "^0.8.5",
@@ -69,7 +70,6 @@
     "@types/d3-sankey": "^0.12.5",
     "@types/node": "^22.10.0",
     "cf": "^0.15.0",
-    "d3-geo": "^3.1.2",
     "topojson-client": "^3.1.0",
     "topojson-simplify": "^3.0.3",
     "tsx": "^4.19.2",

@@ -21,6 +21,15 @@ export { renderScatter } from './render/scatter.js';
 export { renderCombo } from './render/combo.js';
 export { renderQR } from './render/qr.js';
 export { parseAnnos, injectAnnos, annoLayer, type Anno } from './render/anno.js';
+export {
+  globeProjection, globeLandPath, globeCountryPath, globeGraticule, globePoint, globeArc,
+  globeAngle, globeCentroid, GLOBE_COUNTRIES, DEFAULT_VIEW,
+  type GlobeView, type GlobeCountry,
+} from './render/globe-proj.js';
+export {
+  COUNTRIES, resolveCountry, regionKey, parseRegionKey,
+  type CountryKeys,
+} from './render/globe-keys.js';
 export { parseLadderSpec, ladderSpecFromParams, type LadderSpec, type LadderItem, type LadderSide } from './specs/ladder.js';
 export { resolveSrcSpec } from './render/src-spec.js';
 export { footerUnit, headerMeta, tipUnit, tipHeight, type FooterItem, type TipRow } from './render/units.js';
