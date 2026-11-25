@@ -176,17 +176,32 @@ export function globeLandPath(w: number, h: number, view: GlobeView = DEFAULT_VI
   return opts.tolPx ? simplifyPath(d, opts.tolPx) : d;
 }
 
-/** 一个国家的 path(填色时用 ✓) */
-export function globeCountryPath(c: GlobeCountry, w: number, h: number, view: GlobeView = DEFAULT_VIEW, opts: GlobePathOpts = {}): string {
+/**
+ * 一个**区域**(国家或一级区划)的 path ✓
+ *
+ * 几何统一成 [多边形][环][点] ✓ ⇒ 国家的与省级的走同一套画法 ✓。
+ */
+export function globeAreaPath(
+  polygon: number[][][][],
+  w: number,
+  h: number,
+  view: GlobeView = DEFAULT_VIEW,
+  opts: GlobePathOpts = {},
+): string {
   const proj = globeProjection(w, h, view);
   const path = geoPath(proj);
-  const features = c.polygon
+  const features = polygon
     .filter((poly) => polyVisible(poly, view))     // 整个在背面的多边形不画 ✓
     .map((poly) => ({ type: 'Feature' as const, properties: {}, geometry: { type: 'Polygon' as const, coordinates: poly } }));
   if (!features.length) return '';
   const raw = path({ type: 'FeatureCollection', features } as unknown as GeoPermissibleObjects) ?? '';
   const d = stripClipCircle(raw, w / 2, h / 2, proj.scale());
   return opts.tolPx ? simplifyPath(d, opts.tolPx) : d;
+}
+
+/** 一个国家的 path(填色时用 ✓) */
+export function globeCountryPath(c: GlobeCountry, w: number, h: number, view: GlobeView = DEFAULT_VIEW, opts: GlobePathOpts = {}): string {
+  return globeAreaPath(c.polygon, w, h, view, opts);
 }
 
 /** 经纬网(给「这是个球」一点提示 ✓) */

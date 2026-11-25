@@ -10,6 +10,7 @@
 // 同一份 gdp/pop 数据在世界地图(ECharts choropleth)和球面图上用同一把钥匙 ✓。
 
 import { GLOBE_COUNTRIES, type GlobeCountry } from './globe-proj.js';
+import { countryAliases } from './vendor/country-aliases.js';
 
 /** 一个国家能被叫出来的所有名字(按优先级排 ✓) */
 export interface CountryKeys {
@@ -28,7 +29,14 @@ export interface CountryKeys {
 /** 国家表(带 ISO 码 ✓) */
 export const COUNTRIES: (GlobeCountry & CountryKeys)[] = GLOBE_COUNTRIES;
 
-/** 索引:小写 → 国家 ✓ */
+/**
+ * 索引:小写 → 国家 ✓
+ *
+ * 别名有三层 ✓:
+ *   ① ISO 码(alpha-2/alpha-3 ✓)· NE 自己的码 · 世行码 · NE 的名字 ✓
+ *   ② **ECharts 世界地图的那套名字**(`United States` / `Dem. Rep. Congo` ✓)
+ *      —— 两套底图两套名 ⇒ 老链接(用旧名的 ✓)在新底图上也得认得出 ✓
+ */
 const INDEX = new Map<string, GlobeCountry>();
 for (const c of COUNTRIES) {
   const keys = [c.iso2, c.iso3, c.adm0, c.wb, c.name];
@@ -37,6 +45,14 @@ for (const c of COUNTRIES) {
     const key = k.toLowerCase();
     if (!INDEX.has(key)) INDEX.set(key, c);
   }
+}
+// ECharts 那套名字 → alpha-2 → 国家 ✓
+const BY_ISO2 = new Map(COUNTRIES.filter((c) => c.iso2).map((c) => [c.iso2 as string, c]));
+for (const [alias, iso2] of Object.entries(countryAliases)) {
+  const c = BY_ISO2.get(iso2);
+  if (!c) continue;
+  const key = alias.toLowerCase();
+  if (!INDEX.has(key)) INDEX.set(key, c);
 }
 
 /**
