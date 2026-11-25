@@ -606,8 +606,60 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
 }
 
 /**
+ * 图里的**绘图区**(数据区)✓ —— 标注的百分比要按它换算,不是按整个画布 ✓
+ *
+ * 为什么:画布的左边距是**固定的像素**(轴标签那一条 ✓),画布一变宽,
+ * 「画布的百分之多少」跟「数据的百分之多少」就对不上了 ⇒ 锚在画布上的标注
+ * 会相对数据漂走(实测:988 宽时 Apple 在 22%,568 宽时 25.9% ⇒ 差 4% ✗)。
+ * 锚在绘图区上,画布怎么变,标注都指着同一根柱子 ✓
+ *
+ * 找法:横跨绘图区的**网格线**(含基线)的左右端 = 绘图区的左右 ✓;
+ * 上下用 dscale 的映射(精确 ✓)。找不到就退回整个画布 ✓。
+ */
+export function plotAreaOf(svg: string): { x: number; y: number; w: number; h: number } | null {
+  let left = Infinity;
+  let right = -Infinity;
+  let top = Infinity;
+  let bottom = -Infinity;
+  const line = /<line[^>]*x1="(-?[\d.]+)"[^>]*y1="(-?[\d.]+)"[^>]*x2="(-?[\d.]+)"[^>]*y2="(-?[\d.]+)"[^>]*stroke="var\(--d-grid\)"[^>]*\/?>/g;
+  for (let m = line.exec(svg); m; m = line.exec(svg)) {
+    const x1 = Number(m[1]);
+    const x2 = Number(m[3]);
+    const y1 = Number(m[2]);
+    const y2 = Number(m[4]);
+    if (!Number.isFinite(x1) || !Number.isFinite(x2)) continue;
+    if (x1 < left) left = x1;
+    if (x2 > right) right = x2;
+    if (Math.min(y1, y2) < top) top = Math.min(y1, y2);
+    if (Math.max(y1, y2) > bottom) bottom = Math.max(y1, y2);
+  }
+  if (!Number.isFinite(left) || right <= left) return null;
+  // 上下:dscale 的映射(精确 ✓ —— 网格线只到刻度,不到绘图区顶 ✓)
+  const ds = /<metadata id="dscale">([^<]*)<\/metadata>/.exec(svg);
+  if (ds) {
+    try {
+      const j = JSON.parse(ds[1]) as { y?: { p0?: number; p1?: number } };
+      const p0 = Number(j.y?.p0);
+      const p1 = Number(j.y?.p1);
+      if (Number.isFinite(p0) && Number.isFinite(p1) && p0 > p1) {
+        top = p1;
+        bottom = p0;
+      }
+    } catch {
+      /* 解析不了就用网格线的范围 ✓ */
+    }
+  }
+  if (!Number.isFinite(top) || !Number.isFinite(bottom) || bottom <= top) {
+    top = 0;
+    bottom = Number.NaN;
+  }
+  const h = Number.isFinite(bottom) ? bottom - top : 0;
+  return h > 0 ? { x: left, y: top, w: right - left, h } : null;
+}
+
+/**
  * 把标注层塞进一张已经画好的 SVG(盖在最后面 = 最上面)。
- * 坐标按 viewBox 换算 —— 画布尺寸变了,百分比的位置不变。
+ * 坐标按**绘图区**换算 —— 画布尺寸变了,百分比的位置不变 ✓。
  */
 export function injectAnnos(svg: string, annos: Anno[] | undefined): string {
   if (!annos?.length) return svg;
@@ -640,7 +692,9 @@ export function injectAnnos(svg: string, annos: Anno[] | undefined): string {
   const scale = px && vw > 0 ? Number(px[1]) / vw : 1;
   const k = scale > 0 ? 1 / scale : 1;
   // 百分比按 viewBox 换算(viewBox 原点不一定在 0,0)
-  const layer = annoLayer(annos, { x: x0, y: y0, w: vw, h: vh }, k);
+  // 锚在**绘图区**(数据区 ✓)—— 不是整个画布 ✓(画布的固定边距会让它相对数据漂 ✗)
+  const plot = plotAreaOf(svg);
+  const layer = annoLayer(annos, plot ?? { x: x0, y: y0, w: vw, h: vh }, k);
   const at = svg.lastIndexOf('</svg>');
   if (at < 0) return svg;
   return svg.slice(0, at) + layer + svg.slice(at);
