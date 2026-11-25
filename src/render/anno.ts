@@ -534,7 +534,10 @@ export function annoLayer(
   // ⇒ 一个圆就变成了椭圆 ✗。统一尺 ⇒ 圆得一直是圆 ✓
   // (站上那层实时画板用同一把尺 ⇒ 编辑器里与导出的图一模一样 ✓)
   // 统一尺:y 用值时**不要**再统一缩放(y 已经是「数据形状」了 ✓)⇒ 传 uniform:false ✓
-  const u = opts?.uniform === false ? frame.w : Math.sqrt(Math.max(1, frame.w * frame.h));
+  // ⇒ 有值映射时:x 尺寸按绘图区宽、y 尺寸按绘图区高 ⇒ 形状跟着**数据的长宽比**走 ✓
+  const uu = Math.sqrt(Math.max(1, frame.w * frame.h));
+  const mx = opts?.uniform === false ? frame.w : uu;   // x 尺寸的尺
+  const my = opts?.uniform === false ? frame.h : uu;   // y 尺寸的尺
   // of():连**序号**一起给 ✓ —— 画出来的每一笔都带 data-i ✓
   // (客户端靠它知道「点中的是第几条」✓ —— 悬停、拖动、双击编辑都靠它 ✓)
   const of = (kind: Anno['kind']): { a: Anno; i: number }[] =>
@@ -545,8 +548,8 @@ export function annoLayer(
     const color = a.color ?? HL_COLOR;
     const x = frame.x + (a.x / 100) * frame.w;
     const y = frame.y + (a.y / 100) * frame.h;
-    const w = ((a.w ?? 0) / 100) * u;
-    const h = ((a.h ?? 0) / 100) * u;
+    const w = ((a.w ?? 0) / 100) * mx;
+    const h = ((a.h ?? 0) / 100) * my;
     parts.push(
       `<rect data-i="${i}" x="${r2(x)}" y="${r2(y)}" width="${r2(w)}" height="${r2(h)}" rx="${r2(10 * k)}" fill="${color}" fill-opacity="0.13" stroke="${color}" stroke-opacity="0.85" stroke-width="${r2(1.5 * k)}"/>`,
     );
@@ -558,8 +561,8 @@ export function annoLayer(
     const color = a.color ?? DEFAULT_COLOR;
     const cx = frame.x + (a.x / 100) * frame.w;
     const cy = frame.y + (a.y / 100) * frame.h;
-    const rx = ((a.rx ?? 0) / 100) * u;
-    const ry = ((a.ry ?? 0) / 100) * u;
+    const rx = ((a.rx ?? 0) / 100) * mx;
+    const ry = ((a.ry ?? 0) / 100) * my;
     parts.push(
       `<ellipse data-i="${i}" cx="${r2(cx)}" cy="${r2(cy)}" rx="${r2(rx)}" ry="${r2(ry)}" fill="${color}" fill-opacity="0.08" stroke="${color}" stroke-width="${r2(2.5 * k)}" stroke-opacity="0.95"/>`,
     );
@@ -575,7 +578,7 @@ export function annoLayer(
     const [ax0, ay0] = pts[0];
     const d = pts
       .map(([px, py], i) => (i
-        ? `L${r2(frame.x + (ax0 / 100) * frame.w + (px / 100) * u)},${r2(frame.y + (ay0 / 100) * frame.h + (py / 100) * u)}`
+        ? `L${r2(frame.x + (ax0 / 100) * frame.w + (px / 100) * mx)},${r2(frame.y + (ay0 / 100) * frame.h + (py / 100) * my)}`
         : `M${r2(frame.x + (ax0 / 100) * frame.w)},${r2(frame.y + (ay0 / 100) * frame.h)}`))
       .join(' ');
     parts.push(
@@ -594,8 +597,8 @@ export function annoLayer(
     const x1 = frame.x + (a.x / 100) * frame.w;
     const y1 = frame.y + (a.y / 100) * frame.h;
     // 终点存的是**统一尺上的偏移**(起点是锚 ✓)⇒ 箭头的角度不随长宽比变 ✓
-    const x2 = x1 + ((a.x2 ?? 0) / 100) * u;
-    const y2 = y1 + ((a.y2 ?? 0) / 100) * u;
+    const x2 = x1 + ((a.x2 ?? 0) / 100) * mx;
+    const y2 = y1 + ((a.y2 ?? 0) / 100) * my;
     const dx = x2 - x1;
     const dy = y2 - y1;
     const len = Math.hypot(dx, dy);
