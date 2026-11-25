@@ -16,7 +16,7 @@
 // 用法: npm run vendor:world
 import { writeFileSync } from 'node:fs';
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
-import { dp, fitProjection } from './geo-util.mjs';
+import { dpRing, fitProjection } from './geo-util.mjs';
 
 const SRC = 'https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json';
 const TARGET_H = 360;   // 自然地球投影的纵横比 ≈ 2.3,矮一点省体积
@@ -60,14 +60,10 @@ function ringsOf(d) {
 function toPolygons(rings) {
   const polys = [];
   for (const ring of rings) {
-    let s = dp(ring, TOL);
-    if (s.length <= 2) {
-      // 抽稀到只剩两点就等于没了 —— 那种小地方隔几个取一个,留个轮廓
-      const keep = ring.filter((_, i) => i % Math.max(1, Math.ceil(ring.length / 8)) === 0);
-      if (keep.length < 3) continue;
-      s = keep;
-    }
-    s = s.map(([x, y]) => [Math.round(x), Math.round(y)]);
+    // 环是闭合的 ⇒ 必须用 dpRing(切两段)⇒ 开链的 dp 会把海岸线塌成直线 ✗
+    const simplified = dpRing(ring, TOL);
+    if (simplified.length <= 2) continue;
+    const s = simplified.map(([x, y]) => [Math.round(x), Math.round(y)]);
     // 投影后缩成一条线的(日界线上切出来的小片)丢掉:画不出来,却会把外接框撑宽
     if (Math.max(...s.map((p) => p[0])) - Math.min(...s.map((p) => p[0])) < 0.5
       && Math.max(...s.map((p) => p[1])) - Math.min(...s.map((p) => p[1])) < 0.5) continue;

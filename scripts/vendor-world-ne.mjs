@@ -11,11 +11,12 @@
  * 用法: node scripts/vendor-world-ne.mjs [110m|50m]
  */
 import { writeFileSync } from 'node:fs';
+import { dpRing } from './simplify.mjs';
 
 const SCALE = process.argv[2] ?? '110m';
 const SRC = `https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_${SCALE}_admin_0_countries.geojson`;
-const OUT = new URL('../src/render/vendor/world-ne.js', import.meta.url).pathname;
-const TOL = 0.25;          // 抽稀容差(度)
+const OUT = process.argv[4] ?? new URL('../src/render/vendor/world-ne.js', import.meta.url).pathname;
+const TOL = Number(process.argv[3] ?? 0.25);   // 抽稀容差(度)
 const DECIMALS = 2;       // 坐标小数位
 
 /**
@@ -30,42 +31,11 @@ const iso3 = (p) =>
   (p.ISO_A3 && p.ISO_A3 !== '-99') ? p.ISO_A3
     : (p.ISO_A3_EH && p.ISO_A3_EH !== '-99' ? p.ISO_A3_EH : p.ADM0_A3);
 
-/** Douglas-Peucker(经纬度)—— 与 vendor-world-geo.mjs 同一套 */
-function dp(pts, tol) {
-  if (pts.length < 3) return pts;
-  const keep = new Uint8Array(pts.length);
-  keep[0] = 1;
-  keep[pts.length - 1] = 1;
-  const stack = [[0, pts.length - 1]];
-  while (stack.length) {
-    const [a, b] = stack.pop();
-    let idx = -1;
-    let max = 0;
-    const [x1, y1] = pts[a];
-    const [x2, y2] = pts[b];
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    const len = Math.hypot(dx, dy) || 1e-9;
-    for (let i = a + 1; i < b; i++) {
-      const d = Math.abs(dy * pts[i][0] - dx * pts[i][1] + x2 * y1 - y2 * x1) / len;
-      if (d > max) {
-        max = d;
-        idx = i;
-      }
-    }
-    if (max > tol && idx > 0) {
-      keep[idx] = 1;
-      stack.push([a, idx], [idx, b]);
-    }
-  }
-  return pts.filter((_, i) => keep[i]);
-}
-
 const ring = (r) => {
-  const s = dp(r, TOL);
-  // 抽到只剩两点等于没了 —— 那种小地方隔几个取一个,留个轮廓
-  const keep = s.length > 2 ? s : r.filter((_, i) => i % Math.max(1, Math.ceil(r.length / 8)) === 0);
-  return keep.map(([lon, lat]) => [Math.round(lon * 10 ** DECIMALS) / 10 ** DECIMALS,
+  // ⚠️ 环是闭合的(首点=末点)⇒ 必须用 dpRing(切两段)⇒ 用开链的 dp 会把整条
+  // 海岸线塌成一条直线(八边形轮廓 ✓ 那就是「抽象画」的来源)
+  const s = dpRing(r, TOL);
+  return s.map(([lon, lat]) => [Math.round(lon * 10 ** DECIMALS) / 10 ** DECIMALS,
     Math.round(lat * 10 ** DECIMALS) / 10 ** DECIMALS]);
 };
 const walk = (c) => (Array.isArray(c[0]) && typeof c[0][0] === 'number' ? ring(c) : c.map(walk));

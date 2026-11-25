@@ -4,6 +4,7 @@
   "description": "SVG chart rendering as a service, a library, and a CLI — pie/bar/hbar/line/area/radar/gauge/scatter/combo/sankey/qr, same params everywhere",
   "license": "Apache-2.0",
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/lib.d.ts",

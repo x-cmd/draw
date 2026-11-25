@@ -12,6 +12,7 @@
 // (us-states 那份 us-atlas 同理,也是翻 y 才对)。
 // 用法: npm run vendor:china
 import { writeFileSync } from 'node:fs';
+import { dpRing } from './simplify.mjs';
 import { geoConicEqualArea } from 'd3-geo';
 
 const SRC = 'https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json';
@@ -30,33 +31,6 @@ const SHORT = {
   宁夏回族自治区: '宁夏', 新疆维吾尔自治区: '新疆', 香港特别行政区: '香港',
   澳门特别行政区: '澳门',
 };
-
-/** Douglas-Peucker:按「点到弦的垂距」丢点 */
-function dp(pts, tol) {
-  if (pts.length < 3) return pts;
-  const keep = new Uint8Array(pts.length);
-  keep[0] = keep[pts.length - 1] = 1;
-  const stack = [[0, pts.length - 1]];
-  while (stack.length) {
-    const [a, b] = stack.pop();
-    let maxD = -1, idx = -1;
-    const [ax, ay] = pts[a], [bx, by] = pts[b];
-    const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
-    for (let i = a + 1; i < b; i++) {
-      const [px, py] = pts[i];
-      let d;
-      if (len2 === 0) d = Math.hypot(px - ax, py - ay);
-      else {
-        let t = ((px - ax) * dx + (py - ay) * dy) / len2;
-        t = Math.max(0, Math.min(1, t));
-        d = Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
-      }
-      if (d > maxD) { maxD = d; idx = i; }
-    }
-    if (maxD > tol && idx > 0) { keep[idx] = 1; stack.push([a, idx], [idx, b]); }
-  }
-  return pts.filter((_, i) => keep[i]);
-}
 
 const isPair = (v) => Array.isArray(v) && typeof v[0] === 'number';
 const isRing = (v) => Array.isArray(v) && Array.isArray(v[0]) && typeof v[0][0] === 'number';
@@ -93,7 +67,7 @@ proj.translate([(TARGET_H * (bx1 - bx0) / (by1 - by0)) / 2 - bx0 * k, (TARGET_H 
 function transform(coords) {
   if (isPair(coords)) { const p = proj([coords[0], coords[1]]); return [Math.round(p[0]), Math.round(p[1])]; }
   if (isRing(coords)) {
-    const s = dp(coords.map(([lon, lat]) => proj([lon, lat])), TOL);
+    const s = dpRing(coords.map(([lon, lat]) => proj([lon, lat])), TOL);
     return s.length > 2 ? s.map(([x, y]) => [Math.round(x), Math.round(y)]) : [];
   }
   return coords.map(transform);

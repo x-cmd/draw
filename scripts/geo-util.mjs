@@ -8,7 +8,12 @@
 //      取正会把地图左右镜像(中国那版就翻过一回)。
 //   ③ d3 的默认 scale 是给世界地图的,国家/区域图要自己按目标尺寸换算(两遍定尺)。
 
-/** Douglas-Peucker:按「点到弦的垂距」丢点 */
+// 抽稀:环(闭合多边形)要用 dpRing —— 见 scripts/simplify.mjs 的说明
+// (用开链的 dp 跑闭合环 ⇒ 首尾弦长 0 ⇒ 整条海岸线塌成一条直线 ✗)
+export { dpRing } from './simplify.mjs';
+import { dpRing } from './simplify.mjs';
+
+/** Douglas-Peucker:按「点到弦的垂距」丢点(开链 ✓) */
 export function dp(pts, tol) {
   if (pts.length < 3) return pts;
   const keep = new Uint8Array(pts.length);
@@ -90,7 +95,7 @@ export function projectGeoJson(proj, geo, targetH, tol) {
       return [Math.round(p[0]), Math.round(p[1])];
     }
     if (isRing(coords)) {
-      const s = dp(coords.map(([lon, lat]) => proj([lon, lat])), tol);
+      const s = dpRing(coords.map(([lon, lat]) => proj([lon, lat])), tol);
       return s.length > 2 ? s.map(([x, y]) => [Math.round(x), Math.round(y)]) : [];
     }
     return coords.map(transform);

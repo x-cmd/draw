@@ -5,6 +5,7 @@
 //
 // 用法: npm run vendor:world-geo
 import { writeFileSync } from 'node:fs';
+import { dpRing } from './simplify.mjs';
 
 const SRC = 'https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json';
 const TOL = 0.25;     // 抽稀(度)—— 球上够用
@@ -13,35 +14,10 @@ const res = await fetch(SRC);
 if (!res.ok) throw new Error(`下载失败: ${res.status}`);
 const geo = await res.json();
 
-/** Douglas-Peucker(经纬度) */
-function dp(pts, tol) {
-  if (pts.length < 3) return pts;
-  const keep = new Uint8Array(pts.length);
-  keep[0] = 1; keep[pts.length - 1] = 1;
-  const stack = [[0, pts.length - 1]];
-  while (stack.length) {
-    const [a, b] = stack.pop();
-    let idx = -1, max = 0;
-    const [x1, y1] = pts[a], [x2, y2] = pts[b];
-    const dx = x2 - x1, dy = y2 - y1;
-    const len = Math.hypot(dx, dy) || 1e-9;
-    for (let i = a + 1; i < b; i++) {
-      const d = Math.abs(dy * pts[i][0] - dx * pts[i][1] + x2 * y1 - y2 * x1) / len;
-      if (d > max) { max = d; idx = i; }
-    }
-    if (max > tol && idx > 0) {
-      keep[idx] = 1;
-      stack.push([a, idx], [idx, b]);
-    }
-  }
-  return pts.filter((_, i) => keep[i]);
-}
-
 const ring = (r) => {
-  const s = dp(r.map(([lon, lat]) => [lon, lat]), TOL);
-  // 抽稀到只剩两点就等于没了 —— 那种小地方隔几个取一个,留个轮廓
-  const keep = s.length > 2 ? s : r.filter((_, i) => i % Math.max(1, Math.ceil(r.length / 8)) === 0);
-  return keep.map(([lon, lat]) => [Math.round(lon * 100) / 100, Math.round(lat * 100) / 100]);
+  // 环是闭合的 ⇒ 用 dpRing(切两段)⇒ 开链的 dp 会把海岸线塌成直线 ✗
+  const s = dpRing(r.map(([lon, lat]) => [lon, lat]), TOL);
+  return s.map(([lon, lat]) => [Math.round(lon * 100) / 100, Math.round(lat * 100) / 100]);
 };
 const walk = (c) => (Array.isArray(c[0]) && typeof c[0][0] === 'number' ? ring(c) : c.map(walk));
 
