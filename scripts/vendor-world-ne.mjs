@@ -3,12 +3,12 @@
  *
  * 源: Natural Earth 110m/50m admin_0(public domain)
  *      https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson
- * 流程: 取 ISO 码 → Douglas-Peucker 抽稀 → 坐标取两位小数 → 落成纯数据
+ * 流程: 取 ISO 码 → 在日界线上切开 → Douglas-Peucker 抽稀 → 坐标取两位小数 → 纯数据
  *
  * 为什么不用 world-atlas:它是 NE 的 TopoJSON 翻版,**恰好没有 ISO 字段**,键只能靠名字猜;
  * NE 的原文件自带 ISO_A2 / ISO_A3 / ADM0_A3 / WB_A3 → 字母码白送,还少一个依赖(topojson-client)。
  *
- * 用法: node scripts/vendor-world-ne.mjs [110m|50m]
+ * 用法: node scripts/vendor-world-ne.mjs [110m|50m] [容差(度)] [输出文件]
  */
 import { writeFileSync } from 'node:fs';
 import { dpRing } from './simplify.mjs';
@@ -16,7 +16,7 @@ import { dpRing } from './simplify.mjs';
 const SCALE = process.argv[2] ?? '110m';
 const SRC = `https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_${SCALE}_admin_0_countries.geojson`;
 const OUT = process.argv[4] ?? new URL('../src/render/vendor/world-ne.js', import.meta.url).pathname;
-const TOL = Number(process.argv[3] ?? 0.25);   // 抽稀容差(度)
+const TOL = Number(process.argv[3] ?? 0.1);   // 抽稀容差(度)
 const DECIMALS = 2;       // 坐标小数位
 
 /**
@@ -31,14 +31,60 @@ const iso3 = (p) =>
   (p.ISO_A3 && p.ISO_A3 !== '-99') ? p.ISO_A3
     : (p.ISO_A3_EH && p.ISO_A3_EH !== '-99' ? p.ISO_A3_EH : p.ADM0_A3);
 
-const ring = (r) => {
-  // ⚠️ 环是闭合的(首点=末点)⇒ 必须用 dpRing(切两段)⇒ 用开链的 dp 会把整条
-  // 海岸线塌成一条直线(八边形轮廓 ✓ 那就是「抽象画」的来源)
+/**
+ * 在**日界线上**把环切开(跨线的国家:俄罗斯/美国/斐济/查德 ✓)
+ *
+ * 不切会怎样:正射投影 + clipAngle(90) ⇒ 跨线的多边形被裁到半球边界时,
+ * d3 把边界**闭合成一整圈** ⇒ 填充把那半个球都盖上 ✗
+ * (实测:50m 的美国一国糊满整个球 ✓ —— 110m 恰好没这毛病,数据换了才暴露 ✗)。
+ * 平面世界图早踩过这个坑 ⇒ 球面这边也要切 ✓。
+ *
+ * 切法:相邻两点经度差 > 180 ⇒ 在 ±180 处插一个点(纬度线性插值 ✓)断成两段 ✓。
+ */
+function cutAntimeridian(ring) {
+  const n = ring.length;
+  const out = [];
+  let cur = [];
+  for (let i = 0; i < n; i++) {
+    const a = ring[i];
+    const b = ring[(i + 1) % n];
+    if (!cur.length) cur.push(a);
+    if (Math.abs(b[0] - a[0]) > 180) {
+      const dir = a[0] > 0 ? 1 : -1;                  // 从东半球跳到西半球 ⇒ 切在 +180 ✓
+      const t = Math.abs((dir * 180 - a[0]) / (b[0] - a[0]));
+      const lat = a[1] + t * (b[1] - a[1]);
+      cur.push([dir * 180, lat]);
+      out.push(cur);
+      cur = [[-dir * 180, lat]];
+    } else {
+      cur.push(b);
+    }
+  }
+  if (cur.length >= 3) out.push(cur);
+  return out.length ? out : [ring];
+}
+
+/** 抽稀一个环(⚠️ 环是闭合的 ⇒ 必须用 dpRing ⇒ 开链的 dp 会把它塌成直线 ✗) */
+const simplifyRing = (r) => {
   const s = dpRing(r, TOL);
   return s.map(([lon, lat]) => [Math.round(lon * 10 ** DECIMALS) / 10 ** DECIMALS,
     Math.round(lat * 10 ** DECIMALS) / 10 ** DECIMALS]);
 };
-const walk = (c) => (Array.isArray(c[0]) && typeof c[0][0] === 'number' ? ring(c) : c.map(walk));
+
+/** 一个多边形(外环 + 洞)→ 切好的多边形(外环被日界线切开 ⇒ 几段 ✓) */
+function polyPieces(rings) {
+  const [outer, ...holes] = rings;
+  const pieces = cutAntimeridian(outer);
+  const hs = holes.map(simplifyRing);
+  return pieces.map((p, i) => (i === 0 ? [simplifyRing(p), ...hs] : [simplifyRing(p)]));
+}
+
+/** 要素 → MultiPolygon 的坐标(一律 MultiPolygon ✓ 切开的段各自成多边形 ✓) */
+function polysOf(geometry) {
+  const coords = geometry.coordinates;
+  const polys = geometry.type === 'Polygon' ? [coords] : coords;
+  return polys.flatMap(polyPieces);
+}
 
 const res = await fetch(SRC);
 if (!res.ok) throw new Error(`下载失败: ${res.status}`);
@@ -56,7 +102,7 @@ const features = geo.features
         name: p.NAME_EN ?? p.NAME ?? '',
         wb: p.WB_A3 && p.WB_A3 !== '-99' ? p.WB_A3 : '',   // 世行码(跟 gdp/pop 的数据同源)
       },
-      geometry: { type: f.geometry.type, coordinates: walk(f.geometry.coordinates) },
+      geometry: { type: 'MultiPolygon', coordinates: polysOf(f.geometry) },
     };
   })
   .filter((f) => f.properties.iso3);
@@ -64,7 +110,8 @@ const features = geo.features
 const header = `/* eslint-disable */
 /**
  * 世界地图(经纬度,球面用)—— Natural Earth ${SCALE} admin_0,vendored。
- * 源: naturalearthdata.com(public domain)· 抽稀: Douglas-Peucker(tol=${TOL}°)
+ * 源: naturalearthdata.com(public domain)
+ * 抽稀: Douglas-Peucker(tol=${TOL}°)· 环在日界线上切开 ✓
  * 键: properties.iso3(主) / iso2(别名) / adm0(兜底) —— 名字只作 label,不参与寻址
  */
 export const worldNeGeoJson = ${JSON.stringify({ type: 'FeatureCollection', features })};
