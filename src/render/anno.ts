@@ -433,7 +433,98 @@ function clsTag(text: string, x: number, y: number, color: string, k: number, da
  * 不一定一样(化学结构那张:viewBox 只有 119 个单位,画布 560 像素),
  * 不按它折算,标注会跟着图一起被放大四倍(字变得比分子还大)。
  */
-export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: number; h: number }, k = 1): string {
+/** dscale(值 ↔ 像素的映射)—— 图有它,标注的 y 就用**数据值** ✓ */
+export interface Dscale {
+  y: { v0: number; p0: number; v1: number; p1: number };
+}
+
+/** 从 SVG 里读 dscale ✓(没有 ⇒ 这张图没有值映射 ⇒ 标注走几何 ✓) */
+export function dscaleOf(svg: string): Dscale | null {
+  const m = /<metadata id="dscale">([^<]*)<\/metadata>/.exec(svg);
+  if (!m) return null;
+  try {
+    const j = JSON.parse(m[1]) as Dscale;
+    const { v0, p0, v1, p1 } = j.y ?? ({} as Dscale['y']);
+    if (![v0, p0, v1, p1].every((v) => Number.isFinite(v))) return null;
+    if (v1 === v0) return null;
+    return j;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 标注的 y:值 ⇒ 绘图区的百分比 ✓(图有值映射时 ✓)
+ *
+ * 按图种定锚(用户定的 ✓):**有值映射的图,y 用数据值** —— 数据改了、轴量程变了,
+ * 标注还指着同一段数据 ✓;**没有值映射的图**走几何 ✓。
+ * x 一律用绘图区的百分比 ✓(横向跟着柱子走 ✓)。
+ */
+/** 值 → 绘图区的百分比(从顶算 ✓:v0 ↔ 底部 100%、v1 ↔ 顶部 0%) ✓ */
+export function yValueToPct(v: number, d: Dscale): number {
+  const { v0, v1 } = d.y;
+  if (v1 === v0) return 0;
+  return 100 - (100 * (v - v0)) / (v1 - v0);
+}
+
+/** 绘图区的百分比 → 值 ✓ */
+export function yPctToValue(p: number, d: Dscale): number {
+  const { v0, v1 } = d.y;
+  if (v1 === v0) return v0;
+  return v0 + ((100 - p) / 100) * (v1 - v0);
+}
+
+/** 值的跨度 → 百分比的跨度 ✓ */
+export function yValueSpanToPct(s: number, d: Dscale): number {
+  const { v0, v1 } = d.y;
+  if (v1 === v0) return 0;
+  return (Math.abs(s) * 100) / Math.abs(v1 - v0);
+}
+
+/** 百分比的跨度 → 值的跨度 ✓ */
+export function yPctSpanToValue(s: number, d: Dscale): number {
+  const { v0, v1 } = d.y;
+  if (v1 === v0) return 0;
+  return (s / 100) * Math.abs(v1 - v0) * Math.sign(v1 - v0 || 1);
+}
+
+export function annoValuesToPct(annos: Anno[], d: Dscale | null): Anno[] {
+  if (!d) return annos;
+  const pct = (v: number): number => yValueToPct(v, d);
+  const pctSpan = (s: number): number => yValueSpanToPct(s, d);
+  const n = (v: unknown): number => Number(v) || 0;
+  return annos.map((a) => {
+    switch (a.kind) {
+      case 'oval':
+        return { ...a, y: pct(a.y), ry: pctSpan(a.ry ?? 0) };
+      case 'hl':
+        return { ...a, y: pct(a.y), h: pctSpan(a.h ?? 0) };
+      case 'arrow':
+        // 终点存的是**偏移** ⇒ y 的偏移是**值的跨度** ✓
+        return { ...a, y2: pctSpan(a.y2 ?? 0) };
+      case 'path': {
+        // 第一个点是锚(位置 ✓),其余是偏移 ✓
+        const pts = a.pts ?? [];
+        if (pts.length < 2) return a;
+        const out: [number, number][] = [[pts[0][0], pct(pts[0][1])]];
+        for (let i = 1; i < pts.length; i++) out.push([pts[i][0], pctSpan(pts[i][1])]);
+        return { ...a, pts: out };
+      }
+      case 'text':
+      case 'note':
+        return { ...a, ty: a.ty === undefined ? a.ty : pct(a.ty) };
+      default:
+        return a;
+    }
+  });
+}
+
+export function annoLayer(
+  annos: Anno[],
+  frame: { x: number; y: number; w: number; h: number },
+  k = 1,
+  opts?: { uniform?: boolean },
+): string {
   if (!annos.length) return '';
   const parts: string[] = [];
   // 一把**统一**的尺:√(宽 × 高)—— 与长宽比无关 ✓
@@ -442,7 +533,8 @@ export function annoLayer(annos: Anno[], frame: { x: number; y: number; w: numbe
   // **尺寸**用它:画布的长宽比一变(改窗口、改侧栏宽度),宽按宽缩、高按高缩
   // ⇒ 一个圆就变成了椭圆 ✗。统一尺 ⇒ 圆得一直是圆 ✓
   // (站上那层实时画板用同一把尺 ⇒ 编辑器里与导出的图一模一样 ✓)
-  const u = Math.sqrt(Math.max(1, frame.w * frame.h));
+  // 统一尺:y 用值时**不要**再统一缩放(y 已经是「数据形状」了 ✓)⇒ 传 uniform:false ✓
+  const u = opts?.uniform === false ? frame.w : Math.sqrt(Math.max(1, frame.w * frame.h));
   // of():连**序号**一起给 ✓ —— 画出来的每一笔都带 data-i ✓
   // (客户端靠它知道「点中的是第几条」✓ —— 悬停、拖动、双击编辑都靠它 ✓)
   const of = (kind: Anno['kind']): { a: Anno; i: number }[] =>
@@ -694,7 +786,14 @@ export function injectAnnos(svg: string, annos: Anno[] | undefined): string {
   // 百分比按 viewBox 换算(viewBox 原点不一定在 0,0)
   // 锚在**绘图区**(数据区 ✓)—— 不是整个画布 ✓(画布的固定边距会让它相对数据漂 ✗)
   const plot = plotAreaOf(svg);
-  const layer = annoLayer(annos, plot ?? { x: x0, y: y0, w: vw, h: vh }, k);
+  // 图有值映射 ⇒ 标注的 y 是**数据值** ⇒ 先换算成绘图区的百分比 ✓
+  const d = dscaleOf(svg);
+  const layer = annoLayer(
+    d ? annoValuesToPct(annos, d) : annos,
+    plot ?? { x: x0, y: y0, w: vw, h: vh },
+    k,
+    { uniform: !d },
+  );
   const at = svg.lastIndexOf('</svg>');
   if (at < 0) return svg;
   return svg.slice(0, at) + layer + svg.slice(at);
