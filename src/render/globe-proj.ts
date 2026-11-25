@@ -56,9 +56,11 @@ const raw = worldNeGeoJson as unknown as { features: CountryGeom[] };
 
 /** 全部国家(陆地 + 岛 ✓) */
 export const GLOBE_COUNTRIES: GlobeCountry[] = raw.features.map((f) => {
+  // 统一成「多边形数组」:Polygon 的 coordinates 本身就是 [环…] ⇒ 包一层 ⇒ [多边形][环][点] ✓
+  // (MultiPolygon 的 coordinates 已经是 [多边形][环][点] ✓ ⇒ 原样 ✓)
   const coords = f.geometry.coordinates as unknown;
   const polygon = (f.geometry.type === 'Polygon'
-    ? [[coords as number[][][]]]
+    ? [coords as number[][][]]
     : (coords as number[][][][])) as number[][][][];
   return { ...f.properties, polygon };
 });
