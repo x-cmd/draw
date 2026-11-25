@@ -74,7 +74,9 @@ export const GLOBE_COUNTRIES: GlobeCountry[] = raw.features.map((f) => {
  * `precision(0.4)` ⇒ 陆地的边贴着球面走(不是屏幕上的弦 ✓)。
  */
 export function globeProjection(w: number, h: number, view: GlobeView = DEFAULT_VIEW) {
-  const r0 = Math.min(w, h) / 2 - 8;
+  // 半径 = 画面的 46% ⇒ 球占九成,四周留一点边 ✓
+  // (大气圈不再往外伸 ✓ —— 那圈光晕伸到画布外会被切掉,看着像「地球超出了画面」✗)
+  const r0 = Math.min(w, h) * 0.46 - 8;
   const p = geoOrthographic()
     .clipAngle(90)
     .precision(0.4)
