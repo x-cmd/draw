@@ -98,7 +98,7 @@ export interface GlobePathOpts {
  * 这个多边形在当前视角下**有看得见的部分**吗?
  *
  * 为什么问这个:d3 的 `clipAngle(90)` 裁剪时,会把被裁掉的那一半**沿着裁剪圆闭合**
- * ⇒ 一个**整个在背面**的多边形,它的 path 就是**一整圈裁剪圆** ⇒
+ * ⇒ 一个**整个在背面**的多边形,它的 path 里会多出一整圈裁剪圆 ⇒
  * 填充把那半个球都糊上 ✗(实测:俄罗斯/加拿大/洪都拉斯各糊一整球 ✓)。
  *
  * ⇒ **整个在背面的多边形不画** ✓(正面有可见部分才画 ✓)。
@@ -107,14 +107,52 @@ export interface GlobePathOpts {
  *
  * ⚠️ 判可见**不能用投影的返回值**:d3 的 clipAngle 只在**画 path**的时候裁,
  * 单点投影照样给得出点(背面会被镜像到另一边 ✗)⇒ 用**球面角距**判 ✓。
+ *
+ * ⚠️ **要留余量**(1° ✓):正好贴在地平线上的多边形(角距 89.8° ✓)会被 d3 判成
+ * 「整个在外面」⇒ 照样吐出整圈裁剪圆 ✗(实测:俄罗斯一个小岛把整个球糊红 ✓)。
+ * ⇒ 判可见的门槛比 90° 严 1° ⇒ 这种贴着边的碎片整个丢掉 ✓(它只有 1px 宽 ✓)。
  */
+const VISIBLE_MARGIN = (1 * Math.PI) / 180;
+
 function polyVisible(poly: number[][][], view: GlobeView): boolean {
   for (const ring of poly) {
     for (const pt of ring) {
-      if (globeAngle(pt[0], pt[1], view) < Math.PI / 2) return true;
+      if (globeAngle(pt[0], pt[1], view) < Math.PI / 2 - VISIBLE_MARGIN) return true;
     }
   }
   return false;
+}
+
+/**
+ * 把 d3 吐出来的**整圈裁剪圆**丢掉。
+ *
+ * d3 的 `clipAngle(90)` 裁剪时,被裁掉的那一半会**沿裁剪圆闭合** ⇒
+ * 有些多边形(整个在背面、或正好贴在地平线上)的 path 里会多出**一整圈裁剪圆**
+ * ⇒ 填充把那半个球都糊上 ✗(实测:俄罗斯/加拿大/洪都拉斯各糊一整球 ✓)。
+ *
+ * ⇒ 凡是「所有点都在圆上、且绕了一整圈」的子路径,整个丢掉 ✓
+ * (半圆弧那种是**多边形自己的封口** ⇒ 要留着 ✓)。
+ */
+function stripClipCircle(d: string, cx: number, cy: number, R: number): string {
+  if (!d) return d;
+  const kept: string[] = [];
+  for (const seg of d.split('M').slice(1)) {
+    const pts: number[][] = [];
+    for (const m of seg.matchAll(/(-?[\d.]+),(-?[\d.]+)/g)) pts.push([Number(m[1]), Number(m[2])]);
+    if (pts.length > 8 && pts.every(([x, y]) => Math.abs(Math.hypot(x - cx, y - cy) - R) < 0.6)) {
+      // 在圆上 ⇒ 再看是不是绕了整圈(半圆弧是多边形的封口,要留 ✓)
+      let span = 0;
+      for (let i = 1; i < pts.length; i++) {
+        let a = Math.atan2(pts[i][1] - cy, pts[i][0] - cx) - Math.atan2(pts[i - 1][1] - cy, pts[i - 1][0] - cx);
+        while (a > Math.PI) a -= 2 * Math.PI;
+        while (a < -Math.PI) a += 2 * Math.PI;
+        span += Math.abs(a);
+      }
+      if (span > Math.PI * 1.8) continue;      // 整圈 ⇒ 丢掉 ✓
+    }
+    kept.push(`M${seg}`);
+  }
+  return kept.join('');
 }
 
 /** 陆地的一条 path(整个球面拼成一条 ⇒ 没有国界的接缝 ✓) */
@@ -133,7 +171,8 @@ export function globeLandPath(w: number, h: number, view: GlobeView = DEFAULT_VI
       });
     }
   }
-  const d = path({ type: 'FeatureCollection', features } as unknown as GeoPermissibleObjects) ?? '';
+  const raw = path({ type: 'FeatureCollection', features } as unknown as GeoPermissibleObjects) ?? '';
+  const d = stripClipCircle(raw, w / 2, h / 2, proj.scale());
   return opts.tolPx ? simplifyPath(d, opts.tolPx) : d;
 }
 
@@ -145,7 +184,8 @@ export function globeCountryPath(c: GlobeCountry, w: number, h: number, view: Gl
     .filter((poly) => polyVisible(poly, view))     // 整个在背面的多边形不画 ✓
     .map((poly) => ({ type: 'Feature' as const, properties: {}, geometry: { type: 'Polygon' as const, coordinates: poly } }));
   if (!features.length) return '';
-  const d = path({ type: 'FeatureCollection', features } as unknown as GeoPermissibleObjects) ?? '';
+  const raw = path({ type: 'FeatureCollection', features } as unknown as GeoPermissibleObjects) ?? '';
+  const d = stripClipCircle(raw, w / 2, h / 2, proj.scale());
   return opts.tolPx ? simplifyPath(d, opts.tolPx) : d;
 }
 
