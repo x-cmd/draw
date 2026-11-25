@@ -12,6 +12,10 @@
     "./anno": {
       "types": "./dist/render/anno.d.ts",
       "default": "./dist/render/anno.js"
+    },
+    "./globe": {
+      "types": "./dist/globe.d.ts",
+      "default": "./dist/globe.js"
     }
   },
   "bin": {
