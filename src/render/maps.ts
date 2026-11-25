@@ -20,6 +20,8 @@ interface MapRegistrar {
 const MAPS: Record<string, () => Promise<{ [k: string]: unknown }>> = {
   USA: () => import('./vendor/us-states.js'),
   CN: () => import('./vendor/china.js'),
+  // 中国**县级**(省 → 市 → 县,2728 个县 ✓)—— 跟 CN 同一套投影 ✓
+  CN_COUNTY: () => import('./vendor/china-counties.js'),
   EU: () => import('./vendor/eu.js'),
   JP: () => import('./vendor/japan.js'),
   BR: () => import('./vendor/br.js'),
@@ -56,8 +58,8 @@ export async function loadMapGeoJson(name: string): Promise<unknown> {
   const load = MAPS[name];
   if (!load) throw new Error(`unknown map: ${name}`);
   const mod = await load();
-  return flipY(mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.euGeoJson ?? mod.japanGeoJson
-    ?? mod.brGeoJson ?? mod.auGeoJson ?? mod.deGeoJson ?? mod.krGeoJson ?? mod.worldGeoJson);
+  return flipY(mod.usStatesGeoJson ?? mod.chinaGeoJson ?? mod.chinaCountiesGeoJson ?? mod.euGeoJson
+    ?? mod.japanGeoJson ?? mod.brGeoJson ?? mod.auGeoJson ?? mod.deGeoJson ?? mod.krGeoJson ?? mod.worldGeoJson);
 }
 
 /**
