@@ -2,8 +2,8 @@
 // 浏览器端只要投影 + 底图,不必把整个库都打进包里 ✓(d3-geo + 底图 ~15KB gzip ✓)。
 export {
   globeProjection, globeLandPath, globeCountryPath, globeAreaPath, globeGraticule, globePoint, globeArc,
-  globeAngle, globeCentroid, GLOBE_COUNTRIES, DEFAULT_VIEW,
-  type GlobeView, type GlobeCountry, type GlobePathOpts,
+  globeAngle, globeCentroid, globeCountryLabels, GLOBE_COUNTRIES, DEFAULT_VIEW,
+  type GlobeView, type GlobeCountry, type GlobePathOpts, type GlobeLabel,
 } from './render/globe-proj.js';
 export {
   COUNTRIES, resolveCountry, regionKey, parseRegionKey,

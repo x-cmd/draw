@@ -250,6 +250,76 @@ export function globeArc(
   return { d: `M${a[0].toFixed(2)},${a[1].toFixed(2)}Q${m[0].toFixed(2)},${m[1].toFixed(2)} ${b[0].toFixed(2)},${b[1].toFixed(2)}`, front };
 }
 
+/**
+ * 球面上可见的**国家名**标签(位置 + 名字)✓
+ *
+ * 地图上该有地名 —— 平面世界地图有,球面没有 ⇒ 两张图对不上 ✗。
+ * 质心跟视角无关 ⇒ **算一次缓存起来** ✓(每帧重算 242 个质心太贵 ✗)。
+ */
+let CENTROIDS: Map<string, [number, number]> | null = null;
+function centroids(): Map<string, [number, number]> {
+  if (CENTROIDS) return CENTROIDS;
+  CENTROIDS = new Map();
+  for (const c of GLOBE_COUNTRIES) {
+    const p = globeCentroid(c);
+    if (p) CENTROIDS.set(c.iso2, p);
+  }
+  return CENTROIDS;
+}
+
+/** 国家的「大小」:外接框的对角线(度)—— 跟视角无关 ⇒ 算一次 ✓ */
+let SIZES: Map<string, number> | null = null;
+function sizes(): Map<string, number> {
+  if (SIZES) return SIZES;
+  SIZES = new Map();
+  for (const c of GLOBE_COUNTRIES) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const poly of c.polygon) {
+      for (const ring of poly) {
+        for (const pt of ring) {
+          if (pt[0] < x0) x0 = pt[0];
+          if (pt[0] > x1) x1 = pt[0];
+          if (pt[1] < y0) y0 = pt[1];
+          if (pt[1] > y1) y1 = pt[1];
+        }
+      }
+    }
+    if (Number.isFinite(x0)) SIZES.set(c.iso2, Math.hypot(x1 - x0, y1 - y0));
+  }
+  return SIZES;
+}
+
+/** 小到不值得标的国家(南极、南大洋那些岛国 ⇒ 标签糊成一片 ✗) */
+const LABEL_MIN_SIZE = 13;
+/** 极地的不标(南极/北极那一圈标签没有意义 ✓) */
+const LABEL_MAX_LAT = 62;
+/** 一次最多标几个国家(再多就糊了 ✓) */
+const LABEL_MAX_COUNT = 26;
+
+export interface GlobeLabel { key: string; name: string; x: number; y: number }
+
+export function globeCountryLabels(w: number, h: number, view: GlobeView = DEFAULT_VIEW): GlobeLabel[] {
+  const proj = globeProjection(w, h, view);
+  const out: GlobeLabel[] = [];
+  // 大的先标 ✓(顺序固定 ⇒ 转球时标签不会换来换去 ✓)
+  const keys = [...centroids().keys()].sort((a, b) => (sizes().get(b) ?? 0) - (sizes().get(a) ?? 0));
+  let n = 0;
+  for (const key of keys) {
+    if (n >= LABEL_MAX_COUNT) break;
+    const c0 = centroids().get(key)!;
+    const [lon, lat] = c0;
+    if ((sizes().get(key) ?? 0) < LABEL_MIN_SIZE) continue;      // 太小的不标 ✓
+    if (Math.abs(lat) > LABEL_MAX_LAT) continue;              // 极地不标 ✓
+    if (globeAngle(lon, lat, view) >= Math.PI / 2) continue;   // 背面不标 ✓
+    const q = proj([lon, lat]);
+    if (!q) continue;
+    const c = GLOBE_COUNTRIES.find((x) => x.iso2 === key);
+    out.push({ key, name: c?.name ?? key, x: q[0], y: q[1] });
+    n++;
+  }
+  return out;
+}
+
 /** 一个国家的质心(拿它当连线的端点 ✓) */
 export function globeCentroid(c: GlobeCountry): [number, number] | null {
   const geo = {
