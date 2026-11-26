@@ -99,13 +99,21 @@ const features = geo.features
         iso3: iso3(p),                    // 主键
         iso2: iso2(p),                    // 别名
         adm0: p.ADM0_A3 ?? '',            // 兜底(NE 自己的码)
-        name: p.NAME_EN ?? p.NAME ?? '',
+        // 用**短名**(NAME ✓)—— NAME_EN 是「People's Republic of China」这种全称 ✗ 标签太长
+        name: (p.NAME ?? p.NAME_EN ?? '').replace(/ of America$/, ''),
+        // 中文名:去掉「维吾尔/壮族/回族/特别行政区/自治区」这类后缀 ⇒ 新疆/广西/香港 ✓
+        // (「中华人民共和国」⇒「中国」是特例 ✗ 直接换 ✓)
+        nameZh: p.NAME_ZH && p.NAME_ZH !== '-99'
+          ? (p.NAME_ZH === '中华人民共和国' ? '中国'
+            : p.NAME_ZH.replace(/(维吾尔|壮族|回族|特别行政区|自治区|自治州)$/, ''))
+          : '',
         wb: p.WB_A3 && p.WB_A3 !== '-99' ? p.WB_A3 : '',   // 世行码(跟 gdp/pop 的数据同源)
       },
       geometry: { type: 'MultiPolygon', coordinates: polysOf(f.geometry) },
     };
   })
-  .filter((f) => f.properties.iso3);
+  // 海(Indian Ocean / Southern Ocean ……)不是国家 ⇒ 剔掉(否则球上标着「印度洋」✗)
+  .filter((f) => f.properties.iso3 && f.properties.TYPE !== 'Waterbody');
 
 const header = `/* eslint-disable */
 /**
