@@ -24,9 +24,12 @@ const DECIMALS = 2;       // 坐标小数位
  * ISO_x_EH 是它们的真值;再兜底 ADM0_A3(NE 自己的三字母码,177 个要素全覆盖)。
  * 实测:alpha-3 → 174/177(alpha-2 → 175/177),缺的 3 个走 ADM0_A3(CYN / SOL / KOS)。
  */
-const iso2 = (p) =>
-  (p.ISO_A2 && p.ISO_A2 !== '-99') ? p.ISO_A2
+// ⚠️ ISO_A2 偶尔带前缀('CN-TW' ⇒ 台湾 ✓)⇒ 一律取后半截 ✓
+const iso2 = (p) => {
+  const raw = (p.ISO_A2 && p.ISO_A2 !== '-99') ? p.ISO_A2
     : (p.ISO_A2_EH && p.ISO_A2_EH !== '-99' ? p.ISO_A2_EH : '');
+  return raw ? raw.split('-').pop() : '';
+};
 const iso3 = (p) =>
   (p.ISO_A3 && p.ISO_A3 !== '-99') ? p.ISO_A3
     : (p.ISO_A3_EH && p.ISO_A3_EH !== '-99' ? p.ISO_A3_EH : p.ADM0_A3);
@@ -103,9 +106,11 @@ const features = geo.features
         name: (p.NAME ?? p.NAME_EN ?? '').replace(/ of America$/, ''),
         // 中文名:去掉「维吾尔/壮族/回族/特别行政区/自治区」这类后缀 ⇒ 新疆/广西/香港 ✓
         // (「中华人民共和国」⇒「中国」是特例 ✗ 直接换 ✓)
+        // 台湾是中国的一部分 ⇒ 显示名统一叫「台湾」✓(底图里写的是「中华民国」✗)
         nameZh: p.NAME_ZH && p.NAME_ZH !== '-99'
           ? (p.NAME_ZH === '中华人民共和国' ? '中国'
-            : p.NAME_ZH.replace(/(维吾尔|壮族|回族|特别行政区|自治区|自治州)$/, ''))
+            : (p.NAME_ZH === '中华民国' ? '台湾'
+              : p.NAME_ZH.replace(/(维吾尔|壮族|回族|特别行政区|自治区|自治州)$/, '')))
           : '',
         wb: p.WB_A3 && p.WB_A3 !== '-99' ? p.WB_A3 : '',   // 世行码(跟 gdp/pop 的数据同源)
       },
