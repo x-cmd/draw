@@ -76,9 +76,10 @@ export const GLOBE_COUNTRIES: GlobeCountry[] = raw.features.map((f) => {
  * `precision(0.4)` ⇒ 陆地的边贴着球面走(不是屏幕上的弦 ✓)。
  */
 export function globeProjection(w: number, h: number, view: GlobeView = DEFAULT_VIEW) {
-  // 半径 = 画面的 46% ⇒ 球占九成,四周留一点边 ✓
+  // 半径 = 画面的 44% ⇒ 球占九成,四周留一点边 ✓
   // (大气圈不再往外伸 ✓ —— 那圈光晕伸到画布外会被切掉,看着像「地球超出了画面」✗)
-  const r0 = Math.min(w, h) * 0.46 - 8;
+  // (边要留够:弧会挑离球面一点 ⇒ 挑到画布外就看不见了 ✗ ⇒ 边得比挑起的高度大 ✓)
+  const r0 = Math.min(w, h) * 0.44 - 8;
   const p = geoOrthographic()
     .clipAngle(90)
     .precision(0.4)
@@ -230,27 +231,71 @@ export function globeAngle(lon: number, lat: number, view: GlobeView = DEFAULT_V
   return geoDistance([view.lon, view.lat], [lon, lat]);
 }
 
-/** 大圆弧(两点之间最短的那条球面路径 ✓ —— 贴着球面走,不被球挡住 ✓) */
+/**
+ * 两点之间的大圆弧(球面上的「飞行弧」✓)
+ *
+ * - **采样**:正射投影下,大圆投影成一段**椭圆弧** —— 用两点画直线就成了穿球的弦 ✗
+ *   (之前的实现就是两点 + 一个「挑起来的中间点」⇒ 出来是一条直线 ✗)
+ * - **挑离球面**:采样点沿「从球心往外」推一推(中间推得多、两端不推)⇒ 弧从球面上方
+ *   飞过去。挑多高按弧长给(近处的两点也挑那么高就成了大拱桥 ✗)
+ * - **背面那段不画**:背面点投影会被**镜像**到正面 ⇒ 画出来是条指向错地方的线 ✗
+ *   ⇒ 只画正面那一段(另一端在背面时,弧画到地平线就停 ✓)
+ */
 export function globeArc(
   from: [number, number],
   to: [number, number],
   w: number,
   h: number,
   view: GlobeView = DEFAULT_VIEW,
-  lift = 0.12,
-): { d: string; front: boolean } {
+  lift = 0.1,
+): { d: string; front: boolean; mid: { x: number; y: number } | null } {
   const proj = globeProjection(w, h, view);
-  const mid = geoInterpolate(from, to)(0.5);
-  // 弧稍稍挑起来一点 —— 贴着球面的那一半会被球挡住,挑起来才看得见「从这儿到那儿」✓
-  const lifted: [number, number] = [mid[0], mid[1] + lift];
-  const a = proj(from);
-  const m = proj(lifted);
-  const b = proj(to);
-  if (!a || !m || !b) return { d: '', front: false };
-  // 两端都得在正面 ⇒ 弧才画得出来 ✓(中间挑起来的点也算 ✓)
-  const front = globeAngle(from[0], from[1], view) < Math.PI / 2 && globeAngle(to[0], to[1], view) < Math.PI / 2;
-  return { d: `M${a[0].toFixed(2)},${a[1].toFixed(2)}Q${m[0].toFixed(2)},${m[1].toFixed(2)} ${b[0].toFixed(2)},${b[1].toFixed(2)}`, front };
+  const interp = geoInterpolate(from, to);
+  const N = 48;
+  const cx = w / 2, cy = h / 2;
+  const samples: { x: number; y: number; vis: boolean }[] = [];
+  for (let i = 0; i <= N; i++) {
+    const p = interp(i / N);
+    // 正面?角距 < 90° ✓(d3 的单点投影不管背面 ⇒ 自己判 ✓)
+    const vis = globeAngle(p[0], p[1], view) < Math.PI / 2;
+    const q = vis ? proj(p) : null;
+    samples.push({ x: q ? q[0] : 0, y: q ? q[1] : 0, vis: !!q });
+  }
+  // 可见的那一段是**连续**的(半球在球面上是凸的 ✓)⇒ 取头到尾 ✓
+  let first = -1;
+  let last = -1;
+  for (let i = 0; i < samples.length; i++) {
+    if (!samples[i].vis) continue;
+    if (first < 0) first = i;
+    last = i;
+  }
+  if (first < 0) return { d: '', front: false, mid: null };
+  const front = samples[0].vis && samples[samples.length - 1].vis;
+  // 挑多高:弧越长挑得越高(近处的两点也挑那么高就成了大拱桥 ✗)
+  const span = geoDistance(from, to);
+  const h0 = lift * Math.min(1, span / 0.9);
+  const pts: string[] = [];
+  let mid: { x: number; y: number } | null = null;
+  for (let i = first; i <= last; i++) {
+    const t = i / N;
+    const s = samples[i];
+    const k = 1 + h0 * Math.sin(Math.PI * t);
+    const x = cx + (s.x - cx) * k;
+    const y = cy + (s.y - cy) * k;
+    pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+    // 标签摆在**球面上**的那个中点(不是挑起来的那个 —— 挑起来的会挑出画布 ✗)
+    if (i === Math.round(N / 2)) mid = { x: s.x, y: s.y };
+  }
+  return { d: `M${pts.join('L')}`, front, mid };
 }
+
+/**
+ * 边(弧)的标签最多标几条边 —— 超了就不标 ✓
+ *
+ * 三十多条弧各标一个字(「回源」「接入」这种)⇒ 半个球都是字,谁也看不清 ✗
+ * ⇒ 边多的时候**只留弧**(弧本身已经说清走向了 ✓),字留给悬停 ✓。
+ */
+export const ARC_LABEL_MAX = 8;
 
 /**
  * 球面上可见的**国家名**标签(位置 + 名字)✓
