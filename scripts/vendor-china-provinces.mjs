@@ -40,6 +40,15 @@ const res = await fetch(SRC);
 if (!res.ok) throw new Error(`下载失败: ${res.status}`);
 const geo = await res.json();
 
+// 台湾省:全国那份清单里没有它(700000 那个文件 404 ✗)⇒ 单独取 ✓
+const tw = await fetch('https://geo.datav.aliyun.com/areas_v3/bound/710000.json');
+if (tw.ok) {
+  const twGeo = await tw.json();
+  if (!geo.features.some((f) => f.properties.adcode === 710000)) {
+    geo.features.push(...twGeo.features.map((f) => ({ ...f, properties: { ...f.properties, adcode: 710000 } })));
+  }
+}
+
 const isPair = (c) => Array.isArray(c) && c.length >= 2 && typeof c[0] === 'number';
 const isRing = (c) => Array.isArray(c) && Array.isArray(c[0]) && isPair(c[0]);
 

@@ -81,6 +81,19 @@ const provinces = country.features.map((f) => ({
   name: f.properties.name,
   geometry: f.geometry,
 }));
+// 台湾省:全国那份清单里没有它 ⇒ 单独取 ✓(它没有市县层级 ⇒ 整个省算一个单元 ✓)
+if (!provinces.some((p) => p.adcode === '710000')) {
+  try {
+    const twGeo = await get('710000');
+    provinces.push({
+      adcode: '710000',
+      name: twGeo.features[0]?.properties?.name ?? '台湾省',
+      geometry: twGeo.features[0]?.geometry,
+    });
+  } catch {
+    console.log('  台湾省: 取不到 ⇒ 跳过');
+  }
+}
 console.log(`  ${provinces.length} 个省级`);
 
 // —— 2. 逐省拿市,逐市拿县 ——
@@ -92,6 +105,20 @@ for (const p of provinces) {
   try {
     cityGeo = await get(p.adcode);
   } catch {
+    // 台湾省没有市这一层 ⇒ 整个省算一个单元 ✓
+    if (p.adcode === '710000' && p.geometry) {
+      counties.push({
+        adcode: '710000',
+        name: p.name,
+        city: p.name,
+        cityAdcode: '710000',
+        province: p.name,
+        provinceAdcode: '710000',
+        geometry: p.geometry,
+      });
+      console.log(`  ${p.name}: 没有市县层级 ⇒ 整个省算一个单元 ✓`);
+      continue;
+    }
     console.log(`  ${p.name}: 市这一层拿不到(直辖市?)⇒ 跳过`);
     continue;
   }
@@ -103,6 +130,19 @@ for (const p of provinces) {
       provinceAdcode: p.adcode,
       geometry: c.geometry,
     };
+    // 台湾省没有市这一层 ⇒ 整个省算一个单元 ✓
+    if (city.adcode === '710000') {
+      counties.push({
+        adcode: '710000',
+        name: city.name,
+        city: city.name,
+        cityAdcode: '710000',
+        province: city.name,
+        provinceAdcode: '710000',
+        geometry: city.geometry,
+      });
+      continue;
+    }
     cities.push(city);
     n++;
     // 市下面再拿县
