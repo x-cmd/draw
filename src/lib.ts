@@ -57,7 +57,7 @@ export { refLinesOf, refLineLayer, type RefLineLayer } from './render/svg.js';
 import { renderFromUrl, type DrawResult } from './render/query.js';
 export { renderFromUrl, renderStoredFromUrl, checkSlotColors, refParams as refLinesParam } from './render/query.js';
 // echarts 覆盖层:异步(SSR 引擎按需加载),与 GET /draw/echarts 同参同输出
-export { renderEchartsFromUrl, renderEchartsOption, mapLayout, headLayout, HEAD_RULES } from './render/echarts-ssr.js';
+export { renderEchartsFromUrl, renderEchartsOption, mapLayout, mapCanvasHeight, headLayout, HEAD_RULES, MAP_BANDS } from './render/echarts-ssr.js';
 // archmap 拓扑图:同步,与 GET /draw/archmap 同参同输出(draw({type:'archmap', n:[...]}) 亦可)
 export { renderArchmapFromUrl, parseNodes, parseEdges, parseBoundaries } from './render/archmap.js';
 // 图标库(站上自己画图时要用:三维场景里把图标摆在块上面)

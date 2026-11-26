@@ -13,7 +13,7 @@ import type { Skin } from '../styles/index.js';
 import { FONT } from '../theme.js';
 import { esc, metaTag, skinStyle, editTag } from './svg.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
-import { mapAspect, registerMaps, worldWrapLayout } from './maps.js';
+import { mapAspect, mapNamesOf, registerMaps, worldWrapLayout } from './maps.js';
 import type { EChartsOption } from 'echarts';
 
 // ?d= 上限:再大就撞各端 URL 长度红线(Workers/代理 ~16KB);超限直接拒绝,
@@ -51,36 +51,56 @@ const CARTESIAN = new Set(['bar', 'line', 'scatter', 'effectScatter', 'boxplot',
 // 地图系列的布局缺省:
 //   aspectScale=1 —— echarts 默认 0.75(给经纬度 GeoJSON 用的经验值),会把投影过的
 //     地图横向压扁 25%;地图数据本身已是等距投影的平面坐标,纵横比按数据来(aspect=1)
-//   尺寸按画布算 —— 顶部 62px 留给标题与 Edit @X-CMD 角标;图例横排(orient=horizontal)
-//     时底部再留 56px,竖排(orient=vertical,靠左)则左侧留 48px 且地图右移,
-//     不跟图例叠在一起;四周再留 12px 余量给州名标签(边缘的标签会溢出地图框)
+//   尺寸按画布算 —— 顶部留一条标题带(有标题才留)、图例横排(orient=horizontal)时
+//     底部留一条、竖排(orient=vertical,靠左)则左侧留一条且地图右移,不跟图例叠在一起;
+//     四周再留一点余量给州名标签(边缘的标签会溢出地图框)
 //   layoutSize 是 min(画布宽高) 的百分比:地图比画布宽时它给宽,比画布高时它给高
 //     (echarts 按地图自身纵横比决定),所以两条分支都要算。
-const MAP_TOP = 62;
-const MAP_LEGEND_BOTTOM = 56;
-const MAP_LEGEND_SIDE = 48;
-const MAP_MARGIN = 12;
+//
+// **带子的宽窄是有讲究的**:留得越多,地图能占的地方越少 ⇒ 地图在自己的画布里
+// 显得越小(中国那张在 960×540 里只占 36% 的宽 ✗)。所以带子只按「真的有东西」
+// 来留(没标题不留顶带、图例竖排就不留底带),数字也按实际字号收窄。
+export const MAP_BANDS = {
+  /** 顶部标题带:24(顶)+18(字)+余量 */
+  title: 52,
+  /** 底部图例带(横排时):色标 14 + 文字 + 余量 */
+  legendBottom: 26,
+  /** 左侧图例带(竖排时):色标 12 + 文字 + 余量 */
+  legendSide: 44,
+  /** 地图四周的余量(给边缘的标签) */
+  margin: 10,
+} as const;
 
-/** 地图布局缺省(服务端与浏览器端同一套规则 —— 见 explore 页的同名实现) */
+/**
+ * 地图布局缺省(服务端与浏览器端同一套规则 —— 浏览器端跑的是本函数的源码,
+ * 由 explore 页注入 ⇒ 两边不会走偏)。
+ *
+ * **自包含**:只依赖 MAP_BANDS(单独注入)与传进来的 aspect —— 不引用模块外的任何东西。
+ */
 export function mapLayout(o: {
-  name: string;
+  /** 底图的纵横比(宽/高)—— 投影平面上外接框的比 */
+  aspect: number;
   width: number;
   height: number;
   /** 图例是否横排在底部(横排才占底部那条带) */
   legendAtBottom: boolean;
+  /** 画布上有没有标题(没有就不留顶带) */
+  hasTitle?: boolean;
 }): Obj {
-  const aspect = mapAspect(o.name) ?? 1.7;
-  const left = o.legendAtBottom ? 0 : MAP_LEGEND_SIDE;
-  const bottom = o.legendAtBottom ? MAP_LEGEND_BOTTOM : 0;
-  const availW = Math.max(40, o.width - left - MAP_MARGIN * 2);
-  const availH = Math.max(40, o.height - MAP_TOP - bottom - MAP_MARGIN * 2);
+  const B = MAP_BANDS;
+  const aspect = o.aspect > 0 ? o.aspect : 1.7;
+  const top = o.hasTitle === false ? 0 : B.title;
+  const left = o.legendAtBottom ? 0 : B.legendSide;
+  const bottom = o.legendAtBottom ? B.legendBottom : 0;
+  const availW = Math.max(40, o.width - left - B.margin * 2);
+  const availH = Math.max(40, o.height - top - bottom - B.margin * 2);
   // echarts:layoutSize 给的是「短边」那个方向的尺寸 —— 地图比画布宽时给宽,否则给高
   const size = aspect >= 1
     ? Math.min(availW, availH * aspect)
     : Math.min(availH, availW / aspect);
   const unit = Math.min(o.width, o.height);
-  const centerX = left + MAP_MARGIN + availW / 2;
-  const centerY = MAP_TOP + MAP_MARGIN + availH / 2;
+  const centerX = left + B.margin + availW / 2;
+  const centerY = top + B.margin + availH / 2;
   return {
     aspectScale: 1,
     layoutSize: `${((size / unit) * 100).toFixed(2)}%`,
@@ -89,6 +109,31 @@ export function mapLayout(o: {
       `${((centerY / o.height) * 100).toFixed(2)}%`,
     ],
   };
+}
+
+/**
+ * 地图的画布该多高(调用方只给了宽、没给高时):**按底图的形状给** ⇒ 地图填满宽度,
+ * 画布里不留空带(不给形状的话,竖长的地图在 16:9 的画布里只占三成宽 ✗)。
+ *
+ * 算的是「地图能占的那块」:宽度 = 画布宽 - 图例侧带 - 四周余量,
+ * 高度 = 宽度 / 底图纵横比;画布高 = 标题带 + 图例带 + 四周余量 + 地图高。
+ */
+export function mapCanvasHeight(o: {
+  /** 底图的纵横比(宽/高) */
+  aspect: number;
+  width: number;
+  /** 图例是否横排在底部 */
+  legendAtBottom: boolean;
+  /** 画布上有没有标题 */
+  hasTitle?: boolean;
+}): number {
+  const B = MAP_BANDS;
+  const aspect = o.aspect > 0 ? o.aspect : 1.7;
+  const top = o.hasTitle === false ? 0 : B.title;
+  const left = o.legendAtBottom ? 0 : B.legendSide;
+  const bottom = o.legendAtBottom ? B.legendBottom : 0;
+  const availW = Math.max(40, o.width - left - B.margin * 2);
+  return Math.round(top + bottom + B.margin * 2 + availW / aspect);
 }
 
 // 标题带 / 图例 / 绘图区 的排布(仓库硬规则:文字不得重叠)。
@@ -257,13 +302,20 @@ function withDrawDefaults(user: Obj, skin: Skin, width: number, height: number):
   // ECharts 6 label 内置默认 = 2px 白描边 + #333 字色(为白底设计):
   // 暗色皮肤上黑字黑底且描边违反"无描边文字"约定 → 系列级缺省一次拨正,
   // 数据项级 label 继承系列级,天然覆盖(用户显式写的不动)
+  const hasTitle = (() => {
+    const t = firstObj(option.title);
+    return !!t && typeof t.text === 'string' && t.text.trim() !== '';
+  })();
   for (const s of seriesArr) {
     if (isObj(s)) fillDefaults(s, { label: { textBorderWidth: 0, color: 'var(--d-text)' } });
     // 地图系列:布局缺省(纵横比按数据 + 尺寸按画布,见 mapLayout)
     if (isObj(s) && s.type === 'map' && typeof s.map === 'string') {
       const vm = user.visualMap as { orient?: string } | undefined;
       const legendAtBottom = vm !== undefined && vm.orient !== 'vertical';
-      fillDefaults(s, mapLayout({ name: s.map, width, height, legendAtBottom }));
+      fillDefaults(s, mapLayout({
+        aspect: mapAspect(s.map) ?? 1.7,
+        width, height, legendAtBottom, hasTitle,
+      }));
     }
   }
   return option as EChartsOption;
@@ -441,12 +493,31 @@ export async function renderEchartsOption(user: Obj, params: URLSearchParams): P
   const v = resolveVersion(params.get('v'));
   const skin = resolveSkin('line', params.get('t'), schemeParam(params)); // echarts 无专属变体,借用 line 的家族注册表
   const width = clampInt(params, 'w', 560, 200, 1600);
-  const height = clampInt(params, 'h', 320, 140, 1200);
+  let height = clampInt(params, 'h', 320, 140, 1200);
   // 动态加载:核心 /draw 路径(含 Worker 冷启动)不为 echarts 付 ~1MB 的加载成本
   const echarts = await import('echarts');
   // 地图数据(US 各州 GeoJSON)同样按需载入:option 没用 map/geo 就不碰它;
   // 先注册再补缺省 —— 布局要按地图的真实纵横比算
   await registerMaps(echarts, user);
+  // **地图的画布按底图的形状给**(调用方只给了宽、没给高时)⇒ 地图填满宽度,
+  // 画布里不留空带。不给形状的话,竖长的地图(中国/德国/日本)在 16:9 的画布里
+  // 只占三成宽 —— 看着像「图小了一圈」✗
+  if (!params.has('h')) {
+    const mapName = mapNamesOf(user)[0];
+    const aspect = mapName ? mapAspect(mapName) : undefined;
+    if (aspect) {
+      const vm = (user as Obj).visualMap as { orient?: string } | undefined;
+      const t = firstObj((user as Obj).title);
+      const hasTitle = !!t && typeof t.text === 'string' && t.text.trim() !== '';
+      const h = mapCanvasHeight({
+        aspect,
+        width,
+        legendAtBottom: vm !== undefined && vm.orient !== 'vertical',
+        hasTitle,
+      });
+      height = Math.min(1200, Math.max(140, h));
+    }
+  }
   const option = withDrawDefaults(user, skin, width, height);
   // 世界地图挪到某个经度时:底图绕一圈(registerMaps 已注册绕圈后的数据),
   // 布局按份数放大 —— 两步都在 maps.ts,浏览器端跑同一份源码
