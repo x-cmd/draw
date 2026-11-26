@@ -41,6 +41,7 @@ if (!res.ok) throw new Error(`下载失败: ${res.status}`);
 const geo = await res.json();
 
 // 台湾省:全国那份清单里没有它(700000 那个文件 404 ✗)⇒ 单独取 ✓
+// ⚠️ 台湾的层级/编号有口径问题 ⇒ 改之前先看 x-cmd-hub/draw#165 ✓
 const tw = await fetch('https://geo.datav.aliyun.com/areas_v3/bound/710000.json');
 if (tw.ok) {
   const twGeo = await tw.json();
