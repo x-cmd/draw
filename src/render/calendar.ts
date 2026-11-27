@@ -76,6 +76,26 @@ function fitText(s: string, maxW: number, fs: number): string {
   return `<title>${esc(s)}</title>${esc(t)}…`;
 }
 
+/** 按像素宽度折行(最多 maxLines 行)—— 挤的格子里文字不能串到隔壁格,也不能截掉一半 */
+function wrapLines(s: string, maxW: number, fs: number, maxLines = 2): string[] {
+  if (!s) return [''];
+  if (textW(s, fs) <= maxW) return [s];
+  const words = s.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let line = '';
+  for (const w of words) {
+    const cand = line ? line + ' ' + w : w;
+    if (line && textW(cand, fs) > maxW) {
+      lines.push(line);
+      line = w;
+      if (lines.length >= maxLines) break;
+    } else line = cand;
+  }
+  if (line && lines.length < maxLines) lines.push(line);
+  // 还是太长 ⇒ 最后一行再截(但带上 title,悬停能看全)
+  return lines.map((l) => (textW(l, fs) > maxW ? fitText(l, maxW, fs) : l));
+}
+
 /** 某一天是休息日吗(默认:周末) */
 function isRest(ctx: Ctx, date: string): boolean {
   const d = ctx.dayOf(date);
@@ -183,6 +203,7 @@ function monthGrid(
       // 事件
       const items = ctx.itemsOn(iso);
       const room = cw - 26;   // 小圆点 + 边距
+      let ey = cy + 32;       // 事件行的当前 y(折行会把它往下推 ⇒ 「+N」跟着走)
       if (dense) {
         // 格子窄:只摆小圆点(哪些天有事),名字留给周历/备注
         items.slice(0, 8).forEach((it, i) => {
@@ -192,17 +213,21 @@ function monthGrid(
         });
       } else {
         const maxRows = Math.max(1, Math.floor((ch - 22) / 15));
-        items.slice(0, maxRows).forEach((it, i) => {
-          const ey = cy + 32 + i * 15;
+        // 名字**折行**而不是截断(截一半等于给错信息):一行放得下就一行,
+        // 放不下折成两行,行高按折了几行算 ⇒ 折行的那条把下面几行挤下去
+        for (const it of items.slice(0, maxRows)) {
+          const lines = wrapLines(it.label, room, EV_FS, 2);
           parts.push(`<circle cx="${r2(cx + 9)}" cy="${r2(ey - 4)}" r="3" fill="${ctx.colorOf(it.kind)}"/>`);
           // 月历不写时间(苹果的月视图也不写)—— 格子窄,时间会把名字挤没
-          const label = it.label;
-          parts.push(`<text x="${r2(cx + 16)}" y="${r2(ey)}" font-size="${EV_FS}" fill="var(--d-text)">${fitText(label, room, EV_FS)}</text>`);
-        });
+          lines.forEach((ln, li) => {
+            parts.push(`<text x="${r2(cx + 16)}" y="${r2(ey + li * 13)}" font-size="${EV_FS}" fill="var(--d-text)">${esc(ln)}</text>`);
+          });
+          ey += lines.length * 13 + 2;
+        }
         // 下一行:先是「+N」(自己占一行),再排备注 —— 备注跟「+N」挤一行会被盖住
         let row = maxRows;
         if (items.length > maxRows) {
-          parts.push(`<text x="${r2(cx + 6)}" y="${r2(cy + 32 + row * 15)}" font-size="11" fill="var(--d-muted)">+${items.length - maxRows}</text>`);
+          parts.push(`<text x="${r2(cx + 6)}" y="${r2(ey + 4)}" font-size="11" fill="var(--d-muted)">+${items.length - maxRows}</text>`);
           // 没画出来的别丢 —— 提示单元会把它们列出来
           for (const it of items.slice(maxRows)) ctx.overflow.push({ date: iso, label: it.label, time: it.time, kind: it.kind });
           row++;
