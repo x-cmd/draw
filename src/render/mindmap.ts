@@ -23,6 +23,17 @@ const LEAF_SIDE_NEED = 24; // radial 侧面叶的切向占位(径向排版只需
 const MAX_DEPTH = 8;
 const MAX_NODES = 500;
 const STYLES = ['organic', 'tree', 'radial', 'bubble'] as const;
+
+/**
+ * 节点名底下垫一块**底色** ——
+ * 分支线从字底下穿过去时,字压线读不清(「Open」「Providers」那几处)。
+ * house style:遮罩用垫色,不给字描边 ✓
+ */
+function labelPad(c: MindNode, fs: number): string {
+  const w = c.w + 8;
+  const x = c.anchor === 'middle' ? c.x - w / 2 : c.anchor === 'end' ? c.x - w + 4 : c.x - 4;
+  return `<rect x="${r2(x)}" y="${r2(c.y - fs / 2 - 3)}" width="${r2(w)}" height="${r2(fs + 6)}" fill="var(--d-card)"/>`;
+}
 type MindStyle = (typeof STYLES)[number];
 const N_EXAMPLE = 'n=Product/Features/Speed&n=Product/Markets/EU';
 
@@ -217,7 +228,7 @@ function drawOrganic(root: MindNode, interactive = false): { svg: string; W: num
       const cp = `${path}/${c.label}`;
       const attrs = c.depth === 1 ? `font-weight="600" fill="${sVar(c.branch % 10)}"` : `fill="var(--d-text)"`;
       const ia = interactive ? nodeIA(cp, c) : '';
-      out.push(`<g${ia}><text x="${r2(c.x)}" y="${r2(c.y)}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text></g>`);
+      out.push(`<g${ia}>${labelPad(c, NODE_FS)}<text x="${r2(c.x)}" y="${r2(c.y)}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text></g>`);
       walkText(c, cp);
     }
   };
@@ -297,7 +308,7 @@ function drawRadial(root: MindNode, interactive = false): { svg: string; W: numb
       const cp = `${path}/${c.label}`;
       const attrs = c.depth === 1 ? `font-weight="600" fill="${sVar(c.branch % 10)}"` : `fill="var(--d-text)"`;
       const ia = interactive ? nodeIA(cp, c) : '';
-      out.push(`<g${ia}><text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text></g>`);
+      out.push(`<g${ia}>${labelPad(c, NODE_FS)}<text x="${r2(c.x)}" y="${r2(c.y)}" text-anchor="${c.anchor}" dominant-baseline="middle" font-size="${NODE_FS}" ${attrs}>${esc(c.label)}</text></g>`);
       walkText(c, cp);
     }
   };
