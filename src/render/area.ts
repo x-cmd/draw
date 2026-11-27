@@ -147,7 +147,7 @@ export function renderArea(spec: ChartSpec, o: RenderOpts): string {
   const skip = n > 14 ? Math.ceil(n / 7) : 1;
   spec.data.forEach((d, i) => {
     if (i % skip !== 0 && i !== n - 1) return;
-    parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="${rules.tickFont}" fill="var(--d-muted)">${esc(trunc(d.label, 12))}</text>`);
+    parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="${rules.tickFont}" fill="var(--d-muted)">${d.label.length > 12 ? `<title>${esc(d.label)}</title>` : ''}${esc(trunc(d.label, 12))}</text>`);
   });
 
   // 数值标签:全有或全无;规范变体默认不标
@@ -256,7 +256,7 @@ export function renderAreaMulti(spec: MultiSpec, o: RenderOpts): string {
   const skip = n > 14 ? Math.ceil(n / 7) : 1;
   spec.labels.forEach((l, i) => {
     if (i % skip !== 0 && i !== n - 1) return;
-    parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="${rules.tickFont}" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
+    parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="${rules.tickFont}" fill="var(--d-muted)">${l.length > 12 ? `<title>${esc(l)}</title>` : ''}${esc(trunc(l, 12))}</text>`);
   });
 
   const num = o.valueLabels ?? rules.num;

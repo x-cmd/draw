@@ -52,7 +52,8 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   const pts = spec.data.map((d, i) => [xs(i), y(d.value)] as [number, number]);
   const path = rules.smooth ? smoothPath(pts) : roundedPath(pts);
 
-  const parts: string[] = [card(width, height, rules.canvas === 'plain')];
+  const bg = card(width, height, rules.canvas === 'plain');
+  const parts: string[] = [];
   if (rules.areaGradient) {
     parts.push(
       `<defs><linearGradient id="dg-area" x1="0" y1="0" x2="0" y2="1">` +
@@ -96,7 +97,7 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   pushPoints(parts, pts, line, rules, o.interactive ? spec.data.map((d) => `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, 0);
   const xStride = labelStride(spec.data.map((d) => d.label), (right - left) / Math.max(n - 1, 1));
   spec.data.forEach((d, i) => {
-    if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 12))}</text>`);
+    if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${d.label.length > 12 ? `<title>${esc(d.label)}</title>` : ''}${esc(trunc(d.label, 12))}</text>`);
   });
 
   // 数值标签:全有或全无(任一位置放不下则整层不标);规范变体默认不标
@@ -117,7 +118,7 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   // 交互模式:告诉编辑器像素↔值的映射(它要把参考线吸附到数据值上)
   const dscale = o.interactive ? scaleMeta(0, bottom, yMax, contentTop, values) : '';
 
-  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + dscale + parts.join(''));
+  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, bg + headSvg + dscale + parts.join(''));
 }
 
 // 多系列共享的头部布局计算(line-multi 使用)

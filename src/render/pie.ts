@@ -166,7 +166,8 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
   const donut = o.donut !== false; // donut=0 强制实心饼
   const r = donut && rules.pieRadius > 0 ? R * rules.pieRadius : 0;
 
-  const parts: string[] = [card(width, height, plain)];
+  const bg = card(width, height, plain);
+  const parts: string[] = [];
   const gap = rules.pieSliceGap;
 
   // 渐变扇区 defs(revenue)
@@ -419,7 +420,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
     });
   }
 
-  return svgDoc(width, height, 'pie', version, spec.title ?? 'pie chart', spec, skin, headSvg + parts.join(''));
+  return svgDoc(width, height, 'pie', version, spec.title ?? 'pie chart', spec, skin, bg + headSvg + parts.join(''));
 }
 
 // 点状进度环(饼图 5 · progress):每行数据一个环,点阵表示占比,环心大百分比+说明

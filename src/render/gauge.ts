@@ -87,7 +87,8 @@ function renderGaugeSemi(spec: GaugeSpec, o: RenderOpts): string {
     return `M${r2(x0)} ${r2(y0)}A${r2(r)} ${r2(r)} 0 0 1 ${r2(x1)} ${r2(y1)}`;
   };
 
-  const parts: string[] = [card(width, height, true)];
+  const bg = card(width, height, true);
+  const parts: string[] = [];
   rows.forEach((row, i) => {
     const r = r0 + i * pitch;
     parts.push(`<path d="${arc(r, 1)}" fill="none" stroke="var(--d-faint)" stroke-width="${r2(sw)}" stroke-linecap="round"/>`);
@@ -106,7 +107,7 @@ function renderGaugeSemi(spec: GaugeSpec, o: RenderOpts): string {
       });
   }
 
-  return svgDoc(width, height, 'gauge', version, spec.title ?? 'gauge', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
+  return svgDoc(width, height, 'gauge', version, spec.title ?? 'gauge', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
 
 // 仪表盘 2 · 渐变多环(规范 gauge-2,860×480):
@@ -206,7 +207,8 @@ function renderZoneGauge(spec: GaugeSpec, o: RenderOpts): string {
   const cy = pad + headH + availH / 2;
   const r = R * (0.74 / 0.94); // 规范 pie-6:内径 132.3 / 外径 168
 
-  const parts: string[] = [card(width, height, plain)];
+  const bg = card(width, height, plain);
+  const parts: string[] = [];
   // 四分区环:240° 仪表弧,-30° 起逆时针,区序倒排(规范 pie-6);分隔 = 底色描边
   const START6 = -Math.PI / 6;
   const SPAN6 = Math.PI * 2 * (240 / 360);
@@ -246,5 +248,5 @@ function renderZoneGauge(spec: GaugeSpec, o: RenderOpts): string {
   }
   parts.push(`<text x="${r2(width - pad)}" y="${r2(barY - 8)}" text-anchor="end" font-size="11" fill="var(--d-muted)" style="${TAB}">${fmtNum(spec.max)}</text>`);
 
-  return svgDoc(width, height, 'gauge', version, spec.title ?? 'reliability', spec, skin, headSvg + parts.join(''));
+  return svgDoc(width, height, 'gauge', version, spec.title ?? 'reliability', spec, skin, bg + headSvg + parts.join(''));
 }

@@ -78,7 +78,11 @@ export function renderButterfly(spec: ButterflySpec, o: RenderOpts): string {
     if (left.length) legendItems.push({ name: withUnit(left[0].name), color: left[0].color, index: 0 });
     if (right.length) legendItems.push({ name: withUnit(right[0].name), color: right[0].color, index: left.length ? 1 : 0 });
   }
-  if (line) legendItems.push({ name: withUnit(line.name), color: 'var(--d-s9)', index: legendItems.length });
+  // 折线的名字若与某个条段重名(同一个指标画了条又画了线)⇒ 图例只留一条 ——
+  // 同一个名字出现两次,读者会以为是两个指标 ✗
+  if (line && !legendItems.some((it) => it.name === withUnit(line.name))) {
+    legendItems.push({ name: withUnit(line.name), color: 'var(--d-s9)', index: legendItems.length });
+  }
 
   const parts: string[] = [card(width, height, true)];
   // 图例单独一行(标题下面):双翼图的图例项可能很多,和标题并排会撞在一起

@@ -53,7 +53,8 @@ export function renderRadar(spec: ChartSpec, o: RenderOpts): string {
   const poly = (rad: number): string =>
     Array.from({ length: n }, (_, i) => pt(i, rad).map(r2).join(' ')).join('L');
 
-  const parts: string[] = [card(width, height)];
+  const bg = card(width, height);
+  const parts: string[] = [];
 
   // 蛛网环(3 层)
   for (const f of [1 / 3, 2 / 3, 1]) {
@@ -89,7 +90,7 @@ export function renderRadar(spec: ChartSpec, o: RenderOpts): string {
     parts.push(`<text x="${r2(lx)}" y="${r2(ly + dy)}" text-anchor="${anchor}" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 10))}</text>`);
   });
 
-  return svgDoc(width, height, 'radar', version, spec.title ?? 'radar chart', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
+  return svgDoc(width, height, 'radar', version, spec.title ?? 'radar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
 }
 
 // 雷达图 1 · Evil 双系列(规范 radar-1,900×540):

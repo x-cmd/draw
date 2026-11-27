@@ -79,7 +79,8 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   const py = (y: number): number =>
     maxY === minY ? (top + bottom) / 2 : bottom - ((y - minY) / (maxY - minY)) * (bottom - top);
 
-  const parts: string[] = [card(width, height, true)];
+  const bg = card(width, height, true);
+  const parts: string[] = [];
 
   // 网格 + 刻度(虚线 4 6)
   for (const t of yTicks) {
@@ -201,5 +202,5 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   // 交互模式:像素↔值的映射(散点图的纵轴不从 0 起 —— 用真实的 minY)
   const dscale = o.interactive ? scaleMeta(minY, bottom, maxY, top, ys) : '';
 
-  return svgDoc(width, height, 'scatter', version, spec.title ?? 'scatter chart', spec, skin, titleBlock(spec.title) + subtitleBlock(spec.subtitle) + dscale + parts.join(''));
+  return svgDoc(width, height, 'scatter', version, spec.title ?? 'scatter chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + dscale + parts.join(''));
 }

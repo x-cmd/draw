@@ -322,13 +322,13 @@ export function editorialTitle(title: string, width: number, pad: number): { svg
     }
     if (cur.trim()) lines.push(cur.trimEnd());
     cur = atom.trimStart();
-    if (lines.length === 2) {
+    if (lines.length === 3) {
       truncated = true;
       cur = '';
       break;
     }
   }
-  if (cur.trim() && lines.length < 2) lines.push(cur.trimEnd());
+  if (cur.trim() && lines.length < 3) lines.push(cur.trimEnd());
   if (truncated && lines.length) {
     let last = lines[lines.length - 1];
     while (last.length > 1 && textW(last + '…', 16) > maxW) last = last.slice(0, -1);

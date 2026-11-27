@@ -42,9 +42,10 @@ export interface QuadrantSpec {
 
 const QUADRANT_EXAMPLE = 'quadrants=快赢,战略,填坑,放弃';
 
-const AXIS_ENDS = 12;   // 轴端标签字数上限
+const AXIS_ENDS = 12;   // 轴端标签字数上限(High/Low 那种胶囊)
+const AXIS_NAMES = 30;  // 轴名字数上限(「Relative market share」这种,截了就没信息了)
 const GROUP_NAME = 24;  // 象限主标签字数上限
-const GROUP_NOTE = 48;  // 象限说明字数上限
+const GROUP_NOTE = 80;  // 象限说明字数上限(格子里放得下 5 行,截了就是丢信息)
 const ITEM_NAME = 24;
 
 /** 象限名从逗号分隔串里取(四个,顺序左上/右上/左下/右下) */
@@ -218,8 +219,8 @@ export function parseQuadrantSpec(raw: string | null): QuadrantSpec {
   return {
     title,
     ...(frame ? { frame } : {}),
-    xlabel: opt(o.xlabel, 'xlabel', AXIS_ENDS),
-    ylabel: opt(o.ylabel, 'ylabel', AXIS_ENDS),
+    xlabel: opt(o.xlabel, 'xlabel', AXIS_NAMES),
+    ylabel: opt(o.ylabel, 'ylabel', AXIS_NAMES),
     xlow: opt(o.xlow, 'xlow', AXIS_ENDS),
     xhigh: opt(o.xhigh, 'xhigh', AXIS_ENDS),
     ylow: opt(o.ylow, 'ylow', AXIS_ENDS),

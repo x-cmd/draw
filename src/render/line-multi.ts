@@ -38,7 +38,8 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   const y = (v: number): number => bottom - (v / yMax) * (bottom - contentTop);
   const xs = (i: number): number => (n === 1 ? (left + right) / 2 : left + ((right - left) * i) / (n - 1));
 
-  const parts: string[] = [card(width, height, rules.canvas === 'plain')];
+  const bg = card(width, height, rules.canvas === 'plain');
+  const parts: string[] = [];
   if (rules.legend === 'top-left') {
     parts.push(topLegend(spec.series.map((s, i) => ({ name: s.name, color: colors[i] })), left, legendY, 'left', rules.legendShape));
   } else if (rules.legend === 'top-right') {
@@ -123,5 +124,5 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
     ? scaleMeta(0, bottom, yMax, contentTop, spec.series.flatMap((s) => s.values))
     : '';
 
-  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, headSvg + dscale + parts.join(''));
+  return svgDoc(width, height, 'line', version, spec.title ?? 'line chart', spec, skin, bg + headSvg + dscale + parts.join(''));
 }

@@ -94,7 +94,7 @@ export function renderBar(spec: ChartSpec, o: RenderOpts): string {
       // 数值入柱;矮柱(极小值)回退柱顶上方;过密相撞才整层不标
       numItems.push({ x, yt, w: barW, hAvail: bottom - yt, text: fmtNum(d.value), fs: isPeak ? 13 : 11, peak: isPeak, fill: labelColor, haloColor: 'var(--d-s1)' });
     }
-    if (i % xStride === 0) parts.push(`<text x="${r2(x + barW / 2)}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 12))}</text>`);
+    if (i % xStride === 0) parts.push(`<text x="${r2(x + barW / 2)}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${d.label.length > 12 ? `<title>${esc(d.label)}</title>` : ''}${esc(trunc(d.label, 12))}</text>`);
   });
   const placer = new LabelPlacer();
   // 预留 Y 刻度带与 X 标签带:数值标签不得压刻度

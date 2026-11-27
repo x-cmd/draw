@@ -29,7 +29,8 @@ const NO_BREAK = '，。、；：!?,.;:)]}」』】》';  // 这些不能出现�
  */
 export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
   const { width, height, version, skin } = o;
-  const parts: string[] = [card(width, height, skin.rules.canvas === 'plain')];
+  const bg = card(width, height, skin.rules.canvas === 'plain');
+  const parts: string[] = [];
   const groups = spec.groups ?? [];
   const hasCells = groups.some((g) => g && (g.name || g.note || g.labels?.length));
   const frame: 'box' | 'cross' = spec.frame ?? (hasCells ? 'box' : 'cross');
@@ -97,7 +98,7 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
       if (!g) return rows;
       if (g.name) rows.push({ text: trunc(g.name, 14), fs: FS_TITLE, fill: 'var(--d-ink)', weight: '600' });
       if (g.note) {
-        for (const ln of wrap(g.note, mw / 2 - PAD * 2, FS_NOTE).slice(0, 3)) {
+        for (const ln of wrap(g.note, mw / 2 - PAD * 2, FS_NOTE).slice(0, 5)) {
           rows.push({ text: ln, fs: FS_NOTE, fill: 'var(--d-muted)', weight: '400' });
         }
       }
@@ -180,7 +181,7 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
     parts.push(`<text x="${r2(useLeft ? cx - 13 : cx + 13)}" y="${r2(cy + 5)}" font-size="${FS_POINT}" text-anchor="${useLeft ? 'end' : 'start'}" fill="var(--d-text)">${esc(label)}</text>`);
   });
 
-  return svgDoc(width, height, 'quadrant', version, spec.title ?? 'quadrant chart', spec, skin, titleBlock(spec.title) + parts.join(''));
+  return svgDoc(width, height, 'quadrant', version, spec.title ?? 'quadrant chart', spec, skin, bg + titleBlock(spec.title) + parts.join(''));
 }
 
 /**
@@ -189,6 +190,26 @@ export function renderQuadrant(spec: QuadrantSpec, o: RenderOpts): string {
 function wrap(text: string, maxW: number, fs: number): string[] {
   const chars = [...text];
   const w = (ch: string): number => (ch.charCodeAt(0) > 0x2e80 ? fs : fs * 0.55);
+  // 拉丁文按**词**断行(按字断会把 "invest more" 断成 "inves t more" ✗);
+  // 中文按字断(中文没有词间空格,按字断才是对的)
+  if (/[\x00-\x7F]/.test(text) && /\s/.test(text)) {
+    const wid = (s: string): number => [...s].reduce((a, c) => a + w(c), 0);
+    const out: string[] = [];
+    let line = '';
+    for (const word of text.split(/\s+/).filter(Boolean)) {
+      const cand = line ? line + ' ' + word : word;
+      if (line && wid(cand) > maxW) { out.push(line); line = word; } else line = cand;
+      // 一个词自己就超宽(长串之类)⇒ 按字断
+      while (wid(line) > maxW && line.length > 1) {
+        let cut = line.length - 1;
+        while (cut > 1 && wid(line.slice(0, cut)) > maxW) cut--;
+        out.push(line.slice(0, cut));
+        line = line.slice(cut);
+      }
+    }
+    if (line) out.push(line);
+    return out;
+  }
   const lines: string[] = [];
   let line = '';
   let lw = 0;
