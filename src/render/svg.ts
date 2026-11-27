@@ -274,27 +274,87 @@ export function skinStyle(skin: Skin): string {
  * **只收高度,不动宽度** —— 宽度收窄容易切到横向溢出的图元,高度这一头最安全。
  * 只在「明显有余」时才收:内容比画布矮一截才动 ⇒ 宁可留点空白,也别切到图。
  */
-function contentBottom(children: string): number {
-  let max = -Infinity;
+/**
+ * 图里内容的包围盒(扫字符串;Worker 里没有排版引擎,getBBox 不可用)。
+ * 只认**绝对坐标**:文字基线、矩形/圆/线、分组原点、全绝对指令的 path。
+ * 相对指令算不准就不算 ⇒ 少收一点(画布留大一点)总比切到图好。
+ */
+function contentBox(children: string): { x0: number; y0: number; x1: number; y1: number } | null {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
   const num = (v: string): number => Number(v);
-  const bump = (v: number): void => { if (Number.isFinite(v) && v > max) max = v; };
-  // 文字:基线 + 下沉部
-  for (const m of children.matchAll(/<text[^>]*\by="(-?[\d.]+)"/g)) bump(num(m[1]) + 5);
-  // 矩形/圆/线
-  for (const m of children.matchAll(/<rect[^>]*\by="(-?[\d.]+)"[^>]*\bheight="(-?[\d.]+)"/g)) bump(num(m[1]) + num(m[2]));
-  for (const m of children.matchAll(/<circle[^>]*\bcy="(-?[\d.]+)"[^>]*\br="(-?[\d.]+)"/g)) bump(num(m[1]) + num(m[2]));
-  for (const m of children.matchAll(/<line[^>]*\by1="(-?[\d.]+)"[^>]*\by2="(-?[\d.]+)"/g)) bump(Math.max(num(m[1]), num(m[2])));
-  // 分组的原点(保守:当作内容的一部分)
-  for (const m of children.matchAll(/translate\(\s*-?[\d.]+\s*[ ,]\s*(-?[\d.]+)\s*\)/g)) bump(num(m[1]));
-  // 路径:只认**全绝对指令**的 path(M/L/C/A)—— 相对指令算不准就不算,
-  // 宁可少收一点(少收 ⇒ 画布留高一点 ⇒ 不会切到图)
+  const put = (x: number, y: number): void => {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+    if (x < x0) x0 = x;
+    if (y < y0) y0 = y;
+    if (x > x1) x1 = x;
+    if (y > y1) y1 = y;
+  };
+  // 文字:基线 ± 行高(字号没量到就按 12px 估)
+  for (const m of children.matchAll(/<text[^>]*\bx="(-?[\d.]+)"[^>]*\by="(-?[\d.]+)"/g)) {
+    const x = num(m[1]); const y = num(m[2]);
+    put(x - 4, y - 14); put(x + 90, y + 5);
+  }
+  for (const m of children.matchAll(/<text[^>]*\by="(-?[\d.]+)"/g)) put(num(m[1]), num(m[1]));
+  // 矩形/圆/椭圆/线
+  for (const m of children.matchAll(/<rect[^>]*\bx="(-?[\d.]+)"[^>]*\by="(-?[\d.]+)"[^>]*\bwidth="(-?[\d.]+)"[^>]*\bheight="(-?[\d.]+)"/g)) {
+    put(num(m[1]), num(m[2])); put(num(m[1]) + num(m[3]), num(m[2]) + num(m[4]));
+  }
+  for (const m of children.matchAll(/<circle[^>]*\bcx="(-?[\d.]+)"[^>]*\bcy="(-?[\d.]+)"[^>]*\br="(-?[\d.]+)"/g)) {
+    const cx = num(m[1]); const cy = num(m[2]); const r = num(m[3]);
+    put(cx - r, cy - r); put(cx + r, cy + r);
+  }
+  for (const m of children.matchAll(/<line[^>]*\bx1="(-?[\d.]+)"[^>]*\by1="(-?[\d.]+)"[^>]*\bx2="(-?[\d.]+)"[^>]*\by2="(-?[\d.]+)"/g)) {
+    put(num(m[1]), num(m[2])); put(num(m[3]), num(m[4]));
+  }
+  // 分组的原点(保守:算作内容的一部分)
+  for (const m of children.matchAll(/translate\(\s*(-?[\d.]+)\s*[ ,]\s*(-?[\d.]+)\s*\)/g)) put(num(m[1]), num(m[2]));
+  // 路径:只认**全绝对指令**的 path
   for (const m of children.matchAll(/\sd="([^"]+)"/g)) {
     const d = m[1];
     if (/[mlca]/.test(d) && !/[MLCA]/.test(d)) continue;
     const nums = (d.match(/-?[\d.]+/g) ?? []).map(Number);
-    for (let k = 1; k < nums.length; k += 2) bump(nums[k]);
+    for (let k = 0; k + 1 < nums.length; k += 2) put(nums[k], nums[k + 1]);
   }
-  return max;
+  if (!Number.isFinite(x0) || !Number.isFinite(y0) || x1 <= x0 || y1 <= y0) return null;
+  return { x0, y0, x1, y1 };
+}
+
+/**
+ * **给页面用**:把一张图收到内容的大小(展示层的事,不是 API 契约的事)。
+ *
+ * 渲染器给的画布常是「按格子数/行数估的」,内容只占上面一块(天梯/旅程/流程/序列
+ * 那一族)⇒ 图缩在画布一角,四周一大片空白 —— 预览区的一半是空的。
+ *
+ * 注意:**不改变 /draw 端点的输出尺寸**(w=/h= 是契约)—— 这个函数由站上的落地页调用,
+ * 只影响页面上那张图怎么摆。
+ *
+ * 规矩:只在「明显有余」时才收(空出来的那截 ≥ 画布的 12%),且留边距 ⇒ 宁可留点空白,别切到图。
+ */
+export function trimSvgToContent(svg: string, pad = 16): string {
+  const wm = /\swidth="(-?[\d.]+)"/.exec(svg);
+  const hm = /\sheight="(-?[\d.]+)"/.exec(svg);
+  const w = wm ? Number(wm[1]) : 0;
+  const h = hm ? Number(hm[1]) : 0;
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return svg;
+  const open = svg.indexOf('>', svg.indexOf('<svg'));
+  const close = svg.lastIndexOf('</svg>');
+  if (open < 0 || close < 0) return svg;
+  const body = svg.slice(open + 1, close);
+  const box = contentBox(body);
+  if (!box) return svg;
+  const bx0 = Math.max(0, box.x0 - pad);
+  const by0 = Math.max(0, box.y0 - pad);
+  const bx1 = Math.min(w, box.x1 + pad);
+  const by1 = Math.min(h, box.y1 + pad);
+  const nw = bx1 - bx0;
+  const nh = by1 - by0;
+  // 明显有余才收;收完仍要留下大半,否则多半是扫漏了
+  if (nw < w * 0.55 || nh < h * 0.55) return svg;
+  const out = svg
+    .replace(/\swidth="(-?[\d.]+)"/, ` width="${Math.round(nw)}"`)
+    .replace(/\sheight="(-?[\d.]+)"/, ` height="${Math.round(nh)}"`)
+    .replace(/viewBox="[^"]*"/, `viewBox="${Math.round(bx0)} ${Math.round(by0)} ${Math.round(nw)} ${Math.round(nh)}"`);
+  return out;
 }
 
 export function svgDoc(
@@ -332,13 +392,8 @@ export function svgDoc(
     if (qs) tagHref = `https://x-cmd.com/draw/explore/${tagKind ?? template}?${qs}`;
   }
   const tag = editTag(tagHref, width, tagY, tagFs);
-  // 画布贴紧内容:内容只占上面一块时,下面那条空白是白给的
-  let boxH = height;
-  const bottom = contentBottom(children);
-  // 只在「明显有余」时才收:空出来的那截至少占画布的 12%(切到图的风险更小)
-  if (Number.isFinite(bottom) && bottom > 24 && bottom < height * 0.88) boxH = Math.ceil(bottom) + 16;
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${boxH}" viewBox="0 0 ${width} ${boxH}" ` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" ` +
     `font-family="${FONT}" role="img" aria-label="${esc(aria)}">` +
     skinStyle(skin) + metaTag(template, version, spec) + children + tag + `</svg>`
   );

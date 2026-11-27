@@ -34,6 +34,7 @@ export { parseLadderSpec, ladderSpecFromParams, type LadderSpec, type LadderItem
 export { resolveSrcSpec } from './render/src-spec.js';
 export { footerUnit, headerMeta, tipUnit, tipHeight, type FooterItem, type TipRow } from './render/units.js';
 export { renderSankey } from './render/sankey.js';
+export { trimSvgToContent } from './render/svg.js';
 export { renderQuadrant } from './render/quadrant.js';
 export { renderCompass } from './render/compass.js';
 export { renderButterfly } from './render/butterfly.js';
