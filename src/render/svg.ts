@@ -264,6 +264,39 @@ export function skinStyle(skin: Skin): string {
 // 统一 SVG 文档包装:外壳 + 皮肤变量 + metadata(渲染器不再各自拼 <svg>)
 // tagQuery(#44):原始 URL 查询串 —— archmap/mindmap/mermaid/gantt 等路径式图种
 // 的角标直链到 /draw/explore/<template>?<原参数>(w/h/scheme/format 剥掉),不再是泛链首页
+/**
+ * 画布高度**贴紧内容**。
+ *
+ * 渲染器给的画布常是「按格子数/行数估的」,内容只占上面一块 ⇒
+ * 图缩在画布一角,下面拖一条空白(天梯/旅程/流程/序列那一族都是这样)。
+ * 这里扫一遍图元的坐标,找出内容的下边界,把画布收到那儿(留一点边距)。
+ *
+ * **只收高度,不动宽度** —— 宽度收窄容易切到横向溢出的图元,高度这一头最安全。
+ * 只在「明显有余」时才收:内容比画布矮一截才动 ⇒ 宁可留点空白,也别切到图。
+ */
+function contentBottom(children: string): number {
+  let max = -Infinity;
+  const num = (v: string): number => Number(v);
+  const bump = (v: number): void => { if (Number.isFinite(v) && v > max) max = v; };
+  // 文字:基线 + 下沉部
+  for (const m of children.matchAll(/<text[^>]*\by="(-?[\d.]+)"/g)) bump(num(m[1]) + 5);
+  // 矩形/圆/线
+  for (const m of children.matchAll(/<rect[^>]*\by="(-?[\d.]+)"[^>]*\bheight="(-?[\d.]+)"/g)) bump(num(m[1]) + num(m[2]));
+  for (const m of children.matchAll(/<circle[^>]*\bcy="(-?[\d.]+)"[^>]*\br="(-?[\d.]+)"/g)) bump(num(m[1]) + num(m[2]));
+  for (const m of children.matchAll(/<line[^>]*\by1="(-?[\d.]+)"[^>]*\by2="(-?[\d.]+)"/g)) bump(Math.max(num(m[1]), num(m[2])));
+  // 分组的原点(保守:当作内容的一部分)
+  for (const m of children.matchAll(/translate\(\s*-?[\d.]+\s*[ ,]\s*(-?[\d.]+)\s*\)/g)) bump(num(m[1]));
+  // 路径:只认**全绝对指令**的 path(M/L/C/A)—— 相对指令算不准就不算,
+  // 宁可少收一点(少收 ⇒ 画布留高一点 ⇒ 不会切到图)
+  for (const m of children.matchAll(/\sd="([^"]+)"/g)) {
+    const d = m[1];
+    if (/[mlca]/.test(d) && !/[MLCA]/.test(d)) continue;
+    const nums = (d.match(/-?[\d.]+/g) ?? []).map(Number);
+    for (let k = 1; k < nums.length; k += 2) bump(nums[k]);
+  }
+  return max;
+}
+
 export function svgDoc(
   width: number,
   height: number,
@@ -299,8 +332,13 @@ export function svgDoc(
     if (qs) tagHref = `https://x-cmd.com/draw/explore/${tagKind ?? template}?${qs}`;
   }
   const tag = editTag(tagHref, width, tagY, tagFs);
+  // 画布贴紧内容:内容只占上面一块时,下面那条空白是白给的
+  let boxH = height;
+  const bottom = contentBottom(children);
+  // 只在「明显有余」时才收:空出来的那截至少占画布的 12%(切到图的风险更小)
+  if (Number.isFinite(bottom) && bottom > 24 && bottom < height * 0.88) boxH = Math.ceil(bottom) + 16;
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" ` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${boxH}" viewBox="0 0 ${width} ${boxH}" ` +
     `font-family="${FONT}" role="img" aria-label="${esc(aria)}">` +
     skinStyle(skin) + metaTag(template, version, spec) + children + tag + `</svg>`
   );
