@@ -62,13 +62,18 @@ function sortItems(items: CalItem[]): CalItem[] {
   return [...items].sort((a, b) => (a.time ?? '99:99').localeCompare(b.time ?? '99:99'));
 }
 
-/** 按像素宽度截断(挤的格子里文字不能串到隔壁格) */
+/**
+ * 按像素宽度截断(挤的格子里文字不能串到隔壁格)。
+ *
+ * 截掉的那部分**放进 <title>** ⇒ 悬停能看全名 ——
+ * 「Natio…」读者只能猜,「National Day」在标题里就够用了 ✓
+ */
 function fitText(s: string, maxW: number, fs: number): string {
-  if (maxW <= 8) return trunc(s, 2);
-  if (textW(s, fs) <= maxW) return s;
+  if (maxW <= 8) return `<title>${esc(s)}</title>${esc(trunc(s, 2))}`;
+  if (textW(s, fs) <= maxW) return esc(s);
   let t = s;
   while (t.length > 1 && textW(t + '…', fs) > maxW) t = t.slice(0, -1);
-  return t + '…';
+  return `<title>${esc(s)}</title>${esc(t)}…`;
 }
 
 /** 某一天是休息日吗(默认:周末) */
@@ -173,7 +178,7 @@ function monthGrid(
       const dl = ctx.dayOf(iso)?.label;
       if (dl) {
         const dfill = holiday ? 'var(--d-mark)' : 'var(--d-text)';
-        parts.push(`<text x="${r2(cx + 6)}" y="${r2(cy + 16)}" font-size="${EV_FS}" fill="${dfill}">${esc(fitText(dl, cw - 30, EV_FS))}</text>`);
+        parts.push(`<text x="${r2(cx + 6)}" y="${r2(cy + 16)}" font-size="${EV_FS}" fill="${dfill}">${fitText(dl, cw - 30, EV_FS)}</text>`);
       }
       // 事件
       const items = ctx.itemsOn(iso);
@@ -192,7 +197,7 @@ function monthGrid(
           parts.push(`<circle cx="${r2(cx + 9)}" cy="${r2(ey - 4)}" r="3" fill="${ctx.colorOf(it.kind)}"/>`);
           // 月历不写时间(苹果的月视图也不写)—— 格子窄,时间会把名字挤没
           const label = it.label;
-          parts.push(`<text x="${r2(cx + 16)}" y="${r2(ey)}" font-size="${EV_FS}" fill="var(--d-text)">${esc(fitText(label, room, EV_FS))}</text>`);
+          parts.push(`<text x="${r2(cx + 16)}" y="${r2(ey)}" font-size="${EV_FS}" fill="var(--d-text)">${fitText(label, room, EV_FS)}</text>`);
         });
         // 下一行:先是「+N」(自己占一行),再排备注 —— 备注跟「+N」挤一行会被盖住
         let row = maxRows;
@@ -211,7 +216,7 @@ function monthGrid(
             ctx.overflow.push({ date: iso, label: n.text, kind: 'note' });
             return;
           }
-          parts.push(`<text x="${r2(cx + 6)}" y="${r2(ny2)}" font-size="11" fill="var(--d-muted)">${esc(fitText(n.text, cw - 12, 11))}</text>`);
+          parts.push(`<text x="${r2(cx + 6)}" y="${r2(ny2)}" font-size="11" fill="var(--d-muted)">${fitText(n.text, cw - 12, 11)}</text>`);
         });
       }
     }
