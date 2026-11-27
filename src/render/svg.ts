@@ -289,12 +289,21 @@ function contentBox(children: string): { x0: number; y0: number; x1: number; y1:
     if (x > x1) x1 = x;
     if (y > y1) y1 = y;
   };
-  // 文字:基线 ± 行高(字号没量到就按 12px 估)
-  for (const m of children.matchAll(/<text[^>]*\bx="(-?[\d.]+)"[^>]*\by="(-?[\d.]+)"/g)) {
-    const x = num(m[1]); const y = num(m[2]);
-    put(x - 4, y - 14); put(x + 90, y + 5);
+  // 文字:按**内容与字号**量出它的宽(用 textW 的字宽表)——
+  // 估窄了会把字切掉 ⇒ 这一项决定能不能裁宽度
+  for (const m of children.matchAll(/<text([^>]*)>([^<]*)<\/text>/g)) {
+    const attrs = m[1]; const txt = m[2];
+    const xm = /\bx="(-?[\d.]+)"/.exec(attrs);
+    const ym = /\by="(-?[\d.]+)"/.exec(attrs);
+    const fm = /font-size="([\d.]+)"/.exec(attrs);
+    if (!xm || !ym) continue;
+    const x = num(xm[1]); const y = num(ym[1]);
+    const fs = fm ? num(fm[1]) : 12;
+    const w = textW(txt, fs);
+    const anchor = /text-anchor="middle"/.test(attrs) ? 'middle' : /text-anchor="end"/.test(attrs) ? 'end' : 'start';
+    const x0 = anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x;
+    put(x0 - 3, y - fs * 1.05); put(x0 + w + 3, y + fs * 0.3);
   }
-  for (const m of children.matchAll(/<text[^>]*\by="(-?[\d.]+)"/g)) put(num(m[1]), num(m[1]));
   // 矩形/圆/椭圆/线
   for (const m of children.matchAll(/<rect[^>]*\bx="(-?[\d.]+)"[^>]*\by="(-?[\d.]+)"[^>]*\bwidth="(-?[\d.]+)"[^>]*\bheight="(-?[\d.]+)"/g)) {
     put(num(m[1]), num(m[2])); put(num(m[1]) + num(m[3]), num(m[2]) + num(m[4]));
@@ -349,7 +358,7 @@ export function trimSvgToContent(svg: string, pad = 16): string {
   const nw = bx1 - bx0;
   const nh = by1 - by0;
   // 明显有余才收;收完仍要留下大半,否则多半是扫漏了
-  if (nw < w * 0.55 || nh < h * 0.55) return svg;
+  if (nw < w * 0.35 || nh < h * 0.5) return svg;
   const out = svg
     .replace(/\swidth="(-?[\d.]+)"/, ` width="${Math.round(nw)}"`)
     .replace(/\sheight="(-?[\d.]+)"/, ` height="${Math.round(nh)}"`)
