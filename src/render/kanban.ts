@@ -9,6 +9,7 @@
 // card/border 中性色),标题一行,元信息(如果有)一行小字。列的强调色走皮肤
 // 的 var(--d-sN),所以换皮即换色。
 import { ApiError } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { card } from '../theme.js';
@@ -23,7 +24,7 @@ const CARD_PAD = 12;     // 卡内边距
 const COL_PAD = 10;      // 列底板内边距
 const COL_MIN_W = 170;
 const CARD_MAX_W = 300;
-const TITLE_FS = 14;
+const TITLE_FS = BASELINE.cellTitle;
 const META_FS = 11;
 
 const EXAMPLE = 'column=Todo&column=Doing&task=Todo|Implement the parser|high&task=Doing|Draw the chart|';

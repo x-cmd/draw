@@ -504,7 +504,7 @@ function drawEdgeLabels(routed: Routed[], avoid: Box[], interactive = false): st
     const chipY = place.horiz ? ty - 12 : ty - 11;
     out.push(
       `<rect x="${r2(chipX)}" y="${r2(chipY)}" width="${r2(w)}" height="15" rx="4" fill="var(--d-card)" stroke="var(--d-border)" stroke-width="1"/>`,
-      `<text${ia} ${attrs} font-size="11" fill="var(--d-text)">${esc(text)}</text>`,
+      `<text${ia} ${attrs} font-size="13" fill="var(--d-text)">${esc(text)}</text>`,
     );
   }
   return out.join('');
@@ -544,7 +544,7 @@ function drawNode(n: Placed, interactive = false, degree = 0, style: ArchStyle =
     : '';
   const labelY = n.sub ? boxCy(b) - 3 : boxCy(b) + 4.5;
   const sub = n.sub
-    ? `<text x="${r2(boxCx(b))}" y="${r2(boxCy(b) + 15)}" text-anchor="middle" font-size="11" fill="var(--d-muted)">${esc(n.sub)}</text>`
+    ? `<text x="${r2(boxCx(b))}" y="${r2(boxCy(b) + 15)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(n.sub)}</text>`
     : '';
   // interactive(explore 落地页):data-tip 悬停说明 + data-node 供点击高亮连通关系
   const ia = interactive

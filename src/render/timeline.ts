@@ -12,6 +12,7 @@
 // 事件是轴上的一个圆点 + 标签(标签在轴上方/下方交替,免得挤在一起)。
 // 事件的时期文字(若有)用小字贴在事件名旁边。
 import { ApiError } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import { resolveVersion, type VersionInfo } from '../version.js';
 import { resolveSkin, type Skin } from '../styles/index.js';
 import { card } from '../theme.js';
@@ -19,7 +20,7 @@ import { esc, r2, sVar, svgDoc, textW, titleBlock, subtitleBlock } from './svg.j
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 
 const PAD = 26;
-const AXIS_FS = 13;      // 事件名字号
+const AXIS_FS = BASELINE.eventName;      // 事件名字号
 const SUB_FS = 10;       // 时期文字字号
 const SEC_FS = 12;       // section 名字号
 const DOT_R = 6;         // 事件圆点半径

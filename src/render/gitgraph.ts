@@ -13,6 +13,7 @@
 // 普通父子关系 = 竖线;合并的第二父 = 一条弯过去的曲线(虚线 + 箭头),
 // 一眼能看出「谁并进了谁」。
 import { ApiError } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import { resolveSkin } from '../styles/index.js';
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 import { card } from '../theme.js';
@@ -23,7 +24,7 @@ const LANE_H = 76;        // 一条泳道(一个分支)的高度
 const HEAD_H = 34;        // 泳道名字条的高度
 const DOT_R = 7;          // 提交点的半径
 const ROW_GAP = 14;       // 同一泳道里两个提交点之间的额外间距
-const LABEL_FS = 13;
+const LABEL_FS = BASELINE.pointName;
 const LABEL_GAP = 12;     // 提交文字离点的距离
 const CHANNEL_MIN = 26;   // 绕行通道的最小宽度(跨泳道的曲线走这里)
 

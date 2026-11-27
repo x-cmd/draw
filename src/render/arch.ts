@@ -10,6 +10,7 @@
 //
 // 老路径 /draw/archmap 一行未动(它的输出与 v2 之前逐字节相同)。
 import { ApiError } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import type { ArchBoundary, ArchEdge, ArchNode } from './archmap.js';
 import {
   boundaryBox, packGrid, parseBoundaries, parseEdges, parseNodes,
@@ -40,7 +41,7 @@ const LEGEND_H = 46;     // 图例带的高度
 const NODE_MIN_W = 176;
 const NODE_R = 12;       // 节点圆角
 const BADGE = 20;        // 角标边长
-const LABEL_FS = 14;     // 节点标题字号
+const LABEL_FS = BASELINE.pointName;     // 节点标题字号
 const SUB_FS = 11.5;     // 节点副标题字号
 const EDGE_FS = 11.5;    // 边标签字号
 

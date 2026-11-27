@@ -36,11 +36,15 @@ export const BASELINE = {
   /** 散点/节点上的名字 */
   pointName: 14,
   /** 图内说明文字 */
-  note: 13,
+  note: 14,
   /** 图例 */
   legend: 13,
   /** 环形图心的大数字 */
   centerValue: 22,
+  /** 格子里的小标题(象限格/看板卡) */
+  cellTitle: 14,
+  /** 时间轴上的事件名 */
+  eventName: 13,
 } as const;
 
 // 字体栈在 theme.ts 的 FONT(全站一处)—— 这里不重复一份。

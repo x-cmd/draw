@@ -4,6 +4,7 @@
 // 画法(商业图的样子):中心一个圆盘;四支箭头用不同系列色(四个方向一眼可分),
 // 箭身为渐窄的锥形(不是一根细线),端点的标签做成胶囊(带同色小圆点)。
 import type { CompassArm, CompassSpec } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import { card } from '../theme.js';
 import { esc, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg.js';
 
@@ -39,8 +40,8 @@ function wrapLabel(text: string, maxW: number, fs: number, maxLines = 2): string
 const ARROW = 12;  // 箭头长度
 const BASE = 5.5;  // 箭身根部半宽
 // 字号偏大:看这图的人年长,字要看得清
-const FS_LABEL = 15;  // 方向标签
-const FS_NOTE = 13;   // 副说明
+const FS_LABEL = BASELINE.axisName;  // 方向标签
+const FS_NOTE = BASELINE.note;   // 副说明
 
 /**
  * Compass chart: four labelled arrows radiating from a center point.

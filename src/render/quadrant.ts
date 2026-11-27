@@ -9,18 +9,19 @@
 //   轴名贴在各自箭头的外侧(纵轴在上方、横轴在右侧),不与端点胶囊挤在一行
 //   散点 = 系列色圆点 + 白圈,名字放在**远离纵轴**的一侧,不横穿轴线
 import type { QuadrantSpec } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import { card } from '../theme.js';
 import { esc, r2, textW, trunc, type RenderOpts, svgDoc, titleBlock, sVar } from './svg.js';
 
 const ARROW = 12;   // 箭头长度
 const PAD = 18;     // 格内边距
 // 字号偏大:看这图的人年长,字要看得清
-const FS_TITLE = 18;   // 格内主标签
-const FS_NOTE = 14;    // 格内说明
-const FS_LABEL = 13;   // 并列小标签
-const FS_AXIS = 15;    // 轴名
-const FS_END = 13;     // 轴端胶囊
-const FS_POINT = 14;   // 散点名字
+const FS_TITLE = BASELINE.title;   // 格内主标签
+const FS_NOTE = BASELINE.note;    // 格内说明
+const FS_LABEL = BASELINE.axisEnd;   // 并列小标签
+const FS_AXIS = BASELINE.axisName;    // 轴名
+const FS_END = BASELINE.axisEnd;     // 轴端胶囊
+const FS_POINT = BASELINE.pointName;   // 散点名字
 const RADIUS = 14;  // 面板圆角
 const NO_BREAK = '，。、；：!?,.;:)]}」』】》';  // 这些不能出现在行首
 

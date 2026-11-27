@@ -8,6 +8,7 @@
 // 画法:参与方一行,下面拖出生命线;每条消息在下一行,从发方生命线画一条箭头到收方,
 // 收方在这段时间画一根激活条(细竖条)。回信写 dash → 虚线箭头。
 import { ApiError } from '../specs/index.js';
+import { BASELINE } from '../styles/baseline.js';
 import type { ArchBoundary, ArchNode } from './archmap.js';
 import { packGrid, parseBoundaries, parseNodes } from './archmap.js';
 import { resolveSkin } from '../styles/index.js';
@@ -18,7 +19,7 @@ const PAD = 40;
 const HEADER_H = 56;      // 参与方标题盒高
 const MSG_GAP = 78;       // 两条消息之间的行距(要给分支框的标签留位置)
 const ARROW = 10;         // 箭头长度
-const LABEL_FS = 13;
+const LABEL_FS = BASELINE.pointName;
 const LANE_TOP = 30;      // 有 b= 时,给泳道标签留出来的那一行
 
 interface Msg { from: string; to: string; label?: string; dash: boolean }
