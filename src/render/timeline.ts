@@ -19,7 +19,7 @@ import { esc, r2, sVar, svgDoc, textW, titleBlock, subtitleBlock } from './svg.j
 import { clampInt, schemeParam, type DrawResult } from './query.js';
 
 const PAD = 26;
-const AXIS_FS = 12;      // 事件名字号
+const AXIS_FS = 13;      // 事件名字号
 const SUB_FS = 10;       // 时期文字字号
 const SEC_FS = 12;       // section 名字号
 const DOT_R = 6;         // 事件圆点半径

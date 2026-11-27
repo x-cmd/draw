@@ -227,7 +227,7 @@ function renderSankeyFund(spec: SankeySpec, o: RenderOpts): string {
   ];
   // 表头:标题 + 右注(unit)
   if (spec.title) parts.push(`<text x="${r2(width * 0.033)}" y="${r2(height * 0.067)}" font-size="18" font-weight="600" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(trunc(spec.title, 40))}</text>`);
-  if (spec.unit) parts.push(`<text x="${r2(width * 0.967)}" y="${r2(height * 0.067)}" text-anchor="end" font-size="12" fill="var(--d-muted)">${esc(trunc(spec.unit, 24))}</text>`);
+  if (spec.unit) parts.push(`<text x="${r2(width * 0.967)}" y="${r2(height * 0.067)}" text-anchor="end" font-size="13" fill="var(--d-muted)">${esc(trunc(spec.unit, 24))}</text>`);
   const unit = spec.unit ? ` ${spec.unit}` : '';
   const tip = (text: string): string => (o.interactive ? ` data-tip="${esc(text)}"` : '');
   for (const l of links) {
@@ -237,7 +237,7 @@ function renderSankeyFund(spec: SankeySpec, o: RenderOpts): string {
     const c = sVar(n.colorIdx % k);
     parts.push(`<rect x="${r2(n.x)}" y="${r2(n.y)}" width="${r2(n.w)}" height="${r2(n.h)}" rx="${r2(height * 0.0174)}" fill="${c}" fill-opacity="0.42" stroke="${c}" stroke-width="1.5"${tip(`${n.name} · ${fmtFull(n.value)}${unit}`)}/>`);
     if (n.h >= 34) {
-      parts.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y + n.h / 2 - 3)}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--d-ink)">${esc(trunc(n.name, 12))}</text>`);
+      parts.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y + n.h / 2 - 3)}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--d-ink)">${esc(trunc(n.name, 12))}</text>`);
       parts.push(`<text x="${r2(n.x + n.w / 2)}" y="${r2(n.y + n.h / 2 + 14)}" text-anchor="middle" font-size="11" fill="var(--d-muted)" style="${TAB}">${fmtFull(n.value)}</text>`);
     } else {
       nodeLabel(parts, n.name, n.value, n.x + n.w + 10, n.y + n.h / 2, 'start', true, 'two');
@@ -321,8 +321,8 @@ function renderSankeyPipeline(spec: SankeySpec, o: RenderOpts): string {
   const sinks = nodes.filter((n) => !spec.links.some((l) => l.from === n.name));
   const total = sources.reduce((s, n) => s + n.value, 0);
   parts.push(`<rect x="${r2(midX - panelW / 2)}" y="${r2(height * 0.105)}" width="${r2(panelW)}" height="${r2(height * 0.8125)}" fill="url(#sk-fade)"/>`); // 规范:42..367(0.8125h)
-  parts.push(`<text x="${r2(midX)}" y="${r2(height * 0.495)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(spec.title ?? 'Total booked', 20))}</text>`); // 规范 y=198/400
+  parts.push(`<text x="${r2(midX)}" y="${r2(height * 0.495)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(trunc(spec.title ?? 'Total booked', 20))}</text>`); // 规范 y=198/400
   parts.push(`<text x="${r2(midX)}" y="${r2(height * 0.59)}" text-anchor="middle" font-size="34" font-weight="700" fill="var(--d-ink)" style="${TAB}">${fmtFull(total)}</text>`); // 规范 y=236/400
-  parts.push(`<text x="${r2(midX)}" y="${r2(height * 0.645)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${sources.length} sources · ${sinks.length} routes</text>`); // 规范 y=258/400
+  parts.push(`<text x="${r2(midX)}" y="${r2(height * 0.645)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${sources.length} sources · ${sinks.length} routes</text>`); // 规范 y=258/400
   return svgDoc(width, height, 'sankey', version, spec.title ?? 'revenue pipeline', spec, skin, parts.join(''));
 }

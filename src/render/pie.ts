@@ -296,7 +296,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
         const [tx, ty] = pol(cx, cy, (R + r) / 2, a);
         const text = mode === 'insideValue' ? fmtNum(row.value) : `${Math.round(frac * 100)}%`;
         parts.push(
-          `<text x="${r2(tx)}" y="${r2(ty + 4)}" text-anchor="middle" font-size="12" font-weight="500" fill="var(--d-card)" style="${TAB}">${esc(text)}</text>`,
+          `<text x="${r2(tx)}" y="${r2(ty + 4)}" text-anchor="middle" font-size="13" font-weight="500" fill="var(--d-card)" style="${TAB}">${esc(text)}</text>`,
         );
       }
     }
@@ -337,7 +337,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
           `<path d="M${r2(sx)} ${r2(sy)}L${r2(elbowX)} ${r2(elbowY)}H${r2(endX)}" fill="none" stroke="var(--d-muted)" stroke-opacity="0.45" stroke-width="1"/>`,
         );
         out.push(
-          `<text x="${r2(tx)}" y="${r2(elbowY + 4)}" text-anchor="${anchor}" font-size="12" font-weight="500"><tspan fill="var(--d-muted)">${esc(name)} </tspan><tspan fill="var(--d-ink)" style="${TAB}">${esc(valText)}</tspan></text>`,
+          `<text x="${r2(tx)}" y="${r2(elbowY + 4)}" text-anchor="${anchor}" font-size="13" font-weight="500"><tspan fill="var(--d-muted)">${esc(name)} </tspan><tspan fill="var(--d-ink)" style="${TAB}">${esc(valText)}</tspan></text>`,
         );
       }
     }
@@ -371,10 +371,10 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
         const y = legendTop + Math.floor(i / cols) * 26;
         const pct = Math.round((row.value / total) * 100);
         parts.push(`<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(row, i, o.highlight)}"/>`);
-        parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-ink)">${esc(trunc(row.label, 14))}</text>`);
+        parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="13" font-weight="500" fill="var(--d-ink)">${esc(trunc(row.label, 14))}</text>`);
         if (rules.legendValue) {
           parts.push(
-            `<text x="${r2(x + colW - 8)}" y="${r2(y)}" text-anchor="end" font-size="12" style="${TAB}">` +
+            `<text x="${r2(x + colW - 8)}" y="${r2(y)}" text-anchor="end" font-size="13" style="${TAB}">` +
             `<tspan fill="var(--d-muted)">${fmtFull(row.value)}</tspan>` +
             `<tspan fill="var(--d-faint)"> (${pct}%)</tspan></text>`,
           );
@@ -397,7 +397,7 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
         parts.push(rules.legendShape === 'circle'
           ? `<circle cx="${r2(x + 4.5)}" cy="${r2(y - 3.5)}" r="4.5" fill="${fillOf(it.row, it.idx, o.highlight)}"/>`
           : `<rect x="${r2(x)}" y="${r2(y - 8)}" width="9" height="9" rx="2" fill="${fillOf(it.row, it.idx, o.highlight)}"/>`);
-        parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(it.name)}</text>`);
+        parts.push(`<text x="${r2(x + 15)}" y="${r2(y)}" font-size="13" font-weight="500" fill="var(--d-muted)">${esc(it.name)}</text>`);
         x += it.w;
       }
     }
@@ -413,9 +413,9 @@ export function renderPie(spec: ChartSpec, o: RenderOpts): string {
       parts.push(rules.legendShape === 'circle'
         ? `<circle cx="${r2(lx + 5)}" cy="${r2(y - 3)}" r="5" fill="${fillOf(row, i, o.highlight)}"/>`
         : `<rect x="${r2(lx)}" y="${r2(y - 8)}" width="10" height="10" rx="2" fill="${fillOf(row, i, o.highlight)}"/>`);
-      parts.push(`<text x="${r2(lx + 16)}" y="${r2(y)}" font-size="12" font-weight="500" fill="var(--d-muted)">${esc(trunc(row.label, 14))}</text>`);
+      parts.push(`<text x="${r2(lx + 16)}" y="${r2(y)}" font-size="13" font-weight="500" fill="var(--d-muted)">${esc(trunc(row.label, 14))}</text>`);
       if (rules.legendValue) {
-        parts.push(`<text x="${r2(width - pad)}" y="${r2(y)}" text-anchor="end" font-size="12" font-weight="500" fill="var(--d-ink)" style="${TAB}">${fmtFull(row.value)}</text>`);
+        parts.push(`<text x="${r2(width - pad)}" y="${r2(y)}" text-anchor="end" font-size="13" font-weight="500" fill="var(--d-ink)" style="${TAB}">${fmtFull(row.value)}</text>`);
       }
     });
   }
@@ -435,7 +435,7 @@ function renderDots(spec: ChartSpec, o: RenderOpts, rows: Row[], total: number, 
     if (spec.unit) {
       parts.push(`<text x="${pad}" y="${pad + 10}" font-size="10" letter-spacing="0.08em" fill="var(--d-muted)" style="text-transform:uppercase">${esc(spec.unit.toUpperCase())}</text>`);
       parts.push(`<text x="${pad}" y="${pad + 32}" font-size="18" font-weight="500" letter-spacing="-0.02em" fill="var(--d-ink)">${esc(spec.title)}</text>`);
-      parts.push(`<text x="${width - pad}" y="${pad + 10}" text-anchor="end" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtFull(total)} ${esc(spec.unit)}</text>`);
+      parts.push(`<text x="${width - pad}" y="${pad + 10}" text-anchor="end" font-size="13" fill="var(--d-muted)" style="${TAB}">${fmtFull(total)} ${esc(spec.unit)}</text>`);
       headH = 48;
     } else {
       parts.push(titleBlock(spec.title, pad) + subtitleBlock(spec.subtitle, pad, !!spec.title));
@@ -493,7 +493,7 @@ function renderDots(spec: ChartSpec, o: RenderOpts, rows: Row[], total: number, 
       capLines[capLines.length - 1] = last + '…';
     }
     capLines.forEach((l, li) => {
-      parts.push(`<text x="${r2(cx)}" y="${r2(cy + 16 + li * 16)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(l)}</text>`);
+      parts.push(`<text x="${r2(cx)}" y="${r2(cy + 16 + li * 16)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(l)}</text>`);
     });
   });
 

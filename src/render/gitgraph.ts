@@ -23,7 +23,7 @@ const LANE_H = 76;        // 一条泳道(一个分支)的高度
 const HEAD_H = 34;        // 泳道名字条的高度
 const DOT_R = 7;          // 提交点的半径
 const ROW_GAP = 14;       // 同一泳道里两个提交点之间的额外间距
-const LABEL_FS = 12;
+const LABEL_FS = 13;
 const LABEL_GAP = 12;     // 提交文字离点的距离
 const CHANNEL_MIN = 26;   // 绕行通道的最小宽度(跨泳道的曲线走这里)
 

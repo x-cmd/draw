@@ -344,7 +344,7 @@ function planBoard(ctx: Ctx, start: string, days: number, x: number, y0: number,
   rows.forEach((it, r) => {
     const ry = y0 + r * rowH;
     parts.push(`<line x1="${r2(x)}" y1="${r2(ry)}" x2="${r2(x + w)}" y2="${r2(ry)}" stroke="var(--d-grid)" stroke-width="1"/>`);
-    parts.push(`<text x="${r2(x + 4)}" y="${r2(ry + rowH / 2 + 4)}" font-size="12" fill="var(--d-ink)">${esc(trunc(it.label, 20))}</text>`);
+    parts.push(`<text x="${r2(x + 4)}" y="${r2(ry + rowH / 2 + 4)}" font-size="13" fill="var(--d-ink)">${esc(trunc(it.label, 20))}</text>`);
     const s = isoDay(it.date);
     const e = isoDay(it.until ?? it.date);
     const bx = x + labelW + (s - d0) * per;
@@ -453,7 +453,7 @@ export function renderCalendar(spec: CalendarSpec, o: RenderOpts): string {
       const mx = PAD + c * (mw + gap);
       const my = bodyTop + r * (mh + gap);
       const mm = { y: p.y, m: i + 1 };
-      parts.push(`<text x="${r2(mx)}" y="${r2(my + 12)}" font-size="12" font-weight="600" fill="var(--d-ink)">${esc(skin.rules.title === 'editorial' ? MONTH_EN[i] : `${i + 1}月`)}</text>`);
+      parts.push(`<text x="${r2(mx)}" y="${r2(my + 12)}" font-size="13" font-weight="600" fill="var(--d-ink)">${esc(skin.rules.title === 'editorial' ? MONTH_EN[i] : `${i + 1}月`)}</text>`);
       parts.push(yearMini(ctx, mm.y, mm.m, mx, my + 20, mw, mh - 26));
     }
   } else if (spec.layout === 'week' || spec.layout === 'course') {

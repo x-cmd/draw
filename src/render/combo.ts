@@ -55,13 +55,13 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   for (const t of ticks) {
     const gy = r2(y(t));
     if (t > 0) parts.push(`<line x1="${left}" y1="${gy}" x2="${right}" y2="${gy}" stroke="var(--d-grid)" stroke-width="1"/>`);
-    parts.push(`<text x="${left - 8}" y="${r2(y(t) + 4)}" text-anchor="end" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
+    parts.push(`<text x="${left - 8}" y="${r2(y(t) + 4)}" text-anchor="end" font-size="13" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   if (dual) {
     // 右轴刻度(线系列),颜色取首个线系列以示归属
     const lineColor = colors[spec.series.findIndex((s) => s.kind === 'line')];
     for (const t of lineTicks) {
-      parts.push(`<text x="${right + 8}" y="${r2(yLine(t) + 4)}" font-size="12" fill="${lineColor}" style="${TAB}">${fmtNum(t)}</text>`);
+      parts.push(`<text x="${right + 8}" y="${r2(yLine(t) + 4)}" font-size="13" fill="${lineColor}" style="${TAB}">${fmtNum(t)}</text>`);
     }
   }
   parts.push(`<line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="var(--d-baseline)" stroke-width="1"/>`);
@@ -200,7 +200,7 @@ export function renderCombo(spec: ComboSpec, o: RenderOpts): string {
   // 类别标签
   const xStride = labelStride(spec.labels, step);
   spec.labels.forEach((l, pi) => {
-    if (pi % xStride === 0) parts.push(`<text x="${r2(cx(pi))}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
+    if (pi % xStride === 0) parts.push(`<text x="${r2(cx(pi))}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
 
   // 标注层锚 y 按柱(主)轴换算(双轴时线的量级不同,标注语义默认主轴)
@@ -267,7 +267,7 @@ function renderComboEvil(spec: ComboSpec, o: RenderOpts): string {
   });
   const xStride = labelStride(spec.labels, slot);
   spec.labels.forEach((l, i) => {
-    if (i % xStride === 0) parts.push(`<text x="${r2(x0 + i * slot + slot / 2)}" y="${r2(height * 0.936)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
+    if (i % xStride === 0) parts.push(`<text x="${r2(x0 + i * slot + slot / 2)}" y="${r2(height * 0.936)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
   // 右上图例(方块 11×11 rx3,13px);interactive 模式带 data-legend + 透明命中区
   const items = [

@@ -87,7 +87,7 @@ export function renderRadar(spec: ChartSpec, o: RenderOpts): string {
     const ly = cy + (R + 18) * Math.sin(a);
     const anchor = Math.abs(Math.cos(a)) < 0.3 ? 'middle' : Math.cos(a) > 0 ? 'start' : 'end';
     const dy = Math.sin(a) > 0.3 ? 12 : Math.sin(a) < -0.3 ? 0 : 4;
-    parts.push(`<text x="${r2(lx)}" y="${r2(ly + dy)}" text-anchor="${anchor}" font-size="12" fill="var(--d-muted)">${esc(trunc(d.label, 10))}</text>`);
+    parts.push(`<text x="${r2(lx)}" y="${r2(ly + dy)}" text-anchor="${anchor}" font-size="13" fill="var(--d-muted)">${esc(trunc(d.label, 10))}</text>`);
   });
 
   return svgDoc(width, height, 'radar', version, spec.title ?? 'radar chart', spec, skin, bg + titleBlock(spec.title) + subtitleBlock(spec.subtitle) + parts.join(''));
@@ -186,7 +186,7 @@ function renderRadarEvil(spec: MultiSpec, o: RenderOpts): string {
   const legendY = height * 0.959;
   for (const it of items) {
     parts.push(`<rect x="${r2(lx2)}" y="${r2(legendY - 10)}" width="10" height="10" rx="3" fill="${it.color}"/>`);
-    parts.push(`<text x="${r2(lx2 + 16)}" y="${r2(legendY)}" font-size="12" fill="var(--d-muted)">${esc(it.name)}</text>`);
+    parts.push(`<text x="${r2(lx2 + 16)}" y="${r2(legendY)}" font-size="13" fill="var(--d-muted)">${esc(it.name)}</text>`);
     lx2 += 15 + textW(it.name, 12) + 28;
   }
 

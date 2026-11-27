@@ -150,7 +150,7 @@ export function renderBarMulti(spec: MultiSpec, o: RenderOpts): string {
   const xStride = labelStride(spec.labels, step);
   spec.labels.forEach((l, pi) => {
     const cx = left + step * pi + step / 2;
-    if (pi % xStride === 0) parts.push(`<text x="${r2(cx)}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
+    if (pi % xStride === 0) parts.push(`<text x="${r2(cx)}" y="${r2(xLabelY)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
 
   const mpts = markPoints(o.marks, spec.labels, (i) => left + step * i + step / 2, y, [contentTop, bottom]);

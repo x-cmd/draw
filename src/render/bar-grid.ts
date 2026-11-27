@@ -73,7 +73,7 @@ export function renderBarGrid(spec: ChartSpec, o: RenderOpts): string {
   spec.data.forEach((d, i) => {
     if (i % tickSkip !== 0) return;
     parts.push(
-      `<text x="${r2(startX + i * pitch + cellW / 2)}" y="${r2(Math.round(height * 0.9))}" text-anchor="middle" font-family="${MONO}" font-size="12" fill="var(--d-muted)" style="font-variant-numeric:tabular-nums">${esc(trunc(d.label, 12))}</text>`,
+      `<text x="${r2(startX + i * pitch + cellW / 2)}" y="${r2(Math.round(height * 0.9))}" text-anchor="middle" font-family="${MONO}" font-size="13" fill="var(--d-muted)" style="font-variant-numeric:tabular-nums">${esc(trunc(d.label, 12))}</text>`,
     );
   });
 

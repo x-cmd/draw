@@ -109,7 +109,7 @@ function renderGaugeSemi(spec: GaugeSpec, o: RenderOpts): string {
       (it) => 15 + textW(it.name, 12) + 26,
       (lx, ly, it) => {
         parts.push(`<rect x="${r2(lx)}" y="${r2(ly - 10)}" width="10" height="10" rx="3" fill="${it.color}"/>`);
-        parts.push(`<text x="${r2(lx + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)">${esc(it.name)}</text>`);
+        parts.push(`<text x="${r2(lx + 16)}" y="${r2(ly)}" font-size="13" fill="var(--d-muted)">${esc(it.name)}</text>`);
       });
   }
 
@@ -176,7 +176,7 @@ function renderGaugeRings(spec: GaugeSpec, o: RenderOpts): string {
       (it) => 17 + textW(it.name, 12) + 26,
       (lx, ly, it) => {
         parts.push(`<rect x="${r2(lx)}" y="${r2(ly - 10)}" width="12" height="10" rx="3" fill="url(#dgg-${it.grad})"/>`);
-        parts.push(`<text x="${r2(lx + 18)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)">${esc(it.name)}</text>`);
+        parts.push(`<text x="${r2(lx + 18)}" y="${r2(ly)}" font-size="13" fill="var(--d-muted)">${esc(it.name)}</text>`);
       });
   }
 

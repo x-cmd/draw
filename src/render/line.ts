@@ -97,7 +97,7 @@ export function renderLine(spec: ChartSpec, o: RenderOpts): string {
   pushPoints(parts, pts, line, rules, o.interactive ? spec.data.map((d) => `${d.label} · ${fmtFull(d.value)}${spec.unit ? ' ' + spec.unit : ''}`) : undefined, 0);
   const xStride = labelStride(spec.data.map((d) => d.label), (right - left) / Math.max(n - 1, 1));
   spec.data.forEach((d, i) => {
-    if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${d.label.length > 12 ? `<title>${esc(d.label)}</title>` : ''}${esc(trunc(d.label, 12))}</text>`);
+    if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${d.label.length > 12 ? `<title>${esc(d.label)}</title>` : ''}${esc(trunc(d.label, 12))}</text>`);
   });
 
   // 数值标签:全有或全无(任一位置放不下则整层不标);规范变体默认不标

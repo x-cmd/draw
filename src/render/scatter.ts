@@ -86,12 +86,12 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
   for (const t of yTicks) {
     const gy = py(t);
     parts.push(`<line x1="${left}" y1="${r2(gy)}" x2="${right}" y2="${r2(gy)}" stroke="var(--d-grid)" stroke-dasharray="4 6"/>`);
-    parts.push(`<text x="${r2(left - 16)}" y="${r2(gy + 4)}" text-anchor="end" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
+    parts.push(`<text x="${r2(left - 16)}" y="${r2(gy + 4)}" text-anchor="end" font-size="13" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   for (const t of xTicks) {
     const gx = px(t);
     parts.push(`<line x1="${r2(gx)}" y1="${r2(top)}" x2="${r2(gx)}" y2="${r2(bottom)}" stroke="var(--d-grid)" stroke-dasharray="4 6"/>`);
-    parts.push(`<text x="${r2(gx)}" y="${r2(tickY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
+    parts.push(`<text x="${r2(gx)}" y="${r2(tickY)}" text-anchor="middle" font-size="13" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   parts.push(`<line x1="${left}" y1="${r2(bottom)}" x2="${right}" y2="${r2(bottom)}" stroke="var(--d-baseline)" stroke-width="1"/>`);
 
@@ -110,8 +110,8 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
 
   // 轴标题:画布太小则省(会与刻度挤在一起)
   if (showTitles) {
-    parts.push(`<text x="${r2((left + right) / 2)}" y="${r2(height * 0.959)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(spec.xname ?? spec.unit ?? 'X value')}</text>`);
-    parts.push(`<text x="${r2(width * 0.024)}" y="${r2(height / 2)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" transform="rotate(-90 ${r2(width * 0.024)} ${r2(height / 2)})">${esc(spec.yname ?? 'Y value')}</text>`);
+    parts.push(`<text x="${r2((left + right) / 2)}" y="${r2(height * 0.959)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(spec.xname ?? spec.unit ?? 'X value')}</text>`);
+    parts.push(`<text x="${r2(width * 0.024)}" y="${r2(height / 2)}" text-anchor="middle" font-size="13" fill="var(--d-muted)" transform="rotate(-90 ${r2(width * 0.024)} ${r2(height / 2)})">${esc(spec.yname ?? 'Y value')}</text>`);
   }
 
   // 数据点:每系列一色,点径交替(每 4 个大点),半透明+白描边
@@ -182,7 +182,7 @@ export function renderScatter(spec: ScatterSpec, o: RenderOpts): string {
     const legendY = 24 + 14;
     for (let i = spec.series.length - 1; i >= 0; i--) {
       const name = trunc(spec.series[i].name, 12);
-      parts.push(`<text x="${r2(lx)}" y="${r2(legendY)}" text-anchor="end" font-size="12" fill="var(--d-muted)">${esc(name)}</text>`);
+      parts.push(`<text x="${r2(lx)}" y="${r2(legendY)}" text-anchor="end" font-size="13" fill="var(--d-muted)">${esc(name)}</text>`);
       lx -= 12 + name.length * 6.5 + 10;
       parts.push(`<circle cx="${r2(lx)}" cy="${r2(legendY - 4)}" r="5" fill="${sVar(i % skin.series.length)}"/>`);
       lx -= 24;

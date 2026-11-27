@@ -92,7 +92,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
     for (const t of tickVals) {
       const gy = y(t);
       if (t > 0) parts.push(`<line x1="${left}" y1="${r2(gy)}" x2="${right}" y2="${r2(gy)}" stroke="var(--d-grid)" stroke-width="1"/>`);
-      parts.push(`<text x="${left - 8}" y="${r2(gy + 4)}" text-anchor="end" font-size="12" fill="var(--d-muted)" style="${TAB}">${t}%</text>`);
+      parts.push(`<text x="${left - 8}" y="${r2(gy + 4)}" text-anchor="end" font-size="13" fill="var(--d-muted)" style="${TAB}">${t}%</text>`);
     }
     parts.push(`<line x1="${left}" y1="${r2(bottom)}" x2="${right}" y2="${r2(bottom)}" stroke="var(--d-baseline)" stroke-width="1"/>`);
   } else {
@@ -152,7 +152,7 @@ export function renderBarStacked(spec: MultiSpec, o: RenderOpts): string {
       }
       cursor = yTop;
     });
-    if (pi % xStride === 0) parts.push(`<text x="${r2(x + barW / 2)}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(label, 12))}</text>`);
+    if (pi % xStride === 0) parts.push(`<text x="${r2(x + barW / 2)}" y="${r2(bottom + 20)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(trunc(label, 12))}</text>`);
     // 百分比模式:柱顶标该组总量(补回绝对量)
     if (pctMode) {
       parts.push(

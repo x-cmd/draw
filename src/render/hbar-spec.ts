@@ -208,9 +208,9 @@ export function renderHbarDiverging(spec: MultiSpec, o: RenderOpts): string {
   const lg0 = o.interactive ? ' data-legend="0"' : '';
   const lg1 = o.interactive ? ' data-legend="1"' : '';
   parts.push(`<circle cx="${r2(lx1)}" cy="${r2(shrunk ? 20 : height * 0.0541)}" r="5" fill="var(--d-s1)"${lg0}/>`);
-  parts.push(`<text x="${r2(lx1 + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)"${lg0}>${esc(trunc(left.name, 12))}</text>`);
+  parts.push(`<text x="${r2(lx1 + 16)}" y="${r2(ly)}" font-size="13" fill="var(--d-muted)"${lg0}>${esc(trunc(left.name, 12))}</text>`);
   parts.push(`<circle cx="${r2(lx2)}" cy="${r2(shrunk ? 20 : height * 0.0541)}" r="5" fill="var(--d-s2)"${lg1}/>`);
-  parts.push(`<text x="${r2(lx2 + 16)}" y="${r2(ly)}" font-size="12" fill="var(--d-muted)"${lg1}>${esc(trunc(right.name, 12))}</text>`);
+  parts.push(`<text x="${r2(lx2 + 16)}" y="${r2(ly)}" font-size="13" fill="var(--d-muted)"${lg1}>${esc(trunc(right.name, 12))}</text>`);
   spec.labels.forEach((l, i) => {
     const y = top + i * pitch;
     const lw = (half * left.values[i]) / max;
@@ -277,7 +277,7 @@ export function renderHbarLift(spec: MultiSpec, o: RenderOpts): string {
     const total = base.values[i] + lift.values[i];
     const bw = (maxW * base.values[i]) / yMax;
     const tw = (maxW * total) / yMax;
-    parts.push(`<text x="${r2(width * 0.0292)}" y="${r2(y + barH * 0.73)}" font-size="12" fill="var(--d-muted)" style="${TAB}">${i + 1}</text>`);
+    parts.push(`<text x="${r2(width * 0.0292)}" y="${r2(y + barH * 0.73)}" font-size="13" fill="var(--d-muted)" style="${TAB}">${i + 1}</text>`);
     parts.push(`<rect x="${r2(width * 0.049)}" y="${r2(y + barH * 0.09)}" width="3" height="${r2(barH * 0.82)}" fill="${i === 0 ? '#E5A719' : 'var(--d-muted)'}"/>`);
     parts.push(`<text x="${r2(width * 0.075)}" y="${r2(y + barH * 0.77)}" font-size="14" fill="var(--d-text)">${esc(trunc(l, nameCut))}</text>`);
     const liftTip = tipOf(o, `${l} · ${fmtFull(total)} +${fmtFull(lift.values[i])}${spec.unit ? ' ' + spec.unit : ''}`);
@@ -285,7 +285,7 @@ export function renderHbarLift(spec: MultiSpec, o: RenderOpts): string {
     if (tw > bw) {
       parts.push(`<rect x="${r2(x0 + bw)}" y="${r2(y)}" width="${r2(tw - bw)}" height="${r2(barH)}" rx="1" fill="url(#dgl-hatch)" stroke="${baseColor}"${liftTip}/>`);
     }
-    parts.push(`<text x="${r2(x0 + tw + 8)}" y="${r2(y + barH * 0.73)}" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtFull(total)}  +${fmtFull(lift.values[i])}</text>`);
+    parts.push(`<text x="${r2(x0 + tw + 8)}" y="${r2(y + barH * 0.73)}" font-size="13" fill="var(--d-muted)" style="${TAB}">${fmtFull(total)}  +${fmtFull(lift.values[i])}</text>`);
   });
   // 底部图例:系列名直读
   const lgY = shrunk ? gridBottom + 66 : height * 0.9643;

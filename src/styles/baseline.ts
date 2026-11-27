@@ -38,7 +38,7 @@ export const BASELINE = {
   /** 图内说明文字 */
   note: 13,
   /** 图例 */
-  legend: 12,
+  legend: 13,
   /** 环形图心的大数字 */
   centerValue: 22,
 } as const;

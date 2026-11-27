@@ -18,7 +18,7 @@ const PAD = 40;
 const HEADER_H = 56;      // 参与方标题盒高
 const MSG_GAP = 78;       // 两条消息之间的行距(要给分支框的标签留位置)
 const ARROW = 10;         // 箭头长度
-const LABEL_FS = 12;
+const LABEL_FS = 13;
 const LANE_TOP = 30;      // 有 b= 时,给泳道标签留出来的那一行
 
 interface Msg { from: string; to: string; label?: string; dash: boolean }

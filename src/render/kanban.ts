@@ -23,7 +23,7 @@ const CARD_PAD = 12;     // 卡内边距
 const COL_PAD = 10;      // 列底板内边距
 const COL_MIN_W = 170;
 const CARD_MAX_W = 300;
-const TITLE_FS = 13;
+const TITLE_FS = 14;
 const META_FS = 11;
 
 const EXAMPLE = 'column=Todo&column=Doing&task=Todo|Implement the parser|high&task=Doing|Draw the chart|';

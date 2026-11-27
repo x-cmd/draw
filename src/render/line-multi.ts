@@ -113,7 +113,7 @@ export function renderLineMulti(spec: MultiSpec, o: RenderOpts): string {
   if (numItems.length > 0) pushLineLabelsAllOrNothing(parts, placer, numItems, allSegs);
   const xStride = labelStride(spec.labels, (right - left) / Math.max(n - 1, 1));
   spec.labels.forEach((l, i) => {
-    if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="12" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
+    if (i % xStride === 0) parts.push(`<text x="${r2(xs(i))}" y="${r2(xLabelY)}" text-anchor="middle" font-size="13" fill="var(--d-muted)">${esc(trunc(l, 12))}</text>`);
   });
 
   const mpts = markPoints(o.marks, spec.labels, xs, y, [contentTop, bottom]);

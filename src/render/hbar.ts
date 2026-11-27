@@ -38,7 +38,7 @@ export function renderHBar(spec: ChartSpec, o: RenderOpts): string {
   for (const t of ticks) {
     const gx = r2(x(t));
     if (t > 0 && skin.rules.grid !== 'none') parts.push(`<line x1="${gx}" y1="${contentTop}" x2="${gx}" y2="${bottom}" stroke="var(--d-grid)" stroke-width="1"/>`);
-    parts.push(`<text x="${gx}" y="${r2(bottom + 16)}" text-anchor="middle" font-size="12" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
+    parts.push(`<text x="${gx}" y="${r2(bottom + 16)}" text-anchor="middle" font-size="13" fill="var(--d-muted)" style="${TAB}">${fmtNum(t)}</text>`);
   }
   parts.push(`<line x1="${r2(left)}" y1="${contentTop}" x2="${r2(left)}" y2="${bottom}" stroke="var(--d-baseline)" stroke-width="1"/>`);
 
