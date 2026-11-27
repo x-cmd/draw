@@ -96,6 +96,12 @@ function renderGaugeSemi(spec: GaugeSpec, o: RenderOpts): string {
       parts.push(`<path d="${arc(r, Math.min(row.pct, 100) / 100)}" fill="none" stroke="${sVar(i % skin.series.length)}" stroke-width="${r2(sw)}" stroke-linecap="round"/>`);
     }
   });
+  // 单值(没给 data 的那种):环心里写上**读数** ——
+  // 光一根弧,读者只能靠弧长猜数值(「87%」还是「80%」?)✗
+  if (!spec.data?.length && spec.value !== undefined) {
+    const fs = Math.max(22, Math.min(48, r0 * 0.62));
+    parts.push(`<text x="${r2(cx)}" y="${r2(cy - r0 * 0.34 + fs * 0.34)}" text-anchor="middle" font-size="${r2(fs)}" font-weight="600" letter-spacing="-0.03em" fill="var(--d-ink)" style="${TAB}">${esc(fmtFull(spec.value))}${spec.max ? `<tspan font-size="${r2(fs * 0.5)}" fill="var(--d-muted)"> / ${esc(fmtFull(spec.max))}</tspan>` : ''}</text>`);
+  }
   // 底部图例(多环才显示):方块 + "标签 值%"
   if (spec.data?.length) {
     const items = spec.data.map((d, i) => ({ name: `${trunc(d.label, 12)} ${Math.round(d.value)}%`, color: sVar(i % skin.series.length) }));
