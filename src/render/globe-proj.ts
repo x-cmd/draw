@@ -133,18 +133,25 @@ function polyVisible(poly: number[][][], view: GlobeView): boolean {
  *
  * d3 的 `clipAngle(90)` 裁剪时,被裁掉的那一半会**沿裁剪圆闭合** ⇒
  * 有些多边形(整个在背面、或正好贴在地平线上)的 path 里会多出**一整圈裁剪圆**
- * ⇒ 填充把那半个球都糊上 ✗(实测:俄罗斯/加拿大/洪都拉斯各糊一整球 ✓)。
+ * ⇒ 填充把那半个球都糊上 ✗(实测:俄罗斯/加拿大/洪都拉斯各糊一整球 ✓;
+ *  贴着地平线的一小块地方(广东在美洲视角下 ✓)也能糊满整个球 ✗ —— issue #172 ✓)。
  *
  * ⇒ 凡是「所有点都在圆上、且绕了一整圈」的子路径,整个丢掉 ✓
  * (半圆弧那种是**多边形自己的封口** ⇒ 要留着 ✓)。
+ *
+ * ⚠️ 容差要**够宽**:裁剪圆是按投影精度(0.4°)重采样出来的,点并不精确落在圆上
+ * (实测半径差到 2px ✓)⇒ 容差 0.6px 会漏掉它 ⇒ 那圈线留着 ⇒ 整个球被糊上 ✗
+ * ⇒ 容差按半径的 1.2% 给(≈5px ✓)—— 真有个多边形整圈都贴着地平线,那它也没多少
+ * 可看的面积,丢掉不亏 ✓。
  */
 function stripClipCircle(d: string, cx: number, cy: number, R: number): string {
   if (!d) return d;
+  const tol = Math.max(3, R * 0.012);
   const kept: string[] = [];
   for (const seg of d.split('M').slice(1)) {
     const pts: number[][] = [];
     for (const m of seg.matchAll(/(-?[\d.]+),(-?[\d.]+)/g)) pts.push([Number(m[1]), Number(m[2])]);
-    if (pts.length > 8 && pts.every(([x, y]) => Math.abs(Math.hypot(x - cx, y - cy) - R) < 0.6)) {
+    if (pts.length > 8 && pts.every(([x, y]) => Math.abs(Math.hypot(x - cx, y - cy) - R) < tol)) {
       // 在圆上 ⇒ 再看是不是绕了整圈(半圆弧是多边形的封口,要留 ✓)
       let span = 0;
       for (let i = 1; i < pts.length; i++) {
