@@ -5,6 +5,7 @@
 // 亦可直接使用下层解析/渲染/皮肤 API(与线上服务同一套代码)。
 export * from './specs/index.js';
 export * from './styles/index.js';
+export { renderChartFromParams, CHART_KINDS, type ChartKind, type AnySpec } from './render/params-dispatch.js';
 export { BASELINE } from './styles/baseline.js';
 export { CURRENT_VERSION, resolveVersion, type VersionInfo } from './version.js';
 export { renderPie } from './render/pie.js';
