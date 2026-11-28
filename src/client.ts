@@ -28,6 +28,20 @@ import { resolveSkin } from './styles/index.js';
 import type { Scheme, Skin } from './styles/types.js';
 import { checkSlotColors, refParams as refLinesParam } from './render/query.js';
 import { EDIT_TAG_STRIP_SRC } from './render/svg.js';
+import { renderArchmapFromUrl } from './render/archmap.js';
+import { renderMindmapFromUrl } from './render/mindmap.js';
+import { renderMermaidFromUrl } from './render/mermaid.js';
+import { renderSeqFromUrl } from './render/seq.js';
+import { renderUcFromUrl } from './render/uc.js';
+import { renderGanttFromUrl } from './render/gantt.js';
+import { renderGantt2FromUrl } from './render/gantt2.js';
+import { renderGitGraphFromUrl } from './render/gitgraph.js';
+import { renderJourneyFromUrl } from './render/journey.js';
+import { renderTimelineFromUrl } from './render/timeline.js';
+import { renderKanbanFromUrl } from './render/kanban.js';
+import { renderBlockFromUrl } from './render/block.js';
+import { renderPacketFromUrl } from './render/packet.js';
+import { renderRequirementFromUrl } from './render/requirement.js';
 import type { RenderOpts } from './render/svg.js';
 import { CURRENT_VERSION } from './version.js';
 import { renderPie } from './render/pie.js';
@@ -204,6 +218,55 @@ export function renderChartTo(
     throw new ApiError(400, `unknown chart type: ${kind}. Known: ${CHART_KINDS.join(', ')}`);
   }
   const svg = chartSvg(kind, sp, scheme);
+  el.innerHTML = svg;
+  const chart = el.querySelector('svg');
+  if (chart) bindChart(chart as SVGElement);
+  return svg;
+}
+
+/** 图族(结构图那一族)—— 参数是 n=/e=/b= 那些 */
+export const DIAGRAM_KINDS = [
+  'archmap', 'mindmap', 'mermaid', 'seq', 'uc', 'gantt', 'gantt2', 'gitgraph',
+  'journey', 'timeline', 'kanban', 'block', 'packet', 'requirement',
+] as const;
+
+export type DiagramKind = (typeof DIAGRAM_KINDS)[number];
+
+const DIAGRAM_RENDERERS: Record<DiagramKind, (url: URL) => { svg: string }> = {
+  archmap: (u) => renderArchmapFromUrl(u, true),
+  mindmap: (u) => renderMindmapFromUrl(u, true),
+  mermaid: (u) => renderMermaidFromUrl(u, true),
+  seq: (u) => renderSeqFromUrl(u, true),
+  uc: (u) => renderUcFromUrl(u, true),
+  gantt: (u) => renderGanttFromUrl(u, true),
+  gantt2: (u) => renderGantt2FromUrl(u, true),
+  gitgraph: (u) => renderGitGraphFromUrl(u, true),
+  journey: (u) => renderJourneyFromUrl(u, true),
+  timeline: (u) => renderTimelineFromUrl(u, true),
+  kanban: (u) => renderKanbanFromUrl(u, true),
+  block: (u) => renderBlockFromUrl(u, true),
+  packet: (u) => renderPacketFromUrl(u, true),
+  requirement: (u) => renderRequirementFromUrl(u, true),
+};
+
+/**
+ * 画一张**结构图**(架构图/思维导图/序列图/甘特…)—— 参数是 n=/e=/b= 那些。
+ * 跟 /draw 端点同一套渲染器 ⇒ 两端同图 ✓
+ */
+export function renderDiagramTo(
+  el: Element,
+  params: URLSearchParams | string,
+  base = 'https://draw.invalid/',
+): string {
+  const sp = typeof params === 'string' ? new URLSearchParams(params.replace(/^[?]/, '')) : params;
+  const kind = (sp.get('type') ?? 'archmap') as DiagramKind;
+  const render = DIAGRAM_RENDERERS[kind];
+  if (!render) {
+    throw new ApiError(400, `unknown diagram kind: ${kind}. Known: ${DIAGRAM_KINDS.join(', ')}`);
+  }
+  const url = new URL(base);
+  sp.forEach((v, k) => url.searchParams.append(k, v));
+  const svg = cleanChartSvg(render(url).svg);
   el.innerHTML = svg;
   const chart = el.querySelector('svg');
   if (chart) bindChart(chart as SVGElement);
