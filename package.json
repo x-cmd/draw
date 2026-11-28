@@ -29,6 +29,10 @@
     "./core": {
       "types": "./dist/core.d.ts",
       "default": "./dist/core.js"
+    },
+    "./node": {
+      "types": "./dist/node/cmd.d.ts",
+      "default": "./dist/node/cmd.js"
     }
   },
   "bin": {
