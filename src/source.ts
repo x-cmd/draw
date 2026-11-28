@@ -15,6 +15,7 @@ export { renderWavedrom, type SourceOpts as WavedromOpts } from './render/wavedr
 export { renderChem, type ChemOpts } from './render/chem.js';
 export { renderChord, parseChordLinks, type ChordLink, type ChordOpts } from './render/chord.js';
 export { renderTty, type TtyOpts } from './render/tty.js';
+export { runCommand } from './render/ttycmd.js';
 export { renderGlobe, globeFromUrl, type GlobeOpts } from './render/globe.js';
 export { GLOBE_R } from './render/globe3d.js';
 export { renderEarthGlobe, earthSceneFromUrl, type EarthScene, type EarthOpts } from './render/globe-earth.js';
