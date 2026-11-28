@@ -19,5 +19,5 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "files": ["src/lib.ts", "src/globe.ts", "src/node/cli.ts", "src/types/dagre-ambient.d.ts"]
+  "files": ["src/lib.ts", "src/globe.ts", "src/client.ts", "src/node/cli.ts", "src/types/dagre-ambient.d.ts"]
 }

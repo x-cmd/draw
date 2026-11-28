@@ -17,6 +17,10 @@
     "./globe": {
       "types": "./dist/globe.d.ts",
       "default": "./dist/globe.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
     }
   },
   "bin": {
@@ -55,7 +59,8 @@
     "diagrams": "node scripts/diagrams.mjs",
     "diagrams:check": "node scripts/diagrams.mjs --check",
     "release-notes": "node scripts/release-notes.mjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "build:client": "esbuild src/client.ts --bundle --minify --format=iife --global-name=DrawChart --platform=browser --target=es2020 --outfile=dist/draw-client.iife.js"
   },
   "dependencies": {
     "@resvg/resvg-wasm": "^2.6.2",
@@ -80,6 +85,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
-    "wrangler": "^4.155.0"
+    "wrangler": "^4.155.0",
+    "esbuild": "^0.25.0"
   }
 }

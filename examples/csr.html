@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>draw · CSR —— 引一行脚本就出图</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 32px 24px 64px;
+            background: #0b0b0f;
+            color: #e5e5e5;
+            font: 15px/1.6 ui-sans-serif, system-ui, -apple-system, "PingFang SC", sans-serif
+        }
+
+        h1 {
+            font-size: 22px;
+            margin: 0 0 6px
+        }
+
+        p.sub {
+            margin: 0 0 24px;
+            color: #a1a1aa
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px
+        }
+
+        .box {
+            border: 1px solid #26262b;
+            border-radius: 12px;
+            padding: 12px;
+            background: #111
+        }
+
+        code {
+            background: #1c1c22;
+            border-radius: 5px;
+            padding: 1px 5px;
+            font-size: 13px
+        }
+    </style>
+</head>
+
+<body>
+    <h1>draw · CSR</h1>
+    <p class="sub">引一行脚本,图自己出来 —— <b>不请求后台</b>。参数语法跟 <code>/draw</code> 端点一模一样。</p>
+    <div class="row">
+        <div class="box"><div data-draw="type=bar&labels=Mon,Tue,Wed,Thu&values=12,18,9,15&title=Commits"></div></div>
+        <div class="box">
+            <div data-draw="type=pie&labels=Chrome,Safari,Firefox,Edge&values=65,18,7,6&title=Browser"></div>
+        </div>
+        <div class="box">
+            <div data-draw="type=line&labels=W1,W2,W3,W4&series=App:120,145,138,170&series=Web:80,95,110,140&title=Weekly"></div>
+        </div>
+        <div class="box">
+            <div data-draw="type=radar&labels=speed,quality,docs&values=72,58,81&title=Editor"></div>
+        </div>
+    </div>
+    <script src="../dist/draw-client.iife.js"></script>
+</body>
+
+</html>
