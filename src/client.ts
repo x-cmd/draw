@@ -316,3 +316,5 @@ if (typeof document !== 'undefined') {
 export { renderEarthGlobe, earthSceneFromUrl, type EarthScene, type EarthOpts } from './render/globe-earth.js';
 export { projectScene, DEFAULT_CAMERA, type Camera, type Scene } from './render/scene3d.js';
 export { WORLD_COUNTRIES, WORLD_YEAR, type WorldCountry } from './world-data.js';
+
+export { parseAbc, beatsOf, pitchInfo, type AbcTune } from './render/abc-parse.js';
