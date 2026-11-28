@@ -310,3 +310,9 @@ if (typeof document !== 'undefined') {
     mo.observe(document.documentElement, { childList: true, subtree: true });
   }
 }
+
+// 球面那几样(地球仪/三维架构图)浏览器端也要用 ⇒ 从这里一并导出,
+// 免得宿主为了它们去引整个 source 入口(那一族要外部库,浏览器包扛不住)
+export { renderEarthGlobe, earthSceneFromUrl, type EarthScene, type EarthOpts } from './render/globe-earth.js';
+export { projectScene, DEFAULT_CAMERA, type Camera, type Scene } from './render/scene3d.js';
+export { WORLD_COUNTRIES, WORLD_YEAR, type WorldCountry } from './world-data.js';

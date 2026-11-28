@@ -33,6 +33,10 @@
     "./node": {
       "types": "./dist/node/cmd.d.ts",
       "default": "./dist/node/cmd.js"
+    },
+    "./render/*": {
+      "types": "./dist/render/*.d.ts",
+      "default": "./dist/render/*.js"
     }
   },
   "bin": {
